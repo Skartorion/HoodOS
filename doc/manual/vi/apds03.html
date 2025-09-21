@@ -1,0 +1,415 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Cài đặt Debian GNU/Linux từ hệ thống UNIX/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Phụ lục D. Thông Tin Linh Tinh">
+<link rel="prev" href="apds02.html" title="D.2. Sức chứa trên đĩa cần thiết cho công việc">
+<link rel="next" href="apds04.html" title="D.4. Cài đặt Debian GNU/Linux qua IP đường song song (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Cài đặt Debian GNU/Linux từ hệ thống UNIX/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục D. Thông Tin Linh Tinh</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Cài đặt Debian GNU/Linux từ hệ thống UNIX/Linux</h2></div></div></div>
+<p>Phần này diễn tả phương pháp cài đặt Debian GNU/Linux từ một hệ thống UNIX hay Linux đã có, không cần dùng trình cài đặt dựa vào trình đơn như được diễn tả trong phần sổ tay còn lại. Tài liệu <span class="quote">“<span class="quote">cài đặt chéo</span>”</span> Thế Nào này đã được yêu cầu bởi người dùng chuyển đổi sang Debian GNU/Linux từ hệ thống Red Hat, Mandriva, và SUSE. Trong phần này giả sử là bạn quen với cách nhập lệnh *nix và cách duyệt qua hệ thống tập tin. Trong phần này, dấu đồng <code class="prompt">$</code> đại diện lệnh cần nhập vào hệ thống hiện thời của người dùng, còn dấu băm <code class="prompt">#</code> đại diện lệnh được nhập vào chroot của Debian. </p>
+<p>Một khi cấu hình hệ thống Debian mới một cách thích hợp, bạn có thể nâng cấp lên nó dữ liệu người dùng tồn tại nào, sau đó tiếp tục làm việc như bình thường. Vì vậy, tiến trình cài đặt Debian GNU/Linux này <span class="quote">“<span class="quote">không có thời gian chết</span>”</span>. Nó cũng là một phương pháp thông minh để quản lý phần cứng thường không hợp tác với vật chứa khác nhau kiểu khởi động hay cài đặt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vì đây phần lớn là một thủ tục làm bằng tay, ghi nhớ rằng bạn sẽ cần phải tự làm nhiều cấu hình cơ bản, mà yêu cầu bạn quen nhiều với Debian và Linux hơn khi cài đặt bình thường. Thủ tục này sẽ không làm kết quả là hệ thống trùng với kết quả của tiến trình cài đặt bình thường. Thủ tục này chỉ diễn tả những bước cơ bản khi thiết lập hệ thống. Có thể là cần thiết thêm bước cài đặt hay/và cấu hình. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5472"></a>D.3.1. Bắt đầu</h3></div></div></div>
+<p>With your current *nix partitioning tools, repartition the hard drive as needed, creating at least one filesystem plus swap. You need around 647MB of space available for a console only install, or about 2635MB if you plan to install X (more if you intend to install desktop environments like GNOME or KDE Plasma). </p>
+<p>Sau đó, hãy tạo hệ thống tập tin trên những phân vùng. Chẳng hạn, để tạo một hệ thống tập tin kiểu ext3 trên phân vùng <code class="filename">/dev/sda6</code> (phân vùng gốc mẫu): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Còn để tạo hệ thống tập tin kiểu ext2, chỉ cần bỏ đoạn <strong class="userinput"><code>-j</code></strong> đi. </p>
+<p>Sơ khởi và kích hoạt vùng trao đổi (thay thế số thứ tự phân vùng của phân vùng trao đổi Debian dự định): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Lắp một phân vùng như là <code class="filename">/mnt/debinst</code> (điểm cài đặt, để làm hệ thống tập tin gốc (<code class="filename">/</code>) trên hệ thống mới). Tên của điểm lắp là tùy ý chặt chẽ: nó được tham chiếu về sau bên dưới. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nếu bạn muốn đặt phần nào của hệ thống tập tin (v.d. <code class="filename">/usr</code>) được gắn kết vào phân vùng riêng, bạn cần phải tự tạo và gắn kết những thư mục này trước khi tiếp tục tới giao đoạn kế tiếp. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5494"></a>D.3.2. Cài đặt <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Tiện ích được dùng bởi trình cài đặt Debian, cũng được thấy là phương pháp chính thức để cài đặt hệ thống cơ bản Debian, là <span class="command"><strong>debootstrap</strong></span>. Nó dùng hai chương trình <span class="command"><strong>wget</strong></span> và <span class="command"><strong>ar</strong></span>, nhưng về mặt khác thì phụ thuộc chỉ vào <code class="classname">/bin/sh</code> và các công cụ UNIX/Linux cơ bản<a href="#ftn.id5502" class="footnote" name="id5502"><sup class="footnote">[21]</sup></a>. Chưa có thì cài đặt hai gói <span class="command"><strong>wget</strong></span> và <span class="command"><strong>ar</strong></span>, sau đó tải về và cài đặt gói <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Hoặc bạn có thể tự cài đặt nó bằng thủ tục theo đây. Tạo một thư mục <code class="filename">work</code> vào đó cần giải nén .deb: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> Tập tin nhị phân <span class="command"><strong>debootstrap</strong></span> nằm trong kho Debian (hãy chắc là bạn chọn tập tin thích hợp với kiến trúc của mình). Tải tập tin dạng .deb <span class="command"><strong>debootstrap</strong></span> xuống <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> vùng gộp</a>, sao chép gói đó vào thư mục <code class="filename">work</code>, sau đó giải nén các tập tin nhị phân ra nó. Bạn cần phải có quyền người chủ để cài đặt các tập tin nhị phân này. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /đường_dẫn_đầy_đủ_đến_work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5521"></a>D.3.3. Chạy <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Chạy chương trình <span class="command"><strong>debootstrap</strong></span> thì có thể tải các tập tin cần thiết một cách trực tiếp xuống kho lưu. Có thể thay thế chuỗi <strong class="userinput"><code>http.us.debian.org/debian</code></strong> (trong mẫu bên dưới) bằng bất cứ máy nhân bản kho lưu Debian nào, tốt hơn là một máy nhân bản ở gần chỗ bạn trên mạng. Các máy nhân bản được liệt kê ở địa chỉ <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>If you have a trixie Debian GNU/Linux installation image mounted at <code class="filename">/cdrom</code>, you could substitute a file URL instead of the http URL: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Substitute one of the following for <em class="replaceable"><code>ARCH</code></em> in the <span class="command"><strong>debootstrap</strong></span> command: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> If the target architecture is different than the host, you should add the <strong class="userinput"><code>--foreign</code></strong> option. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5543"></a>D.3.4. Cấu hình hệ thống cơ bản</h3></div></div></div>
+<p>Now you've got a real Debian system, though rather lean, on disk. <span class="command"><strong>chroot</strong></span> into it: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> If the target architecture is different from the host, you will need to first copy qemu-user-static to the new host: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> After chrooting you may need to set the terminal definition to be compatible with the Debian base system, for example: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Depending on the value of TERM, you may have to install the <code class="classname">ncurses-term</code> package to get support for it. </p>
+<p>If the target architecture is different from the host, you need to finish the multi-stage boot strap: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5558"></a>D.3.4.1. Tạo tập tin thiết bị</h4></div></div></div>
+<p>Ở điểm thời này, thư mục <code class="filename">/dev/</code> chỉ chứa các tập tin thiết bị rất cơ bản. Đối với những bước tiếp theo của tiến trình cài đặt, có thể cần thiết thêm tập tin thiết bị. Có một số phương pháp khác nhau : phương pháp thích hợp với trường hợp của bạn thì phụ thuộc vào hệ thống hỗ trợ tiến trình cài đặt, vào kiểu hát nhân (kiểu mô-đun hay không) và vào bạn định dùng tập tin thiết bị kiểu động (v.d. dùng <code class="classname">udev</code>) hay tĩnh. </p>
+<p>Vài tùy chọn sẵn sàng: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>cài đặt gói makedev, và tạo một tập hợp tập tin thiết bị tĩnh mặc định bằng cách dùng (sau khi đã đổi root) </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>tạo bằng tay chỉ một số tập tin thiết bị dứt khoát dùng <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>bind mount /dev từ hệ thống hỗ trợ ở trên /dev trong hệ thống đích; ghi chú rằng những văn lệnh sau khi cài đặt của một số gói có thể thử tạo tập tin thiết bị, vì vậy bạn nên dùng tùy chọn này chỉ một cách cẩn thận. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5574"></a>D.3.4.2. Gắn kết phân vùng</h4></div></div></div>
+<p>You need to create <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Here is a sample you can modify to suit: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Use <strong class="userinput"><code>mount -a</code></strong> to mount all the file systems you have specified in your <code class="filename">/etc/fstab</code>, or, to mount file systems individually, use: </p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p> Current Debian systems have mountpoints for removable media under <code class="filename">/media</code>, but keep compatibility symlinks in <code class="filename">/</code>. Create these as as needed, for example: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> You can mount the proc file system multiple times and to arbitrary locations, though <code class="filename">/proc</code> is customary. If you didn't use <strong class="userinput"><code>mount -a</code></strong>, be sure to mount proc before continuing: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Sau đó, lệnh liệt kê <strong class="userinput"><code>ls /proc</code></strong> nên hiển thị thư mục khác rỗng. Nếu nó bị lỗi, có lẽ bạn có khả năng gắn kết <code class="filename">proc</code> từ bên ngoài chroot đó. </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5599"></a>D.3.4.3. Đặt múi giờ</h4></div></div></div>
+<p>Setting the third line of the file <code class="filename">/etc/adjtime</code> to <span class="quote">“<span class="quote">UTC</span>”</span> or <span class="quote">“<span class="quote">LOCAL</span>”</span> determines whether the system will interpret the hardware clock as being set to UTC respective local time. The following command allows you to set that. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Here is a sample: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> The following command allows you to choose your timezone. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5611"></a>D.3.4.4. Cấu hình khả năng chạy mạng</h4></div></div></div>
+<p>To configure networking, edit <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> and <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Here are some simple examples from <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# The loopback interface isn't really required any longer, but can be used
+# if needed.
+#
+# auto lo
+# iface lo inet loopback
+
+# To use dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# An example static IP setup: (network, broadcast and gateway are optional)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Enter your nameserver(s) and search directives in <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> A simple example <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Enter your system's host name (2 to 63 characters): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> And a basic <code class="filename">/etc/hosts</code> with IPv6 support: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> If you have multiple network cards, you should arrange the names of driver modules in the <code class="filename">/etc/modules</code> file into the desired order. Then during boot, each card will be associated with the interface name (eth0, eth1, etc.) that you expect. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5635"></a>D.3.4.5. Cấu hình Apt</h4></div></div></div>
+<p>Debootstrap will have created a very basic <code class="filename">/etc/apt/sources.list</code> that will allow installing additional packages. However, you may want to add some additional sources, for example for source packages and security updates: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Make sure to run <strong class="userinput"><code>apt update</code></strong> after you have made changes to the sources list. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5642"></a>D.3.4.6. Cấu hình miền địa phương và bàn phím</h4></div></div></div>
+<p>To configure your locale settings to use a language other than English, install the <code class="classname">locales</code> support package and configure it. Currently the use of UTF-8 locales is recommended. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> To configure your keyboard (if needed): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Ghi chú rằng bàn phím không thể được đặt trong khi nằm trong chroot, nhưng sẽ được cấu hình cho lần khởi động lại kế tiếp. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5651"></a>D.3.5. Cài đặt hạt nhân</h3></div></div></div>
+<p>Nếu bạn dự định khởi động hệ thống này, bạn rất có thể muốn có một hạt nhân (kernel) Linux và một bộ nạp khởi động (boot loader). Có thể nhận diện các hạt nhân đóng gói sẵn bằng lệnh: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Sau đó cài đặt gói hạt nhân đã chọn, dùng tên gói của nó. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5660"></a>D.3.6. Thiết lập bộ nạp khởi động</h3></div></div></div>
+<p>To make your Debian GNU/Linux system bootable, set up your boot loader to load the installed kernel with your new root partition. Note that <span class="command"><strong>debootstrap</strong></span> does not install a boot loader, but you can use <span class="command"><strong>apt</strong></span> inside your Debian chroot to do so. </p>
+<p>Check <strong class="userinput"><code>info grub</code></strong> for instructions on setting up the bootloader. If you are keeping the system you used to install Debian, just add an entry for the Debian install to your existing grub2 <code class="filename">grub.cfg</code>. </p>
+<p>Installing and setting up <code class="classname">grub2</code> is as easy as: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> The second command will install <span class="command"><strong>grub2</strong></span> (in this case in the MBR of <code class="literal">sda</code>). The last command will create a sane and working <code class="filename">/boot/grub/grub.cfg</code>. </p>
+<p>Ghi chú rằng ở đây giả sử tập tin thiết bị <code class="filename">/dev/sda</code> đã được tạo. Có những phương pháp khác để cài đặt <span class="command"><strong>grub2</strong></span>, nhưng chúng không nằm trong phạm vi của phụ lục này. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5679"></a>D.3.7. Remote access: Installing SSH and setting up access</h3></div></div></div>
+<p>In case you can login to the system via console, you can skip this section. If the system should be accessible via the network later on, you need to install SSH and set up access. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Root login with password is disabled by default, so setting up access can be done by setting a password and re-enable root login with password: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> This is the option to be enabled: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> Access can also be set up by adding an ssh key to the root account: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Lastly, access can be set up by adding a non-root user and setting a password: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5692"></a>D.3.8. Đòn kết liễu</h3></div></div></div>
+<p>As mentioned earlier, the installed system will be very basic. If you would like to make the system a bit more mature, there is an easy method to install all packages with <span class="quote">“<span class="quote">standard</span>”</span> priority: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Of course, you can also just use <span class="command"><strong>apt</strong></span> to install packages individually. </p>
+<p>Sau khi cài đặt xong, có rất nhiều gói đã tải về nằm trong thư mục kho lưu <code class="filename">/var/cache/apt/archives/</code>. Vậy bạn có dịp giải phóng thêm chỗ trống trên đĩa bằng cách chạy lệnh « làm sạch »:  </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5502" class="footnote"><p><a href="#id5502" class="para"><sup class="para">[21] </sup></a> Những công cụ này gồm có các tiện ích lõi của GNU và lệnh như <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> và <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Sức chứa trên đĩa cần thiết cho công việc </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Cài đặt Debian GNU/Linux qua IP đường song song (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

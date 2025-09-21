@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Az email beállítása</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch08.html" title="8. fejezet - A következő lépések. Milyen lehetőségekkel élhetünk?">
+<link rel="prev" href="ch08s03.html" title="8.3. További olvasnivalók és információk">
+<link rel="next" href="ch08s05.html" title="8.5. Új rendszermag (kernel) fordítása">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Az email beállítása</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">8. fejezet - A következő lépések. Milyen lehetőségekkel élhetünk?</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Az email beállítása</h2></div></div></div>
+<p>Ma, az email szinte minden ember életének egyik legfontosabb része. Sok lehetőség van beállítására, és mivel helyes beállítása pár Debian eszköz számára fontos, megpróbáljuk bemutatni a legfontosabb alapokat. </p>
+<p>3 fő összetevő biztosít egy email rendszert. Az egyik a levél-olvasó, angolul <em class="firstterm">Mail User Agent</em> (MUA), mellyel a felhasználó leveleket ír és olvas. A másik a levél-továbbító, <em class="firstterm">Mail Transfer Agent</em> (MTA), mely átviszi a levelet. Végül a levél-kézbesítő, <em class="firstterm">Mail Delivery Agent</em> (MDA), mely a bejövő leveleket a felhasználó levelesládájába teszi. </p>
+<p>E 3 funkciót önálló vagy egybegyúrt programok is végezhetik. Sőt, különböző típusú levelekre különböző programok is végezhetik e funkciókat. </p>
+<p>Linux és Unix rendszereken a <span class="command"><strong>mutt</strong></span> egy nagyon népszerű MUA. A hagyományos Linux programokhoz hasonlóan szöveges üzemmódra alapul. Gyakran az <span class="command"><strong>exim</strong></span> vagy <span class="command"><strong>sendmail</strong></span> MTA és <span class="command"><strong>procmail</strong></span> MDA programokkal társul. </p>
+<p>A grafikus asztali rendszerek népszerűségének növekedésével a grafikus email programok, mint a GNOME <span class="command"><strong>evolution</strong></span>, KDE <span class="command"><strong>kmail</strong></span> vagy Mozilla <span class="command"><strong>thunderbird</strong></span> egyre népszerűbbek. E programok egyben adják a MUA, MTA és MDA funkciókat, de használhatók — és gyakran használtak is — hagyományos Linux eszközökkel. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Alap email beállítás</h3></div></div></div>
+<p>Még ha grafikus levelező program használatát tervezed is, hasznos, ha egy hagyományos MTA/MDA helyesen be van állítva a rendszeren. Különféle rendszer-eszközök<a href="#ftn.id3688" class="footnote" name="id3688"><sup class="footnote">[16]</sup></a> képesek fontos üzeneteket küldeni a rendszergazdának (esetleges) gondokról vagy változásokról. </p>
+<p>Ezért az <code class="classname">exim4</code> és <code class="classname">mutt</code> csomagok telepíthetőek az <span class="command"><strong>apt install exim4 mutt</strong></span> paranccsal. Az <code class="classname">exim4</code> egy MTA/MDA, ami elég kicsi és rugalmas. Alapban csak helyi kézbesítésre lesz beállítva és a rendszergazdának küldött leveleket egy sima felhasználónak kézbesíti<a href="#ftn.id3699" class="footnote" name="id3699"><sup class="footnote">[17]</sup></a>. </p>
+<p>Egy rendszer email kézbesítésekor az egy <code class="filename">/var/mail/<em class="replaceable"><code>fiók_név</code></em></code> útvonalú fájlba kerül. E levelek olvashatók a <span class="command"><strong>mutt</strong></span> programmal. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Email küldése kifelé</h3></div></div></div>
+<p>Ahogy írtuk, egy frissen telepített Debian rendszer csak helyi email-kezelésre van beállítva, külső levelezésre nem. </p>
+<p>Ha szeretnéd, hogy az <code class="classname">exim4</code> külső leveleket is fogadjon, olvasd el az alábbiakat az alapvető beállításokhoz. Ellenőrizd, hogy a levelek rendesen küldhetők és fogadhatók. </p>
+<p>Ha egy grafikus levelező program használatát tervezed és az Internet-szolgáltatód vagy a céged egy levelező szerverét használod, nem elengedhetetlenül szükséges az <code class="classname">exim4</code> beállítása külső levelezéshez. Beállíthatod a grafikus levelező programodat a megfelelő kiszolgáló használatára email küldésére és fogadására (ennek tárgyalása e kézikönyvnek nem célja). </p>
+<p>De ha ez nincs beállítva, egyes eszközöket egyénileg kell beállítani levelek helyes küldésére. Egy ilyen eszköz a <span class="command"><strong>reportbug</strong></span>, egy program, ami elősegíti hibák jelentését a Debian csomagokra. Alapban azt feltételezi, hogy az <code class="classname">exim4</code> képes elküldeni a jelentéseket. </p>
+<p>A <span class="command"><strong>reportbug</strong></span> külső beállításához futtasd a <span class="command"><strong>reportbug --configure</strong></span> parancsot és mondd, hogy <span class="quote">„<span class="quote">no</span>”</span> a helyi MTA elérhetőségére. Ekkor rákérdez a külső SMTP kiszolgálóra. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Exim4 MTA beállítása</h3></div></div></div>
+<p>Ha szeretnéd, hogy az egész rendszer kezeljen külső leveleket, be kell állítanod az <code class="classname">exim4</code> csomagot<a href="#ftn.id3724" class="footnote" name="id3724"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>E parancs kiadása után (rendszergazdaként), megkérdi, szétvágja-e a beállítást kisebb fájlokba. Kétség esetén az alap lehetőséget kell választani. </p>
+<p>Most néhány általános levél forgatókönyvet mutatunk be. Válaszd a szükség szerint leginkább megfelelőt. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">internet site</span></dt>
+<dd><p>A rendszer hálózatra kötött és a levelek közvetlenül SMTP szolgáltatáson át kerülnek küldésre és fogadásra. A következő képernyők pár egyszerű kérdésre irányulnak, például a rendszer levelező nevére vagy tartományok listájára, melyekről elfogadsz leveleket, vagy melyek számára továbbítod őket. </p></dd>
+<dt><span class="term">levél küldése smarthost segítségével</span></dt>
+<dd>
+<p>E forgatókönyvben a kimenő levél egy másik gépre továbbítódik, melyet egy <span class="quote">„<span class="quote">smarthost</span>”</span> néven hívunk, mely elküldi az üzeneteket. A smarthost általában tárolja a gépedre címzett bejövő leveleket is, így nem kell folyton hálózaton lenni. Ez azt is jelenti, hogy le kell szedni a leveleidet a smarthost gépről egy olyan programmal, mint amilyen például a fetchmail. </p>
+<p>Sok esetben a smarthost az internet-szolgáltatód levelező szervere lesz, ami e lehetőséget nagyon kívánatossá teszi betárcsázó felhasználóknak. Ez egy céges levelező szerver is lehet vagy egy másik gép a hálózatodon. </p>
+</dd>
+<dt><span class="term">levél küldés smarthost útján, nincs helyi levél</span></dt>
+<dd><p>Ez a lehetőség alapban ugyanaz, mint a előző kivéve, hogy a rendszer nem kezel leveleket helyi email-tartományokból. A rendszeren magán lévő levelek (például a rendszergazda számára) kezelése megmarad. </p></dd>
+<dt><span class="term">csak helyi kézbesítés</span></dt>
+<dd><p>E lehetőségre van a rendszer alapértelmezetten beállítva. </p></dd>
+<dt><span class="term">beállítás elhalasztása</span></dt>
+<dd><p>Csak akkor válaszd, ha tökéletesen tudod, ezt miért teszed. A levelező rendszer így beállítás nélkül marad — míg be nem állítod, nem tudsz leveleket küldeni vagy fogadni és nem fogod megkapni egyes rendszer-eszközök fontos üzeneteit. </p></dd>
+</dl></div>
+<p>Ha egyik forgatókönyv sem felel meg, vagy finomabb beállítás kell, szerkeszteni kell a <code class="filename">/etc/exim4</code> könyvtár alatti fájlokat a telepítés után. Több adat az <code class="classname">exim4</code> programról a <code class="filename">/usr/share/doc/exim4</code> alatt; a <code class="filename">README.Debian.gz</code> további részleteket ad az <code class="classname">exim4</code> beállításáról és további dokumentációkra mutat. </p>
+<p>Levél küldése kifelé hivatalos tartomány-név nélkül a levél elvetését okozhatja a fogadó szerverek anti-spam szabályai miatt. A internet-szolgáltatód levelező kiszolgálójának használata ajánlott. Ha mégis közvetlenül küldenél kifelé levelet, használj az alaptól eltérő email-címet. Ha az <code class="classname">exim4</code> az MTA programod, ez a <code class="filename">/etc/email-addresses</code> fájlban történhet. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3688" class="footnote"><p><a href="#id3688" class="para"><sup class="para">[16] </sup></a> Például: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3699" class="footnote"><p><a href="#id3699" class="para"><sup class="para">[17] </sup></a> Ez a <code class="filename">/etc/aliases</code> fájlban van. Ha telepítéskor kikerültük volna a sima felhasználó létrehozását, akkor természetesen a rendszergazda kapja meg. </p></div>
+<div id="ftn.id3724" class="footnote"><p><a href="#id3724" class="para"><sup class="para">[18] </sup></a> Természetesen az <code class="classname">exim4</code> más MTA/MDA programmal is váltható. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. További olvasnivalók és információk </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Új rendszermag (kernel) fordítása</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

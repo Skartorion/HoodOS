@@ -1,0 +1,191 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Pregătirea fișierelor pentru pornirea prin rețea utilizând TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch04.html" title="Cap. 4. Obținerea unui mediu de instalare a sistemului">
+<link rel="prev" href="ch04s04.html" title="4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid">
+<link rel="next" href="ch04s06.html" title="4.6. Instalare automată">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Pregătirea fișierelor pentru pornirea prin rețea utilizând TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 4. Obținerea unui mediu de instalare a sistemului</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Pregătirea fișierelor pentru pornirea prin rețea utilizând TFTP</h2></div></div></div>
+<p>Dacă mașina dvs. este conectată la o rețea locală, este posibil s-o puteți porni prin rețea de pe o altă mașină, utilizând TFTP. Dacă intenționați să porniți sistemul de instalare de pe o altă mașină, fișierele de pornire vor trebui să fie plasate în anumite locații de pe acea mașină, iar mașina să fie configurată să accepte pornirea mașinii dvs. specifice. </p>
+<p>Trebuie să configurați un server TFTP și, pentru multe mașini, un server DHCP<span class="phrase"> sau un server BOOTP</span>, de asemenea. </p>
+<p> <span class="phrase">BOOTP este un protocol IP care informează un calculator despre adresa sa IP și de unde poate obține o imagine de pornire din rețea.</span> Protocolul de configurare dinamică a gazdei („Dynamic Host Configuration Protocol”: DHCP) este o extensie mai flexibilă, compatibilă cu versiunea inversă a BOOTP. Unele sisteme pot fi configurate numai prin DHCP. </p>
+<p>Protocolul de transfer de fișiere trivial („Trivial File Transfer Protocol”: TFTP) este utilizat pentru a transfera imaginea de pornire către client. Teoretic, poate fi folosit orice server, pe orice platformă, care implementează aceste protocoale. În exemplele din această secțiune, vom furniza comenzi pentru SunOS 4.x, SunOS 5.x (alias Solaris) și GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Pentru un server Debian GNU/Linux vă recomandăm <code class="classname">tftpd-hpa</code>. Este scris de același autor ca încărcătorul de pornire <code class="classname">syslinux</code> și, prin urmare, este mult mai puțin probabil să provoace probleme. O alternativă bună este <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Configurarea unui server DHCP</h3></div></div></div>
+<p>Un server DHCP cu software liber este ISC <span class="command"><strong>dhcpd</strong></span>. Pentru Debian GNU/Linux, este recomandat pachetul <code class="classname">isc-dhcp-server</code>. Iată un exemplu de fișier de configurare pentru acesta (consultați „<code class="filename">/etc/dhcp/dhcpd.conf</code>”): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "numele-serverului";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "numele-serverului";
+  next-server numele-serverului;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>În acest exemplu, există un server <em class="replaceable"><code>numele-serverului</code></em> care realizează toată munca serverului DHCP, serverului TFTP și a pasarelei de rețea (porții de acces la rețea). Aproape sigur va trebui să schimbați opțiunile de nume de domeniu, precum și numele serverului și adresa plăcii Ethernet a clientului. Opțiunea <em class="replaceable"><code>nume fișier</code></em> trebuie să fie numele fișierului care va fi preluat prin TFTP. </p>
+<p>După ce ați editat fișierul de configurare al demonului dhcp «<span class="command"><strong>dhcpd</strong></span>» reporniți-l cu comanda: <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2157"></a>4.5.1.1. Activarea pornirii PXE în configurația DHCP</h4></div></div></div>
+<p>Iată un alt exemplu pentru un fișier <code class="filename">dhcp.conf</code> folosind metoda „Mediul de executare de pre-pornire” („Pre-boot Execution Environment”: PXE) a TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# The next paragraph needs to be modified to fit your case
+# --- Următorul paragraf trebuie modificat pentru a se potrivi cu cazul dvs: ---
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# the gateway address which can be different
+# (access to the internet for instance)
+# --- adresa pasarelei/porții de acces care poate fi diferită în cazul dvs. ---
+# --- (accesul la internet, de exemplu) ---
+  option routers 192.168.1.1;
+# indicate the dns you want to use
+# --- indicați DNS-ul pe care doriți să-l utilizați ---
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+# --- adresa plăcii Ethernet a clientului tftp ---
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> N.T.: am lăsat intacte comentariile în limba engleză, pentru ca utilizatorului să-i fie mai ușor de găsit blocurile care trebuiesc modificate; oferind dedesubtul acestor comentarii, traducerea lor în limba română.
+
+Rețineți că pentru pornirea PXE, numele de fișier al clientului <code class="filename">pxelinux.0</code> este un încărcător de pornire, nu o imagine de nucleu (a se vedea <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Mutați Imaginile TFTP la locul lor">Secțiune 4.5.4, „Mutați Imaginile TFTP la locul lor”</a> mai jos). </p>
+<p>Dacă mașina dvs. utilizează UEFI pentru a porni, va trebui să specificați un încărcător de pornire adecvat pentru mașinile UEFI, de exemplu: </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+# --- adresa plăcii Ethernet a clientului tftp (adresa ce apare mai jos, e una fictivă)  ;) ---
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Configurarea unui server BOOTP</h3></div></div></div>
+<p>Există două servere BOOTP disponibile pentru GNU/Linux. Primul este CMU <span class="command"><strong>bootpd</strong></span>. Celălalt este de fapt un server DHCP: ISC <span class="command"><strong>dhcpd</strong></span>. În Debian GNU/Linux acestea sunt conținute în pachetele <code class="classname">bootp</code> și, respectiv, <code class="classname">isc-dhcp-server</code>. </p>
+<p>Pentru a utiliza CMU <span class="command"><strong>bootpd</strong></span>, trebuie mai întâi să decomentați (sau să adăugați) linia relevantă în fișierul <code class="filename">/etc/inetd.conf</code>. În Debian GNU/Linux, puteți rula: <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, și apoi <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong>, pentru a face acest lucru. În cazul în care serverul dvs. BOOTP nu rulează Debian, linia în cauză ar trebui să arate astfel: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Acum, trebuie să creați un fișier <code class="filename">/etc/bootptab</code>. Acesta are același tip de format familiar și criptic ca vechile fișiere BSD <code class="filename">printcap</code>, <code class="filename">termcap</code> și <code class="filename">disktab</code>. Consultați pagina de manual <code class="filename">bootptab</code> pentru mai multe informații. Pentru CMU <span class="command"><strong>bootpd</strong></span>, va trebui să știți adresa plăcii Ethernet (MAC) a clientului. Iată un fișier <code class="filename">/etc/bootptab</code> de exemplu: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> Va trebui să schimbați cel puțin opțiunea <span class="quote">„<span class="quote">ha</span>”</span>, care specifică adresa plăcii Ethernet a clientului. Opțiunea <span class="quote">„<span class="quote">bf</span>”</span> specifică fișierul pe care un client ar trebui să îl recupereze prin TFTP; consultați <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Mutați Imaginile TFTP la locul lor">Secțiune 4.5.4, „Mutați Imaginile TFTP la locul lor”</a> pentru mai multe detalii. </p>
+<p>Prin contrast, configurarea BOOTP cu ISC <span class="command"><strong>dhcpd</strong></span> este foarte ușoară, deoarece tratează clienții BOOTP ca pe un caz moderat special de clienți DHCP. Unele arhitecturi necesită o configurație complexă pentru pornirea clienților prin BOOTP. Dacă cea a dvs. este una dintre acestea, citiți secțiunea <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Configurarea unui server DHCP">Secțiune 4.5.1, „Configurarea unui server DHCP”</a>. În caz contrar, probabil că veți putea scăpa adăugând pur și simplu directiva <strong class="userinput"><code>allow bootp</code></strong> la blocul de configurare pentru subrețeaua care conține clientul în fișierul <code class="filename">/etc/dhcp/dhcpd.conf</code>, și să reporniți <span class="command"><strong>dhcpd</strong></span> cu comanda <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Activarea serverului TFTP</h3></div></div></div>
+<p>Pentru a pregăti serverul TFTP, mai întâi trebuie să vă asigurați că <span class="command"><strong>tftpd</strong></span> este activat. </p>
+<p>În cazul <code class="classname">tftpd-hpa</code> există două moduri în care serviciul poate fi rulat. Poate fi pornit la cerere de demonul <code class="classname">inetd</code> al sistemului sau poate fi configurat să ruleze ca un demon independent. Care dintre aceste metode este utilizată este selectată atunci când pachetul este instalat și poate fi schimbată prin reconfigurarea pachetului. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Din punct de vedere istoric, serverele TFTP foloseau <code class="filename">/tftpboot</code> ca director din care să servească imagini. Cu toate acestea, pachetele Debian GNU/Linux pot folosi alte directoare pentru a se conforma cu <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Standardul de ierarhie a sistemului de fișiere</a> („Filesystem Hierarchy Standard”: FHS). De exemplu, <code class="classname">tftpd-hpa</code> utilizează în mod implicit directorul <code class="filename">/srv/tftp</code>. Poate fi necesar să ajustați exemplele de configurare din această secțiune în consecință. </p></td></tr>
+</table></div>
+<p>Toate alternativele <span class="command"><strong>in.tftpd</strong></span> disponibile în Debian ar trebui să înregistreze cererile TFTP în jurnalele de sistem în mod implicit. Unele dintre ele acceptă un argument <strong class="userinput"><code>-v</code></strong> pentru a crește nivelul de detalii al informațiilor. Este recomandat să verificați aceste mesaje de jurnal în cazul unor probleme de pornire deoarece sunt un bun punct de plecare pentru diagnosticarea cauzei erorilor. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Mutați Imaginile TFTP la locul lor</h3></div></div></div>
+<p>După aceea, plasați imaginea de pornire TFTP de care aveți nevoie, așa cum se găsește în <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Unde găsiți fișierele de instalare">Secțiune 4.2.1, „Unde găsiți fișierele de instalare”</a>, în directorul de imagini de pornire <span class="command"><strong>tftpd</strong></span>. Poate fi necesar să faceți o legătură de la acel fișier către fișierul pe care <span class="command"><strong>tftpd</strong></span> îl va folosi pentru pornirea unui anumit client. Din păcate, numele fișierului este determinat de clientul TFTP și nu există standarde stabilite. </p>
+<p>Pentru pornirea PXE, tot ceea ce aveți nevoie este configurat în fișierul de arhivă comprimată <code class="filename">netboot/netboot.tar.gz</code>. Pur și simplu extrageți această arhivă comprimată în directorul de imagini de pornire al <span class="command"><strong>tftpd</strong></span>. Asigurați-vă că serverul dvs. dhcp este configurat să paseze <code class="filename">pxelinux.0</code> la <span class="command"><strong>tftpd</strong></span> ca nume de fișier pentru pornire. Pentru mașinile UEFI, va trebui să plasați un nume de imagine de pornire EFI adecvat (cum ar fi <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Instalare automată</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

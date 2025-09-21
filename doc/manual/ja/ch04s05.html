@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. TFTP ネットブート用ファイルの準備</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch04.html" title="第4章 システムインストールメディアの入手">
+<link rel="prev" href="ch04s04.html" title="4.4. ハードディスク起動ファイルの準備">
+<link rel="next" href="ch04s06.html" title="4.6. 自動インストール">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. TFTP ネットブート用ファイルの準備</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第4章 システムインストールメディアの入手</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. TFTP ネットブート用ファイルの準備</h2></div></div></div>
+<p>インストール対象のマシンが LAN に接続されている場合、TFTP を用いると、そのマシンをネットワーク越しに他のマシンから起動できます。インストールシステムを別のマシンから起動するには、その「別のマシン」の特定の場所に起動ファイルを置き、またインストール対象のマシンの起動をサポートするよう設定しなければなりません。 </p>
+<p>TFTP サーバをセットアップする必要があり、そして多くのマシンでは DHCP サーバ<span class="phrase">、または BOOTP サーバ</span>のセットアップも必要です。 </p>
+<p> <span class="phrase">BOOTP は IP プロトコルのひとつです。 クライアントに対して、使うべき IP アドレスと、 ブートイメージをネットワークのどこから取得するかを伝えます。</span> DHCP (Dynamic Host Configuration Protocol) は、 BOOTP との後方互換性を保ちつつ、より柔軟に拡張させたものです。 システムによっては DHCP でしか設定できないこともあります。 </p>
+<p>Trivial File Transfer Protocol (TFTP) は、 ブートイメージをクライアントに提供するために用います。 理論的には、どんなサーバでも、どんなプラットフォームでも、 これらのプロトコルを実装してさえいれば利用できます。 この節では、SunOS 4.x, SunOS 5.x (Solaris), GNU/Linux での例を示します。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>Debian GNU/Linux のサーバでは、<code class="classname">tftpd-hpa</code> を推奨します。<code class="classname">syslinux</code> ブートローダの作者によって作られ、それ故にほとんど問題を起こしそうにありません。<code class="classname">atftpd</code> のよい代替です。 </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. DHCP サーバの設定</h3></div></div></div>
+<p>フリーソフトウェアの DHCP サーバのひとつに、 ISC の <span class="command"><strong>dhcpd</strong></span> があります。 Debian GNU/Linux では、<code class="classname">isc-dhcp-server</code> パッケージをお勧めします。 以下に、設定ファイルの例を示します。 (<code class="filename">/etc/dhcpd.conf</code> を参照) </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>この例では、<em class="replaceable"><code>servername</code></em> というサーバがひとつあり、 DHCP サーバ, TFTP サーバ, ネットワークゲートウェイの仕事をすべて行っています。 domain-name オプション、サーバ名、クライアントのハードウェアアドレスは、 必ず変更する必要があります。 <em class="replaceable"><code>filename</code></em> オプションは TFTP 経由で取得するファイルの名前です。 </p>
+<p><span class="command"><strong>dhcpd</strong></span> の設定ファイルの編集を終えたら、 <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> で <span class="command"><strong>dhcpd</strong></span> を再起動してください。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1589"></a>4.5.1.1. DHCP 設定での PXE 起動の有効化</h4></div></div></div>
+<p>ここでは TFTP の Pre-boot Execution Environment (PXE) 法を用いた、 <code class="filename">dhcp.conf</code> の例を示します。</p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# The next paragraph needs to be modified to fit your case
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# the gateway address which can be different
+# (access to the internet for instance)
+  option routers 192.168.1.1;
+# indicate the dns you want to use
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> PXE ブートでは、クライアントのファイル名 <code class="filename">pxelinux.0</code> は、カーネルイメージではなくブートローダであることに注意してください (後述の <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. TFTP イメージを適切な場所に配置する">「TFTP イメージを適切な場所に配置する」</a> をご覧ください)。 </p>
+<p>マシンが起動するのに UEFI を利用している場合、以下のように UEFI マシンに適したブートローダーを指定する必要があります </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. BOOTP サーバの設定</h3></div></div></div>
+<p>GNU/Linux で使える BOOTP サーバは 2 つあります。 ひとつは CMU の <span class="command"><strong>bootpd</strong></span> です。 もう 1 つは実際は DHCP サーバですが、ISC の <span class="command"><strong>dhcpd</strong></span> です。 Debian GNU/Linux では、 <code class="classname">bootp</code> パッケージと <code class="classname">isc-dhcp-server</code> パッケージにそれぞれ入っています。 </p>
+<p>CMU <span class="command"><strong>bootpd</strong></span> を使う場合は、まず <code class="filename">/etc/inetd.conf</code> ファイルの 該当行をアンコメント (または追加) する必要があります。 Debian GNU/Linux では <strong class="userinput"><code>update-inetd --enable bootps</code></strong> を実行し、 続いて <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> とすれば OK です。 BOOTP サーバが Debian で動かない場合は、以下のようにします。 </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> ここで次に <code class="filename">/etc/bootptab</code> を作成します。 このファイルの書式は、 <code class="filename">printcap</code>, <code class="filename">termcap</code>, <code class="filename">disktab</code> ファイルなどでお馴染みの、 例のわかりにくい形式になっています。 詳細は <code class="filename">bootptab</code> マニュアルページを見てください。 CMU <span class="command"><strong>bootpd</strong></span> では、 クライアントのハードウェア (MAC) アドレスを知っておかなければなりません。 <code class="filename">/etc/bootptab</code> の例を示します。 </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> 少なくともクライアントのハードウェアアドレスを指定している <span class="quote">「<span class="quote">ha</span>」</span> オプションは変更する必要があるでしょう。 <span class="quote">「<span class="quote">bf</span>」</span> オプションはクライアントが TFTP で取得するファイルを指定しています。 詳細は <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. TFTP イメージを適切な場所に配置する">「TFTP イメージを適切な場所に配置する」</a> を参照してください。 </p>
+<p>対照的に、ISC <span class="command"><strong>dhcpd</strong></span> を使っての BOOTP の設定は実に簡単です。<span class="command"><strong>dhcpd</strong></span> では、BOOTP クライアントはやや特殊な DHCP クライアントとして取り扱われます。アーキテクチャによっては、BOOTP によるクライアントの起動には複雑な設定が必要になります。これに該当してしまったら、<a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. DHCP サーバの設定">「DHCP サーバの設定」</a> の節をお読みください。そうでなければ、おそらく <code class="filename">/etc/dhcp/dhcpd.conf</code> にある、クライアントの含まれるサブネットの設定ブロックに、<strong class="userinput"><code>allow bootp</code></strong> というディレクティブを追加し、<strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> で <span class="command"><strong>dhcpd</strong></span> を再起動するだけです。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. TFTP サーバの立ち上げ</h3></div></div></div>
+<p>TFTP サーバの準備をする際に、まず、<span class="command"><strong>tftpd</strong></span> が有効であることを確認してください。 </p>
+<p><code class="classname">tftpd-hpa</code> の場合には、サービスを走らせるのに 2 種類の方法があります。システムの <code class="classname">inetd</code> デーモンにより必要に応じて起動する方法と、独立したサーバとして起動する方法です。どちらにするかは、パッケージのインストール時や再設定時に選択できます。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>歴史的に TFTP サーバは、 イメージを提供するディレクトリに <code class="filename">/tftpboot</code> を使用します。 しかし Debian GNU/Linux のパッケージでは、 <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> を満たす別のディレクトリを使用する可能性があります。 例えば、<code class="classname">tftpd-hpa</code> では <code class="filename">/srv/tftp</code> をデフォルトで使用します。 必要に応じて、本節の設定例を調整してください。 </p></td></tr>
+</table></div>
+<p>Debian で利用できる <span class="command"><strong>in.tftpd</strong></span> の代替はすべて、デフォルトで TFTP リクエストをシステムログに出力します。いくつかは、出力を冗長にする <strong class="userinput"><code>-v</code></strong> 引数をサポートしています。ブート時に問題がある場合、エラーの原因を診断する出発点として、ログメッセージをチェックすることをお勧めします。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. TFTP イメージを適切な場所に配置する</h3></div></div></div>
+<p>次に行うことは、 <a class="xref" href="ch04s02.html#where-files" title="4.2.1. どこでインストールファイルを探すか">「どこでインストールファイルを探すか」</a> の記述にある、必要な TFTP ブートイメージを、 <span class="command"><strong>tftpd</strong></span> のブートイメージディレクトリに置く作業です。 <span class="command"><strong>tftpd</strong></span> が特定のクライアントの起動に用いるファイルへのリンクを、 ここに作成してください。 残念ながら、ファイルの名前は TFTP クライアントによって決まり、 強制力のある標準は存在しません。 </p>
+<p>PXE 起動では、必要なことがすべて <code class="filename">netboot/netboot.tar.gz</code> tarball の中にセットアップされています。単にこの tarball を、<span class="command"><strong>tftpd</strong></span> ブートイメージディレクトリに展開してください。<code class="filename">pxelinux.0</code> を、起動するファイル名として <span class="command"><strong>tftpd</strong></span> へ渡すよう、dhcp サーバが設定されていることを確認してください。UEFI マシンについては、(<code class="filename">/debian-installer/amd64/bootnetx64.efi</code> のような) 適切な EFI ブートイメージ名を渡す必要があります。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. ハードディスク起動ファイルの準備 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. 自動インストール</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

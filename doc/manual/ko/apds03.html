@@ -1,0 +1,414 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. 유닉스/리눅스 시스템에서 데비안 GNU/리눅스 설치하기</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="apd.html" title="부록 D. 여러가지 내용">
+<link rel="prev" href="apds02.html" title="D.2. 태스크마다 필요한 디스크 공간">
+<link rel="next" href="apds04.html" title="D.4. PLIP(병렬 라인 IP)을 이용해 데비안 GNU/리눅스 설치하기">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. 유닉스/리눅스 시스템에서 데비안 GNU/리눅스 설치하기</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">부록 D. 여러가지 내용</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. 유닉스/리눅스 시스템에서 데비안 GNU/리눅스 설치하기</h2></div></div></div>
+<p>이 부분은 설명서의 다른 부분에 설명되어있는 ncurses 기반 메뉴 방식 설치 프로그램을 사용하지 않고 기존의 Unix · Linux 시스템에서 데비안 GNU/리눅스를 설치하는 방법을 설명합니다. 이 <span class="quote">“<span class="quote">크로스 설치</span>”</span> HOWTO는 Red Hat, Mandriva, SUSE에서 데비안 GNU/리눅스로 이동하는 사용자의 요구로 작성되었습니다. 여기서는 *nix 명령의 입력에 대해 숙지하고 파일 시스템을 조작할 수 있는 것이 전제가 되고 있습니다. 여기서는 <code class="prompt">#</code>가 데비안 chroot에 입력된 명령을 보여주고 <code class="prompt">$</code>는 사용자의 기존 시스템에서 입력되는 명령을 나타냅니다. </p>
+<p>일단 새로운 데비안 시스템에 맞게 설정하기만 하면, 기존 사용자 데이터를(있다면) 옮겨 와서 계속 사용할 수 있습니다. 따라서 이것은 <span class="quote">“<span class="quote">다운 타임 없음</span>”</span>에서 데비안 GNU/리눅스 설치됩니다. 또한 이것은 여러가지 부팅 설치 미디어와 잘되지 않는 하드웨어에서 좋은 설치 방법입니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>대부분 수동으로 해야 하므로, 시스템의 대부분의 기본 설정을 직접 해야 할 수도 있습니다. 일반적인 설치를 할 경우보다 데비안 및 Linux에 대한 지식이 많이 필요합니다. 또 이렇게 설치해서 일반적인 설치와 똑같은 시스템이 될 것으로 기대할 수 없습니다. 또 시스템의 기본적인 단계에 지나지 않습니다. 추가로 설치 및 설정이 필요하게 될지도 모릅니다. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5414"></a>D.3.1. 시작하기</h3></div></div></div>
+<p>기존 유닉스용 파티션 도구를 이용해 하드 드라이브를 필요한 대로 다시 파티션하십시오. 최소한 파일 시스템 한 개를 스왑으로 만드십시오. 콘솔만 설치하는 경우는 약 647MB의 공간이 필요하고 X를 설치한다면 약 2635MB가(그놈이나 KDE 플라즈마같은 데스크톱 환경을 설치한다면 이보다 더) 필요합니다. </p>
+<p>그리고 파티션에 파일 시스템을 만드십시오. 예를 들어 <code class="filename">/dev/sda6</code> 파티션에 ext3 파일 시스템을 만드는 경우라면(여기 예제에서 루트 파티션입니다): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> ext2 파일 시스템을 만드는 경우라면 <strong class="userinput"><code>-j</code></strong> 옵션을 빼십시오. </p>
+<p>스왑을 다음과 같이 초기화하고 활성화하십시오(파티션 번호는 데비안 스왑 파티션에 파티션 번호로 바꾸십시오): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> 파티션 <code class="filename">/mnt/debinst</code> (설치 지점. 새로운 시스템의 root (<code class="filename">/</code>) 파일 시스템에 있습니다)에 마운트하고 하십시오. 엄밀히 말하면 마운트 위치 이름은 아무거나 상관 없습니다. 이후의 설명에서 이것을 사용합니다. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>파일 시스템의 일부를(예를 들어 /usr) 별도의 파티션에 마운트하려면, 다음 단계로 넘어가기 전에 그 디렉터리를 수동으로 만들어서 마운트해야 합니다. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5435"></a>D.3.2. <span class="command"><strong>debootstrap</strong></span> 설치</h3></div></div></div>
+<p>데비안 설치 프로그램에서 사용하는 유틸리티에서 데비안베이스 시스템을 설치하는 공식적인 방법으로 인정받고 있는 것은 <span class="command"><strong>debootstrap</strong></span>입니다. <span class="command"><strong>wget</strong></span>와 <span class="command"><strong>ar</strong></span>를 사용하지만 <code class="classname">/bin/sh</code>와 기본적인 Unix/Linux 도구 <a href="#ftn.id5443" class="footnote" name="id5443"><sup class="footnote">[21]</sup></a>에만 의존하고 있습니다. 기존 시스템에 아직 설치되어 있지 않으면 <span class="command"><strong>wget</strong></span>와 <span class="command"><strong>ar</strong></span>를 설치한 다음 <span class="command"><strong>debootstrap</strong></span> 다운로드 설치하십시오. </p>
+<p>아니면, 수동으로 설치하려면 다음과 같이 합니다. deb 파일을 풀 작업 폴더를 다음과 같이 만드십시오:</p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> <span class="command"><strong>debootstrap</strong></span> 바이너리는 데비안 아카이브(아키텍쳐에 맞는 파일을 선택)에 있습니다. <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top">pool</a>에서 <span class="command"><strong>debootstrap</strong></span> deb 파일을 다운로드하고, 작업 폴더에 패키지를 복사하고, 파일을 추출합니다. 파일을 설치하려면 root 권한이 필요할 수도 있습니다. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5460"></a>D.3.3. <span class="command"><strong>debootstrap</strong></span> 실행</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span>를 실행하면 아카이브에서 필요한 파일을 직접 다운로드할 수 있습니다. 다음 명령 예제에서는 <strong class="userinput"><code>ftp.kr.debian.org/debian</code></strong>하고 있지만 네트워크에서 가까운 데비안 아카이브 미러 사이트를 입력할 수 있습니다. 미러 사이트는 <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>에 목록이 있습니다. </p>
+<p>trixie 데비안 GNU/리눅스 설치 이미지를 <code class="filename">/cdrom</code>에 마운트했다면 http URL 대신에 file URL을 쓸 수 있습니다: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p><span class="command"><strong>debootstrap</strong></span> 명령에서 <em class="replaceable"><code>ARCH</code></em>를 다음 중의 하나로 바꾸십시오: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> 대상 아키텍쳐가 호스트와 다르면, <strong class="userinput"><code>--foreign</code></strong> 옵션을 붙여야 합니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5482"></a>D.3.4. 베이스 시스템 설정</h3></div></div></div>
+<p>이제 디스크에 진정한 데비안 시스템을(많이 작지만) 손에 넣었습니다. 거기에 <span class="command"><strong>chroot</strong></span>하십시오: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> 타겟 아키텍쳐가 호스트와 다르면, 먼저 qemu-user-static을 새 호스트에 복사해야 합니다: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> chroot 후, 데비안 기본 시스템과 호환되는
+터미널 정의가 필요할 수 있습니다. 예를 들어 다음과 같이합니다. </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> TERM 값에 따라 <code class="classname">ncurses-term</code> 패키지를 설치해야 할 수도 있습니다. </p>
+<p>타겟 아키텍쳐가 호스트와 다르면, 멀티스테이지 부팅 단계를 마쳐야 합니다: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5497"></a>D.3.4.1. 장치 파일 만들기</h4></div></div></div>
+<p>이렇게 하면 <code class="filename">/dev/</code>에는 아주 기초적인 장치 파일만 들어 있게 됩니다. 다음 단계로 진행하려면 장치 파일이 몇 개 더 필요합니다. 여러가지 방법이 있고, 이 중에 어떤 방법을 이용할 지는 설치에 사용하는 호스트 시스템이 무엇이냐에 따라, 그리고 모듈식 커널을 이용할 것인가 아닌가, 그리고 새 시스템에 동적인(예를 들어 <code class="classname">udev</code> 사용) 장치 파일을 사용할 지 고정 장치 파일을 사용할 지에 따라 달라집니다. </p>
+<p>사용할 수 있는 옵션 몇 가지를 설명하면: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>makedev 패키지를 설치하고, 다음 명령으로 기본적인 고정 장치 파일의 기본 모음을(chroot 상태에서) 만듭니다 </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p><span class="command"><strong>MAKEDEV</strong></span>를 이용해 수동으로 장치 파일을 직접 지정해서 만듭니다 </p></li>
+<li class="listitem"><p>호스트 시스템의 /dev를 대상 시스템의 /dev 디렉터리에 연결합니다. 어떤 패키지는 postinst 스크립트를 실행하면서 장치 파일을 만들 수도 있습니다. 그러므로 이 옵션은 주의해서 사용해야 합니다. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5513"></a>D.3.4.2. 파티션 마운트하기</h4></div></div></div>
+<p><code class="filename">/etc/fstab</code>를 만들어야 합니다. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p>다음 예제를 필요에 맞게 편집할 수 있습니다. </p>
+<div class="informalexample"><pre class="screen">
+ # /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> <code class="filename">/etc/fstab</code>에서 지정한 파일 시스템을 모두 마운트 <strong class="userinput"><code>mount-a</code></strong>라고 합니다. 또한 파일 시스템을 하나하나 마운트하려면 다음과 같이하십시오: </p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+ </pre></div>
+<p> 현재 데비안 시스템에서 이동식 미디어의 마운트 지점을 <code class="filename">/media</code>하고 있지만, <code class="filename">/</code>에 심볼릭 링크를 호환 유지하고 있습니다. 다음 예제와 같이 필요한 경우 작성하십시오: </p>
+<div class="informalexample"><pre class="screen"> 
+ # cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> proc 파일 시스템은 어디서나 몇 번이라도 장착할 수 있지만, 관습으로 <code class="filename">/proc</code>에 마운트합니다. <strong class="userinput"><code>mount -a</code></strong>를 사용하지 않으면 다음과 같이 진행하기 전에 꼭 proc을 마운트하십시오. </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p><strong class="userinput"><code>ls /proc</code></strong> 명령을 실행하면 여러 파일이 들어 있는 디렉터리 내용을 표시합니다. 이 명령이 실패하면 chroot 바깥에서 proc을 마운트할 수 있습니다: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5537"></a>D.3.4.3. 시간대 설정하기</h4></div></div></div>
+<p><code class="filename">/etc/adjtime</code> 파일의 3번째 줄을 <span class="quote">“<span class="quote">UTC</span>”</span>로 설정하면 하드웨어 시계 값을 UTC로 해석하고, <span class="quote">“<span class="quote">LOCAL</span>”</span>로 설정하면 로컬 시각으로 해석합니다. 다음 명령어로 설정할 수 있습니다.</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> 예를 들어 다음과 같이 합니다: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> 다음 명령으로 표준 시간대를 설정합니다. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5549"></a>D.3.4.4. 네트워크 설정하기</h4></div></div></div>
+<p>"<span class="phrase">64-bit PC</span>에서는 현재 실험 버전 네트워크 설정을하려면, <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code>과 <code class="filename">/etc/hosts</code>을 편집하십시오. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> 다음은 <code class="filename">/usr/share/doc/ifupdown/examples</code> 간단한 예입니다: </p>
+<div class="informalexample"><pre class="screen">
+ ######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# 루프백 인터페이스는 이제는 실제 필요가 없지만, 필요한 경우 사용할
+# 수 있습니다.
+#
+# auto lo
+# iface lo inet loopback
+
+# DHCP를 사용하려면:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# 고정 IP 설정 예제: (network, broadcast, gateway는 안 써도 됩니다)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p><code class="filename">/etc/resolv.conf</code>에 이름 서버와 search 명령을 입력하십시오: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> 다음은 <code class="filename">/etc/resolv.conf</code>의 간단한 예입니다: </p>
+<div class="informalexample"><pre class="screen">
+search hqdom.local
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> 시스템의 호스트 이름(2글자에서 63 글자까지)를 입력하십시오: </p>
+<div class="informalexample"><pre class="screen">
+ # echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> 또한 IPv6를 지원하는 기본적인 <code class="filename">/etc/hosts</code>는 다음과 같이합니다: </p>
+<div class="informalexample"><pre class="screen">
+ 127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# IPv6가 가능한 호스트에서는 다음 줄을 쓰는 게 좋습니다
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> 여러 네트워크 카드를 가지고있다면 <code class="filename">/etc/modules</code> 파일에 원하는 순서로 드라이버 모듈 이름을 배치하십시오. 그래야 부팅할 때 각 카드가 의도한 해당 인터페이스 베이스 이름으로(eth0, eth1 등) 연결됩니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5574"></a>D.3.4.5. APT 설정하기</h4></div></div></div>
+<p>debootstrap은 아주 기본적인 <code class="filename">/etc/apt/sources.list</code> 파일을 만드므로 추가 패키지를 설치할 수 있습니다. 하지만 이 외에 소스를 추가해야 할 경우가 있습니다. 예를 들어 보안 업데이트의 소스 패키지를 설정할 수 있습니다: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> <code class="filename">sources.list</code> 파일을 고친 다음에 꼭 <strong class="userinput"><code>apt update</code></strong>를 실행하십시오. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5582"></a>D.3.4.6. 로캘 및 키보드 설정하기</h4></div></div></div>
+<p>영어가 아닌 언어를 사용할 때 로캘을 설정하려면 <code class="classname">locales</code> 지원 패키지를 설치하고 그 패키지를 설정하십시오. 지금은 UTF-8 로캘 사용을 권장합니다: </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> 키보드를 설정하려면(키보드 설정이 필요한 경우): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>chroot 안에서는 키보드를 설정할 수 없으니 유의하십시오. 다시 시작한 다음에 설정합니다. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5591"></a>D.3.5. 커널 설치</h3></div></div></div>
+<p>이 시스템을 시작할 수 있도록 한다면, Linux 커널과 부트 로더가 필요합니다. 다음과 같이하여 패키지로 만든 커널을 확인하십시오: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>다음 패키지 이름을 사용하려면 커널 패키지를 설치합니다. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5600"></a>D.3.6. 부트로더 설정하기</h3></div></div></div>
+<p>데비안 GNU/리눅스 시스템을 부팅 가능하게 만드려면, 설치한 커널과 루트 파티션을 읽어들이도록 부트로더를 설치하십시오. <span class="command"><strong>debootstrap</strong></span>은 부트 로더를 설치하지 않으니 주의하십시오. 설치하는데 데비안 chroot 내부 <span class="command"><strong>apt</strong></span>를 사용할 수 있습니다. </p>
+<p>부트로더 설정 방법은 <strong class="userinput"><code>info grub</code></strong> 명령으로 확인하십시오. 데비안 설치에 사용하는 시스템을 유지하려면 기존 grub2 <code class="filename">grub.conf</code>에 데비안 설치 관련 항목을 추가하십시오. </p>
+<p><code class="classname">grub2</code> 설정은 다음과 같이 쉽습니다: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> 두 번째 명령이 <span class="command"><strong>grub</strong></span>을 설치합니다. (이 경우에는 <code class="literal">sda</code>의 MBR에 설치합니다.) 마지막 명령은 올바르게 동작하는 <code class="filename">/boot/grub/menu.lst</code> 파일을 만듭니다. </p>
+<p>앞서 <code class="filename">/dev/sda</code> 장치 파일을 만들었다고 가정합니다. <span class="command"><strong>grub2</strong></span>를 설치하는 다른 방법도 있지만, 이 부록이 다룰 범위를 벗어나는 내용입니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5619"></a>D.3.7. 원격 접근: SSH 설치 및 접근 설정</h3></div></div></div>
+<p>콘솔을 통해 시스템에 로그인할 수 있으면, 이 부분을 넘어가도 됩니다. 네트워크를 통해 시스템에 접근해야 하는 경우, SSH를 설치하고 접근을 설정해야 합니다. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> 암호를 사용한 루트 로그인은 기본적으로 막혀 있습니다. 그러니 접근 설정은 암호를 설정하고 암호를 사용한 루트 로그인을 열어 주면 됩니다: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> 다음 옵션을 사용해야 합니다: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> 루트 계정에 ssh 키를 설정해도 됩니다: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> 마지막으로 루트가 아닌 사용자를 추가하고 암호를 설정해서 접근을 설정할 수 있습니다. </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5632"></a>D.3.8. 마지막 처리</h3></div></div></div>
+<p>앞에서 말한 것처럼, 설치한 시스템은 아주 기초적인 시스템입니다. 시스템을 좀 더 괜찮게 만드려면, 쉬운 방법으로 <span class="quote">“<span class="quote">standard</span>”</span> 우선 순위의 모든 패키지를 설치하면 됩니다: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> 물론 <span class="command"><strong>apt</strong></span>를 이용해 패키지를 하나하나 선택해서 설치할 수도 있습니다. </p>
+<p>설치한 다음에 <code class="filename">/var/cache/apt/archives/</code> 밑에 다운로드한 패키지가 많이 들어 있게 됩니다. 다음 명령을 실행하면 디스크 공간을 좀 더 확보할 수 있습니다: </p>
+<div class="informalexample"><pre class="screen">apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5443" class="footnote"><p><a href="#id5443" class="para"><sup class="para">[21] </sup></a>에는 <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span>, <span class="command"><strong>gzip</strong></span> 같은 GNU 핵심 유틸리티가 들어 있습니다. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. 태스크마다 필요한 디스크 공간 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> D.4. PLIP(병렬 라인 IP)을 이용해 데비안 GNU/리눅스 설치하기</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

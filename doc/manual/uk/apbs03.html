@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Створення файлу попередньої конфігурації</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Додаток B. Автоматичне встановлення з готовими відповідями">
+<link rel="prev" href="apbs02.html" title="B.2. Використання preseeding">
+<link rel="next" href="apbs04.html" title="B.4. Вміст файлу попередньої конфігурації (для trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Створення файлу попередньої конфігурації</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток B. Автоматичне встановлення з готовими відповідями</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Створення файлу попередньої конфігурації</h2></div></div></div>
+<p>Файл попередньої конфігурації має формат, який використовується командою <span class="command"><strong>debconf-set-selections</strong></span>. Загальний формат рядка у файлі попередньої конфігурації наступний: </p>
+<div class="informalexample"><pre class="screen">&lt;власник&gt; &lt;назва питання&gt; &lt;тип питання&gt; &lt;значення&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Файл повинен починатися з <code class="literal">#_preseed_V1</code> </p>
+<p>Існує декілька правил, про які слід пам'ятати при написанні файлу попередньої конфігурації. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Між типом і значенням має бути лише один пробіл або знак табуляції: будь-який додатковий пробіл буде інтерпретовано як такий, що належить значенню. </p></li>
+<li class="listitem"><p>Рядок можна розбити на кілька рядків, додавши зворотну косу риску (<span class="quote">«<span class="quote"><code class="literal">\</code></span>»</span>) як символ продовження рядка. Хороше місце для розділення рядка - після назви питання; погане місце - між типом і значенням. Розділені рядки будуть з'єднані в один рядок з усіма початковими/кінцевими пробілами до одного пробілу. </p></li>
+<li class="listitem"><p>Для змінних (шаблонів) debconf, що використовуються лише у самій програмі встановлення, слід вказати власника <span class="quote">«<span class="quote">d-i</span>»</span>; для змінних, що використовуються у встановленій системі, слід вказати назву пакунка, який містить відповідний шаблон debconf. До бази даних debconf для встановленої системи буде передано лише ті змінні, власник яких не є <span class="quote">«<span class="quote">d-i</span>»</span>. </p></li>
+<li class="listitem"><p>Більшість запитань потрібно попередньо вводити, використовуючи значення, дійсні в англійській мові, а не перекладені. Однак є деякі питання (наприклад, у <code class="classname">partman</code>), де потрібно використовувати перекладені значення. </p></li>
+<li class="listitem"><p>Деякі питання приймають в якості значення код замість англійського тексту, який показується під час інсталяції. </p></li>
+<li class="listitem"><p>Почати з <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>Коментар складається з рядка, який <span class="emphasis"><em>починається</em></span> з хеш-символу (<span class="quote">«<span class="quote"><code class="literal">#</code></span>»</span>) і продовжується до довжини цього рядка. </p></li>
+</ul></div>
+<p>Найпростіший спосіб створити файл попередньої конфігурації - взяти за основу файл прикладу, на який є посилання в <a class="xref" href="apbs04.html" title="B.4. Вміст файлу попередньої конфігурації (для trixie)">Розділ B.4, «Вміст файлу попередньої конфігурації (для trixie)»</a>, і працювати з ним. </p>
+<p>Альтернативним методом є ручне встановлення, а потім, після перезавантаження, скористайтеся командою <span class="command"><strong>debconf-get-selections</strong></span> з пакунка <code class="classname">debconf-utils</code>, щоб створити дамп бази даних debconf і бази даних програми встановлення cdebconf в один файл: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Однак, створений таким чином файл міститиме деякі елементи, які не слід попередньо вносити, і для більшості користувачів краще починати з файлу-прикладу. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Цей метод ґрунтується на тому, що наприкінці встановлення база даних cdebconf програми встановлення зберігається у встановленій системі у <code class="filename">/var/log/installer/cdebconf</code>. Однак, оскільки база даних може містити конфіденційну інформацію, за замовчуванням файли доступні для читання лише користувачеві root. </p>
+<p>Каталог <code class="filename">/var/log/installer</code> і всі файли у ньому буде видалено з вашої системи, якщо ви очистите пакунок <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Щоб перевірити можливі значення питань, ви можете скористатися командою <span class="command"><strong>nano</strong></span> для перегляду файлів у <code class="filename">/var/lib/cdebconf</code> під час інсталяції. Перегляньте <code class="filename">templates.dat</code> для сирих шаблонів і <code class="filename">questions.dat</code> для поточних значень і значень, присвоєних змінним. </p>
+<p>Щоб перевірити правильність формату файлу попередньої конфігурації перед виконанням встановлення, ви можете скористатися командою <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Використання preseeding </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Вміст файлу попередньої конфігурації (для trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

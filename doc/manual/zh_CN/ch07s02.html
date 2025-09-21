@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. 挂载加密的卷</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch07.html" title="第 7 章 引导进入新的 Debian 系统">
+<link rel="prev" href="ch07s01.html" title="7.1. 关键时刻">
+<link rel="next" href="ch07s03.html" title="7.3. 登录">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. 挂载加密的卷</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 7 章 引导进入新的 Debian 系统</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. 挂载加密的卷</h2></div></div></div>
+<p>如果在安装时创建了加密的卷，并为其指定了挂载点，那么在引导的时候会要求为每个这样的卷输入密码。 </p>
+<p>对于使用 dm-crypt 来加密的分区，引导的时候会显示下面的提示信息：</p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> 在提示的第一行，<em class="replaceable"><code>part</code></em> 是底下分区的名称，例如：sda2 或 md0。您现在也许想知道具体是 <span class="emphasis"><em>为哪一卷</em></span> 真正输入密码。它是与 <code class="filename">/home</code> 相关？还是与 <code class="filename">/var</code> 相关？当然，如果只有一个加密的卷，那么这很容易，只需在设置这个卷时输入使用的密码就可以了。如果在安装过程中设置了多个加密的卷，那么在上一步 <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. 配置加密卷">第 6.3.4.6 节 “配置加密卷”</a> 中写下的笔记会有用。要是之前没有记下在 <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> 与挂载点之间的映射的笔记，那么仍然可以在新系统的 <code class="filename">/etc/crypttab</code> 和 <code class="filename">/etc/fstab</code> 里面找到它。 </p>
+<p>加密的根文件系统挂载的时候，提示信息或许会有些不同。这取决于使用了哪个 initamfs 生成程序，来生成用于引导系统的 initrd。下面的示例使用了 <code class="classname">initramfs-tools</code> 来生成 initrd： </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>输入密码时不会显示任何字符（甚至星号）。如果密码输错，那么还有两次机会来纠正。第三次输错后，引导过程将跳过该卷，并继续挂载下一个文件系统。更多信息请参见 <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. 故障处理">第 7.2.1 节 “故障处理”</a>。 </p>
+<p>在输入所有密码之后，引导过程应该像通常一样继续。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. 故障处理</h3></div></div></div>
+<p>如果由于输错密码而造成无法挂载加密的卷，那么不得不在引导后手动挂载。有下面几种情况。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>第一种情况与根分区相关。当不能正确挂载时，引导过程将中止，而您不得不重新引导计算机并再次尝试。 </p></li>
+<li class="listitem">
+<p>最简单的情况是保存诸如 <code class="filename">/home</code> 或 <code class="filename">/srv</code> 数据的加密的卷。引导后可以简单地手动挂载它们。 </p>
+<p>然而对于 dm-crypt，这需要一些技巧。首先，需要用 <span class="application">device mapper</span> 来注册卷，这需要运行：</p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> 这将扫描 <code class="filename">/etc/crypttab</code> 里面提到的所有卷，并在输入正确的密码之后，在 <code class="filename">/dev</code> 目录下面创建对应的设备。（已注册的卷会被跳过，因此可以放心地多次运行该命令。）正确注册以后，就可以按一般的方式来挂载这些卷了： </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>如果任何保存着非关键系统文件（ <code class="filename">/usr</code> 或 <code class="filename">/var</code> ）的卷不能挂载，那么系统仍然应该能够引导，并仍然可以像前一种情况那样手动挂载那些卷。但是需要将默认运行级别下的任何服务（重新）启动，因为它们很可能没有启动。最简单的做法只是重新引导计算机。 </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. 关键时刻 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. 登录</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

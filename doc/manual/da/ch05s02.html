@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Tilgængelighed</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Kapitel 5. Opstart af installationssystemet">
+<link rel="prev" href="ch05s01.html" title="5.1. Opstart af installationsprogrammet på 64-bit PC">
+<link rel="next" href="ch05s03.html" title="5.3. Opstartsparametre">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Tilgængelighed</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 5. Opstart af installationssystemet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Tilgængelighed</h2></div></div></div>
+<p>Nogle brugere kan have brug for specifik understøtelse, f.eks. på grund af en synshæmmelse. <span class="phrase">USB-brailleskærme registreres automatisk (ikke serielle skærme forbundet via en seriel-til-USB-konvertering), men de fleste andre</span>  funktioner for tilgængelighed skal aktiveres manuelt. <span class="phrase">På maskiner som understøtter det, så afgiver opstartsmenuen en biplyd når den er klar til at modtage tastaturtryk.</span> Nogle opstartsparametre kan <span class="phrase">så</span> tilføjes for at aktivere tilgængelighedsfunktioner<span class="phrase"> (se også <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Opstartsskærmen">Afsnit 5.1.5, “Opstartsskærmen”</a>)</span>. Bemærk at på de fleste arkitekturer fortolker opstartsindlæseren dit tastatur som et QERTY-tastatur. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1837"></a>5.2.1. Installationsprogrammets brugerflade</h3></div></div></div>
+<p>Debian-installationsprogrammet understøtter flere brugerflader til spørgsmål, med varierende tilgængelighed: <strong class="userinput"><code>text</code></strong> bruger ren tekst mens <strong class="userinput"><code>newt</code></strong> bruger tekstbaserede dialogbokse. Valget kan foretages på opstartsprompten, se dokumentationen for <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> i <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametre for Debian-installationsprogrammet">Afsnit 5.3.2, “Parametre for Debian-installationsprogrammet”</a>. </p>
+<p>Med brugerfladen <strong class="userinput"><code>newt</code></strong> (brugt hovedsagelig med blindskrift), så vælger man alene svarene med piletasterne og trykker på <span class="keycap"><strong>Enter</strong></span> for at validere valget. Et tryk på <span class="keycap"><strong>Tab</strong></span> eller <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> gør at man kan skifte mellem dialogelementer, og tilgå <strong class="userinput"><code>Gå tilbage</code></strong>-knappen, som får en til de forrige spørgsmål. Nogle dialoger indeholder afkrydsningsbokse, der kan aktiveres/deaktiveres med <span class="keycap"><strong>Space</strong></span>. </p>
+<p>Med brugerfladen <strong class="userinput"><code>text</code></strong> (brugt hovedsagelig med tale), så vælger man hovedsagelig svar ved at taste deres nummer efterfulgt af <span class="keycap"><strong>Enter</strong></span>, eller ved at vælge et svar med piletasterne og trykke på <span class="keycap"><strong>Enter</strong></span> for at validere valget. Man kan også vælge ikke at taste noget og bare trykke på <span class="keycap"><strong>Enter</strong></span> for at acceptere standardværdien. Tastning af <strong class="userinput"><code>&lt;</code></strong> og et tryk på <span class="keycap"><strong>Enter</strong></span> går tilbage til forrige spørgsmål. Når der skal vælges nogle valg (f.eks. under opgavemarkering), så kan man taste <strong class="userinput"><code>!</code></strong> for at udtrykke en tom markering. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1860"></a>5.2.2. USB-brailleskærme</h3></div></div></div>
+<p>USB-brailleskærme bør registreres automatisk. En tekstversion af installationsprogrammet vil så blive valgt automatisk og understøttelse for brailleskærmen vil automatisk blive installeret på målsystemet. Du kan så bare trykke på <span class="keycap"><strong>Enter</strong></span> ved opstartsmenuen. Når <code class="classname">brltty</code> er startet, så kan du vælge en brailletabel ved at indtaste præferencemenuen. Dokumentation for genvejstaster til brailleenheder er tilgængelige på <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> hjemmesiden</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1867"></a>5.2.3. Serielle brailleskærme</h3></div></div></div>
+<p>Serielle brailleskærme kan ikke automatisk registreres på en sikker måde (da det kan ødelægge nogle af dem). Du skal derfor tilføje opstartsparameteren <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em>,<em class="replaceable"><code>table</code></em></code></strong> for at fortælle <code class="classname">brltty</code> hvilken driver og port den skal bruge. <em class="replaceable"><code>driver</code></em> skal erstattes af driverkoden i to bogstaver for din terminal (se <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY-manualen</a>). <em class="replaceable"><code>port</code></em> skal erstattes af navnet for den serielle port skærmen er forbundet til, <strong class="userinput"><code>ttyS0</code></strong> er standarden, <strong class="userinput"><code>ttyUSB0</code></strong> kan typisk bruges når der bruges et seriel-til-USB-konverteringsprogram. En tredje paramter kan angives, for at vælge navnet for brailletabellen (se <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY-manualen</a>); den engelske tabel er standarden. Bemærk at tabellen kan ændres senere ved at indtaste præferencemenuen. En fjerde parameter kan angives for at sende parametre til brailledriveren, såsom <strong class="userinput"><code>protocol=foo</code></strong> hvilket er krævet for nogle sjældne modeller. Dokumentation vedrørende genvejstaster for brailleenheder er tilgængelig på <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code>-hjemmesiden</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1884"></a>5.2.4. Understøttelse af talesyntese via programmer</h3></div></div></div>
+<p>Support for software speech synthesis is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. It can be activated by selecting it in the boot menu by typing <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Enter</strong></span>. The textual version of the installer will then be automatically selected, and support for software speech synthesis will be automatically installed on the target system. </p>
+<p>Hvis flere lydkort registreres, så vil du blive bedt om at trykke på <span class="keycap"><strong>Enter</strong></span> når du hører tale fra det ønskede lydkort. </p>
+<p>Det første spørgsmål (sprog) stilles på engelsk, resten af installationen udtales med det valgte sprog (hvis tilgængelig i <code class="classname">espeak</code>). </p>
+<p>Talehastigheden er som standard ret så langsom. For at gøre den hurtigere trykkes på <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span>. For at gøre den langsommere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span>. Standardlydstyrken bør være mellem. For at gøre den højere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span>. For at gøre den lavere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span>. for at få flere detaljer om genvejstaster så se <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Opsætningsvejledningen</a>. For bare at acceptere standardsvaret for et spørgsmål så tryk på <span class="keycap"><strong>Retur</strong></span>. For at angive et tomt svar for et spørgsmål tastes <strong class="userinput"><code>!</code></strong>. For at gå tilbage til det forrige spørgsmål tast <strong class="userinput"><code>&lt;</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1910"></a>5.2.5. Udstyr med talesyntese</h3></div></div></div>
+<p>Support for hardware speech synthesis devices is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. You thus need to select a <span class="quote">“<span class="quote">Graphical install</span>”</span> entry in the boot menu. </p>
+<p>Enheder for udstyrstalesyntese kan ikke automatisk registreres. Du skal derfor tilføje opstartsparameteren <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>driver</code></em></code></strong> for at fortælle <code class="classname">speakup</code> hvilken driver den skal bruge. <em class="replaceable"><code>driver</code></em> skal erstattes af driverkoden for din enhed (se <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">driverkodelisten</a>). Den tekstmæssige udgave af installationsprogramemt vil så automatisk blive valgt, og understøttelse for talesynteseenheden vil automatisk blive installeret på målsystemet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1920"></a>5.2.6. Bundkortenheder</h3></div></div></div>
+<p>Nogle tilgængelighedsenheder er fysiske bundkort som er indsat i selve maskinen og som læser tekst direkte fra videohukommelsen. For at få dem til at virke skal understøttelse af framebuffer være deaktiveret ved at bruge opstartsparameteren <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Dette vil dog reducere antallet af tilgængelige sprog. </p>
+<p>Hvis det ønskes kan en tekstversion af opstartsindlæseren aktiveres før tilføjelse af opstartsparameteren ved at indtaste <strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Enter</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1928"></a>5.2.7. Tema med høj kontrast</h3></div></div></div>
+<p>For brugere med nedsat syn, kan installationsprogrammet bruge et farvetema med høj kontrast, hvilket gør det nemmere at læse. For at aktivere, kan du bruge <span class="quote">“<span class="quote">Accessible high contrast</span>”</span>-elementet fra opstartsskærmen med genvejen <strong class="userinput"><code>d</code></strong>, eller tilføje <strong class="userinput"><code>theme=dark</code></strong> til opstartsparameteren. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1934"></a>5.2.8. Zoom</h3></div></div></div>
+<p>For brugere med begrænset syn, har det grafiske installationsprogram en meget basal zoomunderstøttelse: Genvejstasterne <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> og <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> øger og sænker skriftstørrelsen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1943"></a>5.2.9. Ekspertinstallation, redningstilstand, automatiseret installation</h3></div></div></div>
+<p>Installationsvalgene for Ekspert, Redning og Automatisk er også tilgængelige med talesyntese. For at tilgå dem, skal man først gå til undermenuen <span class="quote">“<span class="quote">Advanced options</span>”</span> fra opstartsmenuen ved at taste <strong class="userinput"><code>a</code></strong>. Og så bruge et BIOS-system (opstartsmenuen vil kun have bippet en gang), dette skal efterfølges af <span class="keycap"><strong>Enter</strong></span> ; for UEFI-systemer (opstartsmenuen vil have bippet to gange) som ikke skal gøres. Derefter, for at aktivere talesyntese, kan <strong class="userinput"><code>s</code></strong> valgfrit trykkes ned (efterfulgt af <span class="keycap"><strong>Enter</strong></span> på BIOS-systemer men ikke på UEFI-systemer). Derfra kan forskellige genveje bruges: <strong class="userinput"><code>x</code></strong> for ekspertinstallation, <strong class="userinput"><code>r</code></strong> for redningstilstand, eller <strong class="userinput"><code>a</code></strong> for automatiseret installation. Når der bruges et BIOS-system, skal hvert af dem efterfølges af <span class="keycap"><strong>Enter</strong></span>. </p>
+<p>Det automatiserede installationsvalg kan installere Debian fuldstændig automatisk ved at bruge forhåndsindstillinger, hvis kilde kan indtastes efter tilgængelighedsfunktioner er startet. Forhåndsindstilling er dokumenteret i <a class="xref" href="apb.html" title="Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)">Appendiks B, <i>Automatisering af installationen med preseeding (forhåndskonfiguration)</i></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1957"></a>5.2.10. Tilgængelighed for det installerede system</h3></div></div></div>
+<p>Dokumentation vedrørende tilgængelighed for det installerede system er tilgængelig på <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debians wikiside om tilgængelighed</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Opstart af installationsprogrammet på <span class="phrase">64-bit PC</span> </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Opstartsparametre</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

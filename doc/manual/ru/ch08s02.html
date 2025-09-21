@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. Самостоятельное ориентирование в Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Глава 8. Следующие шаги и что делать дальше">
+<link rel="prev" href="ch08s01.html" title="8.1. Выключение системы">
+<link rel="next" href="ch08s03.html" title="8.3. Что почитать">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. Самостоятельное ориентирование в Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 8. Следующие шаги и что делать дальше</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. Самостоятельное ориентирование в Debian</h2></div></div></div>
+<p>Debian слегка отличается от других дистрибутивов. Даже если вы знакомы с другими дистрибутивами Linux, есть вещи, которые вы должны знать о Debian, чтобы поддерживать систему в рабочем состоянии. Эта глава содержит материалы, которые помогут вам ориентироваться; она не является руководством по использованию Debian, она всего лишь кратко описывает систему для занятых людей. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3639"></a>8.2.1. Система управления пакетами Debian</h3></div></div></div>
+<p>Наиболее важно разобраться в системе управления пакетами Debian. В сущности, большая часть системы находится под контролем системы управления пакетами. Сюда входят: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (кроме <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (вы можете сделать <code class="filename">/var/local</code>, там меняться ничего не будет) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> Например, если вы замените <code class="filename">/usr/bin/perl</code>, он будет работать, но позже, если вы обновите пакет <code class="classname">perl</code>, файл, который вы положили будет заменён. Эксперты могут обойти это, установив на пакеты флаг <span class="quote">«<span class="quote">hold</span>»</span> в <span class="command"><strong>aptitude</strong></span>. </p>
+<p>One of the best installation methods is apt. You can use the command line version of <span class="command"><strong>apt</strong></span> as well as tools like <span class="application">aptitude</span> or <span class="application">synaptic</span> (which are just graphical frontends for <span class="command"><strong>apt</strong></span>). Note that apt will also let you merge main, contrib, non-free, and non-free-firmware so you can have restricted packages (strictly speaking not belonging to Debian) as well as packages from Debian GNU/Linux at the same time. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3669"></a>8.2.2. Дополнительное программное обеспечение для Debian</h3></div></div></div>
+<p>Есть официальные и неофициальные репозитории ПО, которые не не включены в установку Debian по умолчанию. В них содержится ПО, которое многие считают полезным и хотели бы его иметь. Информацию о дополнительных репозиториях можно найти на вики-странице Debian <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">The Software Available for Debian's Stable Release</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3673"></a>8.2.3. Управление версиями приложений</h3></div></div></div>
+<p>Альтернативность версий приложений управляется с помощью программы update-alternatives. Если вы работаете с несколькими версиями одного приложения, прочитайте страницу руководства к update-alternatives. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3676"></a>8.2.4. Управление заданиями cron</h3></div></div></div>
+<p>Любые работы относящиеся к администрированию системы должны проводится в каталоге <code class="filename">/etc</code>, так как там расположены конфигурационные файлы. Если у вас есть ежедневные, еженедельные или ночные задания cron для суперпользователя, поместите их в каталог <code class="filename">/etc/cron.{daily,weekly,monthly}</code>. Они вызываются из <code class="filename">/etc/crontab</code> и запускаются в алфавитном порядке. </p>
+<p>С другой стороны, если задания: (а) нужно запускать от определённого пользователя или (b) нужно запустить в определённое время или с определённой частотой, вы можете использовать или <code class="filename">/etc/crontab</code>, или, что лучше, <code class="filename">/etc/cron.d/имя_задания</code>. Это особые файлы, они содержат дополнительное поле, позволяющее вам указать учётную запись пользователя, от которого будет выполняться задание cron. </p>
+<p>В любом случае, просто отредактируйте файлы, и cron обнаружит эти изменения автоматически. Не нужно запускать специальную команду. Подробная информация доступна в cron(8), crontab(5) и <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Выключение системы </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Что почитать</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

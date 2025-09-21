@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Thiết lập thư điện tử trên hệ thống</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Chương 8. Bước kế tiếp và đi đâu vậy">
+<link rel="prev" href="ch08s03.html" title="8.3. Thông tin thêm">
+<link rel="next" href="ch08s05.html" title="8.5. Biên dịch hạt nhân mới">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Thiết lập thư điện tử trên hệ thống</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 8. Bước kế tiếp và đi đâu vậy</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Thiết lập thư điện tử trên hệ thống</h2></div></div></div>
+<p>Thư điện tử đã trở thảnh chủ yếu trong đợi sống hiện đại. Có nhiều tuỳ chọn thiết lập nó, và một số tiện ích Debian yêu cầu một thiết lập riêng, thì tiến đoạn này chứa thông tin cơ bản yêu cầu. </p>
+<p>Có ba chức năng chính cấu tạo một hệ thống thư điện tử. Điều thứ nhất là <em class="firstterm">Tác nhân người dùng thư tín</em> (MUA), chương trình người dùng thật sử dụng để viết và đọc các bài thư. Điều thứ hai là <em class="firstterm">Tác nhân truyền thư tín</em> (MTA) mà truyền các bài thư từ máy này sang máy khác. Điều thứ ba là <em class="firstterm">Tác nhân phát thư tín</em> (MDA) mà truyền các bài thư gửi đến vào Hộp Đến của người dùng. </p>
+<p>Ba chức năng này có thể được thực hiện bằng chương trình khác nhau, nhưng cũng có thể được kết hợp trong một hay hai chương trình. Cũng có thể thiết lập chương trình khác nhau quản lý những chức năng này cho các kiểu thư khác nhau. </p>
+<p>Trên hệ thống kiểu Linux và Unix, rất nhiều người đã dùng <span class="command"><strong>mutt</strong></span> như là MUA. Giống như phần lớn chương trình Linux truyền thống, nó dựa vào văn bản. Nó thường được dùng cùng với <span class="command"><strong>exim</strong></span> hay <span class="command"><strong>sendmail</strong></span> như là MTA và <span class="command"><strong>procmail</strong></span> như là MDA. </p>
+<p>With the increasing popularity of graphical desktop systems, the use of graphical e-mail programs like GNOME's <span class="command"><strong>evolution</strong></span>, KDE's <span class="command"><strong>kmail</strong></span> or Mozilla's <span class="command"><strong>thunderbird</strong></span> has becoming more popular. These programs combine the function of a MUA, MTA and MDA, but can — and often are — also be used in combination with the traditional Linux tools. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Cấu hình thư điện tử mặc định</h3></div></div></div>
+<p>Even if you are planning to use a graphical mail program, it would be useful, to have a traditional MTA/MDA installed and correctly set up on your Debian GNU/Linux system. Reason is that various utilities running on the system<a href="#ftn.id4265" class="footnote" name="id4265"><sup class="footnote">[16]</sup></a> can send important notices by e-mail to inform the system administrator of (potential) problems or changes. </p>
+<p>For this you can install <code class="classname">exim4</code> and <code class="classname">mutt</code> with <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> is a combination MTA/MDA that is relatively small but very flexible. By default it will be configured to only handle e-mail local to the system itself and e-mails addressed to the system administrator (root account) will be delivered to the regular user account created during the installation<a href="#ftn.id4276" class="footnote" name="id4276"><sup class="footnote">[17]</sup></a>. </p>
+<p>Khi các thư hệ thống được phát, chúng được thêm vào một tập tin trong <code class="filename">/var/mail/<em class="replaceable"><code>tên_tài_khoản</code></em></code>. Có thể đọc các thư này bằng <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Gửi thư ra hệ thống</h3></div></div></div>
+<p>Như nói trên, hệ thống Debian đã cài đặt chỉ được thiết lập để thao tác các thư cục bộ với hệ thống, không phải để gửi thư cho người khác, cũng không phải để nhận thư từ người khác. </p>
+<p>Nếu bạn muốn chương trình <code class="classname">exim4</code> quản lý các thư bên ngoài, xem phần phụ kế tiếp tìm những tùy chọn cấu hình cơ bản. Hãy thử ra việc gửi và nhận thư chạy đúng không. </p>
+<p>Nếu bạn định sử dụng chương trình thư điện tử kiểu đồ họa và sử dụng máy phục vụ thư tín của nhà cung cấp dịch vụ Mạng (ISP) hay chỗ làm, không cần cấu hình <code class="classname">exim4</code> để quản lý các thư bên ngoài. Chỉ cần cấu hình chương trình thư đồ họa để sử dụng những máy phục vụ đúng để gửi và nhận thư điện tử (các hướng dẫn này nằm ở ngoại phạm vị của sổ tay này). </p>
+<p>Tuy nhiên, trong trường hợp đó, bạn có thể cần phải cấu hình một số tiện ích để gửi đúng thư điện tử. Một tiện ích như vậy là <span class="command"><strong>reportbug</strong></span>, một chương trình làm cho dễ dàng việc thông báo lỗi trong gói Debian. Mặc định là nó chờ đợi gửi thư báo lỗi bằng <code class="classname">exim4</code>.  </p>
+<p>Để thiết lập đúng <span class="command"><strong>reportbug</strong></span> để sử dụng máy phục vụ thư tín bên ngoài, hãy chạy lệnh cấu hình <span class="command"><strong>reportbug --configure</strong></span> và trả lời <span class="quote">“<span class="quote">không</span>”</span> khi hỏi nếu có sẵn MTA không. Sau đó, bạn sẽ được nhắc nhập máy phục vụ SMTP (gửi thư) cần dùng để đệ trình báo cáo lỗi. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Cấu hình tác nhân truyền thư tín Exim4</h3></div></div></div>
+<p>Muốn hệ thống cũng thao tác các thư điện tử bên ngoài thì cần phải cấu hình lại gói <code class="classname">exim4</code><a href="#ftn.id4301" class="footnote" name="id4301"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Sau khi nhập lệnh này (dưới người chủ), tiến trình sẽ hỏi nếu bạn muốn chia cấu hình ra nhiều tập tin nhỏ. Chưa chắc thì bặt tùy chọn mặc định. </p>
+<p>Tiếp theo hiển thị vài trường hợp thư tín thường gặp. Hãy chọn điều thích hợp với những nhu cầu của bạn. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">nơi Internet</span></dt>
+<dd><p>Hệ thống của bạn có kết nối đến mạng, và thư tín được gởi và nhận trực tiếp bằng SMTP. Trên những màn hình theo sau, bạn sẽ được hỏi vài câu cơ bản, như tên thư tín của máy tính này, hay danh sách miền cho chúng bạn chấp nhận hay chuyển tiếp lại thư tín. </p></dd>
+<dt><span class="term">thư được gởi bởi máy thông minh</span></dt>
+<dd>
+<p>Trong trường hợp này, các thư gửi đi được chuyển tiếp tới máy khác, tên <span class="quote">“<span class="quote">máy khéo</span>”</span>, mà gửi thư đó cho đích. Máy khéo cũng thường cất giữ các thư gửi đến máy tính của bạn, vậy bạn không cần lên Mạng suốt. Cũng cần tải các thư xuống máy khéo bằng chương trình như <code class="classname">fetchmail</code>. </p>
+<p>Trong nhiều trường hợp, máy khéo là máy phục vụ thư tín của nhà cung cấp dịch vụ Mạng (ISP) thì tùy chọn này rất thích hợp với người dùng quay số. Máy khéo cũng có thể là máy phục vụ thư tín ở chỗ làm, hoặc ngay cả một hệ thống khác trên cùng mạng. </p>
+</dd>
+<dt><span class="term">thư gửi bởi máy khéo; không có thư cục bộ</span></dt>
+<dd><p>Tùy chọn này cơ bản bằng điều trước, trừ hệ thống sẽ không được thiết lập để thao tác thư cho miền thư điện tử cục bộ. Các thư trên hệ thống chính nó (v.d. cho quản trị hệ thống) vẫn còn sẽ được xử lý. </p></dd>
+<dt><span class="term">chỉ phát cục bộ</span></dt>
+<dd><p>Đây là tùy chọn mặc định trong cấu hình hệ thống. </p></dd>
+<dt><span class="term">chưa cấu hình</span></dt>
+<dd><p>Hãy chọn điều này chỉ nếu bạn biết chính xác bạn làm gì. Nó sẽ để lại hệ thống thư chưa cấu hình: trước khi bạn cấu hình nó, bạn không có khả năng gởi hay nhận thư nào, thì có thể mất một số thông điệp quan trong từ tiện ích hệ thống. </p></dd>
+</dl></div>
+<p>Nếu không có trường hợp trong những trường hợp này là thích hợp với những nhu cầu của bạn, hoặc nếu bạn cần một thiết lập chi tiết hơn, cần phải chỉnh sửa tập tin cấu hình nằm dưới thư mục <code class="filename">/etc/exim4</code> sau khi cài đặt xong. Thông tin thêm về <code class="classname">exim4</code> nằm dưới thư mục <code class="filename">/usr/share/doc/exim4</code>; tập tin Đọc Đi <code class="filename">README.Debian.gz</code> chứa chi tiết thêm về cách thiết lập <code class="classname">exim4</code>, và giải thích tìm tài liệu thêm như thế nào. </p>
+<p>Ghi chú rằng việc gửi thư trực tiếp cho Mạng khi bạn không có tên miền chính thức có thể gây ra thư bị từ chối do biện pháp chống thư rác trên máy phục vụ nhận thư. Tốt hơn khi dùng máy phục vụ thư tín của nhà cung cấp dịch vụ Mạng (ISP). Nếu bạn vẫn còn muốn gửi thư một cách trực tiếp, có lẽ bạn muốn sử dụng một địa chỉ thư điện tử khác với điều được tạo ra theo mặc định. Dùng <code class="classname">exim4</code> như là MTA, thì có thể làm như thế bằng cách thêm một mục nhập vào tập tin <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4265" class="footnote"><p><a href="#id4265" class="para"><sup class="para">[16] </sup></a> Examples are: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id4276" class="footnote"><p><a href="#id4276" class="para"><sup class="para">[17] </sup></a> The forwarding of mail for root to the regular user account is configured in <code class="filename">/etc/aliases</code>. If no regular user account was created, the mail will of course be delivered to the root account itself. </p></div>
+<div id="ftn.id4301" class="footnote"><p><a href="#id4301" class="para"><sup class="para">[18] </sup></a> Cũng có thể gỡ bỏ gói <code class="classname">exim4</code> và thay thế bằng MTA/MDA khác. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Thông tin thêm </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Biên dịch hạt nhân mới</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

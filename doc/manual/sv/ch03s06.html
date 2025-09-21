@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Inställning av maskinvara och operativsystem före installation</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch03.html" title="Kapitel 3. Före installation av Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Förpartionering för system med flera operativsystem">
+<link rel="next" href="ch04.html" title="Kapitel 4. Få tag på installationsmedia">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Inställning av maskinvara och operativsystem före installation</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 3. Före installation av Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Inställning av maskinvara och operativsystem före installation</h2></div></div></div>
+<p>Det här avsnittet kommer att leda dig genom förinstallation av hårdvara, om du behöver göra något, innan du installerar Debian. I allmänhet innebär detta att du kontrollerar och eventuellt ändrar BIOS/UEFI/systems fastprogramvaruinställningar för ditt system. <span class="quote">”<span class="quote">BIOS/UEFI</span>”</span> eller <span class="quote">”<span class="quote">systemets fastaprogramvara</span>”</span> är kärnmjukvaran som används av hårdvaran; den anropas mest kritiskt under bootstrap-processen (efter uppstart). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Starta BIOS/UEFI-inställningsmenyn</h3></div></div></div>
+<p>BIOS/UEFI tillhandahåller de grundläggande funktionerna som behövs för att starta din maskin och för att ge ditt operativsystem åtkomst till din hårdvara. Ditt system tillhandahåller en BIOS/UEFI-inställningsmeny, som används för att konfigurera BIOS/UEFI. För att komma in i BIOS/UEFI-inställningsmenyn måste du trycka på en tangent eller en tangentkombination efter att du har slagit på datorn. Ofta är det <span class="keycap"><strong>Delete</strong></span> eller <span class="keycap"><strong>F2</strong></span>-tangenten, men vissa tillverkare använder andra tangenter. Vanligtvis när du startar datorn kommer det att finnas ett meddelande som anger vilken tangent du ska trycka på för att komma till inställningsskärmen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Val av uppstartsenhet</h3></div></div></div>
+<p>I BIOS/UEFI-inställningsmenyn kan du välja vilka enheter som ska kontrolleras i vilken sekvens för ett startbart operativsystem. Möjliga val inkluderar vanligtvis de interna hårddiskarna, CD/DVD-ROM-enheten och USB-masslagringsenheter som USB-minnen eller externa USB-hårddiskar. På moderna system finns det också ofta en möjlighet att aktivera nätverksstart via PXE. </p>
+<p>Beroende på installationsmediet (CD/DVD-ROM, USB-minne, nätverksboot) du har valt bör du aktivera lämpliga startenheter om de inte redan är aktiverade. </p>
+<p>De flesta BIOS/UEFI-versioner låter dig ta fram en uppstartsmeny vid systemstart där du väljer från vilken enhet datorn ska starta för den aktuella sessionen. Om det här alternativet är tillgängligt visar BIOS/UEFI vanligtvis ett kort meddelande som <span class="quote">”<span class="quote">tryck på <span class="keycap"><strong>F12</strong></span> för uppstartsmenyn</span>”</span> vid systemstart. Den faktiska tangenten som används för att välja denna meny varierar från system till system; vanliga tangenter är <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> och <span class="keycap"><strong>F8</strong></span>. Att välja en enhet från den här menyn ändrar inte standardstartordningen för BIOS/UEFI, d.v.s. du kan starta en gång från ett USB-minne samtidigt som du har konfigurerat den interna hårddisken som normal primär startenhet. </p>
+<p>Om ditt BIOS/UEFI inte förser dig med en uppstartsmeny för att göra ad-hoc-val av den aktuella startenheten, måste du ändra dina BIOS/UEFI-inställningar för att göra enheten från vilken <code class="classname">debian-installer</code> ska startas den primära startenheten. </p>
+<p>Tyvärr kan vissa datorer innehålla buggiga BIOS/UEFI-versioner. Att starta <code class="classname">debian-installer</code> från ett USB-minne kanske inte fungerar även om det finns ett lämpligt alternativ i BIOS/UEFI-inställningsmenyn och minnet är valt som primär startenhet. På vissa av dessa system är det omöjligt att använda ett USB-minne som uppstartsmedium; andra kan luras att starta från minnet genom att ändra enhetstypen i BIOS/UEFI-inställningarna från standard <span class="quote">”<span class="quote">USB-hårddisk</span>”</span> eller <span class="quote">”<span class="quote">USB-minne</span>”</span> till <span class="quote">”<span class="quote">USB ZIP</span>”</span> eller <span class="quote">”<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> Särskilt om du använder en isohybrid installationsavbildning på ett USB-minne (se <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Förbereder ett USB-minne med en hybrid CD/DVD-avbildning">Avsnitt 4.3.1, ”Förbereder ett USB-minne med en hybrid CD/DVD-avbildning”</a>), ändra enhetstypen till <span class="quote">”<span class="quote">USB CDROM </span>”</span> hjälper på vissa BIOS som inte startar från ett USB-minne i USB-hårddiskläge.</span> Du kan behöva konfigurera ditt BIOS/UEFI för att aktivera <span class="quote">”<span class="quote">Stöd för äldre USB</span>”</span>. </p>
+<p>Om du inte kan manipulera BIOS/UEFI för att starta direkt från ett USB-minne har du fortfarande möjlighet att använda en ISO kopierad till minnet. Starta <code class="classname">debian-installer</code> med <a class="xref" href="ch04s04.html" title="4.4. Förbereda filer för uppstart med hårddisk">Avsnitt 4.4, ”Förbereda filer för uppstart med hårddisk”</a> och efter att ha skannat hårddiskarna efter en ISO-installationsavbild, välj USB-enheten och välj en installationsavbildning. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. System med UEFI firmware</h3></div></div></div>
+<p>UEFI (<span class="quote">”<span class="quote">Unified Extensible Firmware Interface</span>”</span>) är en ny typ av fast programvara för system som används på många moderna system och är - bland annat - avsett att ersätta det klassiska PC-BIOS. </p>
+<p>För närvarande har de flesta PC-system som använder UEFI även en så kallad <span class="quote">”<span class="quote">Compatibility Support Module</span>”</span> (CSM) i den fasta programvaran, som ger exakt samma gränssnitt till ett operativsystem som ett klassiskt PC BIOS, så att programvara skriven för den klassiska PC:n kan BIOS användas oförändrat. Ändå är UEFI tänkt att en dag helt ersätta det gamla PC BIOS utan att vara helt bakåtkompatibel och det finns redan många system med UEFI men utan CSM. </p>
+<p>På system med UEFI finns det några saker att ta hänsyn till när du installerar ett operativsystem. Hur den fasta programvaran laddar ett operativsystem skiljer sig fundamentalt mellan det klassiska BIOS (eller UEFI i CSM-läge) och inbyggt UEFI. En stor skillnad är hur hårddiskpartitionerna läggs upp på hårddisken. Medan det klassiska BIOS och UEFI i CSM-läge använder en DOS-partitionstabell, använder inbyggt UEFI ett annat partitioneringsschema som kallas <span class="quote">”<span class="quote">GUID Partition Table</span>”</span> (GPT). På en enda disk kan för alla praktiska ändamål endast en av de två användas och vid en flerstartsinstallation med olika operativsystem på en disk måste alla därför använda samma typ av partitionstabell. Att starta upp från en disk med GPT är endast möjligt i inbyggt UEFI-läge, men att använda GPT blir allt vanligare i takt med att hårddiskstorlekarna växer, eftersom den klassiska DOS-partitionstabellen inte kan adressera diskar som är större än cirka 2 Terabyte medan GPT tillåter mycket större diskar. Den andra stora skillnaden mellan BIOS (eller UEFI i CSM-läge) och inbyggt UEFI är platsen där startkoden lagras och i vilket format den måste vara. Detta innebär att olika starthanterare behövs för varje system. </p>
+<p>Det senare blir viktigt när du startar <code class="classname">debian-installer</code> på ett UEFI-system med CSM eftersom <code class="classname">debian-installer</code> kontrollerar om det startades på ett BIOS eller på ett inbyggt UEFI-system och installerar motsvarande starthanterare. Normalt fungerar detta helt enkelt men det kan vara problem i flerstartsmiljöer. På vissa UEFI-system med CSM kan standardstartläget för flyttbara enheter skilja sig från vad som faktiskt används vid uppstart från hårddisken, så när man startar upp installationsprogrammet från ett USB-minne i ett annat läge än vad som används vid uppstart av ett annat redan installerat oprativsystem från hårddisken, kan fel starthanterare vara installerad och systemet kan vara ostartbart efter avslutad installation. När man väljer uppstartsenhet från en uppstartsmeny för fast programvara, erbjuder vissa system två separata val för varje enhet, så att användaren kan välja om uppstart ska ske i CSM eller i inbyggt UEFI-läge. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Säker uppstart</h3></div></div></div>
+<p>Ett annat UEFI-relaterat ämne är den så kallade <span class="quote">”<span class="quote">säker uppstart</span>”</span>-mekanism. Säker uppstart betyder att en funktion av UEFI-implementeringar som tillåter den fasta programvaran att endast ladda och exekvera kod som är kryptografiskt signerad med vissa nycklar och därigenom blockerar all (potentiellt skadlig) uppstartskod som är osignerad eller signerad med okända nycklar. I praktiken är den enda nyckel som accepteras som standard på de flesta UEFI-system med säker uppstart en nyckel från Microsoft som används för att signera Windows uppstartsladdare. Debian inkluderar en <span class="quote">”<span class="quote">shim</span>”</span> uppstartshanterare signerad av Microsoft, som bör fungera korrekt på system med säker uppstart aktiverat. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Inaktivera Windows <span class="quote">”<span class="quote">snabbuppstart</span>”</span>/<span class="quote">”<span class="quote">snabbstart</span>”</span> funktion</h3></div></div></div>
+<p>Windows erbjuder en funktion (kallad <span class="quote">”<span class="quote">snabbuppstart</span>”</span> i Windows 8, <span class="quote">”<span class="quote">snabbuppstart</span>”</span> i Windows 10) för att minska systemuppstartstiden. Tekniskt sett, när den här funktionen är aktiverad, gör inte Windows en riktig avstängning och en riktig kallstart efteråt när den beordras att stängas av, utan gör istället något som liknar en partiell avstängning till disk för att minska <span class="quote">”<span class="quote">uppstartstiden</span>”</span>. Så länge som Windows är det enda operativsystemet på maskinen är detta oproblematiskt, men det kan resultera i problem och dataförlust, när du har ett dubbeluppstart system uppsatt, där ett annat operativsystem kommer åt samma filsystem som Windows gör. I så fall kan filsystemets verkliga tillstånd skilja sig från vad Windows tror att det är efter <span class="quote">”<span class="quote">uppstarten</span>”</span> och detta kan orsaka korruption av filsystemet vid ytterligare skrivåtkomster till filsystemet. Därför måste <span class="quote">”<span class="quote">snabbstart</span>”</span>/<span class="quote">”<span class="quote">snabbuppstart</span>”</span>-funktionen avaktiveras i Windows för att undvika korruption av filsystemet i en dubbeluppstart installation. </p>
+<p>Dessutom har Windows Update-mekanismen (ibland) varit känd för att automatiskt återaktivera denna funktion efter att den tidigare har inaktiverats av användaren. Vi rekommenderar att du kontrollerar den här inställningen regelbundet. </p>
+<p>Det kan också vara nödvändigt att inaktivera <span class="quote">”<span class="quote">snabbuppstart</span>”</span> för att ens tillåta åtkomst till UEFI-inställningarna för att välja att starta upp ett annat operativsystem eller <code class="classname">debian-installer</code>. På vissa UEFI-system kommer den fasta programvaran att minska <span class="quote">”<span class="quote">uppstartstiden</span>”</span> genom att inte initiera tangentbordskontrollern eller USB-hårdvaran; i dessa fall är det nödvändigt att starta upp i Windows och inaktivera den här funktionen för att tillåta en ändring av uppstartsordningen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Maskinvaruproblem att se upp för</h3></div></div></div>
+<p><b>USB BIOS-stöd och tangentbord. </b>Om du inte har något PS/2-tangentbord, utan bara en USB-modell, på vissa mycket gamla datorer kan du behöva aktivera äldre tangentbordsemulering i din BIOS-inställning för att kunna använda ditt tangentbord i startladdarmenyn, men detta är inte ett problem för moderna system. Om ditt tangentbord inte fungerar i uppstartshanterarens meny, konsultera din moderkortsmanual och leta i BIOS efter alternativ för <span class="quote">”<span class="quote">Äldre tangentbordsemulering</span>”</span> eller <span class="quote">”<span class="quote">USB-tangentbord</span>”</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Förpartionering för system med flera operativsystem </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> Kapitel 4. Få tag på installationsmedia</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. 데비안의 파티션 프로그램</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="apc.html" title="부록 C. 데비안에서 파티션 나누기">
+<link rel="prev" href="apcs04.html" title="C.4. 리눅스의 장치 이름">
+<link rel="next" href="apd.html" title="부록 D. 여러가지 내용">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. 데비안의 파티션 프로그램</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">부록 C.  데비안에서 파티션 나누기</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. 데비안의 파티션 프로그램</h2></div></div></div>
+<p>여러가지 종류의 파티션 도구가 내장된 다양한 형식의 하드디스크나 시스템에서 작동하도록 데비안 개발자가 준비해 놓았습니다. 아래에 시스템에서 사용할 수 있는 프로그램의 목록을 나타냅니다. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>데비안 권장 파티션 도구입니다. 이 만능 프로그램은 파티션 크기를 변경하거나 파일 시스템을 만들<span class="phrase">(Windows에서 말하는<span class="quote">“<span class="quote">형식</span>”</span>)</span>거나 마운트 지점을 지정하거나 할 수 있습니다. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>처음부터 있던 리눅스 파티션 프로그램. 전문가용. </p>
+<p>FreeBSD용 파티션이 디스크에 있으면 주의해야 합니다. 설치용 커널은 이 형식의 파티션을 지원하지만, <span class="command"><strong>fdisk</strong></span> 프로그램에서 이 파티션을 화면에 표시하는 형식이 다릅니다. <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">리눅스+FreeBSD 하우투</a>를 참고하십시오. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>간단하고 널리 사용하는 전체 화면 파티션 프로그램. </p>
+<p><span class="command"><strong>cfdisk</strong></span>는 FreeBSD 파티션을 전혀 인식하지 못하기 때문에(다시 말하지만) 장치의 이름이 다를 수도 있으니 주의하십시오. </p>
+</dd>
+</dl></div>
+<p><span class="guimenuitem">디스크 파티션하기</span> 메뉴를 선택하면 위 프로그램 중 하나를 실행합니다. VT2에서 명령행을 이용해 다른 파티션 도구를 사용할 수도 있지만, 이 방법은 추천하지 않습니다. </p>
+<p>반드시 부팅 파티션을 <span class="quote">“<span class="quote">Bootable</span>”</span>로 지정하십시오. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5221"></a>C.5.1. <span class="phrase">64-bit PC</span>에서 파티션하기</h3></div></div></div>
+<p>새 하드디스크를 사용하면 (아니면 디스크의 전체 파티션 테이블을 지우려 하면), 새 파티션 테이블을 만들어야 합니다. <span class="quote">“<span class="quote">자동 파티션</span>”</span>이 이 작업을 자동으로 합니다. 하지만 파티션 만들기를 수동으로 하려면, 디스크의 최상위 항목을 선택해 <span class="keycap"><strong>Enter</strong></span> 키를 누르십시오. 그러면 그 디스크에 새 파티션 테이블을 만듭니다. 전문가 모드에서는, 파티션 테이블의 종류를 물어봅니다. UEFI 기반 시스템의 기본값은 <span class="quote">“<span class="quote">gpt</span>”</span>이고, 과거 BIOS 세계에서 기본값은 <span class="quote">“<span class="quote">msdos</span>”</span>입니다. 표준 우선순위 설치에서는 이 기본값을 자동으로 사용합니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p><span class="quote">“<span class="quote">gpt</span>”</span> 파티션 테이블을 선택하면 (UEFI 시스템의 기본값), 1MB의 빈 공간이 디스크 맨 처음에 만들어집니다. 이 빈 공간은 의도적으로 만들어지고, GRUB2 부트로더를 넣기 위해 필요합니다. </p></td></tr>
+</table></div>
+<p>윈도우와 같은 다른 기존의 운영체제가 있고, 데비안을 설치할 때 해당 운영체제를 잃지 않도록 하고 싶다면, 데비안 설치 공간을 확보하려면 파티션 크기를 변경해야 합니다. 설치 프로그램은 FAT 및 NTFS 파일 시스템의 크기 조정을 지원하고 있습니다. 설치 프로그램의 파티션 단계가 되어 <span class="guimenuitem">수동</span>옵션을 선택한 경우 단지 기존의 파티션을 선택해 크기를 변경하십시오. </p>
+<p>현대적인 UEFI 시스템에서는 아래에 열거한 것과 같은 제약이 없지만, 과거의 PC BIOS에서는 디스크를 파티션할 때 제약 사항이 있습니다. 드라이브 한 개에 들어갈 수 있는 <span class="quote">“<span class="quote">주 파티션</span>”</span>과 <span class="quote">“<span class="quote">논리 파티션</span>”</span>의 개수에 제한이 있습니다. </p>
+<p>그러한 예전 PC BIOS 시스템에서는, <span class="quote">“<span class="quote">주 파티션</span>”</span>은 원래 PC용 디스크에서 사용하던 파티션 방식입니다. 하지만, 주 파티션은 4개만 만들 수 있습니다. 이 한계를 벗어나려고 <span class="quote">“<span class="quote">확장 파티션</span>”</span>과 <span class="quote">“<span class="quote">논리 파티션</span>”</span>이 만들어졌습니다. 주 파티션 하나를 확장 파티션으로 두면 그 파티션을 최대 60개의 논리 파티션으로 나눌 수 있습니다. 하지만 디스크 하나에는 확장 파티션을 하나만 만들 수 있습니다. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. 리눅스의 장치 이름 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 부록 D. 여러가지 내용</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

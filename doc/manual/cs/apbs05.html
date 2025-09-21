@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Pokročilé možnosti</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apb.html" title="Příloha B. Automatizování instalací pomocí přednastavení">
+<link rel="prev" href="apbs04.html" title="B.4. Obsah souboru s přednastavením (pro trixie)">
+<link rel="next" href="apc.html" title="Příloha C. Poznámky k rozdělování disku">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Pokročilé možnosti</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha B. Automatizování instalací pomocí přednastavení</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Pokročilé možnosti</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Spouštění vlastních příkazů během instalace</h3></div></div></div>
+<p>Nástroje pro přednastavení nabízí velice mocnou vlastnost, kterou je možnost spouštění libovolných příkazů nebo skriptů v určitých bodech instalace. </p>
+<p>When the filesystem of the target system is mounted, it is available in <code class="filename">/target</code>. If an installation CD/DVD is used, when it is mounted it is available in <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Přednastavení d-i není už ze své podstaty bezpečné. Nic
+# v instalačním systému nekontroluje pokusy kolem přetečení bufferu
+# ani zneužití hodnot v souboru s přednastaveními. Používejte tyto
+# soubory pouze z důvěryhodných zdrojů!
+# Následuje ukázka, jak v d-i spustit automaticky nějaký shellový příkaz.
+
+# První příkaz je spuštěn co nejdříve - hned po načtení přednastavení.
+#d-i preseed/early_command string anna-install nejaky-udeb
+# Tento příkaz je spuštěn těsně před vstupem do dělení disků. Může se
+# hodit pro dynamické přednastavení rozdělení disku, které závisí na
+# aktuálním stavu disků (které ještě nemusí být vidět v době spuštění
+# předchozího příkazu preseed/early_command).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Tento příkaz je spuštěn těsně před koncem instalace, ale ještě je
+# připojen adresář /target. Buď můžete použít chroot na /target
+# a pracovat přímo v něm, nebo můžete použít příkaz apt-install
+# resp. in-target pro jednoduchou instalaci balíků resp. spouštění
+# příkazů v nově instalovaném systému.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Použití přednastavení pro změnu výchozích hodnot</h3></div></div></div>
+<p>Pomocí přednastavení můžete dosáhnout i toho, že se otázka normálně zobrazí, ale změní se její výchozí odpověď. (Například na úvodní otázce ohledně jazyka můžete přednastavit místo angličtiny češtinu, takže uživateli stačí stisknout <span class="keycap"><strong>Enter</strong></span>, ale stále mu necháváte možnost volby jiného jazyka.) Dosáhnete toho tak, že po nastavení proměnné změníte příznak <em class="firstterm">seen</em> na hodnotu <span class="quote">„<span class="quote">false</span>“</span>. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string hodnota
+d-i foo/bar seen false
+</pre></div>
+<p> Chcete-li stejného výsledku dosáhnout pro <span class="emphasis"><em>všechny</em></span> otázky, můžete použít zaváděcí parametr <code class="classname">preseed/interactive=true</code>, což se může hodit pro testování a ladění konfiguračního souboru s přednastavením. </p>
+<p>Zopakujme, že vlastník <span class="quote">„<span class="quote">d-i</span>“</span> by se měl používat pouze pro proměnné používané samotným instalačním systémem. Pro proměnné nacházející se v instalovaných balících byste měli jako vlastníka použít jméno příslušného balíku (viz poznámka pod čarou u <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Použití zaváděcích parametrů jako formy přednastavení">B.2.2 – „Použití zaváděcích parametrů jako formy přednastavení“</a>). </p>
+<p>Přednastavujete-li pomocí zaváděcích parametrů, můžete použít speciální operátor <span class="quote">„<span class="quote">?=</span>“</span>, kterým instalátor donutíte, aby danou otázku zobrazil. Například <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>hodnota</code></em></code></strong> (nebo <strong class="userinput"><code><em class="replaceable"><code>vlastník</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>hodnota</code></em></code></strong>). To samozřejmě funguje jen u parametrů, kterým odpovídá nějaká otázka zobrazená během instalace, tj. nefunguje to pro <span class="quote">„<span class="quote">interní</span>“</span> parametry. </p>
+<p>Pro více ladicích informací můžete použít zaváděcí parametr <code class="classname">DEBCONF_DEBUG=5</code>, který zajistí, že <code class="classname">debconf</code> bude mnohem upovídanější, co se týče aktuálního nastavení proměnných a postupu instalačními skripty. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Zřetězené nahrávání souborů s přednastavením</h3></div></div></div>
+<p>Přestože je použití jednoho velkého souboru s přednastavením jednoduché, zdaleka nemusí být přehledné a navíc postrádá flexibilitu. Z tohoto důvodu je možné nastavení rozdělit do několika samostatných souborů a ty pak skládat dohromady. Protože později uvedené volby přepisují volby zadané dříve, přímo se nabízí vytvoření hlavního (sdíleného) souboru s obecnými předvolbami a k němu několik dalších souborů se specifickým nastavením pro danou situaci. </p>
+<div class="informalexample"><pre class="screen"># Zadat můžete i více souborů najednou, stačí je oddělit mezerami.
+# Vložené soubory mohou obsahovat jak deklarace pro přednastavení,
+# tak příkazy pro zavedení dalších souborů. Pokud cestu zadáte
+# relativně, hledají se soubory ve stejném adresáři, jako nadřízený
+# soubor.
+#d-i preseed/include string x.cfg
+
+# d-i může volitelně kontrolovat kontrolní součty souborů
+# s přednastavením. V současnosti jsou podporovány pouze md5 součty.
+# Seznam součtů zadejte ve stejném pořadí, v jakém se budou načítat
+# soubory s přednastavením.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Mnohem pružnější je použití shellového příkazu, který vrátí názvy
+# souborů, jež se mají nahrát.
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Nejpružnější možnost stáhne program a spustí jej. Program může
+# používat příkazy pro manipulaci s databází debconfu jako např.
+# debconf-set. Pokud jsou názvy souborů relativní, berou se ze
+# stejného adresáře jako soubor s přednastavením, který je spouští.
+# Zadat můžete i více skriptů, stačí je oddělit mezerami.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Zřetězené nahrávání souborů s přednastavením funguje i mezi různými typy přednastavení. Například pokud používáte přednastavení z initrd nebo ze souboru, můžete v nich uvést proměnnou <code class="classname">preseed/url</code> a po naběhnutí sítě tak plynule přejít do souboru s přednastavením staženým ze sítě. Musíte však být opatrní, protože to také znamená, že se proces přednastavení spustí znovu a mimo jiné tím dostanete šanci na druhé spuštění příkazu <code class="classname">preseed/early</code>, tentokráte po naběhnutí sítě. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Obsah souboru s přednastavením (pro trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> Příloha C. Poznámky k rozdělování disku</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

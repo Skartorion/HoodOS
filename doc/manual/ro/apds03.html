@@ -1,0 +1,422 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Instalarea Debian GNU/Linux dintr-un sistem Unix/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apd.html" title="Anexa D. Informații diverse">
+<link rel="prev" href="apds02.html" title="D.2. Spațiu pe disc necesar pentru sarcini">
+<link rel="next" href="apds04.html" title="D.4. Instalarea Debian GNU/Linux utilizând protocolul «IP pe portul paralel» („ Parallel Line Internet Protocol”: PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Instalarea Debian GNU/Linux dintr-un sistem Unix/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa D. Informații diverse</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Instalarea Debian GNU/Linux dintr-un sistem Unix/Linux</h2></div></div></div>
+<p>Această secțiune explică cum se instalează Debian GNU/Linux dintr-un sistem Unix sau Linux existent, fără a utiliza programul de instalare bazat pe meniu, așa cum este explicat în restul manualului. Acest Rețetar de <span class="quote">„<span class="quote">instalare-specială</span>”</span> a fost solicitat de utilizatorii care vor să treacă la Debian GNU/Linux de la Red Hat, Mandriva și SUSE. În această secțiune se presupune o anumită familiaritate cu introducerea comenzilor *nix și navigarea în sistemul de fișiere. În această secțiune, <code class="prompt">$</code> simbolizează o comandă care trebuie introdusă în sistemul curent al utilizatorului, în timp ce <code class="prompt">#</code> se referă la o comandă introdusă în mediul chroot Debian. </p>
+<p>Odată ce ați configurat noul sistem Debian după preferințele dvs., puteți să migrați datele de utilizator(i) existente (dacă există) la acesta și să continuați să rulați. Aceasta este, prin urmare, o instalare <span class="quote">„<span class="quote">fără timpi de nefuncţionare</span>”</span> Debian GNU/Linux . Este, de asemenea, o modalitate inteligentă de a trata cu mașini care altfel nu se comportă amiabil cu diferite medii de pornire sau de instalare. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Deoarece aceasta este o procedură în mare parte manuală, ar trebui să țineți cont de faptul că va trebui să faceți singuri multe configurații de bază ale sistemului, ceea ce va necesita, de asemenea, mai multe cunoștințe despre Debian și de Linux în general decât efectuarea unei instalări obișnuite. Nu vă puteți aștepta ca această procedură să rezulte într-un sistem care să fie identic cu un sistem dintr-o instalare obișnuită. De asemenea, trebuie să rețineți că această procedură oferă doar pașii de bază pentru configurarea unui sistem. Pot fi necesari pași suplimentari de instalare și/sau configurare. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5466"></a>D.3.1. Să începem</h3></div></div></div>
+<p>Cu instrumentele actuale de partiționare *nix, repartiționați discul dur/solid după cum este necesar, creând cel puțin o partiție cu un sistem de fișiere plus altă partiție cu spațiul de interschimb (swap). Aveți nevoie de aproximativ 647Mo de spațiu disponibil doar pentru instalarea unui sistem dirijat de la o consolă sau de 2635Mo dacă intenționați să instalați X (mai mult dacă intenționați să instalați medii grafice de birou precum GNOME sau KDE Plasma ). </p>
+<p>Apoi, creați sisteme de fișiere pe partiții. De exemplu, pentru a crea un sistem de fișiere ext3 pe partiția <code class="filename">/dev/sda6</code> (acesta este exemplul nostru de partiție rădăcină): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Pentru a crea un sistem de fișiere ext2, omiteți opțiunea <strong class="userinput"><code>-j</code></strong>. </p>
+<p>Inițializați și activați spațiul de interschimb, „swap” (înlocuiți numărul partiției cu partiția de swap Debian dorită): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Montați o partiție ca <code class="filename">/mnt/debinst</code> (punctul de instalare, care va fi sistemul de fișiere rădăcină (<code class="filename">/</code>) în noul dumneavoastră sistem). Numele punctului de montare este strict arbitrar, se face referire la el mai jos. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Dacă doriți să aveți părți ale sistemului de fișiere (de exemplu, /usr) montate pe partiții separate, va trebui să creați și să montați manual aceste directoare înainte de a continua cu etapa următoare. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5487"></a>D.3.2. Instalați <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Instrumentul folosit de programul de instalare Debian și recunoscut ca modalitate oficială de a instala un sistem de bază Debian este <span class="command"><strong>debootstrap</strong></span>. Folosește <span class="command"><strong>wget</strong></span> și <span class="command"><strong>ar</strong></span>, dar în rest depinde numai de <code class="classname">/bin/sh</code> și de instrumentele de bază Unix/Linux<a href="#ftn.id5495" class="footnote" name="id5495"><sup class="footnote">[21]</sup></a>. Instalați <span class="command"><strong>wget</strong></span> și <span class="command"><strong>ar</strong></span> dacă acestea nu sunt deja instalate pe sistemul dvs. actual, apoi descărcați și instalați <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Sau puteți utiliza următoarea procedură pentru a-l instala manual. Creați un director de lucru pentru extragerea fișierului .deb în: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> Binarul <span class="command"><strong>debootstrap</strong></span> este localizat în arhiva Debian (asigurați-vă că selectați fișierul potrivit pentru arhitectura dumneavoastră). Descărcați <span class="command"><strong>debootstrap</strong></span> .deb din arhiva<a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> fondului comun (pool)</a> de pachete, copiați pachetul în directorul de lucru și extrageți fișierele din acesta. Va trebui să aveți privilegii de root pentru a instala fișierele. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /ruta-completă-către-directorul-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5512"></a>D.3.3. Rulați <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Comanda <span class="command"><strong>debootstrap</strong></span> poate descărca fișierele necesare direct din arhivă atunci când o rulați. Puteți înlocui orice oglindă de arhivă Debian cu <strong class="userinput"><code>http.us.debian.org/debian</code></strong> în exemplul de comandă de mai jos, de preferință o oglindă apropiată de dumneavoastră din punct de vedere al depărtării în rețea (cât mai aproape geografic de mașina utilizată pentru instalare). Oglinzile sunt listate la <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Dacă aveți o imagine de instalare Debian GNU/Linux trixie montată la <code class="filename">/cdrom</code>, puteți înlocui o adresă URL de fișier în loc de adresa URL http: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Înlocuiți <em class="replaceable"><code>ARCH</code></em> cu una dintre următoarele arhitecturi în comanda <span class="command"><strong>debootstrap</strong></span>: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> Dacă arhitectura țintă este diferită de cea a gazdei, ar trebui să adăugați opțiunea <strong class="userinput"><code>--foreign</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5534"></a>D.3.4. Configurați sistemul de bază</h3></div></div></div>
+<p>Acum aveți un sistem real Debian, deși destul de slab, pe disc. Executați programul <span class="command"><strong>chroot</strong></span> în el: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Dacă arhitectura țintă este diferită de cea a gazdei, va trebui să copiați mai întâi „qemu-user-static” pe noua gazdă: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> După executarea programului «chroot», poate fi necesar să stabiliți definiția terminalului pentru a fi compatibilă cu sistemul de bază Debian, de exemplu: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> În funcție de valoarea lui TERM, este posibil să trebuiască să instalați pachetul <code class="classname">ncurses-term</code> pentru a obține suport pentru acesta. </p>
+<p>Dacă arhitectura țintă este diferită de cea a gazdei, trebuie să finalizați instalarea prin efectuarea următorului pas: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5549"></a>D.3.4.1. Creați fișierele de dispozitiv</h4></div></div></div>
+<p>În acest moment, directorul <code class="filename">/dev/</code> conține doar fișiere de dispozitiv foarte simple. Pentru următorii pași ai instalării, pot fi necesare fișiere de dispozitiv suplimentare. Există diferite moduri de a proceda în acest sens și metoda pe care ar trebui să o utilizați depinde de sistemul gazdă pe care îl utilizați pentru instalare, dacă intenționați să utilizați un nucleu modular sau nu și de dacă intenționați să utilizați fișiere de dispozitiv dinamice (de exemplu, folosind <code class="classname">udev</code>) sau fișiere de dispozitiv statice pentru noul sistem. </p>
+<p>Unele dintre opțiunile disponibile sunt: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>instalați pachetul „makedev” și creați un set implicit de fișiere de dispozitiv statice folosind (după intrarea în mediul „chroot”) comenzile: </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>creați manual numai anumite fișiere de dispozitiv utilizând <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>montați (cu opțiunea --bind”) directorul „/dev” din sistemul dumneavoastră gazdă asupra directorului „/dev” din sistemul țintă; rețineți că scripturile „postinst” ale unor pachete pot încerca să creeze fișiere de dispozitiv, așa că această opțiune ar trebui folosită numai cu grijă. De exemplu: <span class="command"><strong>mount -v --bind /dev /ruta-completă-la-sistemul-țintă/dev</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5566"></a>D.3.4.2. Montați partițiile</h4></div></div></div>
+<p>Trebuie să creați fișierul <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editorul_favorit /etc/fstab
+</pre></div>
+<p> Iată un șablon pe care îl puteți modifica pentru a se potrivi necesităților dumneavoastră: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: informații statice ale sistemului de fișiere.
+#
+# file system         mount point    type    options                  dump pass
+# sist. de fișiere    punct montare  tip     opțiuni                  dump pass
+
+/dev/XXX              /              ext3    defaults                 0    1
+/dev/XXX              /boot          ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX              none           swap    sw                       0    0
+proc                  /proc          proc    defaults                 0    0
+
+/dev/cdrom            /media/cdrom   iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX              /tmp           ext3    rw,nosuid,nodev          0    2
+/dev/XXX              /var           ext3    rw,nosuid,nodev          0    2
+/dev/XXX              /usr           ext3    rw,nodev                 0    2
+/dev/XXX              /home          ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Utilizați <strong class="userinput"><code>mount -a</code></strong> pentru a monta toate sistemele de fișiere pe care le-ați specificat în <code class="filename">/etc/fstab</code> sau, pentru a monta sistemele de fișiere individual, utilizați: </p>
+<div class="informalexample"><pre class="screen">
+# mount punctul_de_montare   # de ex.: mount /usr
+</pre></div>
+<p> Sistemele Debian actuale au punctele de montare pentru mediile amovibile sub <code class="filename">/media</code>, dar păstrează legăturile simbolice de compatibilitate în <code class="filename">/</code>. Creați-le după cum este necesar, de exemplu: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> Puteți monta sistemul de fișiere proc de mai multe ori și în locații arbitrare, deși <code class="filename">/proc</code> este cel obișnuit. Dacă nu ați folosit <strong class="userinput"><code>mount -a</code></strong>, asigurați-vă că ați montat „proc” înainte de a continua: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Comanda <strong class="userinput"><code>ls /proc</code></strong> ar trebui să afișeze acum un director care nu este gol. În cazul în care aceasta eșuează, este posibil să puteți monta „proc” din afara mediului „chroot”: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5590"></a>D.3.4.3. Configurarea fusului orar</h4></div></div></div>
+<p>Definirea celei de-a treia linii a fișierului <code class="filename">/etc/adjtime</code> la <span class="quote">„<span class="quote">UTC</span>”</span> sau la <span class="quote">„<span class="quote">LOCAL</span>”</span> determină dacă sistemul va interpreta ceasul mașinii ca fiind fixat la ora UTC sau la ora locală. Următoarea comandă vă permite să stabiliți acest lucru. </p>
+<div class="informalexample"><pre class="screen">
+# editorul_favorit /etc/adjtime
+</pre></div>
+<p> Iată un exemplu: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Următoarea comandă vă permite să vă alegeți fusul orar. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5602"></a>D.3.4.4. Configurarea rețelei</h4></div></div></div>
+<p>Pentru a configura rețeaua, editați fișierele <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> și <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Iată câteva exemple simple preluate din <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+################################################################################
+# /etc/network/interfaces -- fișierul de configurare pentru ifup(8), ifdown(8)
+# Consultați pagina de manual interfaces(5) pentru informații despre opțiunile
+# disponibile.
+################################################################################
+
+# Interfața „loopback” nu mai este necesară, dar poate fi folosită dacă este
+# necesar.
+#
+# auto lo
+# iface lo inet loopback
+
+# Pentru a utiliza «dhcp»:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Un exemplu de configurare conexiune IP statică: (rețeaua (network),
+# difuzarea (brodcast) și poarta de acces/pasarela (gateway) sunt opționale)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Introduceți serverul(ele) de nume și directivele de căutare în fișierul <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Un exemplu simplu de <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search exemplu.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+# sau, utilizând serverele de nume de la „Google”:
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+</pre></div>
+<p> Introduceți numele de gazdă al sistemului dumneavoastră (2 până la 63 de caractere): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> Și un fișier <code class="filename">/etc/hosts</code> bazic cu suport IPv6: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# Următoarele linii sunt de dorit pentru gazde capabile să utilizeze
+# protocolul IPv6:
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Dacă aveți mai multe plăci de rețea, ar trebui să aranjați numele modulelor de controlor din fișierul <code class="filename">/etc/modules</code> în ordinea dorită. Apoi, în timpul pornirii, fiecare placă va fi asociată cu numele interfeței (eth0, eth1 etc.) la care vă așteptați. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5626"></a>D.3.4.5. Configurați Apt</h4></div></div></div>
+<p>Debootstrap va fi creat un fișier <code class="filename">/etc/apt/sources.list</code> de bază, care va permite instalarea de pachete suplimentare. Cu toate acestea, poate doriți să adăugați câteva surse suplimentare, de exemplu pentru pachetele sursă și actualizările de securitate: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Asigurați-vă că rulați <strong class="userinput"><code>apt update</code></strong> după ce ați făcut modificări în lista de surse (fișierul „sources.list”). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5633"></a>D.3.4.6. Configurați parametrii regionali și tastatura</h4></div></div></div>
+<p>Pentru a configura parametrii regionali pentru a utiliza o altă limbă decât engleza, instalați pachetul <code class="classname">locales</code> ce asigură suportul pentru localizare și configurați-l. În prezent, se recomandă utilizarea localizărilor UTF-8. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Pentru a configura tastatura (dacă este nevoie): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Rețineți că tastatura nu poate fi configurată în timp ce sunteți în „chroot”, dar va fi configurată pentru următoarea repornire. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5642"></a>D.3.5. Instalați un nucleu</h3></div></div></div>
+<p>Dacă intenționați să porniți acest sistem, probabil că doriți un nucleu Linux și un încărcător de pornire. Identificați nucleele pre-împachetate disponibile cu: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Apoi instalați pachetul nucleului ales, folosind numele acestui pachet. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5651"></a>D.3.6. Configurați încărcătorul de pornire</h3></div></div></div>
+<p>Pentru a face sistemul dvs. Debian GNU/Linux să fie capabil să pornească, configurați încărcătorul de pornire pentru a încărca nucleul instalat cu noua partiție rădăcină. Rețineți că <span class="command"><strong>debootstrap</strong></span> nu instalează un încărcător de pornire, dar puteți utiliza <span class="command"><strong>apt</strong></span> în interiorul mediului chroot Debian pentru a face acest lucru. </p>
+<p>Verificați <strong class="userinput"><code>info grub</code></strong> pentru instrucțiuni despre configurarea încărcătorului de pornire. Dacă păstrați sistemul pe care l-ați folosit pentru a instala Debian, doar adăugați o intrare pentru instalarea Debian în fișierul de configurare<code class="filename">grub.cfg</code> al grub2 existent (în sistemul pe care l-ați folosit pentru a instala Debian). </p>
+<p>Instalarea și configurarea <code class="classname">grub2</code> este la fel de simplă ca: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> A doua comandă va instala <span class="command"><strong>grub2</strong></span> (în acest caz în MBR-ul <code class="literal">sda</code>). Ultima comandă va crea un fișier <code class="filename">/boot/grub/grub.cfg</code> actualizat și funcțional. </p>
+<p>Rețineți că aceasta presupune că a fost creat un fișier de dispozitiv <code class="filename">/dev/sda</code>. Există metode alternative de a instala <span class="command"><strong>grub2</strong></span>, dar acestea sunt în afara domeniului de aplicare al acestui apendice. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5670"></a>D.3.7. Acces de la distanță: Instalarea SSH și configurarea accesului</h3></div></div></div>
+<p>În cazul în care vă puteți autentifica la sistem prin consolă, puteți sări peste această secțiune. Dacă mai târziu sistemul ar trebui să fie accesibil prin rețea, trebuie să instalați SSH și să configurați accesul. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Autentificarea utilizatorului „root” cu o parolă este dezactivată în mod implicit, deci configurarea accesului se poate face stabilind o parolă și reactivând autentificarea utilizatorului „root” cu parolă: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editorul_favorit /etc/ssh/sshd_config
+</pre></div>
+<p> Aceasta este opțiunea care trebuie activată: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> Accesul poate fi configurat și prin adăugarea unei chei ssh la contul „root”: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> În cele din urmă, accesul poate fi configurat prin adăugarea unui utilizator non-root și stabilirea unei parole: </p>
+<div class="informalexample"><pre class="screen"># adduser andrei
+# passwd andrei
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5683"></a>D.3.8. Ultimele retușuri</h3></div></div></div>
+<p>După cum am menționat mai devreme, sistemul instalat va fi foarte simplu. Dacă doriți să faceți sistemul un pic mai matur, există o metodă ușoară de a instala toate pachetele cu prioritatea <span class="quote">„<span class="quote">standard</span>”</span>: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Desigur, puteți, de asemenea, să utilizați doar <span class="command"><strong>apt</strong></span> pentru a instala pachetele individual. </p>
+<p>După instalare, vor fi multe pachete descărcate în <code class="filename">/var/cache/apt/archives/</code>. Puteți elibera spațiu pe disc rulând: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5495" class="footnote"><p><a href="#id5495" class="para"><sup class="para">[21] </sup></a> Acestea includ utilitățile și comenzile de bază GNU precum <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> și <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Spațiu pe disc necesar pentru sarcini </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Instalarea Debian GNU/Linux utilizând protocolul «IP pe portul paralel» („ Parallel Line Internet Protocol”: PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

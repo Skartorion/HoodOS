@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Montar volumes encriptados</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Capítulo 7. A Iniciar O Seu Novo Sistema Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. O Momento da Verdade">
+<link rel="next" href="ch07s03.html" title="7.3. Log In">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Montar volumes encriptados</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 7. A Iniciar O Seu Novo Sistema Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Montar volumes encriptados</h2></div></div></div>
+<p>Se criou volumes encriptados durante a instalação e associou-lhes pontos de montagem, ser-lhe-á pedido para introduzir, durante o arranque, a frase-chave para cada um desses volumes. </p>
+<p>Para partições encriptadas utilizando o dm-crypt, durante o arranque, ser-lhe-á mostrada a seguinte questão: </p>
+<div class="informalexample"><pre class="screen">
+A iniciar discos encriptados iniciais... crypt<em class="replaceable"><code>part</code></em>_crypt(a iniciar)
+Introduza a frase-chave do LUKS:
+</pre></div>
+<p> Na primeira linha da questão, <em class="replaceable"><code>part</code></em> é o nome da partição em causa, e.g. sda2 ou md0. Deve estar provavelmente a pensar <span class="emphasis"><em>para qual volume</em></span> está a introduzir a frase-chave. Relaciona-se com o seu <code class="filename">/home</code>? Ou com <code class="filename">/var</code>? Claro que, se tiver apenas um volume encriptado, isto é fácil e pode apenas introduzir a frase-chave que utilizou quando configurou este volume. Se durante a instalação configurou mais do que um volume encriptado, as notas que escreveu na última etapa em <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Configurar Volumes Encriptados">Secção 6.3.4.6, “Configurar Volumes Encriptados”</a> vêm a calhar. Se não tomou nota antes do mapeamento entre o <code class="filename">part<em class="replaceable"><code>_crypt</code></em></code> e os pontos de montagem, ainda o pode encontrar em <code class="filename">/etc/crypttab</code> e <code class="filename">/etc/fstab</code> do seu novo sistema. </p>
+<p>A pergunta pode parecer diferente quando um sistema de ficheiros raiz encriptado está montado. Isto depende de que gerador de initramfs utilizado para arrancar o sistema. O exemplo abaixo é para um initramfs gerado utilizando <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Inicio: A montar <span class="emphasis"><em>sistema de ficheiros raiz</em></span>... ...
+Inicio: A correr /scripts/local-top ...
+Introduza a frase-passe do LUKS:
+</pre></div>
+<p>
+
+</p>
+<p>Não serão mostrados nenhuns caracteres (nem asteriscos) enquanto introduz a frase-chave. Se introduzir a frase-chave errada, tem mais duas tentativas para a corrigir. Após a terceira tentativa o processo de arranque irá saltar esse volume e continuar a montar o próximo sistema de ficheiros. Para mais informações por favor veja a <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Diagnóstico de problemas">Secção 7.2.1, “Diagnóstico de problemas”</a>. </p>
+<p>Após introduzir todas as frases-passe o arranque deve continuar como normalmente. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Diagnóstico de problemas</h3></div></div></div>
+<p>Se alguns dos volumes encriptados não poderem ser montados porque foi introduzida uma frase-chave errada, após o arranque terá de os montar manualmente. Existem vários casos. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>O primeiro caso refere-se à partição raiz. Quando não está corretamente montada, o processo de arranque irá parar e terá de reiniciar o computador para tentar novamente. </p></li>
+<li class="listitem">
+<p>O caso mais fácil é para volumes com dados encriptados tal como <code class="filename">/home</code> ou <code class="filename">/srv</code>. Pode simplesmente montá-los manualmente após o arranque. </p>
+<p>No entanto para dm-crypt isto é um pouco mais complicado. Primeiro tem que registar os volumes com o <span class="application">device mapper</span> correndo: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Isto irá pesquisar todos os volumes mencionados em <code class="filename">/etc/crypttab</code> e após introduzir as frases-chave corretas irá criar os dispositivos apropriados sob o diretório <code class="filename">/dev</code>. (os volumes já registados serão passados à frente, por isso pode repetir este comando várias vezes sem se preocupar.) Após o registo com sucesso pode simplesmente montar os volumes da forma habitual: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Se qualquer volume que contenha ficheiros não-críticos de sistema não puder ser montado (<code class="filename">/usr</code> ou <code class="filename">/var</code>), o sistema deve mesmo assim arrancar e você deve conseguir montar manualmente os volumes tal como no caso anterior. No entanto, também irá necessitar de (re)iniciar quaisquer serviços que correm normalmente no seu runlevel predefinido porque é muito provável que estes não tenham iniciado. A forma mais simples é reiniciar o computador. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. O Momento da Verdade </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Log In</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

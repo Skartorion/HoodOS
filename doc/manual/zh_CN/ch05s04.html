@@ -1,0 +1,236 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. 安装过程中的故障修复</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch05.html" title="第 5 章 引导安装系统">
+<link rel="prev" href="ch05s03.html" title="5.3. 引导参数">
+<link rel="next" href="ch06.html" title="第 6 章 使用 Debian 安装程序">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. 安装过程中的故障修复</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 5 章 引导安装系统</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. 安装过程中的故障修复</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. 光盘媒体的可靠性</h3></div></div></div>
+<p>有时，特别是较旧的驱动器，安装程序无法从光盘引导。安装程序还可能 — 即使是从这样的光盘成功引导 — 在安装时也无法识别光盘或读取时返回错误。 </p>
+<p>造成这些问题有各种原因。我们只列出了一些常见的问题，并提供处理这些问题的一般建议。余下的由您来处理。 </p>
+<p>首先应试试两种最简单的方法。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>如果光盘没有引导，那么检查一下它正确地放置好，并且没有弄脏。 </p></li>
+<li class="listitem"><p>如果安装程序无法识别光盘，那么再次尝试运行 <span class="guimenuitem">Detect and mount installation media</span>（检测并挂载安装介质）选项。有些非常老的 CD-ROM 驱动器的 DMA 相关问题可以用这种方法解决。 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>如果还无法工作，那么尝试下一节建议的方法。多数情况下，但非全部，那里的建议适用于 CD-ROM 和 DVD。 </p>
+<p>如果您用光盘无法安装，尝试其它可用的安装方法。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2228"></a>5.4.1.1. 常见问题</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>有些较老的 CD-ROM 驱动器不支持读取现代的 CD 刻录机以高速刻录的光盘。 </p></li>
+<li class="listitem"><p>如果启用 <span class="quote">“<span class="quote">direct memory access</span>”</span>（DMA），那么一些非常老的 CD-ROM 驱动器会无法正常工作。 </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2236"></a>5.4.1.2. 如何调查研究或许可以解决问题</h4></div></div></div>
+<p>如果从光盘引导失败，那么尝试下面所列的建议。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>检查您的 BIOS/UEFI 真正支持从光盘引导（仅有个别非常老的系统不行），并且在 BIOS/UEFI 中启用了从这样的媒体来引导。 </p></li>
+<li class="listitem">
+<p>如果您下载的是 iso 映像，那么检查映像的 md5sum 是否与 <code class="filename">MD5SUMS</code> 文件中的影响所列的相同，该文件应该位于您下载的映像的相同位置。</p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> 然后，检验所刻录光盘的 md5sum 也匹配。可以使用下面的命令。它使用映像的尺寸来从光盘读取正确的字节数。 </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>假如在安装程序成功引导之后，没有检测到光盘，那么有时可能简单地再试一次就能解决问题。如果有多个光盘驱动器，那么尝试将光盘放到其它驱动器中。如果无法工作，或者可以识别光盘但读取的时候有错误，那么尝试下面所列的建议。这里需要一些 Linux 的基本知识。要执行任何命令，应该首先切换到第二虚拟控制台（VT2），并在那里激活 shell。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>切换到 VT4 或查看 <code class="filename">/var/log/syslog</code> 的内容，（使用 <span class="command"><strong>nano</strong></span> 作为编辑器）来检查任何特定的错误消息。之后，再检查 <span class="command"><strong>dmesg</strong></span> 的输出。 </p></li>
+<li class="listitem">
+<p>如果可以识别您的光盘驱动器，那么检查 <span class="command"><strong>dmesg</strong></span> 的输出。应该可以看到像下面的信息（这些行不必是连续出现的）：</p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> 如果看不到类似的信息，估计是光盘驱动器所连接的控制器无法被识别，或者完全不被支持。如果知道控制器所需的驱动程序，可以使用 <span class="command"><strong>modprobe</strong></span> 来尝试手动加载。 </p>
+</li>
+<li class="listitem"><p>检查在 <code class="filename">/dev/</code> 下面有您光盘驱动器对应的设备节点。上面的示例中，它是 <code class="filename">/dev/sr0</code>。还会有 <code class="filename">/dev/cdrom</code>。 </p></li>
+<li class="listitem">
+<p>使用 <span class="command"><strong>mount</strong></span> 命令来检查光盘是否已经挂载；如果没有，尝试手动挂载：</p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> 检查命令后面是否有什么错误消息。 </p>
+</li>
+<li class="listitem">
+<p>检查当前 DMA 是否已经启用：</p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> <code class="literal">using_dma</code> 之后第一列的 <span class="quote">“<span class="quote">1</span>”</span> 意味着将其启用。如果是这样，那么尝试将其禁止：</p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> 确保您处在与光盘驱动器对应设备的目录中。 </p>
+</li>
+<li class="listitem"><p>如果在安装过程中有什么问题，那么尝试使用靠近安装程序主菜单底部的选项，来检查安装介质的完整性。如果光盘可以可靠地读取，那么该选项可以用作通用测试。 </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2288"></a>5.4.2. 引导配置</h3></div></div></div>
+<p>如果在引导过程中遇到了问题或者内核挂起，不识别实际拥有的外围设备，或者驱动不能被正确识别，那么首先要检查的是引导参数，如在 <a class="xref" href="ch05s03.html" title="5.3. 引导参数">第 5.3 节 “引导参数”</a> 中所讨论的。 </p>
+<p>在有些情况下，故障可能由于设备固件的丢失而造成（请参见 <a class="xref" href="ch02s02.html" title="2.2. 需要固件的设备">第 2.2 节 “需要固件的设备”</a> 和 <a class="xref" href="ch06s04.html" title="6.4. 加载缺失的固件">第 6.4 节 “加载缺失的固件”</a>）。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2295"></a>5.4.3. 软件语音合成</h3></div></div></div>
+<p>如果软件语音合成不工作，那么最可能是声卡的问题所致，通常要么是因为驱动程序没有被包含到安装程序中，要么是因为不常见的混音器级别名称，它默认设置为静音。您应该提交一份 bug 报告，它包含后面命令的输出，运行在同一台机器上，来自声音可以正常工作的 Linux 系统（例如，live CD）。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. 常见的 <span class="phrase">64-bit PC</span> 安装问题</h3></div></div></div>
+<p>可以通过将适当的引导参数传递给安装程序，来解决或避免一些常见的安装问题。 </p>
+<p>如果您的显示屏在内核引导的时候显示一个奇怪的图片，例如纯白、纯黑或者彩色的像素块，那么您的系统可能含有一块有问题的显示卡，它不能切换至帧缓存模式。那么可以使用引导参数 <strong class="userinput"><code>vga=normal nomodeset</code></strong> 来禁止使用帧缓存控制台。由于受限制的控制台特性，在安装过程中只能使用少数的几种语言，细节请参见 <a class="xref" href="ch05s03.html" title="5.3. 引导参数">第 5.3 节 “引导参数”</a>。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2318"></a>5.4.4.1. 在 PCMCIA 配置阶段系统死机</h4></div></div></div>
+<p>一些由戴尔生产的非常老的笔记本型号，已知当 PCMCIA 设备检测程序尝试访问某些硬件地址的时候崩溃。其它笔记本可能显示类似的问题。如果您遇到那样的问题，并且在安装的时候不需要 PCMCIA 的支持，可以用 <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> 引导参数来禁止 PCMCIA。然后可以在安装完成后配置 PCMCIA，并去掉造成问题的资源区段。 </p>
+<p>或者，可以以专家模式引导安装程序。然后要求您输入硬件所需的资源范围选项。例如，如果有如上所说的戴尔笔记本，那么应该在这里输入 <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>。在 <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a> 中还列出了一些资源范围选项。注意，在安装程序中输入这个值的时候，必须忽略逗号。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. 内核起始消息的注解</h3></div></div></div>
+<p>在引导顺序中，可以看到很多消息类似 <code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code>（找不到什么东西），或者 <code class="computeroutput"><em class="replaceable"><code>something</code></em> not present</code>（什么东西不见了），<code class="computeroutput">can't initialize <em class="replaceable"><code>something</code></em></code>（什么东西不能初始化），或者甚至 <code class="computeroutput">this driver release depends on <em class="replaceable"><code>something</code></em></code>（这个驱动程序版本依赖于什么东西）。大多数这些消息都是无害的。之所以看到它们，是因为安装系统的内核被构建为运行在具有很多不同外围设备的计算机上。显然，没有一个计算机可能拥有所有的外围设备，因此操作系统可能在查找一些您没有的设备时发出一些报怨。有时可以看到系统暂停了一段时间。这是由于它在等待一台设备的响应，而这台设备并没有出现在您的系统上。如果您发现这个时间长得无法接受，那么以后可以创建一个定制的内核<span class="phrase">（请参见 <a class="xref" href="ch08s05.html" title="8.5. 编译新内核">第 8.5 节 “编译新内核”</a>）</span>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. 报告安装问题</h3></div></div></div>
+<p>如果您经过了初始化引导阶段，但还是不能完成安装，那么可以借助于 <span class="guimenuitem">Save debug logs</span> （存储调试日志）菜单选项。它让您将来自安装程序的系统错误日志和配置信息保存到存储介质上，或者用 web 浏览器下载。该信息或许提供了一些关于哪里出错和如何修复的线索。如果您正在提交一个 bug 报告，可以报告里附上该信息。 </p>
+<p>安装过程的其它有关安装消息可以在 <code class="filename">/var/log/</code> 内找到，而计算机引导进入新安装好的系统后消息放在 <code class="filename">/var/log/debian-installer/</code> 里。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. 提交安装报告</h3></div></div></div>
+<p>如果仍有问题，请提交安装报告（可能的话，请使用英文撰写）。即使已经安装成功，我们也鼓励发送安装报告，这让我们可以在最大的硬件配置数量上获得尽可能多的信息。 </p>
+<p>注意，您的安装包括将公布在 Debian Bug Tracking System（BTS，即 Debian Bug 跟踪系统）上，并转发到公共的邮件列表。请确定您使用的邮件地址可以被公开。 </p>
+<p>如果您有一个可以运行的 Debian 系统，发送安装报告最简单的方法是安装 <code class="classname">installation-report</code> 和 <code class="classname">reportbug</code> 软件包（<span class="command"><strong>aptitude install installation-report reportbug</strong></span>），配置 <code class="classname">reportbug</code>，如在 <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. 发送邮件到系统之外">第 8.4.2 节 “发送邮件到系统之外”</a> 中所解释的，并且运行 <span class="command"><strong>reportbug installation-reports</strong></span> 命令。 </p>
+<p>另外，在填写安装报告时，您可以采用下列模板，并将其发送到 <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>，也就是通过向 <code class="classname">installation-reports</code> 伪软件包提交 bug 报告的方式提交安装报告。</p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Description of the install, in prose, and any thoughts, comments
+      and ideas you had during the initial install.&gt;
+
+Please make sure that any installation logs that you think would
+be useful are attached to this report. (You can find them in the installer
+system in /var/log/ and later on the installed system under
+/var/log/installer.) Please compress large files using gzip.
+
+</pre></div>
+<p> 在 bug 报告中，请说明问题所在，包括内核挂起时最后见到的内核消息。描述进入问题状态所进行的步骤。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. 引导参数 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 第 6 章 使用 Debian 安装程序</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

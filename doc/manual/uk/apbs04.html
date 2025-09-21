@@ -1,0 +1,660 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Вміст файлу попередньої конфігурації (для trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Додаток B. Автоматичне встановлення з готовими відповідями">
+<link rel="prev" href="apbs03.html" title="B.3. Створення файлу попередньої конфігурації">
+<link rel="next" href="apbs05.html" title="B.5. Додаткові опції">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Вміст файлу попередньої конфігурації (для trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток B. Автоматичне встановлення з готовими відповідями</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Вміст файлу попередньої конфігурації (для trixie)</h2></div></div></div>
+<p>Фрагменти конфігурації, використані у цьому додатку, також доступні як приклад файлу попередньої конфігурації з <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Зверніть увагу, що цей приклад базується на встановленні для архітектури Intel x86. Якщо ви встановлюєте іншу архітектуру, деякі з прикладів (наприклад, вибір клавіатури та встановлення завантажувача) можуть бути неактуальними і їх слід замінити налаштуваннями debconf, що відповідають вашій архітектурі. </p>
+<p>Докладні відомості про те, як насправді працюють різні компоненти програми встановлення Debian, можна знайти у <a class="xref" href="ch06s03.html" title="6.3. Використання окремих компонентів">Розділ 6.3, «Використання окремих компонентів»</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Локалізація</h3></div></div></div>
+<p>Під час звичайного встановлення питання про локалізацію ставляться першими, тому ці значення можна попередньо вказати лише за допомогою методів initrd або параметрів завантаження ядра. Автоматичний режим (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Автоматичний режим">Розділ B.2.3, «Автоматичний режим»</a>) передбачає встановлення <code class="literal">auto-install/enable=true</code> (зазвичай через псевдонім <code class="literal">auto</code> preseed). Це затримує постановку питань про локалізацію, щоб їх можна було попередньо задати будь-яким методом. </p>
+<p>Локалізацію можна використовувати для вказівки як мови, так і країни, і це може бути будь-яка комбінація мови, що підтримується <code class="classname">debian-installer</code>, і визнаної країни. Якщо комбінація не утворює правильну локаль, програма встановлення автоматично вибере локаль, яка є правильною для вибраної мови. Щоб вказати локаль як параметр завантаження, використовуйте <strong class="userinput"><code>locale=<em class="replaceable"><code>en_US.UTF-8</code></em></code></strong>. </p>
+<p>Хоча цей метод дуже простий у використанні, він не дозволяє попередньо вказати усі можливі комбінації мови, країни та локалі<a href="#ftn.id4299" class="footnote" name="id4299"><sup class="footnote">[20]</sup></a>. Крім того, значення можуть бути попередньо задані індивідуально. Мова та країна також можуть бути вказані як параметри завантаження. </p>
+<div class="informalexample"><pre class="screen"># Попередній вибір тільки локалі задає мову, країну та локаль.
+d-i debian-installer/locale string en_US.UTF-8
+
+# Для більшої гнучкості значення можуть бути задані індивідуально.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# За бажанням вкажіть додаткові локалі, які потрібно згенерувати.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Конфігурація клавіатури складається з вибору розкладки і (для нелатинських розкладок) клавіші перемикання між нелатинською і американською розкладками. Під час інсталяції доступні лише базові варіанти розкладки клавіш. Розширені варіанти доступні лише у встановленій системі, за допомогою <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Вибір клавіатури.
+d-i keyboard-configuration/xkb-keymap select us
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Щоб пропустити конфігурацію клавіатури, задайте <code class="classname">keymap</code> з <strong class="userinput"><code>skip-config</code></strong>. Це призведе до того, що карта клавіш ядра залишиться активною. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Синтез мовлення</h3></div></div></div>
+<p>Під час інсталяції з програмним синтезом мовлення (напр. у командному рядку ядра додано <code class="literal">speakup.synth=soft</code>), можна задати голос та звукову плату. </p>
+<p>Оскільки синтез мовлення запускається на ранньому етапі, його можна активувати лише з initrd або з командного рядка ядра. </p>
+<p>Завчасне використання <code class="literal">espeakup/voice</code> також дає можливість налаштування встановленої системи за допомогою мовних функцій доступності. Це працює, навіть якщо програмний синтез мовлення не був увімкнений в інсталяторі. </p>
+<div class="informalexample"><pre class="screen"># Яку карту ALSA використовувати для програмного мовлення.
+# Може бути числом від 0 або ID з вказаного у
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Який голос espeak-ng використовувати
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Конфігурація мережі</h3></div></div></div>
+<p>Звичайно, попереднє завантаження мережевої конфігурації не працюватиме, якщо ви завантажуєте файл попередньої конфігурації з мережі. Але це чудово, коли ви завантажуєтеся з оптичного диска або USB-накопичувача. Якщо ви завантажуєте файли попередньої конфігурації з мережі, ви можете передати параметри конфігурації мережі за допомогою параметрів завантаження ядра. </p>
+<p>Якщо вам потрібно вибрати певний інтерфейс під час мережевого завантаження перед завантаженням файлу попередньої конфігурації з мережі, використовуйте параметр завантаження, наприклад, <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Хоча попереднє встановлення конфігурації мережі зазвичай неможливе при використанні мережевого попереднього встановлення (за допомогою <span class="quote">«<span class="quote">preseed/url</span>»</span>), ви можете скористатися наведеним нижче хакерським прийомом, щоб обійти цю проблему, наприклад, якщо ви хочете встановити статичну адресу для мережевого інтерфейсу. Злом полягає в тому, щоб змусити мережеву конфігурацію запуститися знову після завантаження файлу попередньої конфігурації, створивши скрипт <span class="quote">«<span class="quote">preseed/run</span>»</span>, що містить наступні команди: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Наступні змінні debconf стосуються конфігурації мережі. </p>
+<div class="informalexample"><pre class="screen"># Повністю вимкнути конфігурацію мережі. Це корисно для cdrom
+# встановлення на немережевих пристроях, де виникають проблеми з мережею,
+# попередження та довгі таймаути є неприємністю.
+#d-i netcfg/enable boolean false
+
+# netcfg вибере інтерфейс, який має посилання, якщо це можливо. Це дозволяє
+# пропустити відображення списку, якщо існує більше одного інтерфейсу.
+d-i netcfg/choose_interface select auto
+
+# Щоб вибрати певний інтерфейс замість цього:
+#d-i netcfg/choose_interface select eth1
+
+# Встановити інший тайм-аут виявлення посилання (за замовчуванням - 3 секунди).
+# Значення інтерпретуються в секундах.
+#d-i netcfg/link_wait_timeout string 10
+
+# Якщо у вас повільний dhcp-сервер і програма встановлення зависає в очікуванні
+# його, це може бути корисним.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Автоматична конфігурація мережі за замовчуванням.
+# Якщо ви бажаєте налаштувати мережу вручну, видаліть цей рядок і
+# статичну конфігурацію мережі нижче.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Якщо ви хочете, щоб файл попередньої конфігурації працював на системах як із сервером, так і без нього
+# без dhcp-сервера, розкоментуйте ці рядки і статичну мережеву
+# конфігурацію мережі нижче.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Статична конфігурація мережі.
+#
+# Приклад IPv4
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# Приклад IPv6
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Будь-які імена хостів та доменів, призначені з dhcp, мають пріоритет над
+# значеннями, заданими тут. Втім, встановлення значень все одно запобігає показу запитань
+# не будуть показані, навіть якщо значення отримано з dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# Якщо ви хочете примусово визначити ім'я хоста, незалежно від того, що повертає сервер DHCP
+# повертає сервер DHCP, або зворотний запис DNS для IP-адреси, видаліть коментар
+# і відкоригуйте наступний рядок.
+#d-i netcfg/hostname string somehost
+
+# Вимкніть набридливе діалогове вікно з ключем WEP.
+d-i netcfg/wireless_wep string
+# Дивакувате ім'я хоста dhcp, яке деякі провайдери використовують як своєрідний пароль.
+#d-i netcfg/dhcp_hostname string radish
+
+# Якщо ви хочете повністю вимкнути пошук прошивок (тобто не використовувати прошивки
+# файли або пакунки, які можуть бути наявні в інсталяційних образах):
+#d-i hw-detect/firmware-lookup string never
+
+# Якщо для мережі або іншого обладнання потрібне невільне програмне забезпечення, ви можете
+# налаштувати програму встановлення так, щоб вона завжди намагалася завантажити її без запиту. Або
+# змініть на false, щоб вимкнути запит.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Зверніть увагу, що <span class="command"><strong>netcfg</strong></span> автоматично визначить маску мережі, якщо не вказано попередньо <code class="classname">netcfg/get_netmask</code>. У цьому випадку, змінна має бути позначена як <code class="literal">seen</code> для автоматичного встановлення. Аналогічно, <span class="command"><strong>netcfg</strong></span> вибере відповідну адресу, якщо <code class="classname">netcfg/get_gateway</code> не задано. Як окремий випадок, ви можете встановити <code class="classname">netcfg/get_gateway</code> у <span class="quote">«<span class="quote">none</span>»</span>, щоб вказати, що не слід використовувати жодного шлюзу. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Мережева консоль</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Якщо ви бажаєте використовувати мережеву консоль, використовуйте наступні налаштування
+# компонент для віддаленого встановлення по SSH. Це має сенс лише у тому випадку, якщо ви
+# маєте намір виконати решту встановлення вручну.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>Додаткову інформацію про мережеву консоль можна знайти за посиланням <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Встановлення через мережеву консоль">Розділ 6.3.10, «Встановлення через мережеву консоль»</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Дзеркальні налаштування</h3></div></div></div>
+<p>Залежно від методу встановлення, який ви використовуєте, дзеркало може бути використано для завантаження додаткових компонентів програми встановлення, встановлення базової системи та налаштування <code class="filename">/etc/apt/sources.list</code> для встановленої системи. </p>
+<p>Параметр <code class="classname">mirror/suite</code> визначає набір для встановленої системи. </p>
+<p>Параметр <code class="classname">mirror/udeb/suite</code> визначає набір додаткових компонентів для програми встановлення. Цей параметр корисно встановлювати, лише якщо компоненти фактично завантажуються через мережу, і він має відповідати набору, який було використано для створення initrd для методу встановлення, який було використано під час встановлення. Зазвичай програма встановлення автоматично використовує правильне значення, і вам не потрібно його налаштовувати. </p>
+<div class="informalexample"><pre class="screen"># Дзеркальний протокол:
+# Якщо ви вибрали ftp, рядок дзеркало/країна не потрібно вказувати.
+# Значення за замовчуванням для дзеркального протоколу: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Набір для встановлення.
+#d-i mirror/suite string testing
+# Набір для завантаження компонентів інсталятора (необов'язково).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Налаштування облікового запису</h3></div></div></div>
+<p>Пароль для облікового запису root, а також ім'я та пароль для першого облікового запису звичайного користувача можуть бути задані заздалегідь. Для паролів ви можете використовувати як відкриті текстові значення, так і crypt(3) <span class="emphasis"><em>хеші</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Застереження]" src="images/warning.png"></td>
+<th align="left">Застереження</th>
+</tr>
+<tr><td align="left" valign="top"><p>Пам'ятайте, що попереднє встановлення паролів не є повністю безпечним, оскільки кожен, хто має доступ до файлу попередньої конфігурації, буде знати ці паролі. Зберігання хешованих паролів вважається безпечним, якщо не використовується слабкий алгоритм хешування, такий як DES або MD5, які дозволяють здійснювати атаки грубою силою. Рекомендовані алгоритми хешування паролів - SHA-256 та SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Пропустити створення облікового запису root (звичайний користувач зможе
+# використовувати sudo).
+#d-i passwd/root-login boolean false
+# Або пропустити створення звичайного облікового запису користувача.
+#d-i passwd/make-user boolean false
+
+# Кореневий пароль, або відкритим текстом
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# or encrypted using a crypt(3)  hash.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Створити звичайний обліковий запис користувача.
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Звичайний пароль користувача, або відкритим текстом
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# or encrypted using a crypt(3) hash.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Створити першого користувача з вказаним UID замість стандартного.
+#d-i passwd/user-uid string 1010
+
+# Обліковий запис користувача буде додано до деяких стандартних початкових груп. Щоб
+# перевизначити це, використовуйте це.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Змінні <code class="classname">passwd/root-password-crypted</code> і <code class="classname">passwd/user-password-crypted</code> також можуть бути задані з <span class="quote">«<span class="quote">!</span>»</span> як їх значення. У такому випадку, відповідний обліковий запис буде вимкнено. Це може бути зручно для облікового запису root, якщо, звісно, налаштовано альтернативний метод, який дозволяє адміністративні дії або вхід у систему від імені користувача root (наприклад, за допомогою автентифікації за допомогою ключа SSH або <span class="command"><strong>sudo</strong></span>). </p>
+<p>Наступна команда (доступна у пакунку <code class="classname">whois</code>) може бути використана для створення хешу пароля на основі SHA-512 за алгоритмом crypt(3): </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Налаштування годинника та часового поясу</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Контролює, чи встановлено апаратний годинник на UTC чи ні.
+d-i clock-setup/utc boolean true
+
+# Ви можете встановити будь-яке допустиме значення для $TZ; див. вміст файлу
+# /usr/share/zoneinfo/ для отримання допустимих значень.
+d-i time/zone string US/Eastern
+
+# Дозволяє вказати, чи використовувати NTP для встановлення годинника під час встановлення
+d-i clock-setup/ntp boolean true
+# Сервер NTP для використання. За замовчуванням тут майже завжди все гаразд.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Розбиття на розділи</h3></div></div></div>
+<p>Використання попереднього розбиття на розділи жорсткого диска обмежується тим, що підтримується <code class="classname">partman-auto</code>. Ви можете розбити на розділи як наявний вільний простір на диску, так і весь диск. Структура диска може бути визначена за допомогою попередньо визначеного рецепта, користувацького рецепта з файлу рецептів або рецепта, включеного до файлу попередньої конфігурації. </p>
+<p>Підтримується попереднє створення розширених налаштувань розділів за допомогою RAID, LVM і шифрування, але не з повною гнучкістю, можливою при створенні розділів під час інсталяції без попереднього створення розділів. </p>
+<p>Наведені нижче приклади надають лише базову інформацію про використання рецептів. Докладні відомості наведено у файлах <code class="filename">partman-auto-recipe.txt</code> і <code class="filename">partman-auto-raid-recipe.txt</code>, що входять до складу пакунка <code class="classname">debian-installer</code>. Обидва файли також доступні з <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top"><code class="classname">debian-installer</code> репозиторію вихідних текстів</a>. Зверніть увагу, що підтримувана функціональність може змінюватися між випусками. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Застереження]" src="images/warning.png"></td>
+<th align="left">Застереження</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ідентифікація дисків залежить від порядку завантаження їхніх драйверів. Якщо в системі є кілька дисків, переконайтеся, що вибрано правильний диск, перш ніж використовувати попередню підготовку. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Приклад розбиття на розділи</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Якщо у системі є вільне місце, Ви можете розділити лише цей простір.
+# Це правило виконується лише якщо не задано partman-auto/method (нижче).
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Крім того, Ви можете вказати диск для розподілу на розділи. Якщо у системі є лише
+# один диск, програма встановлення стандартно використовуватиме його, в іншому разі
+# потрібно вказати назву пристрою у традиційному, не devfs форматі (тобто, скажімо, /dev/sda
+# а не, наприклад, /dev/discs/disc0/disc).
+# Таким чином, для використання першого жорсткого диска SCSI/SATA:
+#d-i partman-auto/disk string /dev/sda
+# Крім того, Вам потрібно буде вказати метод, який буде використовуватися.
+# Зараз доступні такі методи:
+# - regular: використовувати звичайні типи розділів для Вашої архітектури
+# - lvm:     використовувати LVM для розподілу диска на розділи
+# - crypto:  використовувати LVM всередині зашифрованого розділу
+d-i partman-auto/method string lvm
+
+# Ви можете вказати обсяг простору, який буде використаний для групи томів LVM.
+# Це може бути розмір з одиницею виміру (наприклад, 20 ГБ), відсоток від
+# вільного місця або ключове слово 'max'.
+d-i partman-auto-lvm/guided_size string max
+
+# Якщо один з дисків, які заплановані для автоматичного розподілу на розділи
+# містить стару конфігурацію LVM, користувач як правило отримає
+# попередження. Це можна також опрацювати...
+d-i partman-lvm/device_remove_lvm boolean true
+# Те саме стосується вже наявних програмних RAID-масивів:
+d-i partman-md/device_remove_md boolean true
+# Також це стосується підтвердження запису розділів lvm.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# Ви можете вибрати один із трьох попередньо визначених планів (рецептів) розподілу:
+# - atomic: всі файли в одному розділі
+# - home:   виокремити розділ /home
+# - multi:  виокремити розділи /home, /var, та /tmp
+# - сервер: окремі розділи /var і /srv; обмін обмежено 1G
+# - small_disk: схема, призначена для малих жорстких дисків (до 10 ГБ)
+
+d-i partman-auto/choose_recipe select atomic
+
+# Або надайте власний рецепт...
+# Якщо у Вас є спосіб отримати файл рецептів у середовищі d-i, Ви можете
+# просто вказати на нього.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Якщо немає, можете помістити весь рецепт у файл попередньої конфігурації одним
+# (логічним) рядком. У цьому прикладі створюється невеликий розділ /boot, придатний для
+# свопу, а решта простору використовується для кореневого розділу:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# Повний формат рецептів (планів розподілу) задокументовано у файлі partman-auto-recipe.txt
+# який входить до складу пакунка 'debian-installer' або доступний з репозиторію вихідного
+# коду D-I. У ньому також описано, як вказати такі параметри, як файлові
+# системні мітки, назви груп томів та які фізичні пристрої слід включити
+# до групи томів.
+
+## Створення розділів для EFI
+# Якщо Вашій системі потрібен розділ EFI, Ви можете додати до наведеного вище рецепта 
+# щось на кшталт цього, як перший елемент рецепта:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# Наведений вище фрагмент стосується архітектури amd64; для інших
+# архітектур деталі можуть відрізнятися. Пакунок 'partman-auto' у репозиторії коду
+# D-I може містити приклад, який Ви можете використати.
+
+# Це дозволить partman автоматично розбивати розділи без підтвердження, за умови,
+# що Ви вказали йому що робити одним з наведених вище способів.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Примусове завантаження UEFI (сумісність з BIOS буде втрачено). Стандартно: false.
+#d-i partman-efi/non_efi_system boolean true
+# Переконайтеся, що таблиця розділів у форматі GPT — це необхідно для EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# Якщо увімкнено шифрування диска, пропустити попереднє витирання розділів.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Розбиття на розділи завдяки RAID</h4></div></div></div>
+<p>Ви також можете використовувати попередню підготовку для створення розділів на програмних RAID-масивах. Підтримуються рівні RAID 0, 1, 5, 6 і 10, створення погіршених масивів і вказівка запасних пристроїв. </p>
+<p>Якщо ви використовуєте RAID 1, ви можете попередньо завантажити grub для встановлення на всі пристрої, що використовуються в масиві; див. <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Інсталяція завантажувача">Розділ B.4.12, «Інсталяція завантажувача»</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Застереження]" src="images/warning.png"></td>
+<th align="left">Застереження</th>
+</tr>
+<tr><td align="left" valign="top"><p>Цей тип автоматичного розбиття на розділи може легко помилятися. Це також функціональність, яка отримує відносно мало тестування від розробників <code class="classname">debian-installer</code>. Відповідальність за правильне використання різних рецептів (щоб вони мали сенс і не суперечили один одному) лежить на користувачеві. Перевірте <code class="filename">/var/log/syslog</code>, якщо у вас виникли проблеми. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Метод має бути встановлений на "рейд".
+#d-i partman-auto/method string raid
+# Вкажіть диски для розбиття на розділи. Усі вони отримають однакове розташування,
+# тому це спрацює лише якщо диски однакового розміру.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Далі потрібно вказати фізичні розділи, які будуть використовуватися. 
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Наостанок потрібно вказати, як раніше визначені розділи
+# будуть використовуватися при створенні RAID. Не забувайте використовувати правильні номери розділів
+# для логічних розділів. Підтримуються рівні RAID 0, 1, 5, 6 і 10;
+# пристрої розділяються за допомогою "#".
+# Параметри такі:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Додаткову інформацію наведено у файлі partman-auto-raid-recipe.txt
+# входить до складу пакунка 'debian-installer' або доступний у джерелі D-I
+# сховища.
+
+# Це змушує partman автоматично створювати розділи без підтвердження.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Керування монтуванням розділів</h4></div></div></div>
+<p>Зазвичай, файлові системи монтуються з використанням універсального унікального ідентифікатора (UUID) як ключа; це дозволяє монтувати їх належним чином, навіть якщо ім'я пристрою змінюється. UUID довгі і їх важко читати, тому, якщо ви бажаєте, програма встановлення може змонтувати файлові системи на основі традиційних назв пристроїв або на основі мітки, яку ви призначите. Якщо ви попросите програму встановлення змонтувати за міткою, будь-які файлові системи без мітки буде змонтовано з використанням UUID. </p>
+<p>Пристрої зі стабільними іменами, такі як логічні томи LVM, і надалі використовуватимуть свої традиційні імена, а не UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Застереження]" src="images/warning.png"></td>
+<th align="left">Застереження</th>
+</tr>
+<tr><td align="left" valign="top"><p>Традиційні назви пристроїв можуть змінюватися залежно від порядку, у якому ядро виявляє пристрої під час завантаження, що може призвести до монтування неправильної файлової системи. Аналогічно, мітки можуть зіткнутися, якщо ви під'єднаєте новий диск або USB-накопичувач, і якщо це станеться, поведінка вашої системи під час запуску буде випадковою. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># За замовчуванням монтувати за UUID, але ви також можете вибрати параметр "традиційний", щоб
+# використовувати традиційні назви пристроїв або "label", щоб спробувати мітки файлової системи перед тим, як
+# повернутися до UUID.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Установка базової системи</h3></div></div></div>
+<p>Насправді не так вже й багато можна попередньо обробити на цьому етапі інсталяції. Єдині запитання стосуються встановлення ядра. </p>
+<div class="informalexample"><pre class="screen"># Налаштуйте APT так, щоб за замовчуванням не встановлювати рекомендовані пакунки.
+# опція може призвести до неповноти системи і має використовуватися лише дуже
+# досвідченими користувачами.
+#d-i base-installer/install-recommends boolean false
+
+# Пакунок образу ядра (мета), який потрібно встановити; можна використати "none", якщо не потрібно встановлювати жодного пакунка
+# ядро не буде встановлено.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Apt setup</h3></div></div></div>
+<p>Налаштування <code class="filename">/etc/apt/sources.list</code> та основних параметрів конфігурації повністю автоматизовано на основі вашого методу встановлення та відповідей на попередні запитання. За бажанням ви можете додати інші (локальні) сховища. </p>
+<div class="informalexample"><pre class="screen"># Виберіть, якщо хочете відсканувати додаткові інсталяційні носії
+# (за замовчуванням: false).
+d-i apt-setup/cdrom/set-first boolean false
+# Ви можете встановити невільну прошивку.
+#d-i apt-setup/non-free-firmware boolean true
+# Ви можете встановити як платне, так і безплатне програмне забезпечення.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Якщо ви не бажаєте використовувати sources.list, не коментуйте наступний рядок
+# запис для інсталяційного образу DVD/BD, активного у встановленій системі
+# (записи для netinst або образів компакт-дисків буде вимкнено у будь-якому випадку, незалежно від
+# цього параметра).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Не коментуйте це, якщо ви не хочете використовувати мережеве дзеркало.
+#d-i apt-setup/use_mirror boolean false
+# Виберіть, які служби оновлення використовувати; визначте дзеркала, які будуть використовуватися.
+# Значення, наведені нижче, є стандартними значеннями за замовчуванням.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Додаткові сховища, доступно local[0-9]
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Увімкнути рядки deb-src
+#d-i apt-setup/local0/source boolean true
+# URL-адресу публічного ключа локального сховища; ви повинні надати ключ або
+# apt поскаржиться на неавторизований репозиторій і тому
+# рядок sources.list буде залишено без коментарів.
+#d-i apt-setup/local0/key string http://local.server/key
+# або ж можна передати його в рядку, закодувавши вміст файлу в base64
+# ключовий файл (з `base64 -w0`) і вказавши його таким чином:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# Вміст файлу ключа перевіряється на наявність ASCII-захисту.
+# Якщо так, то його буде збережено з розширенням ".asc", інакше він отримає розширення ".gpg".
+# формат "keybox database" наразі не підтримується. (див. generators/60local у джерелі apt-setup).
+
+# За замовчуванням програма встановлення вимагає автентифікації сховищ
+# за допомогою відомого ключа gpg. За допомогою цього параметра можна вимкнути цю
+# автентифікацію. Попередження: Небезпечно, не рекомендовано.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Зніміть коментар, щоб додати багатоаркову конфігурацію для i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Вибір пакета</h3></div></div></div>
+<p>Ви можете встановити будь-яку комбінацію доступних завдань. На момент написання доступні наступні завдання: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (стандартні інструменти) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (графічний робочий стіл) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (робочий стіл Gnome) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (робочий стіл XFCE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (робочий стіл KDE Plasma) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (робочий стіл Cinnamon) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (робочий стіл MATE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (робочий стіл LXDE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (веб сервер) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH сервер) </p></li>
+</ul></div>
+<p>Ви також можете не встановлювати жодних завдань і примусово встановити набір пакунків у інший спосіб. Ми рекомендуємо завжди включати завдання <strong class="userinput"><code>standard</code></strong>. </p>
+<p>Або якщо ви не хочете, щоб діалогове вікно tasksel було показано взагалі, задайте <code class="classname">pkgsel/run_tasksel</code> (у цьому випадку пакунки не буде встановлено за допомогою tasksel). </p>
+<p>Якщо ви хочете встановити деякі окремі пакунки на додаток до пакунків, встановлених за допомогою завдань, ви можете скористатися параметром <code class="classname">pkgsel/include</code>. Значенням цього параметра може бути список пакунків, розділених комами або пробілами, що дозволяє легко використовувати його і у командному рядку ядра. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Або ви можете взагалі не показувати діалогове вікно панелі завдань (і не встановлювати
+# жодних пакунків):
+#d-i pkgsel/run_tasksel boolean false
+
+# Окремі додаткові пакунки для встановлення
+#d-i pkgsel/include string openssh-server build-essential
+# Чи оновлювати пакунки після debootstrap.
+# Допустимі значення: немає, безпечне оновлення, повне оновлення
+#d-i pkgsel/upgrade select none
+
+# Ви можете вибрати, чи буде ваша система звітувати про те, яке програмне забезпечення у вас
+# встановлено, і яке програмне забезпечення ви використовуєте. За замовчуванням звіти не надсилаються,
+# але надсилання звітів допомагає проєкту визначити, яке програмне забезпечення є найбільш
+# популярне і має бути включене до першого DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Інсталяція завантажувача</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub - це завантажувач (для x86).</span>
+
+# Це досить безпечний параметр, який змушує grub автоматично встановлюватися на UEFI
+# запис розділу/запису завантаження, якщо на комп'ютері не виявлено жодної іншої операційної системи.
+d-i grub-installer/only_debian boolean true
+
+# Цей параметр змушує grub-installer встановлюватися до розділу/запису завантаження UEFI, якщо
+# він також знайде іншу ОС, що є менш безпечним, оскільки він не зможе
+# завантажити цю іншу ОС.
+d-i grub-installer/with_other_os boolean true
+
+# Через потенційні USB-накопичувачі розташування основного диска
+# не може бути визначено безпечно, тому його потрібно вказати:
+#d-i grub-installer/bootdev  string /dev/sda
+# Для встановлення на основний пристрій (за умови, що це не флешка):
+#d-i grub-installer/bootdev  string default
+
+# Крім того, якщо ви хочете встановити в інше місце, ніж UEFI
+# розділу/запису завантаження, розкоментуйте та відредагуйте ці рядки:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Щоб встановити grub на кілька дисків:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Необов'язковий пароль для grub, або відкритим текстом
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# або зашифровані за допомогою хешу MD5, див. grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# За допомогою цього параметра можна додати додаткові параметри завантаження для
+# встановленої системи (якщо підтримується програмою встановлення завантажувача).
+# Примітка: опції, передані програмі встановлення, буде додано автоматично.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>MD5 хеш пароля для <code class="classname">grub</code> можна згенерувати за допомогою <span class="command"><strong>grub-md5-crypt</strong></span>, або за допомогою команди з прикладу в <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Налаштування облікового запису">Розділ B.4.6, «Налаштування облікового запису»</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Завершення установки</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Під час встановлення з послідовної консолі звичайні віртуальні консолі
+# (VT1-VT6) зазвичай вимкнено у файлі /etc/inittab. Розкоментуйте наступний
+# рядок, щоб запобігти цьому.
+#d-i finish-install/keep-consoles boolean true
+
+# Уникайте останнього повідомлення про завершення встановлення.
+d-i finish-install/reboot_in_progress note
+
+# Це не дозволить програмі встановлення витягти диск під час перезавантаження,
+# що може бути корисним у деяких ситуаціях.
+#d-i cdrom-detect/eject boolean false
+
+# Ось як зробити так, щоб програма встановлення завершувала роботу після завершення, але не
+# перезавантажилася у встановлену систему.
+#d-i debian-installer/exit/halt boolean true
+# Це вимкне машину замість того, щоб просто зупинити її.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Попередня підготовка інших пакунків</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Залежно від того, яке програмне забезпечення ви вирішили встановити, або якщо щось піде не так
+# під час процесу встановлення, можливо, 
+# виникнуть інші запитання. Звичайно, їх теж можна попередньо підготувати. Щоб отримати список всіх
+# можливих запитань, які можуть виникнути під час встановлення, виконайте
+# встановлення, а потім виконайте ці команди:
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4299" class="footnote"><p><a href="#id4299" class="para"><sup class="para">[20] </sup></a> Попередня обробка <code class="literal">locale</code> до <strong class="userinput"><code>en_NL</code></strong>, наприклад, призведе до отримання <code class="literal">en_US.UTF-8</code> як локалі за замовчуванням для інстальованої системи. Якщо ви віддаєте перевагу, наприклад, <code class="literal">en_GB.UTF-8</code>, значення потрібно буде вказати окремо. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Створення файлу попередньої конфігурації </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Додаткові опції</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

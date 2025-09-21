@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Preinstalación de hardware y configuración del sistema operativo</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="ch03.html" title="Capítulo 3. Antes de instalar Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Preparticionado para sistemas multiarranque">
+<link rel="next" href="ch04.html" title="Capítulo 4. Obtener el soporte de instalación del sistema">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Preinstalación de hardware y configuración del sistema operativo</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 3. Antes de instalar Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Preinstalación de hardware y configuración del sistema operativo</h2></div></div></div>
+<p>Esta sección le guiará a través de la preinstalación y configuración de hardware, en caso de ser necesaria, previa a la instalación de Debian. Generalmente, involucra comprobar y posiblemente cambiar la configuración de la BIOS/UEFI/firmware del sistema para su sistema. La <span class="quote">“<span class="quote">BIOS/UEFI</span>”</span> o el <span class="quote">“<span class="quote">firmware del sistema</span>”</span> es el software base usado por el hardware, y es fundamental durante el proceso de arranque (después del encendido). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Utilización del menú de configuración de la BIOS/UEFI</h3></div></div></div>
+<p>La BIOS/UEFI provee las funcionalidades básicas necesarias para arrancar su máquina y permitir al sistema operativo acceder a su hardware. Su sistema ofrece un menú de configuración de la BIOS/UEFI, usado para configurarla. Para acceder al menú de configuración de la BIOS/UEFI, debe pulsar un tecla o combinación de teclas después de arrancar el sistema. Habitualmente, es la tecla <span class="keycap"><strong>Supr</strong></span> o la tecla <span class="keycap"><strong>F2</strong></span>, pero algunos fabricantes utilizan otras. Generalmente, al arrancar el sistema se muestra un mensaje que indica la tecla que pulsar para acceder a la pantalla de configuración. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Selección de dispositivo de arranque</h3></div></div></div>
+<p>En el menú de configuración de la BIOS/UEFI, puede seleccionar los dispositivos que comprobar, así como su orden, en busca de un sistema operativo arrancable. Las selecciones posibles incluyen los discos duros, internos, la unidad de CD/DVD-ROM, y dispositivos de almacenamiento USB como dispositivos USB o discos duros externos USB. Los sistemas modernos también existe la posibilidad de activar el arranque por red mediante PXE. </p>
+<p>Según el medio de instalación (CD/DVD ROM, dispositivo USB, arranque por red) que ha seleccionado, debe activar los dispositivos de arranque pertinentes si aún no están activados. </p>
+<p>La mayoría de las variantes de BIOS/UEFI permiten invocar un menú de arranque durante el arranque del sistema, que permite seleccionar el dispositivo desde el que debe arrancar el sistema para la sesión actual. Si esta opción está disponible, habitualmente la BIOS/UEFI muestra un mensaje breve como <span class="quote">“<span class="quote">pulse <span class="keycap"><strong>F12</strong></span> para el menú de arranque</span>”</span> durante el arranque del sistema. La tecla que se utiliza para acceder a este menú varía según el sistema; teclas comúnmente utilizados son <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> and <span class="keycap"><strong>F8</strong></span>. Si se selecciona un dispositivo de este menú no se modifica el orden de arranque predeterminado de la BIOS/UEFI; esto es, puede realizar el arranque una vez desde un dispositivo USB mientras que el disco duro interno está configurado como el dispositivo de arranque principal predeterminado. </p>
+<p>Si la BIOS/UEFI no proporciona un menú de arranque para realizar selecciones específicas del dispositivo de arranque actual, debe modificar la configuración de la BIOS/UEFI para que el dispositivo desde el que arranca <code class="classname">debian-installer</code> sea el dispositivo de arranque principal. </p>
+<p>Lamentablemente, algunos ordenadores pueden tener versiones de BIOS/UEFI con errores. Arrancar <code class="classname">debian-installer</code> desde una memoria USB puede que no funcione aunque haya una opción apropiada en el menú de configuración de la BIOS/UEFI y la memoria esté seleccionada como dispositivo de arranque principal. En algunos de estos sistemas es imposible utilizar una memoria USB como medio de arranque; se puede engañar a otros para que arranquen desde la memoria cambiando el tipo de dispositivo en la configuración de la BIOS/UEFI desde el predeterminado <span class="quote">“<span class="quote">USB harddisk</span>”</span> o <span class="quote">“<span class="quote">USB stick</span>”</span> a <span class="quote">“<span class="quote">USB ZIP</span>”</span> o <span class="quote">“<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> En particular, si utiliza una imagen de instalación isohybrid en una memoria USB (consulta <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Preparación de una memoria USB utilizando una imagen híbrida de CD/DVD">Sección 4.3.1, “Preparación de una memoria USB utilizando una imagen híbrida de CD/DVD”</a>), cambiar el tipo de dispositivo a <span class="quote">“<span class="quote">USB CDROM</span>”</span> ayuda en algunas BIOS que no arrancan desde una memoria USB en modo disco duro USB.</span> Es posible que tengas que configurar tu BIOS/UEFI para habilitar <span class="quote">“<span class="quote">USB legacy support</span>”</span>. </p>
+<p>Si no puedes modificar la BIOS para que arranque de forma directa desde un dispositivo USB, queda la opción de utilizar una ISO copiada al dispositivo. Arranca <code class="classname">debian-installer</code> mediante <a class="xref" href="ch04s04.html" title="4.4. Preparación de los ficheros para arranque desde el disco duro">Sección 4.4, “Preparación de los ficheros para arranque desde el disco duro”</a> y, después de analizar los discos duros para detectar una imagen ISO de instalador, seleccione el dispositivo USB y una imagen de instalación. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Sistemas con firmware UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">“<span class="quote">Unified Extensible Firmware Interface</span>”</span>) es un nuevo tipo de firmware de sistema que se utiliza en muchos sistemas modernos y que, entre otros usos, pretende sustituir a la clásica BIOS del PC. </p>
+<p>En la actualidad, la mayoría de los sistemas de PC que utilizan UEFI también cuentan con el llamado <span class="quote">“<span class="quote">Compatibility Support Module</span>”</span> (CSM) en el firmware, que proporciona exactamente las mismas interfaces a un sistema operativo que una BIOS de PC clásica, de modo que el software escrito para la BIOS de PC clásica se puede utilizar sin cambios. No obstante, la UEFI pretende sustituir algún día por completo a la antigua BIOS del PC sin ser totalmente compatible con las versiones anteriores, y ya hay muchos sistemas con UEFI pero sin CSM. </p>
+<p>En los sistemas con UEFI hay que tener en cuenta algunas cosas a la hora de instalar un sistema operativo. La forma en que el firmware carga un sistema operativo es fundamentalmente diferente entre la BIOS clásica (o UEFI en modo CSM) y la UEFI nativa. Una diferencia importante es la forma en que se registran las particiones del disco duro. Una diferencia importante es la forma en que se registran las particiones del disco duro. Mientras que la BIOS clásica y la UEFI en modo CSM utilizan una tabla de particiones de DOS, la UEFI nativa utiliza un esquema de partición diferente llamado <span class="quote">“<span class="quote">GUID Partition Table</span>”</span> (GPT). En un solo disco, a efectos prácticos, sólo se puede utilizar uno de los dos y, en caso de una configuración de arranque múltiple con diferentes sistemas operativos en un disco, todos ellos deben utilizar el mismo tipo de tabla de particiones. El arranque desde un disco con GPT sólo es posible en el modo UEFI nativo, pero el uso de GPT se vuelve más y más común a medida que el tamaño de los discos duros crece, porque la tabla de partición clásica de DOS no puede dirigirse a discos mayores de unos 2 Terabytes mientras que GPT permite discos mucho más grandes. La otra gran diferencia entre la BIOS (o la UEFI en modo CSM) y la UEFI nativa es la ubicación en la que se almacena el código de arranque y en qué formato tiene que estar. Esto significa que se necesitan cargadores de arranque diferentes para cada sistema. </p>
+<p>Esto último es importante cuando se arranca <code class="classname">debian-installer</code> en un sistema UEFI con CSM porque <code class="classname">debian-installer</code> comprueba si se ha iniciado en un sistema BIOS- o en un sistema UEFI nativo e instala el gestor de arranque correspondiente. Normalmente, esto simplemente funciona, pero puede haber un problema en entornos de arranque múltiple. En algunos sistemas UEFI con CSM el modo de arranque por defecto para los dispositivos extraíbles puede ser diferente al que se utiliza realmente cuando se arranca desde el disco duro, por lo que al arrancar el instalador desde una memoria USB en un modo diferente al que se utiliza cuando se arranca otro sistema operativo ya instalado desde el disco duro, podría instalarse el gestor de arranque equivocado y el sistema podría no arrancar después de terminar la instalación. Al elegir el dispositivo de arranque desde el menú de arranque del firmware, algunos sistemas ofrecen dos opciones separadas para cada dispositivo, de modo que el usuario puede seleccionar si el arranque se realizará en CSM o en modo UEFI nativo. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Arranque seguro («Secure boot»)</h3></div></div></div>
+<p>Otro tema relacionado con la UEFI es el llamado mecanismo de <span class="quote">“<span class="quote">arranque seguro</span>”</span>. El arranque seguro es una función de las implementaciones de la UEFI que permite que el firmware sólo cargue y ejecute código que esté firmado criptográficamente con ciertas claves y, por lo tanto, bloquea cualquier código de arranque (potencialmente malicioso) que no esté firmado o que esté firmado con claves desconocidas. En la práctica, la única clave aceptada por defecto en la mayoría de los sistemas UEFI con arranque seguro es una clave de Microsoft utilizada para firmar el cargador de arranque de Windows. Debian incluye un cargador <span class="quote">“<span class="quote">shim</span>”</span> firmado por Microsoft, por lo que debería funcionar correctamente en sistemas con el arranque seguro activado. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Desactivando el <span class="quote">“<span class="quote">arranque rápido</span>”</span>/<span class="quote">“<span class="quote">inicio rápido</span>”</span> de Windows</h3></div></div></div>
+<p>Windows ofrece una función (llamada <span class="quote">“<span class="quote">arranque rápido</span>”</span> en Windows 8, <span class="quote">“<span class="quote">arranque seguro</span>”</span> en Windows 10) para reducir el tiempo de inicio del sistema. Técnicamente, cuando esta función está activada, Windows no realiza un apagado real y un arranque en frío real después cuando se le ordena el apagado, sino que hace algo parecido a una suspensión parcial del disco para reducir el tiempo de <span class="quote">“<span class="quote">arranque</span>”</span>. Mientras Windows sea el único sistema operativo en la máquina, esto no es problemático, pero puede dar lugar a problemas y pérdida de datos, cuando se tiene una configuración de arranque dual, en la que otro sistema operativo accede a los mismos sistemas de archivos que Windows. En ese caso, el estado real del sistema de archivos puede ser diferente de lo que Windows cree que es después del <span class="quote">“<span class="quote">arranque</span>”</span> y esto podría causar la corrupción del sistema de archivos en posteriores accesos de escritura al sistema de archivos. Por lo tanto, en una configuración de arranque dual, para evitar la corrupción del sistema de archivos, la función de <span class="quote">“<span class="quote">arranque rápido</span>”</span>/<span class="quote">“<span class="quote">inicio rápido</span>”</span> tiene que estar desactivada en Windows. </p>
+<p>Además, se sabe que el mecanismo de Windows Update (a veces) vuelve a activar automáticamente esta función, después de que el usuario la haya desactivado previamente. Se sugiere volver a comprobar esta configuración periódicamente. </p>
+<p>También puede ser necesario desactivar el <span class="quote">“<span class="quote">arranque rápido</span>”</span> para permitir incluso el acceso a la configuración UEFI para elegir arrancar otro sistema operativo o <code class="classname">debian-installer</code>. En algunos sistemas UEFI, el firmware reducirá el tiempo de <span class="quote">“<span class="quote">arranque</span>”</span> al no inicializar el controlador del teclado o el hardware USB; en estos casos, es necesario arrancar en Windows y desactivar esta característica para permitir un cambio en el orden de arranque. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Problemas de hardware a tener en cuenta</h3></div></div></div>
+<p><b>Soporte de BIOS y teclados USB. </b>Si no tienes teclados de tipo PS/2 sino solamente un modelo USB, puede que para sistemas muy antiguos necesites habilitar la emulación de compatibilidad de teclado para versiones antiguas en la configuración de la BIOS para poder utilizar el teclado en el menú del gestor de arranque, aunque esto no es un problema en sistemas modernos. Si tu teclado no funciona en el menú del gestor de arranque, consulta el manual de tu placa base y busca las opciones <span class="quote">“<span class="quote">Emulación de teclado antiguo</span>”</span> o <span class="quote">“<span class="quote">Compatibilidad de teclado USB</span>”</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Preparticionado para sistemas multiarranque </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> Capítulo 4. Obtener el soporte de instalación del sistema</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

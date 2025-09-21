@@ -1,0 +1,415 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. 通过 Unix/Linux 系统来安装 Debian GNU/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apd.html" title="附录 D. 其他">
+<link rel="prev" href="apds02.html" title="D.2. 各软件集所需的磁盘空间">
+<link rel="next" href="apds04.html" title="D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. 通过 Unix/Linux 系统来安装 Debian GNU/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 D. 其他</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. 通过 Unix/Linux 系统来安装 Debian GNU/Linux</h2></div></div></div>
+<p>本节说明如何通过现有的 Unix 或 Linux 系统来安装 Debian GNU/Linux，而非使用本手册其余部分谈到的由菜单驱动的安装程序。这篇<span class="quote">“<span class="quote">交叉安装(cross-install)</span>”</span> HOWTO 是应那些原来使用 Redhat、Mandriva 和 SUSE，现转到 Debian GNU/Linux 的用户撰写的。在本节中，我们假设您对于输入 *nix 命令以及在文件系统中穿梭移动并不生疏。同时，在本节中，<code class="prompt">$</code> 标志着这个命令是在用户当前使用的系统中输入的，而 <code class="prompt">#</code> 则表示这个命令是在 Debian chroot 环境中输入的。 </p>
+<p>一旦您根据自己的要求配置好了新的 Debian 系统，就可以将您原来系统中的用户数据(如果有的话)悉数迁移到新系统里去，然后继续滚动。一言以蔽之，这是一次<span class="quote">“<span class="quote">不停机</span>”</span>的 Debian GNU/Linux 安装。同时，这也是处理那些因为硬件原因不能通过任何引导或者安装介质完成安装的权宜之计。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>由于绝大多数操作都是手动进行，应该记住这将需要您自己对系统做大量地基本配置，并且要具有比常规安装更多的 Debian 和 Linux 知识。不要期望这种执行的结果与常规安装完全相同。您还应该明白这一过程只是建立一个系统的基本步骤。可能还需要额外的安装、或者配置步骤。 </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4859"></a>D.3.1. 准备开始</h3></div></div></div>
+<p>如果需重新分区，用您当前的 *nix 的分区工具，至少要划分出一个文件系统，以及交换分区。如果只用控制台，至少要准备 647MB 空间，倘若想装 X，就需要至少 2635MB 的空间了(安装 GNOME 或 KDE 这样的桌面环境，还要更多)。 </p>
+<p>下一步，在分区上创建文件系统。例如，在 <code class="filename">/dev/sda6</code> 分区(以后的例子中，将把它作为 root 分区)建立一个 ext3 格式的文件系统：</p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> 建立 ext2 格式的文件系统，要去掉 <strong class="userinput"><code>-j</code></strong>。 </p>
+<p>初始化并激活交换分区(请把分区号替换成您希望用作 Debian 交换分区的分区号): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> 把一个分区挂载到 <code class="filename">/mnt/debinst</code>(这是安装的位置，将来作为您新系统的根(<code class="filename">/</code>)文件系统)。挂载点的名称是任意的，后面的步骤将会用到。 </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>如果您打算将部分文件系统(例如，/usr)放到独立的分区，在进入下一阶段之前，需要手动创建和加载这些目录。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4880"></a>D.3.2. 安装 <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Debian 安装程序使用的工具，同时也作为安装 Debian 基本系统的正式方法，是 <span class="command"><strong>debootstrap</strong></span>。它调用了 <span class="command"><strong>wget</strong></span> 和 <span class="command"><strong>ar</strong></span>，而其他的仅依赖 <code class="classname">/bin/sh</code> 和基本的 Unix/Linux 工具<a href="#ftn.id4888" class="footnote" name="id4888"><sup class="footnote">[21]</sup></a>。如果您的系统里还没有 <span class="command"><strong>wget</strong></span> 和 <span class="command"><strong>ar</strong></span>，首先安装它们，然后下载并安装 <span class="command"><strong>debootstrap</strong></span>。 </p>
+<p>或者您也可以通过下面的步骤手动安装。先新建一个 work 目录，用于解压 .deb 文件：</p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> <span class="command"><strong>debootstrap</strong></span> 的二进制文件位于 Debian archive (请确保选择了合适的架构文件)。下载 <span class="command"><strong>debootstrap</strong></span> .deb，它位于 <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> pool</a>，把软件包拷贝到 work 目录，并解压该文件。要将这些文件安装到系统，您需要 root 权限。 </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4905"></a>D.3.3. 运行 <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>运行 <span class="command"><strong>debootstrap</strong></span> 后，它会从 archive 直接下载所需的文件。在下面的命令示例中，您可以根据自己的网络情况，选择一个较近的 Debian archive 镜像，替换 <strong class="userinput"><code>http.us.debian.org/debian</code></strong>。镜像列表位于 <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>。 </p>
+<p>如果您已经把一张 trixie 版本的 Debian GNU/Linux 安装映像挂载到 <code class="filename">/cdrom</code>，那么也可以把 http URL 替换成 file URL，即：<strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>用下面其中一个架构替换 <span class="command"><strong>debootstrap</strong></span> 命令中的 <em class="replaceable"><code>ARCH</code></em>：<strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>。</p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> 如果目的架构与主机不同，那么应该添加 <strong class="userinput"><code>--foreign</code></strong> 选项。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4927"></a>D.3.4. 基本系统的配置</h3></div></div></div>
+<p>现在您的磁盘上已经有了一个功能虽弱但却是真正的 Debian 系统。键入 <span class="command"><strong>chroot</strong></span> 命令进入：</p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p>如果目标架构与主机不同，那么需要首先将 qemu-user-static 复制到新的主机：</p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> chrooting 之后，会需要设置终端定义与 Debian 基本系统兼容，例如：</p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> 依赖于 TERM 的值，会必须安装 <code class="classname">ncurses-term</code> 软件包，来从中得到支持。 </p>
+<p>如果目标架构与主机不同，则需要完成多阶段自举： </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4942"></a>D.3.4.1. 创建设备文件</h4></div></div></div>
+<p>此时，<code class="filename">/dev/</code> 只含有非常基本的设备文件。安装的后续步骤可能还需要更多的设备文件。使用什么样的文件和方法，取决于安装使用的系统、是否采用内核模块，以及在新系统中采用动态 (比如，使用 <code class="classname">udev</code>) 或静态设备文件。 </p>
+<p>可以使用的选项有： </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>安装 makedev 软件包，并创建默认的静态设备文件，使用(chroot 以后) </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>手动创建指定的设备文件，使用 <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>将 host 系统上加载的 /dev 绑定到 target 系统的 /dev；注意，有些软件包的 postinst 脚本会创建设备文件，所以要小心使用改选项 </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4958"></a>D.3.4.2. 分区的挂载</h4></div></div></div>
+<p>您需要新建 <code class="filename">/etc/fstab</code>。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> 这里有个样板，您可以根据自己的情况对它进行修改：</p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> 可以通过 <strong class="userinput"><code>mount -a</code></strong> 来挂载 <code class="filename">/etc/fstab</code> 中所标明的所有文件系统，您也可以逐个分别地挂载这些文件系统，像：</p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p> 当前的 Debian 系统为可移动介质创建的挂载点位于 <code class="filename">/media</code>, 但为了保持兼容，仍有符号链接处于 <code class="filename">/</code> 目录下面。如果需要，可以像下面这样创建这些挂载点: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> 您可以多次挂载 proc 文件系统，通常是在 <code class="filename">/proc</code> 位置，但也可以选择任意的地方。如果没有使用 <strong class="userinput"><code>mount -a</code></strong>，请在进入下一步前先将 proc 挂载： </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p><strong class="userinput"><code>ls /proc</code></strong> 命令现在应该列出非空目录。如果失败，您应该从 chroot: 以外加载 proc： </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4982"></a>D.3.4.3. 设置时区</h4></div></div></div>
+<p>将 <code class="filename">/etc/adjtime</code> 的第三行设置为 <span class="quote">“<span class="quote">UTC</span>”</span> 或 <span class="quote">“<span class="quote">LOCAL</span>”</span>，决定系统是否将认为硬件时钟被设置为UTC各自的本地时间。后面的命令允许设置它。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> 这是个例子：</p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> 后面的命令允许选择时区。 </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4994"></a>D.3.4.4. 网络的配置</h4></div></div></div>
+<p>要配置网络，编辑 <code class="filename">/etc/network/interfaces</code>、<code class="filename">/etc/resolv.conf</code>、<code class="filename">/etc/hostname</code> 和 <code class="filename">/etc/hosts</code>。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p>以下的简单例子来自 <code class="filename">/usr/share/doc/ifupdown/examples</code>：</p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# The loopback interface isn't really required any longer, but can be used
+# if needed.
+#
+# auto lo
+# iface lo inet loopback
+
+# To use dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# An example static IP setup: (network, broadcast and gateway are optional)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p>在 <code class="filename">/etc/resolv.conf</code> 输入您的名称服务器和搜索域：</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p>来自 <code class="filename">/etc/resolv.conf</code> 的简单示例：</p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p>输入系统的主机名（2到63个字符）：</p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p>简单的带 IPv6 支持的 <code class="filename">/etc/hosts</code>：</p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p>如果您有多张网卡，您应该在 <code class="filename">/etc/modules</code> 文件内以适当的顺序排列驱动程序模块名。然后在启动期间，每张卡将会获得您期望的接口名称（eth0，eth1，等等）。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5018"></a>D.3.4.5. 配置 Apt</h4></div></div></div>
+<p>debootstrap 会创建一个非常基本的 <code class="filename">/etc/apt/sources.list</code> 文件用于安装额外的软件包。但您还可以增加一些其他的源，比如源码包和安全更新：</p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> 修改源列表之后一定要执行 <strong class="userinput"><code>aptitude update</code></strong>。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5025"></a>D.3.4.6. 本地化和键盘的配置</h4></div></div></div>
+<p>配置您的本地化设定，以便使用英语以外的语言，需要安装 <code class="classname">locales</code> 支持软件包，然后进行配置：</p>
+<div class="informalexample"><pre class="screen">
+# aptitude install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p>配置您的键盘(如果需要)： </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>注意，在 chroot 里面不能设置键盘，但重新启动以后可以。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5034"></a>D.3.5. 内核的安装</h3></div></div></div>
+<p>要想启动这个系统，您很可能还需要一个 Linux 内核和一个启动加载程序。可以用下面指令找到那些预先打包的内核： </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>然后根据所选取的软件包名称安装内核软件包。 </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5043"></a>D.3.6. Boot Loader 的设置</h3></div></div></div>
+<p>要让您的 Debian GNU/Linux 系统能够启动，还要创建 boot loader，好让它能加载安装的内核并用上新的根分区。注意 <span class="command"><strong>debootstrap</strong></span> 不会安装 boot loader，因此您要在 Debian 的 chroot 中使用 <span class="command"><strong>aptitude</strong></span> 完成。 </p>
+<p>通过查阅 <strong class="userinput"><code>info grub</code></strong> 可以得到一些有关设置 bootloader 的提示。如果您希望继续保留曾经安装 Debian 的系统，那么安装到您现有的 grub2 <code class="filename">grub.cfg</code> 中。 </p>
+<p>安装和建立 <code class="classname">grub2</code> 非常容易：</p>
+<div class="informalexample"><pre class="screen">
+# aptitude install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p>第二个命令将安装 <span class="command"><strong>grub2</strong></span>（本例中是 <code class="literal">sda</code> 的 MBR）。最后的命令是创建一个可用的 <code class="filename">/boot/grub/grub.cfg</code>。 </p>
+<p>注意，这里假设已经创建了 <code class="filename">/dev/sda</code> 设备文件。另外一种方法是安装 <span class="command"><strong>grub2</strong></span>，但它不属于本附录讨论范围。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5062"></a>D.3.7. 远程访问：安装 SSH 并设置密码</h3></div></div></div>
+<p>如果您可以通过控制台登录系统，可以跳过此节。如果以后可以通过网络访问系统，则需要安装 SSH 并设置访问权限。</p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p>默认禁用 root 登录密码，因此可以通过设置密码来设置访问权限，并用密码重新启用 root 登录：</p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p>这是启用的选项：</p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p>也可通过在 root 帐户中添加 ssh 密钥来设置访问权限：</p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p>最后，还可以通过添加非 root 用户和设置密码来设置访问权限： </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5075"></a>D.3.8. 最后一笔</h3></div></div></div>
+<p>如前所述，安装的是很基本的系统。如果您想让它更成熟一些，有一个简单的方法，使用 <span class="quote">“<span class="quote">standard</span>”</span> 优先级来安装所有的软件包：</p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p>当然，您也可以用 <span class="command"><strong>apt</strong></span> 来安装单独的软件包。 </p>
+<p>安装之后，<code class="filename">/var/cache/apt/archives/</code> 里面会有大量下载的软件包。您可以运行下面命令释放空间： </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4888" class="footnote"><p><a href="#id4888" class="para"><sup class="para">[21] </sup></a> 它们包括 GNU core 工具和命令，像 <span class="command"><strong>sed</strong></span>、<span class="command"><strong>grep</strong></span>、<span class="command"><strong>tar</strong></span> 和 <span class="command"><strong>gzip</strong></span>。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. 各软件集所需的磁盘空间 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

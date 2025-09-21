@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Opstartparameters</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch05.html" title="Hoofdstuk 5. Het installatiesysteem starten">
+<link rel="prev" href="ch05s02.html" title="5.2. Toegankelijkheid">
+<link rel="next" href="ch05s04.html" title="5.4. Probleemanalyse bij het installatieproces">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Opstartparameters</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 5. Het installatiesysteem starten</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Opstartparameters</h2></div></div></div>
+<p>Opstartparameters zijn parameters voor de Linux kernel die over het algemeen gebruikt worden om ervoor te zorgen dat correct omgesprongen wordt met randapparatuur. In het merendeel van de gevallen kan de kernel zelf automatisch informatie over uw randapparatuur verzamelen. Maar in sommige gevallen moet u de kernel echter een beetje helpen. </p>
+<p>Als u het systeem voor het eerst opstart, kunt u dit best met de standaard opstartparameters proberen (d.w.z. zonder te proberen parameters in te stellen) en zien of de zaak correct werkt. En waarschijnlijk zal dit het geval zijn. Is dit niet zo, dan kunt u later opnieuw opstarten en uitkijken naar eventuele bijzondere parameters die het systeem over uw hardware kunnen informeren. </p>
+<p>Over veel opstartparameters is informatie te vinden in de <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, met inbegrip van tips voor obscure apparatuur. Dit onderdeel schetst enkel de meest in het oog springende parameters. Enkele veel voorkomende valkuilen worden hierna in <a class="xref" href="ch05s04.html" title="5.4. Probleemanalyse bij het installatieproces">Paragraaf 5.4, “Probleemanalyse bij het installatieproces”</a> behandeld. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Opstart met seriële console</h3></div></div></div>
+<p>Indien u met een seriële console opstart, zal de kernel die meestal automatisch herkennen. Indien de computer ook een grafische kaart (framebuffer) en een toetsenbord heeft, terwijl u hem via een seriële console wilt laten opstarten, zult u aan de kernel het argument <strong class="userinput"><code>console=<em class="replaceable"><code>apparaat</code></em></code></strong> moeten doorgeven, waarbij <em class="replaceable"><code>apparaat</code></em> een serieel apparaat van het doel is, wat gewoonlijk iets in de zin van <code class="filename">ttyS0</code> is. </p>
+<p>U zult mogelijk parameters moeten opgeven voor de seriële poort, zoals snelheid en pariteit, bijvoorbeeld <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>. Andere gebruikelijke snelheden zijn 57600 en 115200. Zorg ervoor dat u deze optie specificeert na <span class="quote">“<span class="quote">---</span>”</span>, waardoor die gekopieerd wordt naar de configuratie van de bootloader van het geïnstalleerde systeem (als het installatiesysteem dit voor de bootloader ondersteunt). </p>
+<p>Om er voor te zorgen dat het terminaltype dat door het installatiesysteem gebruikt wordt, overeenkomt met uw terminal-emulator, kunt u de parameter <strong class="userinput"><code>TERM=<em class="replaceable"><code>type</code></em></code></strong> gebruiken. Merk op dat het installatiesysteem enkel de volgende terminaltypes ondersteunt: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> en <code class="literal">dumb</code>. Voor een seriële console in <code class="classname">debian-installer</code> is de standaard <strong class="userinput"><code>vt102</code></strong>. Indien u een IPMI console of een virtualisatietoepassing gebruikt die zelf geen conversie naar dergelijke terminaltypes verzorgt, bijvoorbeeld QEMU/KVM, kunt u die opstarten binnenin een <span class="command"><strong>screen</strong></span>-sessie. Dat zal inderdaad voor een omslag naar het terminaltype <code class="literal">screen</code> zorgen, wat heel dicht bij het type <code class="literal">vt102</code> aanleunt. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parameters voor het installatiesysteem van Debian</h3></div></div></div>
+<p>Het installatiesysteem herkent enkele bijkomende opstartparameters<a href="#ftn.id1993" class="footnote" name="id1993"><sup class="footnote">[3]</sup></a> die handig kunnen zijn. </p>
+<p>Een aantal parameters hebben een <span class="quote">“<span class="quote">verkorte vorm</span>”</span>, hetgeen helpt om de beperkingen van de kernel inzake commandoregelopties te vermijden en het invoeren van parameters vergemakkelijkt. Indien een parameter een verkorte vorm heeft, zal die vermeld worden tussen haakjes achter de (normale) lange vorm. In deze handleiding zal de verkorte vorm gewoonlijk ook in de voorbeelden toegepast worden. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Deze parameter definieert wat de minimale prioriteit moet zijn opdat meldingen op het scherm weergegeven zouden worden. </p>
+<p>Een standaardinstallatie gebruikt <strong class="userinput"><code>priority=high</code></strong>. Dit betekent dat meldingen die behoren tot de prioriteitsklassen hoog (high) en kritiek (critical) weergegeven zullen worden, maar dat de meldingen die behoren tot de prioriteitsklassen middelmatig (medium) en laag (low) weggelaten worden. Indien er zich problemen voordoen, past het installatiesysteem indien nodig de urgentie aan. </p>
+<p>Indien u <strong class="userinput"><code>priority=medium</code></strong> als opstartparameter opgeeft, zult u het installatiemenu te zien krijgen en zult u meer controle hebben over de installatie. Indien u <strong class="userinput"><code>priority=low</code></strong> gebruikt, worden alle meldingen weergegeven (dit is het equivalent van de opstartmethode <span class="emphasis"><em>expert</em></span>). Bij <strong class="userinput"><code>priority=critical</code></strong> zal het installatiesysteem enkel kritieke meldingen weergeven en trachten zonder poespas de juiste beslissing te nemen. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Deze opstartparameter controleert het type gebruikersinterface dat voor het installatiesysteem gebruikt wordt. Momenteel kunnen voor deze parameter de volgende instellingen gebruikt worden: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> Het standaard frontend is <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> valt te verkiezen bij installaties via een seriële console. Sommige gespecialiseerde types installatiemedia hebben een gelimiteerd aantal beschikbare frontends, maar de frontends <strong class="userinput"><code>newt</code></strong> en <strong class="userinput"><code>text</code></strong> zijn op de meeste standaardinstallatiemedia beschikbaar. Op de architecturen die dit ondersteunen gebruikt het grafische installatiesysteem de frontend <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Door deze opstartparameter op 2 in te stellen geeft u het installatiesysteem de opdracht om het opstartproces uitgebreid te loggen. Hem instellen op 3 maakt dat er op strategische punten in het opstartproces debug-shells beschikbaar worden. (Verlaat de shells om het opstartproces voort te zetten.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Dit is de standaardinstelling.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Omslachtiger dan gebruikelijk.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Een hoop debug-informatie.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Op verschillende punten in het opstartproces wordt een shell gestart die toelaat om doorgedreven te debuggen. Verlaat de shell om het opstarten voort te zetten. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Doet het installatiesysteem de logberichten zowel naar een extern syslog-bestand op de opgegeven computer en poort als naar een lokaal bestand sturen. Indien het poortnummer niet opgegeven werd, wordt de standaard syslogpoort 514 gebruikt. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Kan gebruikt worden om het installatiesysteem te dwingen om een strengere norm voor weinig geheugen te hanteren dan het standaard geneigd is in te stellen op basis van het beschikbaar geheugen. Mogelijke waarden zijn 1 en 2. Zie ook <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Controle van het beschikbaar geheugen / modus voor weinig geheugen">Paragraaf 6.3.1.1, “Controle van het beschikbaar geheugen / modus voor weinig geheugen”</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Verhindert dat het installatiesysteem een interactieve shell ter beschikking stelt op tty2 en tty3. Nuttig voor onbemande installaties met een beperkte fysieke beveiliging. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Sommige architecturen maken gebruik van de framebuffer van de kernel om de installatie in een aantal talen aan te bieden. Indien de framebuffer op uw systeem voor problemen zorgt, kunt u die functionaliteit uitschakelen door de parameter <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong> te gebruiken. Symptomen van het probleem zijn foutmeldingen in verband met bterm en bogl, een leeg scherm of het vastlopen van de computer binnen enkele minuten na het starten van de installatie. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>Een stijl bepaalt hoe de gebruikersinterface van het installatiesysteem er uitziet (kleuren, iconen, enz.). Welke stijlen beschikbaar zijn, verschilt per frontend. Momenteel hebben zowel de frontend newt als de frontend gtk (naast het standaard uiterlijk) enkel één extra stijl, met <span class="quote">“<span class="quote">dark</span>”</span> als naam, welke ontworpen is voor gebruikers met een visuele beperking. Stel deze stijl in door op te starten met <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (hiervoor kan in het opstartmenu ook de toetsenbord-sneltoets <strong class="userinput"><code>d</code></strong> gebruikt worden). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>Standaard probeert <code class="classname">debian-installer</code> het netwerk automatisch te configureren via IPv6-autoconfiguratie en DHCP. Indien dit slaagt krijgt u niet de kans de verkregen instellingen na te kijken en te veranderen. U komt enkel uit bij het handmatig instellen van het netwerk in het geval de automatische configuratie mislukt. </p>
+<p>Indien u op uw lokaal netwerk een IPv6-router of een DHCP-server heeft die u wenst te vermijden, bijvoorbeeld omdat ze verkeerde antwoorden geven, kunt u de parameter <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> gebruiken om te verhinderen dat er een automatische configuratie van het netwerk (niet voor v4 en evenmin voor v6) plaats vindt en om de informatie handmatig te kunnen invoeren. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Stel dit in op <strong class="userinput"><code>false</code></strong> om te voorkomen dat PCMCIA-diensten opgestart worden indien dat problemen veroorzaakt. Sommige laptops staan erom bekend zich slecht te gedragen op dit punt. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Geef de url op van een te downloaden bestand met vooraf ingestelde configuraties om dat te gebruiken bij een automatische installatie. Zie <a class="xref" href="ch04s06.html" title="4.6. Automatische installatie">Paragraaf 4.6, “Automatische installatie”</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Geef het pad op naar een te laden bestand met vooraf ingestelde configuraties om dat te gebruiken bij een automatische installatie. Zie <a class="xref" href="ch04s06.html" title="4.6. Automatische installatie">Paragraaf 4.6, “Automatische installatie”</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Stel dit in op <strong class="userinput"><code>true</code></strong> om de vragen te tonen, ook al zijn de antwoorden in een antwoordbestand opgenomen. Kan nuttig zijn om een bestand met vooraf ingestelde configuraties te testen of op fouten te onderzoeken. Merk op dat dit geen effect zal hebben op parameters die als opstartparameters opgegeven werden, maar voor hen kan een bijzondere syntaxis gebruikt worden. Zie <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Gebruik maken van preconfiguratie om standaardwaarden aan te passen">Paragraaf B.5.2, “Gebruik maken van preconfiguratie om standaardwaarden aan te passen”</a> voor details. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Stel vragen die normaal gezien gesteld worden vooraleer het doorgeven van antwoorden via een antwoordbestand mogelijk is, uit tot na de netwerkconfiguratie. Zie <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Automatische modus">Paragraaf B.2.3, “Automatische modus”</a> voor meer informatie over hoe u dit gebruikt met het oog op het automatiseren van installaties. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Tijdens een installatie vanaf een seriële of een Management Console, worden de reguliere consoles (VT1 tot VT6) normaal gezien uitgeschakeld in <code class="filename">/etc/inittab</code>. Stel dit in op <strong class="userinput"><code>true</code></strong> om dit te voorkomen. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>Standaard werpt <code class="classname">debian-installer</code> de tijdens de installatie gebruikte optische media uit vooraleer er herstart wordt. Als het systeem niet automatisch opstart vanaf dergelijke media is dit onnodig. In sommige gevallen kan het zelfs onwenselijk zijn, bijvoorbeeld als het optische station het medium niet zelf terug kan plaatsen en de gebruiker niet aanwezig is om dit handmatig te doen. Veel sleufstations en stations van het slim-line- of caddy-type kunnen media niet automatisch terugplaatsen. </p>
+<p>Stel in op <strong class="userinput"><code>false</code></strong> om het automatisch uitwerpen uit te schakelen. U moet er wel rekening mee houden dat u moet kunnen verzekeren dat het systeem niet automatisch opstart vanaf het optisch station na de initiële installatie. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Door deze optie in te stellen op <strong class="userinput"><code>false</code></strong> wordt het pakketbeheersysteem ingesteld om pakketten die tot de categorie <span class="quote">“<span class="quote">Recommends</span>”</span> (aangeraden) behoren, niet automatisch te installeren tijdens het installatieproces en op het geïnstalleerde systeem. Zie ook <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Installatie van het Basissysteem">Paragraaf 6.3.5, “Installatie van het Basissysteem”</a>. </p>
+<p>Merk op dat deze optie het mogelijk maakt om een compacter systeem te hebben, maar dat het gevolg ook kan zijn dat bepaalde functies ontbreken die u normaal gezien wel verwacht. Misschien zult u bepaalde van de aanbevolen pakketten handmatig moeten installeren om de door u gewenste volle functionaliteit te verkrijgen. Daarom zou deze optie enkel gebruikt moeten worden door zeer ervaren gebruikers. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Standaard vereist het installatiesysteem dat pakketbronnen geauthenticeerd worden met een gekende gpg-sleutel. Stel dit in op <strong class="userinput"><code>true</code></strong> om die authenticatie uit te schakelen. <span class="bold"><strong>Waarschuwing: onveilig, niet aanbevolen.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Stel in op <strong class="userinput"><code>true</code></strong> om naar de reparatiemodus te gaan in plaats van een normale installatie uit te voeren. Zie <a class="xref" href="ch08s06.html" title="8.6. Een defect systeem herstellen">Paragraaf 8.6, “Een defect systeem herstellen”</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Het gebruik van opstartparameters om op vragen te antwoorden</h3></div></div></div>
+<p>Op enkele uitzonderingen na kan voor elke tijdens de installatie gestelde vraag een waarde ingesteld worden aan de opstartprompt. Dit is evenwel enkel in specifieke situaties echt nuttig. Algemene instructies over de manier waarop u dit doet, vindt u in <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Met opstartparameters vooraf installatievragen beantwoorden">Paragraaf B.2.2, “Met opstartparameters vooraf installatievragen beantwoorden”</a>. Enkele specifieke voorbeelden worden hierna vermeld. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Er bestaan twee manieren om de taal, het land en het taalgebied die voor de installatie en het geïnstalleerde systeem gebruikt moeten worden, in te stellen. </p>
+<p>De eerste en gemakkelijkste manier is om enkel de parameter <code class="literal">locale</code> (taalgebied) op te geven. Taal en land worden dan van deze waarde afgeleid. U kunt bijvoorbeeld <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> gebruiken om Duits als taal te kiezen en Zwitserland als land (<code class="literal">de_CH.UTF-8</code> zal als het standaard taalgebied (locale) ingesteld worden op het geïnstalleerde systeem). De beperking zit in het feit dat op deze manier niet alle mogelijke combinaties van taal, land en taalgebied uitgedrukt kunnen worden. </p>
+<p>De tweede meer flexibele optie is om <code class="literal">language</code> (taal) en <code class="literal">country</code> (land) apart op te geven. In dat geval kan eventueel ook <code class="literal">locale</code> (taalgebied) opgegeven worden om een specifiek standaardtaalgebied voor het geïnstalleerde systeem in te stellen. Bijvoorbeeld: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Kan gebruikt worden om automatisch componenten van het installatiesysteem te laden die niet standaard geladen worden. Voorbeelden van facultatieve componenten die nuttig kunnen zijn, zijn <code class="classname">openssh-client-udeb</code> (waardoor u tijdens de installatie <span class="command"><strong>scp</strong></span> kunt gebruiken)<span class="phrase"> en <code class="classname">ppp-udeb</code> (zie <a class="xref" href="apds05.html" title="D.5. Debian GNU/Linux installeren met PPP over Ethernet (PPPoE)">Paragraaf D.5, “Debian GNU/Linux installeren met PPP over Ethernet (PPPoE)”</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Stel dit in op <strong class="userinput"><code>true</code></strong> als u IPv6-autoconfiguratie en DHCP wilt uitschakelen en in plaats daarvan een statische netwerkconfiguratie wilt afdwingen. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>Standaard maakt het installatiesysteem gebruik van het http-protocol voor het downloaden van bestanden van Debian spiegelservers. En tijdens een installatie op een gewoon prioriteitsniveau is het niet mogelijk om dit te veranderen naar ftp. Door deze parameter in te stellen op <strong class="userinput"><code>ftp</code></strong> kunt u het installatiesysteem dwingen om van dat protocol gebruik te maken. Merk op dat u geen ftp-spiegelserver kunt selecteren uit een lijst en dat u die computernaam dan handmatig zult moeten instellen. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Kan gebruikt worden om taken te selecteren die niet voorkomen in de interactieve takenlijst, zoals de taak <code class="literal">kde-desktop</code>. Zie <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Software selecteren en installeren">Paragraaf 6.3.6.2, “Software selecteren en installeren”</a> voor bijkomende informatie. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Parameters doorgeven aan kernelmodules</h3></div></div></div>
+<p>Voor stuurprogramma's die in de kernel gecompileerd werden, kunt u parameters doorgeven zoals beschreven wordt in de documentatie bij de kernel. Indien een stuurprogramma evenwel als module gecompileerd werd en omdat kernelmodules tijdens een installatie iets anders geladen worden dan het geval is bij een geïnstalleerd systeem, is het niet mogelijk om op de gebruikelijke manier parameters door te geven aan modules. In de plaats daarvan moet u een speciale syntaxis gebruiken die door het installatiesysteem herkend wordt. Het installatiesysteem draagt er dan zorg voor dat de parameters in de passende configuratiebestanden opgeslagen worden, zodat ze gebruikt zullen worden als de modules effectief geladen worden. De parameters zullen ook automatisch doorgegeven worden aan de configuratie-instellingen van het geïnstalleerde systeem. </p>
+<p>Merk op dat het tegenwoordig zelden nodig is om parameters door te geven aan modules. In de meeste gevallen zal de kernel in staat zijn om de in het systeem aanwezige hardware te herkennen en op die manier goede standaardwaarden in te stellen. Toch kan het in sommige situaties nog steeds nodig zijn om parameters handmatig in te stellen. </p>
+<p>De syntaxis die u moet gebruiken om parameters in te stellen voor modules is: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>module_naam</code></em>.<em class="replaceable"><code>parameter_naam</code></em>=<em class="replaceable"><code>waarde</code></em>
+</pre></div>
+<p> Indien u aan dezelfde of aan verschillende modules meerdere parameters moet doorgeven, moet u deze werkwijze gewoon herhalen. Om bijvoorbeeld in te stellen dat een oude 3Com-netwerkkaart de BNC (coax) connector en IRQ 10 moet gebruiken, zou u doorgeven: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Kernel modules op een zwarte lijst plaatsen</h3></div></div></div>
+<p>Soms kan het nodig zijn om een module op de zwarte lijst te plaatsen om te voorkomen dat ze automatisch geladen wordt door de kernel en udev. Een mogelijke reden kan zijn dat een specifieke module op uw hardware voor problemen zorgt. Soms vermeldt de kernel ook twee verschillende stuurprogramma's voor hetzelfde apparaat. Dit kan tot gevolg hebben dat het apparaat niet correct werkt als de twee stuurprogramma's tegenstrijdig zijn of als het verkeerde stuurprogramma eerst geladen werd. </p>
+<p>U kunt een module op de zwarte lijst plaatsen met de volgende syntaxis: <strong class="userinput"><code><em class="replaceable"><code>module_naam</code></em>.blacklist=yes</code></strong>. Dit leidt ertoe dat de module op de zwarte lijst geplaatst wordt in<code class="filename">/etc/modprobe.d/blacklist.local</code> zowel tijdens de installatie als op het geïnstalleerd systeem. </p>
+<p>Merk op dat een module nog steeds geladen kan worden door het installatiesysteem zelf. U kunt dit voorkomen door de installatie in expertmodus uit te voeren en de module te verwijderen uit de lijst van modules die weergegeven wordt tijdens de fase van apparaatherkenning. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id1993" class="footnote"><p><a href="#id1993" class="para"><sup class="para">[3] </sup></a> Met de huidige kernels (2.6.9 of recenter) kunt u 32 commandoregelopties en 32 omgevingsopties gebruiken. Indien deze aantallen overschreden worden, dan zal de kernel panikeren. Er staat ook een limiet van 255 lettertekens op de lengte van de volledige commandoregel voor de kernel. Alles wat deze limiet overschrijdt wordt stilzwijgend weggelaten. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Toegankelijkheid </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Probleemanalyse bij het installatieproces</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

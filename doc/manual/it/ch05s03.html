@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Parametri di avvio</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Capitolo 5. Avvio del sistema d'installazione">
+<link rel="prev" href="ch05s02.html" title="5.2. Accessibilità">
+<link rel="next" href="ch05s04.html" title="5.4. Risoluzione dei problemi del processo d'installazione">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Parametri di avvio</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 5. Avvio del sistema d'installazione</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Parametri di avvio</h2></div></div></div>
+<p>I parametri di avvio sono dei parametri per il kernel Linux che di solito sono usati per gestire correttamente le periferiche. Nella maggior parte dei casi il kernel recupera automaticamente le informazioni sulle periferiche ma in alcuni casi è necessario aiutarlo un po'. </p>
+<p>La prima volta che si avvia il sistema provare a usare i parametri di avvio predefiniti (cioè senza impostare alcun parametro) e vedere se funziona correttamente. Se non funziona si può riavviare e aggiungere qualsiasi parametro necessario per il riconoscimento del proprio hardware. </p>
+<p>Delle informazioni su molti parametri di avvio possono essere trovate nel <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top">Linux BootPrompt HOWTO</a>, che contiene utili consigli anche per l'hardware più misterioso. Questa sezione del manuale contiene solo un riassunto delle parti più salienti, alcuni <span class="quote">«<span class="quote">trucchi</span>»</span> sono stati inseriti in <a class="xref" href="ch05s04.html" title="5.4. Risoluzione dei problemi del processo d'installazione">Sezione 5.4, «Risoluzione dei problemi del processo d'installazione»</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Avvio da console seriale</h3></div></div></div>
+<p>Generalmente se l'avvio è effettuato con una console seriale il kernel riconosce questa modalità. Se al computer su cui si vuole fare l'installazione sono collegati una scheda video e una tastiera potrebbe essere necessario passare <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> al kernel, dove <em class="replaceable"><code>device</code></em> è il device seriale da usare, di solito qualcosa di simile a <code class="filename">ttyS0</code>. </p>
+<p>Potrebbe essere necessario specificare i parametri di configurazione della porta seriale, per esempio <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; altre comuni velocità sono 57600 e 115200. Assicurarsi di inserire questa opzione dopo <span class="quote">«<span class="quote">---</span>»</span>, in questo modo viene copiata nella configurazione del boot loader nel sistema installato (se supportata dall'installatore e dal boot loader). </p>
+<p>Per assicurare che il tipo di terminale usato dall'installatore sia congruente con il proprio emulatore di terminale è possibile usare il parametro <strong class="userinput"><code>TERM=<em class="replaceable"><code>tipo</code></em></code></strong>. Notare che l'installatore supporta solo questi tipi di terminale: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> e <code class="literal">dumb</code>. Il valore predefinito per la console seriale del <code class="classname">installatore Debian</code> è <strong class="userinput"><code>vt102</code></strong>. La console IPMI e gli strumenti di virtualizzazione, per esempio QEMU/KVM, potrebbero non fornire la conversione tra questi tipi di terminali, è comunque possibile avviarli all'interno di una sessione <span class="command"><strong>screen</strong></span>. In questo modo verrà effettuata una traduzione per il tipo di terminale <code class="literal">screen</code>, che è molto simile a <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parametri dell'Installatore Debian</h3></div></div></div>
+<p>Il sistema d'installazione riconosce alcuni parametri aggiuntivi<a href="#ftn.id2558" class="footnote" name="id2558"><sup class="footnote">[3]</sup></a> che possono essere molto utili. </p>
+<p>Un parte dei parametri dispone di una <span class="quote">«<span class="quote">abbreviazione</span>»</span> che permette di accorciare un po' la riga di comando contenente le opzioni da passare al kernel e di semplificare l'inserimento dei parametri. Per i parametri che hanno un'abbreviazione, l'abbreviazione è riportata fra parentesi accanto alla forma normale (lunga). Gli esempi in questo manuale usano normalmente l'abbreviazione. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priorità)</span></dt>
+<dd>
+<p>Questo parametro imposta la priorità oltre la quale sono mostrati i messaggi. </p>
+<p>Il valore predefinito è <strong class="userinput"><code>priority=high</code></strong>. Questo vuol dire che sono mostrati i messaggi con priorità alta (high) e critica (critical) ma i messaggi con priorità media (medium) e bassa (low) sono saltati. Se durante l'installazione si verificano dei problemi l'installatore cambia la priorità a seconda delle necessità. </p>
+<p>Se si aggiunge <strong class="userinput"><code>priority=medium</code></strong> come parametro d'avvio viene mostrato il menu d'installazione e si ottiene un controllo più elevato sull'installazione. Quando si usa <strong class="userinput"><code>priority=low</code></strong> sono mostrati tutti i messaggi (equivale al metodo d'avvio <span class="emphasis"><em>esperto</em></span>). Con <strong class="userinput"><code>priority=critical</code></strong> il sistema d'installazione mostra solo i messaggi critici e cerca di portare avanti l'installazione senza troppe domande. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Questo parametro controlla il tipo di interfaccia utente usata dall'installatore. Attualmente i possibili valori sono: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> L'interfaccia predefinita è <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. Nel caso di installazione con una console seriale può essere preferibile usare <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong>. Alcuni tipi di supporto per l'installazione specializzati potrebbero offrire un insieme ridotto di interfacce però le interfacce <strong class="userinput"><code>newt</code></strong> e <strong class="userinput"><code>text</code></strong> sono disponibili sulla maggior parte delle dei supporti per l'installazione preconfezionati. Sulle sole architetture che supportano la versione grafica dell'installatore è disponibile anche l'interfaccia <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Impostando questo parametro a 2 si forza il processo d'avvio dell'installatore ad essere più prolisso. Impostando il parametro a 3 si attivano delle shell in punti strategici del processo d'avvio (uscire dalle shell per continuare il processo d'avvio). </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Questo è il valore predefinito.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Più informazioni del solito.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Parecchie informazioni per il debug.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Delle shell sono attivate in vari punti del processo d'avvio per consentire un accurato debug. Chiudere la shell per continuare il processo. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Servono per inviare i messaggi di log verso un log di sistema remoto sull'host e porta specificati oltre che sul file locale. Se non si impostata la porta, viene usata la porta predefinita per il log di sistema cioè la 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Può essere usato per forzare l'installatore a un livello di soglia per il modulo <span class="quote">«<span class="quote">low memory</span>»</span> più alto di quello predefinito in base alla memoria disponibile. I valori possibili sono 1 e 2. Consultare <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Controllo della memoria disponibile e modalità «low memory»">Sezione 6.3.1.1, «Controllo della memoria disponibile e modalità <span class="quote">«<span class="quote">low memory</span>»</span>»</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Impedisce all'Installatore di fornire le shell interattive su tty2 e tty3. Utile durante le installazioni non sorvegliate e con scarsa sicurezza fisica. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Su alcune architetture si usa il framebuffer del kernel per fornire l'installazione in più lingue. Se sul proprio sistema il framebuffer crea problemi è possibile disabilitarlo usando il parametro <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Dei sintomi di questo problema sono dei messaggi d'errore riguardo bterm o bogl, lo schermo nero oppure un blocco entro pochi minuti dall'inizio dell'installazione. </p></dd>
+<dt><span class="term">debian-installer/theme (tema)</span></dt>
+<dd><p>Un tema determina l'aspetto dell'interfaccia utente dell'installatore (colori, icone, ecc.); i temi disponibili potrebbero cambiare al variare dell'interfaccia. Attualmente entrambe le interfacce newt e gtk dispongono, oltre all'aspetto predefinito, solo del tema <span class="quote">«<span class="quote">dark</span>»</span>, adatto agli utenti con disabilità visiva. Per utilizzare questo tema usare il parametro <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> all'avvio del sistema (oppure usare la scorciatoia da tastiera <strong class="userinput"><code>d</code></strong> nel menu di avvio). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>Normalmente il <code class="classname">installatore Debian</code> tenta di configurare la rete via l'autoconfigurazione di IPv6 e DHCP. Se il tentativo ha successo non si ha la possibilità di verificare ed eventualmente modificare le impostazioni, è possibile fare la configurazione manuale della rete solo se la configurazione automatica fallisce. </p>
+<p>Se nella propria rete locale è presente un router IPv6 oppure un server DHCP ma si vuole evitare di usarli, per esempio perché forniscono risposte sbagliate, si può usare il parametro <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> per evitare qualsiasi tentativo di configurazione automatica della rete (v4 e nemmeno v6) e per inserire le informazioni manualmente. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Da impostare a <strong class="userinput"><code>false</code></strong> per evitare l'avvio dei servizi PCMCIA che, in qualche caso, possono causare dei problemi. Alcuni portatili sono famosi per questo malfunzionamento. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Specifica l'url del file di preconfigurazione da scaricare e da usare nelle installazioni automatiche. Si veda <a class="xref" href="ch04s06.html" title="4.6. Installazione automatizzata">Sezione 4.6, «Installazione automatizzata»</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Specifica il percorso del file di preconfigurazione da caricare e da usare nelle installazioni automatiche. Si veda <a class="xref" href="ch04s06.html" title="4.6. Installazione automatizzata">Sezione 4.6, «Installazione automatizzata»</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Da impostare a <strong class="userinput"><code>true</code></strong> per visualizzare le domande anche se preconfigurate, può essere utile per effettuare delle prove e per il debug di un file di preconfigurazione. Notare che non influenza i parametri passati come parametri d'avvio, per questi parametri occorre usare una sintassi speciale. Si veda <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Uso della preconfigurazione per modificare i valori predefiniti">Sezione B.5.2, «Uso della preconfigurazione per modificare i valori predefiniti»</a> per maggiori dettagli. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Rimanda le domande che normalmente sono poste prima che sia possibile fare la preconfigurazione fino a quando non viene configurata la rete. Si vedano in <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modalità «auto»">Sezione B.2.3, «Modalità <span class="quote">«<span class="quote">auto</span>»</span>»</a> i dettagli su come usare questo parametro per automatizzare l'installazione. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Durante le installazioni da console seriale o di gestione, normalmente le console virtuali (da VT1 a VT6) vengono disabilitate in <code class="filename">/etc/inittab</code>. Impostare questa opzione a <strong class="userinput"><code>true</code></strong> per evitare che questo accada. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>Normalmente, prima di riavviare, <code class="classname">installatore Debian</code> espelle automaticamente il supporto ottico usato durante l'installazione. Questa operazione può essere superflua nel caso in cui il sistema non faccia l'avvio automatico da questo supporto e in alcuni casi può essere addirittura inopportuna, per esempio quando il lettore non è in grado di richiudere il carrello da solo e l'utente non può farlo manualmente perché non è fisicamente presente. Molti dei lettori sottili con caricatore a slot non possono ricaricare automaticamente il supporto. </p>
+<p>Da impostare a <strong class="userinput"><code>false</code></strong> per disattivare l'espulsione automatica, però si deve fare attenzione che il sistema non faccia nuovamente l'avvio dal lettore CD dopo l'installazione iniziale. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (raccomandati)</span></dt>
+<dd>
+<p>Impostando questa opzione a <strong class="userinput"><code>false</code></strong>, il sistema di gestione dei pacchetti verrà configurato per non installare automaticamente i <span class="quote">«<span class="quote">Raccomandati</span>»</span>, sia durante l'installazione che sul sistema finale. Vedere anche <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Installazione del sistema base">Sezione 6.3.5, «Installazione del sistema base»</a>. </p>
+<p>Notare che questa opzione permette di avere un sistema più snello, ma può comportare la perdita di alcune delle funzionalità che sono solitamente disponibili. Potrebbe essere necessario installare manualmente alcuni dei pacchetti raccomandati per avere tutte le funzionalità desiderate. Questa opzione dovrebbe essere usata solo dagli utenti molto esperti. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Normalmente l'installatore richiede che i repository siano autenticati con una chiave gpg conosciuta. Per disabilitare questa autenticazione si può impostare questo parametro a <strong class="userinput"><code>true</code></strong>. <span class="bold"><strong>Attenzione: insicuro, non raccomandato.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Da impostare a <strong class="userinput"><code>true</code></strong> per entrare in modalità di ripristino anziché effettuare una normale installazione. Si consulti <a class="xref" href="ch08s06.html" title="8.6. Recupero di un sistema danneggiato">Sezione 8.6, «Recupero di un sistema danneggiato»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Uso dei parametri di avvio per rispondere alle domande</h3></div></div></div>
+<p>Eccetto alcune eccezioni, la risposta a qualsiasi domanda posta durante l'installazione può essere impostata dal prompt boot, però questo è realmente utile solo in casi particolari. Le istruzioni su come impostare queste risposte possono essere trovate in <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Uso dei parametri di avvio per la preconfigurazione">Sezione B.2.2, «Uso dei parametri di avvio per la preconfigurazione»</a>; seguono anche alcuni esempi. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (lingua), </span><span class="term">debian-installer/country (paese), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Esistono due modi per specificare quali sono lingua, nazione e locale da usare per l'installazione e sul sistema installato. </p>
+<p>Il primo (più semplice) è passare solo il parametro <code class="literal">locale</code>. Lingua e nazione sono impostati a partire da questo valore. Per esempio è possibile usare <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> per scegliere il tedesco come lingua e la Svizzera come nazione (il locale predefinito sul sistema installato sarà <code class="literal">de_CH.UTF-8</code>). Questa modalità ha il limite che non sono possibili tutte le combinazioni di lingua, nazione e locale. </p>
+<p>Il secondo (più flessibile) è specificare separatamente i valori per <code class="literal">language</code> (lingua) e <code class="literal">country</code> (nazione). In questo caso è possibile aggiungere anche <code class="literal">locale</code> per indicare il locale predefinito sul sistema installato. Per esempio: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (moduli)</span></dt>
+<dd><p>Può essere usato per forzare il caricamento automatico dei componenti dell'installatore che normalmente non sono caricati. Per esempio, alcuni dei moduli opzionali che possono risultare utili sono <code class="classname">openssh-client-udeb</code> (per poter usare <span class="command"><strong>scp</strong></span> durante l'installazione)<span class="phrase"> e <code class="classname">ppp-udeb</code> (si veda <a class="xref" href="apds05.html" title="D.5. Installazione di Debian GNU/Linux utilizzando «PPP over Ethernet» (PPPoE)">Sezione D.5, «Installazione di Debian GNU/Linux utilizzando <span class="quote">«<span class="quote">PPP over Ethernet</span>»</span> (PPPoE)»</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Da impostare a <strong class="userinput"><code>true</code></strong> per disabilitare l'autoconfigurazione di IPv6 e il DHCP e quindi forzare la configurazione statica della rete. </p></dd>
+<dt><span class="term">mirror/protocol (protocollo)</span></dt>
+<dd><p>Normalmente l'installatore usa il protocollo http per scaricare i file dai mirror Debian e non è possibile cambiare protocollo in ftp quando l'installazione avviene con priorità normale. Se si imposta questo parametro con il valore <strong class="userinput"><code>ftp</code></strong>, si forza l'installatore a usare questo protocollo. Notare che non si può scegliere un mirror ftp da una lista, il nome host deve essere inserito manualmente. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (task)</span></dt>
+<dd><p>Può essere usato per scegliere task che non sono disponibili nel normale elenco dei task, per esempio il task <code class="literal">kde-desktop</code>. Per ulteriori informazioni si veda <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Selezione e installazione dei pacchetti">Sezione 6.3.6.2, «Selezione e installazione dei pacchetti»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Passaggio di parametri ai moduli del kernel</h3></div></div></div>
+<p>Se i driver sono compilati nel kernel, il passaggio dei parametri avviene come descritto nella documentazione del kernel. Invece, se i driver sono compilati come moduli, ciò non è possibile in quanto la modalità con cui questi vengono caricati durante l'installazione è leggermente diversa rispetto a come vengono caricati da un sistema installato. Per ovviare a ciò si deve usare una sintassi particolare riconosciuta dall'installatore, il quale assicura il salvataggio dei parametri nei file di configurazione corretti e quindi il loro uso nel momento in cui i moduli vengono caricati. Oltre a ciò, i parametri vengono propagati automaticamente anche nella configurazione del sistema installato. </p>
+<p>Oggigiorno la necessità di passare dei parametri ai moduli è molto rara; infatti nella maggioranza dei casi il kernel è in grado di riconoscere l'hardware presente e di usare dei valori predefiniti corretti. Purtroppo, in alcune situazioni, potrebbe ancora esserci il bisogno di impostare manualmente i parametri. </p>
+<p>La sintassi da usare per impostare i parametri dei moduli è: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>nome_modulo</code></em>.<em class="replaceable"><code>nome_parametro</code></em>=<em class="replaceable"><code>valore</code></em>
+</pre></div>
+<p> Se è necessario passare più parametri a uno stesso modulo o a più moduli diversi, è sufficiente ripetere la stessa sintassi. Per esempio, per impostare una vecchia scheda di rete 3Com in modo che usi il connettore BNC (coassiale) e l'IRQ 10 si deve passare: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Moduli del kernel in blacklist</h3></div></div></div>
+<p>Potrebbe essere necessario mettere in blacklist un modulo per impedire che venga caricato automaticamente dal kernel o da udev. Un motivo per questa operazione può essere l'incompatibilità fra il modulo e l'hardware. Inoltre, alcune volte, il kernel elenca due driver diversi per lo stesso device, questo può causare il cattivo funzionamento del device se c'è un conflitto fra i driver o se viene caricato prima quello sbagliato. </p>
+<p>Si può aggiungere un modulo alla blacklist con questa sintassi: <strong class="userinput"><code><em class="replaceable"><code>nome_modulo</code></em>.blacklist=yes</code></strong>. Questo causa l'inserimento del modulo nella blacklist <code class="filename">/etc/modprobe.d/blacklist.local</code> sia durante l'installazione che nel sistema al termine dell'installazione. </p>
+<p>Si noti che un modulo potrebbe essere caricato comunque dal sistema d'installazione. Si può evitare che questo avvenga eseguendo l'installazione in modalità esperto e deselezionando il modulo nell'elenco dei moduli che viene mostrato durante le fasi di riconoscimento dell'hardware. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2558" class="footnote"><p><a href="#id2558" class="para"><sup class="para">[3] </sup></a> Con gli attuali kernel (2.6.9 e successivi) si possono usare 32 opzioni sulla riga di comando e 32 opzioni d'ambiente. Nel caso si superino questi limiti il kernel si blocca. Inoltre la lunghezza massima dell'intera riga di comando è di 255 caratteri, tutto ciò che è oltre questo limite viene ignorato senza dare alcun avviso. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Accessibilità </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Risoluzione dei problemi del processo d'installazione</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

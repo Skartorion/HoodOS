@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch04.html" title="Cap. 4. Obținerea unui mediu de instalare a sistemului">
+<link rel="prev" href="ch04s03.html" title="4.3. Pregătirea fișierelor pentru pornirea unui stick de memorie USB">
+<link rel="next" href="ch04s05.html" title="4.5. Pregătirea fișierelor pentru pornirea prin rețea utilizând TFTP">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 4. Obținerea unui mediu de instalare a sistemului</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid</h2></div></div></div>
+<p>Programul de instalare poate fi pornit folosind fișierele de pornire plasate pe o partiție de disc dur/solid existentă, fie lansat de pe alt sistem de operare, fie invocând un încărcător de pornire direct din BIOS. Pe sistemele UEFI moderne, nucleul poate fi pornit direct din partiția UEFI fără a fi nevoie de un încărcător de pornire. </p>
+<p>O instalare completă, de <span class="quote">„<span class="quote">pură rețea (pure network)</span>”</span> poate fi realizată folosind această tehnică. Acest lucru evită toate problemele legate de mediile amovibile, cum ar fi găsirea și inscripționarea imaginilor CD/DVD. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. Pornirea programului de instalare din Linux utilizând <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>Această secțiune explică cum să adăugați sau chiar să înlocuiți o instalare Linux existentă folosind <span class="command"><strong>GRUB</strong></span>. </p>
+<p>La pornire, <span class="command"><strong>GRUB</strong></span> acceptă încărcarea în memorie nu numai a nucleului, ci și a unei imagini de disc. Această imagine de disc din memorie poate fi folosit ca sistem de fișiere rădăcină de către nucleu. </p>
+<p>Copiați următoarele fișiere din arhivele Debian într-o locație convenabilă de pe discul dur/solid, de exemplu în <code class="filename">/boot/newinstall/</code>. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code> (binarul nucleului) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (imaginea discului virtual) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Dacă intenționați să utilizați discul dur/solid doar pentru pornire și apoi să descărcați totul prin rețea, ar trebui să descărcați fișierul <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> și nucleul corespunzător <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a>. Acest lucru vă va permite să repartiționați discul dur/solid de pe care porniți programul de instalare, deși ar trebui să faceți acest lucru cu grijă. </p>
+<p>Ca alternativă, dacă intenționați să păstrați o partiție existentă pe discul dur/solid neschimbată în timpul instalării, puteți descărca fișierul <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> și nucleul său <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a>, precum și să copiați o imagine de instalare pe discul dur/solid (asigurați-vă că numele fișierului se termină cu <code class="literal">.iso</code>). Programul de instalare poate apoi să pornească de pe discul dur/solid și să se instaleze din imaginea de instalare, fără a avea nevoie de rețea. </p>
+<p>În cele din urmă, pentru a configura încărcătorul de pornire, treceți la <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. Pornirea din Linux folosind GRUB">Secțiune 5.1.3, „Pornirea din Linux folosind <span class="command"><strong>GRUB</strong></span>”</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. Pregătirea fișierelor pentru pornirea unui stick de memorie USB </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. Pregătirea fișierelor pentru pornirea prin rețea utilizând TFTP</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

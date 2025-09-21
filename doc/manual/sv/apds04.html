@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Installera Debian GNU/Linux över Parallel Line IP (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="apd.html" title="Appendix D. Diverse bitar">
+<link rel="prev" href="apds03.html" title="D.3. Installera Debian GNU/Linux från ett Unix/Linux-system">
+<link rel="next" href="apds05.html" title="D.5. Installera Debian GNU/Linux över PPP over Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Installera Debian GNU/Linux över Parallel Line IP (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Appendix D. Diverse bitar</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Installera Debian GNU/Linux över Parallel Line IP (PLIP)</h2></div></div></div>
+<p>Det här avsnittet förklarar hur man installerar Debian GNU/Linux på en dator som saknar ett Ethernet-kort, men med en dator som fjärrgateway ansluten via en nollmodemkabel (kallas även för nollskrivarkabel). Gatewaydatorn bör vara ansluten till ett nätverk som har en Debian-spegel på sig (t.ex. Internet). </p>
+<p>I exemplet i den här bilagan kommer vi att ställa in en PLIP-anslutning med en gateway ansluten till Internet över en uppringd anslutning (ppp0). Vi kommer att använda IP-adresserna 192.168.0.1 och 192.168.0.2 för PLIP-gränssnitten på målsystemet respektive källsystemet (dessa adresser bör vara oanvända inom ditt nätverksadressintervall). </p>
+<p>Inställningen av PLIP-anslutningen under installationen kommer också vara tillgänglig efter omstart till det installerade systemet (se <a class="xref" href="ch07.html" title="Kapitel 7. Starta upp ditt nya Debian-system">Kapitel 7, <i>Starta upp ditt nya Debian-system</i></a>). </p>
+<p>Innan du börjar, behöver du kontrollera BIOS-konfigurationen (IO-basadress och IRQ) för parallellportar på både käll- och målsystemet. De mest vanliga värdena är <code class="literal">io=0x378</code> och <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5107"></a>D.4.1. Krav</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>En måldator, kallad <span class="emphasis"><em>mål</em></span>, där Debian kommer att installeras. </p></li>
+<li class="listitem"><p>Systeminstallationsmedia; se <a class="xref" href="ch02s04.html" title="2.4. Installationsmedia">Avsnitt 2.4, ”Installationsmedia”</a>. </p></li>
+<li class="listitem"><p>En annan dator ansluten till Internet, kallad <span class="emphasis"><em>källa</em></span>, som kommer att fungera som en gateway. </p></li>
+<li class="listitem"><p>En DB-25-nollmodemkabel. Se <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> för mer information för den här kabeln och instruktioner hur man tillverkar en egen. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5122"></a>D.4.2. Ställ in källor</h3></div></div></div>
+<p>Följande skript är ett enkelt exempel på hur man konfigurerar källdatorn som en gateway till Internet med ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Vi tar bort körande moduler från kärnan för att undvika konflikter och
+# för att konfigurera om dem manuellt.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Konfigurera plip-gränssnittet (plip0 för mig, se dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Konfigurera gateway
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5132"></a>D.4.3. Installera måldatorn</h3></div></div></div>
+<p>Starta upp på installationsmediat. Installationen behöver köras i expertläget; skriv <strong class="userinput"><code>expert</code></strong> vid uppstartsprompten. Om du behöver ställa in paramentrar för kärnmoduler behöver du även göra detta vid uppstartsprompten. För att till exempel starta upp installationsprogrammet och ställa in värden för flaggorna <span class="quote">”<span class="quote">io</span>”</span> och <span class="quote">”<span class="quote">irq</span>”</span> för modulen parport_pc, skriv följande vid uppstartsprompten: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Nedan finns svaren som bör anges under de olika stegen av installationen. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Läs in installationskomponenter från installationsmedia</span>
+
+</p>
+<p>Välj <strong class="userinput"><code>plip-modules</code></strong> från listan; det här kommer att göra drivrutinerna för PLIP tillgängliga för installationssystemet. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Identifiera nätverksmaskinvara</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Om målet <span class="emphasis"><em>har</em></span> ett nätverkskort, kommer en lista över drivrutinsmoduler för identifierade kort att visas. Om du vill tvinga <code class="classname">debian-installer</code> att använda plip istället, måste du avmarkera alla listade drivrutinsmoduler. Så klart, om målet inte har ett nätverkskort kommer installationsprogrammet inte att visa den här listan. </p></li>
+<li class="listitem"><p>På grund av att inget nätverkskort hittades/valdes tidigare, kommer installationsprogrammet att fråga dig om att välja en nätverksdrivrutinsmodul från en lista. Välj modulen <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Konfigurera nätverket</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Auto-konfigurera nätverk med DHCP: Nej </p></li>
+<li class="listitem"><p>IP-adress: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Punkt-till-punkt-adress: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Namnserveradresser: du kan ange samma adresser som används på källan (se <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Installera Debian GNU/Linux från ett Unix/Linux-system </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Installera Debian GNU/Linux över PPP over Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

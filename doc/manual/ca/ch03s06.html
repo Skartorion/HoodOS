@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Configuració del maquinari i del sistema operatiu prèvia a la instal·lació</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch03.html" title="Capítol 3. Abans d'instal·lar Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Pre-particions per a sistemes d'arrencada múltiple">
+<link rel="next" href="ch04.html" title="Capítol 4. Obtenir el suport d'instal·lació del sistema">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Configuració del maquinari i del sistema operatiu prèvia a la instal·lació</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 3. Abans d'instal·lar Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Configuració del maquinari i del sistema operatiu prèvia a la instal·lació</h2></div></div></div>
+<p>Aquesta secció explica el procés de configuració prèvia a la instal·lació del maquinari, si s'escau, que cal fer abans d'instal·lar Debian. Normalment es tracta de fer comprovacions dels ajusts de la BIOS/UEFI o del microprogramari del sistema, i de vegades de canviar-los. La <span class="quote">«<span class="quote">BIOS/UEFI</span>»</span> o <span class="quote">«<span class="quote">microprogramari</span>»</span> és el programari bàsic emprat pel maquinari; és absolutament necessari durant el procés d'arrencada (després d'arrencar l'ordinador). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Accedir al menú de configuració de la BIOS/UEFI</h3></div></div></div>
+<p>La BIOS/UEFI proveeix les funcions bàsiques que es necessiten per arrencar la vostra màquina i permetre al vostre sistema operatiu accedir al maquinari. El vostre sistema proveeix un menú de configuració BIOS/UEFI que s'utilitza per configurar la BIOS/UEFI. Per accedir al menú de configuració de la BIOS/UEFI haureu de prémer una o vàries tecles després d'encendre l'ordinador. Sovint és la tecla <span class="keycap"><strong>Suprimir</strong></span> o <span class="keycap"><strong>F2</strong></span>, però alguns fabricants en fan servir d'altres. Normalment, en arrencar l'ordinador es veu un missatge informant de quines són les tecles que cal fer servir. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Selecció del dispositiu d'arrencada</h3></div></div></div>
+<p>Des del menú de configuració de la BIOS/UEFI, podeu seleccionar els dispositius i l'ordre de comprovació en iniciar el sistema. Les possibilitats a seleccionar inclouen els disc durs interns, el lector de CD/DVD-ROM i els dispositius d'emmagatzemament massiu com a memòries o disc externs USB. Els sistemes més moderns ofereixen la possibilitat d'activar l'arrencada per xarxa amb PXE. </p>
+<p>Depenent dels mitjans d'instal·lació (CD/DVD ROM, memòria USB, inicia des de la xarxa) que heu triat heu d'habilitar els dispositius apropiats per arrencar si no estan ja habilitats. </p>
+<p>La majoria de versions de la BIOS/UEFI permeten accedir a un menú d'arrencada on és possible seleccionar el dispositiu d'arrencada de l'ordinador en la sessió actual. Si aquest opció està disponible, la BIOS/UEFI mostra un missatge curt del tipus <span class="quote">«<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>»</span> quan el sistema arrenca. La tecla que es fa servir per a accedir en aquest menú canvia d'un sistema a l'altra; les més usades son <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> i <span class="keycap"><strong>F8</strong></span>. Seleccionant el dispositiu des d'aquest menú no es canvia l'ordre d'arrencada predeterminat de la BIOS/UEFI, de manera que podeu arrencar des d'una memòria USB tot i tenir seleccionat un disc dur intern com a dispositiu primari d'arrencada. </p>
+<p>Si la vostra BIOS/UEFI no facilita aquesta opció del menú d'inici per poder seleccionar a voluntat el dispositiu d'arrencada actual, haureu de canviar la configuració de la BIOS/UEFI per a fer que el dispositiu des del qual arrencau el <code class="classname">debian-installer</code> sigui el dispositiu primari per arrencar. </p>
+<p>Malauradament alguns ordinadors tenen versions de la BIOS/UEFI amb errors. L'arrencada del <code class="classname">debian-installer</code> des d'una memòria USB pot no funcionar encara que aquesta sigui una opció disponible en el menú de la BIOS/UEFI i la memòria USB sigui la seleccionada com a dispositiu d'arrencada. En alguns d'aquests sistemes, l'arrencada amb una memòria USB és impossible; en alguns casos es pot enganyar al sistema per arrencar-lo des de la memòria USB canviant a la BIOS el tipus de dispositiu <span class="quote">«<span class="quote">disc dur USB</span>»</span> o <span class="quote">«<span class="quote">memòria USB</span>»</span> predeterminat per <span class="quote">«<span class="quote">USB ZIP</span>»</span> o <span class="quote">«<span class="quote">USB CDROM</span>»</span>. <span class="phrase"> Més concretament, si feu servir una imatge híbrida CD/DVD en una memòria USB (llegiu <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Preparar una memòria USB fent servir una imatge híbrida de CD/DVD">Secció 4.3.1, «Preparar una memòria USB fent servir una imatge híbrida de CD/DVD»</a>), canviar el tipus de dispositiu a <span class="quote">«<span class="quote">USB CDROM</span>»</span> ajuda amb algunes BIOS que no arrenquen des d'una memòria USB en mode de disc dur USB.</span> Potser necessitareu configurar la BIOS/UEFI perquè activi el <span class="quote">«<span class="quote">suport per USB antic</span>»</span>. </p>
+<p>Si no podeu manipular la BIOS/UEFI per tal d'arrencar directament des d'una memòria USB teniu l'opció de fer servir una ISO copiada en una memòria USB. Arrencar el <code class="classname">debian-installer</code> fent servir <a class="xref" href="ch04s04.html" title="4.4. Preparació dels fitxers per arrencar des del disc dur">Secció 4.4, «Preparació dels fitxers per arrencar des del disc dur»</a> i, després de revisar els disc cercant una imatge ISO, seleccionar el dispositiu USB i la imatge d'instal·lació. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Sistemes amb microprogramari UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">«<span class="quote">Unified Extensible Firmware Interface</span>»</span>) és un nou tipus de microprogramari que fan servir molts sistemes moderns i, entre d'altres usos, reemplaçarà la BIOS dels PC clàssics. </p>
+<p>Actualment, la majoria de PC que fan servir UEFI també tenen l'anomenat <span class="quote">«<span class="quote">Compatibility Support Module</span>»</span> (CSM) en el microprogramari, que proporciona al sistema operatiu exactament les mateixes interfícies que el clàssic BIOS de PC, de manera que el programari escrit per les BIOS de PC funcionen sense canvis. No obstant això, UEFI està destinat a substituir completament l'antic BIOS sense ésser totalment compatible i ja hi ha molts sistemes amb UEFI però sense CSM. </p>
+<p>En els sistemes amb UEFI hi ha una sèrie d'aspectes que cal tenir en compte a l'hora d'instal·lar un sistema operatiu. El mètode de càrrega del sistema operatiu per part del microprogramari és fonamentalment diferent entre el clàssic BIOS (o UEFI en mode CSM) i el UEFI nadiu. Una de les diferències més destacables es el mètode en què es fan les particions en el disc dur. Amb el clàssic BIOS i amb UEFI en mode CSM es fa servir una taula de particions DOS mentre que UEFI fa servir un esquema de particions diferent anomenat <span class="quote">«<span class="quote">GUID Partition Table</span>»</span> (GPT). En un sol disc, per a raons pràctiques només es pot fer servir un dels dos sistemes i en el cas d'arrencada múltiple amb diferents sistemes operatius en només un disc, tots ells han de fer servir el mateix tipus de taula de particions. L'arrencada des d'un disc amb GPT només és possible amb mode UEFI nadiu, però l'ús de GPT es fa cada vegada més comú així com augmenten les mides dels disc, degut a que la taula de particions clàssica DOS no pot indexar disc de més de 2 terabytes mentre que GPT admet disc de més capacitat. Una altra diferència important entre els dos sistemes és la ubicació del codi d'arrencada i el format en què es fa. Per això calen diferents carregadors d'arrencada per a cada sistema. </p>
+<p>Aquesta darrera diferència es torna important per arrencar <code class="classname">debian-installer</code> en sistemes amb UEFI i CSM degut a què <code class="classname">debian-installer</code> comprova si s'arrenca en un sistema amb BIOS o UEFI nadiu i instal·la el carregador adequat. Normalment funciona correctament però i pot haver problemes en el cas de arrencades múltiples. En alguns sistemes UEFI amb CSM el mode predeterminat d'arrencada per a dispositius desmuntables és diferent del que es fa servir actualment amb els disc durs, de manera que quan s'arrenca l'instal·lador des d'una memòria USB d'una manera diferent en com s'arrenca un altra sistema operatiu instal·lat en el disc dur, podria passar que s'instal·li un carregador incorrecte i que el sistema no arranqui una vegada acabada la instal·lació. Quan s'elegeix el dispositiu d'arrencada des del menú d'arrencada del microprogramari, alguns sistemes ofereixen dues opcions separades per a cada dispositiu, de manera que l'usuari pot elegir si l'arrencada es farà en el mode CSM o UEFI nadiu. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Engegada segura («Secure boot»)</h3></div></div></div>
+<p>Una altre aspecte lligat a UEFI és l'anomenat mecanisme d'<span class="quote">«<span class="quote">arrencada segura</span>»</span> («secure boot»). L'arrencada segura és una funció d'UEFI amb la qual el microprogramari només carrega i executa codi signat criptogràficament amb determinades claus i bloquege qualsevol codi d'arrencada (potencialment perillós) que no estigui signat o signat amb claus desconegudes. A la pràctica, l'única clau acceptada de forma predeterminada en molts sistemes UEFI amb arrencada segura és la clau que Microsoft fa servir per al seu carregador d'arrencada. Debian inclou un gestor d'arrencada <span class="quote">«<span class="quote">shim</span>»</span> (que “tradueix” al vol) signat per Microsoft, de manera que hauria de funcionar correctament en sistemes amb l'arrencada segura activada. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Desactivar l'<span class="quote">«<span class="quote">arrencada ràpida</span>»</span>/<span class="quote">«<span class="quote">inici ràpid</span>»</span> de Windows</h3></div></div></div>
+<p>Windows ofereix una característica (anomenada <span class="quote">«<span class="quote">arrencada ràpida</span>»</span> a Windows 8, <span class="quote">«<span class="quote">inici ràpid</span>»</span> a Windows 10) per reduir el temps d'arrencada del sistema. Tècnicament, quan aquesta opció està activada, Windows 8 no s'atura realment ni arrenca de nou quan es torna a aturar, en canvi fa una cosa semblant a una suspensió al disc per a reduir el temps d'<span class="quote">«<span class="quote">arrencada</span>»</span>. Mentre el Windows sigui l'únic sistema operatiu a la màquina no hi ha cap problema, però sí n'hi pot haver i amb pèrdua de dades en el cas de l'arrencada dual si un altre sistema operatiu accedeix a un sistema de fitxers als quals accedeix el Windows. En aquest cas, l'estat real del sistema de fitxers pot ésser diferent a l'estat conservat per Windows després de l'<span class="quote">«<span class="quote">arrencada ràpida</span>»</span> i pot ocasionar la corrupció del sistema d'arxius després de successius accessos d'escriptura. Per tant, en un sistema d'arrencada dual, per evitar la corrupció del sistema d'arxius, la característica d'<span class="quote">«<span class="quote">arrencada ràpida</span>»</span>/<span class="quote">«<span class="quote">inici ràpid</span>»</span> s'ha de desactivar a Windows. </p>
+<p>A més, el mecanisme d'actualització de Windows (de vegades) ha estat conegut per rehabilitar automàticament aquesta característica, després que l'usuari l'hagi inhabilitat prèviament. Se suggereix que es torni a comprovar aquest paràmetre periòdicament. </p>
+<p>També pot ésser necessari desactivar <span class="quote">«<span class="quote">l'arrencada ràpida</span>»</span> per poder accedir a la configuració de l'UEFI i poder arrencar un sistema operatiu diferent o <code class="classname">debian-installer</code>. En molts sistemes UEFI, el microprogramari redueix el temps d'<span class="quote">«<span class="quote">arrencada</span>»</span> deixant d'inicialitzar el controlador del teclat o els dispositius USB; en aquests casos, és necessari arrencar el Windows i desactivar aquesta funcionalitat per a poder canviar l'ordre d'arrencada. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Aspectes del maquinari que cal tenir en compte</h3></div></div></div>
+<p><b>Funcionalitats USB de la BIOS i teclats. </b>Si en lloc d'un teclat de tipus PS/2 teniu un model USB, potser haureu d'habilitar l'emulació antiga de teclats en la configuració de la BIOS por poder fer servir el teclat amb el menú del carregador d'arrencada, tot i què això no passa amb els ordinadors moderns. Si el vostre teclat no funciona amb el menú del carregador d'arrencada, consultau el manual de la placa base i cercau a la BIOS les opcions <span class="quote">«<span class="quote">Legacy keyboard emulation</span>»</span> o <span class="quote">«<span class="quote">USB keyboard support</span>»</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Pre-particions per a sistemes d'arrencada múltiple </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> Capítol 4. Obtenir el suport d'instal·lació del sistema</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

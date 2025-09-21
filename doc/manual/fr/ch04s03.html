@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Préparation des fichiers pour un amorçage avec une clé USB</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Chapitre 4. Comment obtenir les supports du système d'installation ?">
+<link rel="prev" href="ch04s02.html" title="4.2. Télécharger les fichiers depuis les miroirs Debian">
+<link rel="next" href="ch04s04.html" title="4.4. Préparer les fichiers pour amorcer depuis un disque dur">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Préparation des fichiers pour un amorçage avec une clé USB</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 4. Comment obtenir les supports du système d'installation ?</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Préparation des fichiers pour un amorçage avec une clé USB</h2></div></div></div>
+<p>Pour préparer une clé USB, il est recommandé d'utiliser un système GNU/Linux fonctionnel qui gère les périphériques USB. Sur les systèmes récents, la clé devrait être automatiquement reconnue. Si ce n'est pas le cas, vérifiez que le module du noyau usb-storage est chargé. Une fois insérée, la clé sera associée à un périphérique appelé <code class="filename">/dev/sdX</code>, où le <span class="quote">« <span class="quote">X</span> »</span> est une lettre minuscule (a-z). En utilisant la commande <span class="command"><strong>lsblk</strong></span> avant et après l'insertion (ou <span class="command"><strong>dmesg</strong></span> avec les privilèges du superutilisateur), il est possible de savoir à quel périphérique la clé a été associée. Pour pouvoir écrire sur la clé, il vous faudra enlever la protection contre l'écriture. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertissement]" src="images/warning.png"></td>
+<th align="left">Avertissement</th>
+</tr>
+<tr><td align="left" valign="top"><p>Les procédures décrites dans cette section détruisent ce qui se trouve sur le périphérique. Faites très attention à utiliser le nom correct pour la clé USB. Si vous vous trompez et utilisez un autre périphérique, un disque dur par exemple, toutes les données du disque seront perdues. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Préparation d'une clé USB utilisant une image hybride de CD ou DVD</h3></div></div></div>
+<p>Les images d'installation de Debian pour cette architecture sont créées en utilisant <span class="command"><strong>isohybrid</strong></span>. Cela signifie qu'elles peuvent être transférées directement sur une clé USB, et rend très simple la création d'un support d'installation. Il suffit de choisir une image qui tienne sur la clé (par exemple une des images netinst ou DVD 1). Consultez la <a class="xref" href="ch04s01.html" title="4.1. Images d'installation Debian GNU/Linux officielles">Section 4.1, « Images d'installation Debian GNU/Linux officielles »</a> pour obtenir cette image. </p>
+<p>L'image d'installation que vous avez choisie peut être transférée directement sur la clé. Toutes les données existantes sont détruites. Par exemple, avec un système GNU/Linux, après avoir vérifié que la clé n'est pas montée, vous pouvez copier l'image de cette manière : </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Cette façon de faire devrait convenir à la plupart des utilisateurs. Pour les cas particuliers, une documentation plus complète est disponible sur <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">cette page du wiki</a>. </p>
+<p>Des informations sur la méthode à utiliser avec d'autres systèmes d'exploitation sont disponibles à la page de <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">la FAQ de Debian CD</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top"><p>L'image doit être copiée sur le disque complet, et pas sur une partition. Par exemple /dev/sdb et non pas /dev/sdb1. N'utilisez pas d'outils qui modifient l'image, tels que <span class="command"><strong>unetbootin</strong></span>. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Télécharger les fichiers depuis les miroirs Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Préparer les fichiers pour amorcer depuis un disque dur</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

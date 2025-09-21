@@ -1,0 +1,411 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Unix/Linux システムからの Debian GNU/Linux のインストール</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apd.html" title="付録D 雑多な事柄">
+<link rel="prev" href="apds02.html" title="D.2. タスクに必要なディスクの空き容量">
+<link rel="next" href="apds04.html" title="D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Unix/Linux システムからの Debian GNU/Linux のインストール</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録D 雑多な事柄</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Unix/Linux システムからの Debian GNU/Linux のインストール</h2></div></div></div>
+<p>この節は、マニュアルの他の部分で説明されているメニュードリブンインストーラを使用せずに、既存の Unix・Linux システムから Debian GNU/Linux をインストールする方法について説明します。この <span class="quote">「<span class="quote">クロスインストール</span>」</span> HOWTO は、Red Hat, Mandriva, SUSE から Debian GNU/Linux に移行するユーザの要望で書かれました。本節では、*nix コマンドの入力について熟知し、ファイルシステムを操作できるのが前提となっています。本節では、<code class="prompt">#</code>が Debian chroot に入力されたコマンドを示し、<code class="prompt">$</code> はユーザの現在のシステムに入力されるコマンドを表します。 </p>
+<p>一旦、新しい Debian システムを好みに設定したら、既存のユーザデータを (あるなら) 稼働したまま移行できます。したがって、これは <span class="quote">「<span class="quote">ダウンタイム無し</span>」</span>での Debian GNU/Linux インストールになります。またこれは、様々な起動・インストールメディアと相性のよくないハードウェアに対処するうまい方法です。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>これはほとんど手作業になりますから、自分でシステムの大部分の基本設定を行う必要があります。それには通常のインストールよりも Debian や Linux の一般的な知識が必要なことを覚えておいてください。また、この手順で通常のインストールと全く同じシステムになると期待してはいけません。これはシステムをセットアップする基本的な手順でしかありません。追加インストールや追加設定が必要になるかもしれません。 </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4865"></a>D.3.1. はじめに</h3></div></div></div>
+<p>今の *nix のパーティション分割ツールで、スワップと最低 1 つファイルシステムを作成するよう、ハードディスクを希望に添って再分割してください。コンソールのみのインストールには、最低 647MB の空き領域が必要ですし、X をインストールする予定なら 2635MB (GNOME や KDE Plasma のようなデスクトップ環境をインストールする場合はもっと) 必要です。 </p>
+<p>次に、パーティションにファイルシステムを作成してください。例えば、<code class="filename">/dev/sda6</code> パーティションに、ext3 ファイルシステムを作成するには、以下のようにします。(今回の例ではこのパーティションを root パーティションとします) </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> ext3 ではなく ext2 ファイルシステムを作成するには、<strong class="userinput"><code>-j</code></strong> を取ってください。 </p>
+<p>スワップを以下のように初期化して有効にしてください。(パーティション番号は、Debian スワップパーティションにするパーティション番号に、読み替えてください) </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p>パーティションを <code class="filename">/mnt/debinst</code> (インストールポイント。新システムの root (<code class="filename">/</code>) ファイルシステムになります) にマウントしてください。厳密にいうとマウントポイント名は何でも構いません。以降の説明ではこれを使用します。 </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>分割したパーティションをファイルシステムの一部 (例 /usr) にマウントする場合、次のステージに進む前に、手動でそのディレクトリを作成・マウントする必要があります。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4886"></a>D.3.2. <span class="command"><strong>debootstrap</strong></span> のインストール</h3></div></div></div>
+<p>Debian インストーラが使用するユーティリティで、Debian 基本システムをインストールする公式の方法と認められているのが <span class="command"><strong>debootstrap</strong></span> です。<span class="command"><strong>wget</strong></span> と <span class="command"><strong>ar</strong></span> を使用しますが、<code class="classname">/bin/sh</code> と基本的な Unix/Linux ツール<a href="#ftn.id4894" class="footnote" name="id4894"><sup class="footnote">[21]</sup></a>にのみ依存しています。今のシステムにまだインストールしていなければ、<span class="command"><strong>wget</strong></span> と <span class="command"><strong>ar</strong></span> をインストールし、その後 <span class="command"><strong>debootstrap</strong></span> をダウンロード・インストールしてください。 </p>
+<p>また、手動でインストールするには、以下の手順になります。まず .deb を展開するために作業フォルダを次のように作ってください。</p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> <span class="command"><strong>debootstrap</strong></span> バイナリは、Debian アーカイブ (あなたのアーキテクチャに適合するファイルを必ず選ぶこと) にあります。<a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top">pool</a> から <span class="command"><strong>debootstrap</strong></span> .deb をダウンロードして、作業フォルダにパッケージをコピーし、ファイルを展開してください。ファイルをインストールする際には root 権限を持つ必要があるでしょう。 </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4911"></a>D.3.3. <span class="command"><strong>debootstrap</strong></span> の実行</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span> を実行すると、アーカイブから必要なファイルを直接ダウンロードできます。以下のコマンドの例では、<strong class="userinput"><code>http.us.debian.org/debian</code></strong> としていますが、ネットワーク的に近い Debian アーカイブミラーサイトで代用できます。ミラーサイトは、<a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a> に一覧があります。 </p>
+<p>trixie Debian GNU/Linux インストールイメージを持っていて、<code class="filename">/cdrom</code> にマウントしていれば、http URL に代えて file URL (<strong class="userinput"><code>file:/cdrom/debian/</code></strong>) を使用することができます。 </p>
+<p><span class="command"><strong>debootstrap</strong></span> コマンドの <em class="replaceable"><code>ARCH</code></em> は、<strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong> のどれかと置き換えるか、</p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> のようにします。所用のアーキテクチャがホストとは異なる場合には <strong class="userinput"><code>--foreign</code></strong> オプションを追加します。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4933"></a>D.3.4. 基本システムの設定</h3></div></div></div>
+<p>さあ、これでディスクに真の Debian システムを (いくぶん中がスカスカですが) 手に入れました。そこに <span class="command"><strong>chroot</strong></span> してください。</p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> 所用のアーキテクチャがホストとは異なる場合にはまず、qemu-user-static を新しいホストにコピーする必要があるかもしれません。</p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> chroot した後で Debian 基本システムと互換のある端末定義を設定する必要があるかもしれません。例えば</p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> のようにします。TERM の値により、その値をサポートするのに <code class="classname">ncurses-term</code> パッケージをインストールする必要があるかもしれません。 </p>
+<p>所用のアーキテクチャがホストとは異なる場合には複数段階の前処理を終えておく必要があるかもしれません。 </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4948"></a>D.3.4.1. デバイスファイルの作成</h4></div></div></div>
+<p>この時点で、<code class="filename">/dev/</code> には、非常に基本的なデバイスファイルがあるだけです。おそらくインストールの次のステップで、追加デバイスファイルが必要になります。インストールに使用するホストシステムがモジュール化カーネルを使用するかどうかや、新しいシステムで動的デバイスファイル (例: <code class="classname">udev</code> を使用) と静的デバイスファイルのどちらを使用するかにより、どの方法で行うかが異なります。 </p>
+<p>以下のような選択肢があります。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>makedev パッケージをインストールし、次のようにして (chroot してから)、デフォルトの静的デバイスファイル群を作成してください。 </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p><span class="command"><strong>MAKEDEV</strong></span> を使用して、指定したデバイスファイルのみを手で作成します。 </p></li>
+<li class="listitem"><p>ホストシステムの /dev をターゲットシステムの /dev の先頭にマウントします。いくつかのパッケージの postinst スクリプトでは、デバイスファイルを作成しようとするのに注意してください。そのため、この選択肢は注意深く使用するべきです。 </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4964"></a>D.3.4.2. パーティションのマウント</h4></div></div></div>
+<p><code class="filename">/etc/fstab</code> を作る必要があります。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p>以下のサンプルを自分に合うように編集できます。</p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> <code class="filename">/etc/fstab</code> で指定したファイルシステムを、すべてマウントするには <strong class="userinput"><code>mount -a</code></strong> としてください。また、ファイルシステムを別々にマウントするには、以下のようにしてください。</p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p> 現在 Debian システムでは、リムーバブルメディアのマウントポイントを <code class="filename">/media</code> にしていますが、<code class="filename">/</code> にシンボリックリンクを置き互換性を保っています。以下の例のように、必要であれば作成してください。</p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> proc ファイルシステムは、どこでも何度でもマウントすることができますが、慣習的に <code class="filename">/proc</code> にマウントします。<strong class="userinput"><code>mount -a</code></strong> を使用しなかった場合は、以下のように先に進む前に必ず proc をマウントしてください。 </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p><strong class="userinput"><code>ls /proc</code></strong> コマンドは、今度は空のディレクトリにはならないはずです。これが失敗するようなら、以下のように chroot の外側から proc をマウントできるかもしれません。 </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4988"></a>D.3.4.3. タイムゾーンの設定</h4></div></div></div>
+<p><code class="filename">/etc/adjtime</code> ファイルの 3 行目に、<span class="quote">「<span class="quote">UTC</span>」</span> か <span class="quote">「<span class="quote">LOCAL</span>」</span> を設定し、システムがハードウェアの時計を UTC として解釈するか、それぞれの現地時間として解釈するかを決定します。以下のコマンドで、上記の選択とタイムゾーンの選択を行えます。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> 以下に例を示します。</p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> 以下のコマンドでタイムゾーンの選択ができます。 </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5000"></a>D.3.4.4. ネットワークの設定</h4></div></div></div>
+<p>ネットワークの設定をするには、<code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> and <code class="filename">/etc/hosts</code> を編集してください。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> 次は、<code class="filename">/usr/share/doc/ifupdown/examples</code> のシンプルな例です。</p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- ifup(8), ifdown(8) 用設定ファイル
+# どのようなオプションが使えるかについては interfaces(5) man ページを参照してください
+######################################################################
+
+# loopback インターフェイスは絶対に必要では無くなっていますが、必要になった時に使えます
+#
+auto lo
+iface lo inet loopback
+
+# dhcp を使う:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# 静的 IP 設定の例: (network, broadcast, gateway はオプション)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> <code class="filename">/etc/resolv.conf</code> に、ネームサーバと search ディレクティブを入力してください。</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> 以下は、<code class="filename">/etc/resolv.conf</code> の簡単な例です。</p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> システムのホスト名 (2 から 63 文字) を入力してください。</p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p>また、IPv6 をサポートした基本的な <code class="filename">/etc/hosts</code> は以下のようにします。</p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p>複数のネットワークカードを持っているなら、<code class="filename">/etc/modules</code> ファイルに希望の順番で、ドライバモジュールの名前を配置してください。その後起動中に、各カードは期待通りにインターフェース名 (eth0, eth1 など) と結びつけられます。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5024"></a>D.3.4.5. apt の設定</h4></div></div></div>
+<p>debootstrap は、追加パッケージをインストールする、非常に基本的な <code class="filename">/etc/apt/sources.list</code> を作成します。しかし、他のパッケージ取得先を追加したくなると思います。以下の例はソースパッケージとセキュリティ更新を追加しています。</p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p>sources list を更新したら、<strong class="userinput"><code>apt update</code></strong> を必ず実行してください。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5031"></a>D.3.4.6. ロケールとキーボードの設定</h4></div></div></div>
+<p>英語以外の言語を使用するようロケールの設定をするために、ロケールをサポートするパッケージ (<code class="classname">locales</code>) をインストール・設定してください。現在は UTF-8 ロケールを使用するのをお勧めします。</p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> (必要なら) 以下のようにキーボードの設定を行ってください。 </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>chroot 内では、キーボードを設定できませんが、再起動後に有効になることに注意してください。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5040"></a>D.3.5. カーネルのインストール</h3></div></div></div>
+<p>このシステムを起動できるようにするなら、おそらく Linux カーネルとブートローダが必要でしょう。以下のようにして、パッケージ化済みカーネルを確認してください。 </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>その後、パッケージ名を指定して、選択したカーネルパッケージをインストールしてください。 </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5049"></a>D.3.6. ブートローダのセットアップ</h3></div></div></div>
+<p>Debian GNU/Linux システムを起動できるようにするために、インストールしたカーネルを新しい root パーティションから読み込むように、ブートローダをセットアップしてください。<span class="command"><strong>debootstrap</strong></span> は、ブートローダをインストールしないことに注意してください。とは言っても、セットアップするのに Debian chroot 内部の <span class="command"><strong>apt</strong></span> を使用できます。 </p>
+<p>ブートローダのセットアップについての説明は、<strong class="userinput"><code>info grub</code></strong> をチェックしてください。Debian をインストールするのに使用したシステムを保持する場合、既存の grub2 の <code class="filename">grub.cfg</code> に、Debian インストールへのエントリを単に加えてください。 </p>
+<p><code class="classname">grub2</code> のインストールと設定は以下のように簡単です。</p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> 2 つ目のコマンドで、<span class="command"><strong>grub2</strong></span> を (この場合は <code class="literal">sda</code> の MBR に) インストールします。最後のコマンドで、正しく動作する <code class="filename">/boot/grub/grub.cfg</code> を作成します。 </p>
+<p><code class="filename">/dev/sda</code> デバイスファイルは、作成済みだと仮定していることに注意してください。<span class="command"><strong>grub2</strong></span> のインストールには別の方法もありますが、それはこの付録では扱いません。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5068"></a>D.3.7. リモートアクセス: SSH のインストールとアクセス方法の設定</h3></div></div></div>
+<p>コンソール経由でシステムにログインできる場合はこの節を飛ばせます。後でネットワーク経由でシステムにアクセスできるようにする必要がある場合は SSH をインストールしてアクセス方法を用意する必要があります。</p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> パスワードによる root のログインはデフォルトで無効になっているため、パスワードを設定してパスワードによる root のログインを有効にしてアクセス方法を用意します: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> 有効にするオプション: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> root アカウントに SSH の鍵を追加してアクセス方法を用意することもできます: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> 最後に、root ユーザを追加してパスワードを設定してアクセス方法を用意することもできます: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5081"></a>D.3.8. 仕上げに</h3></div></div></div>
+<p>すでに述べたように、インストールしたシステムは非常に基本的な物になります。もっと成熟したシステムにしたければ、優先度が <span class="quote">「<span class="quote">standard</span>」</span> のパッケージを、すべてインストールする簡単な方法があります。以下のようにしてください。</p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> もちろん <span class="command"><strong>apt</strong></span> で、個々のパッケージをインストールすることもできます。 </p>
+<p>インストールが終わると、ダウンロードしたパッケージが <code class="filename">/var/cache/apt/archives/</code> に大量に残っています。以下のようにして、ディスク領域を解放できます。 </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4894" class="footnote"><p><a href="#id4894" class="para"><sup class="para">[21] </sup></a>これには、<span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span>, <span class="command"><strong>gzip</strong></span> といった、GNU コアユーティリティが含まれます。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. タスクに必要なディスクの空き容量 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

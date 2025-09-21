@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. S'orienter dans Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Chapitre 8. Les prochaines étapes">
+<link rel="prev" href="ch08s01.html" title="8.1. Arrêter le système">
+<link rel="next" href="ch08s03.html" title="8.3. Pour aller plus loin">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. S'orienter dans Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 8. Les prochaines étapes</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. S'orienter dans Debian</h2></div></div></div>
+<p>Debian est une distribution différente des autres distributions. Même si vous êtes habitué à travailler avec d'autres distributions Linux, il est nécessaire de connaître certains détails propres à Debian pour garder votre système en bon état. Le contenu de ce chapitre vous aidera à vous orienter ; ce n'est pas un didacticiel sur l'utilisation de Debian, mais un rapide coup d'œil sur le système, pour les gens pressés. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3646"></a>8.2.1. Le système des paquets</h3></div></div></div>
+<p>Le concept le plus important à assimiler est le système de gestion des paquets. La plus grande partie de votre système est sous le contrôle du système de gestion des paquets. Cela inclut : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (en excluant <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (vous pourriez créer <code class="filename">/var/local</code> en toute sécurité) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> Par exemple, si vous remplacez <code class="filename">/usr/bin/perl</code>, cela fonctionnera, mais lors de la prochaine mise à jour du paquet <code class="classname">perl</code>, le fichier que vous avez modifié sera remplacé. Les experts évitent cela en marquant le paquet comme <span class="quote">« <span class="quote">à conserver (hold)</span> »</span> avec l'application <span class="command"><strong>aptitude</strong></span>. </p>
+<p>L'une des meilleures méthodes d'installation est la méthode apt. Vous pouvez utiliser la version en ligne de commande <span class="command"><strong>apt</strong></span>, ou bien des outils comme <span class="application">aptitude</span> ou <span class="application">synaptic</span> (qui sont des interfaces graphiques à <span class="command"><strong>apt</strong></span>). Notez qu'apt permet de fusionner plusieurs sources pour les paquets : main, contrib, non-free et non-free-firmware ; ainsi vous pouvez installer des paquets soumis à des restrictions (n'appartenant pas à Debian au sens strict) en même temps que des paquets de Debian GNU/Linux. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3676"></a>8.2.2. Autres logiciels disponibles</h3></div></div></div>
+<p>Certains dépôts de paquets, officiels ou non officiels, ne sont pas activés par défaut dans une installation standard de Debian. Ils contiennent des paquets que beaucoup considèrent comme des paquets importants et nécessaires à une distribution. Vous pouvez trouver des informations sur ces dépôts sur la page du wiki Debian intitulée <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">Les logiciels disponibles pour la distribution stable de Debian</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3680"></a>8.2.3. Gestion des versions des applications</h3></div></div></div>
+<p>Les différentes versions des applications sont gérées par update-alternatives. Si vous utilisez plusieurs versions de vos applications, lisez la page de manuel de update-alternatives. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3683"></a>8.2.4. Gestion des tâches récurrentes</h3></div></div></div>
+<p>Les actions dont l'administrateur a la responsabilité devraient se trouver dans le répertoire <code class="filename">/etc</code>, car ce sont des fichiers de configuration. Si un travail doit être répété chaque jour, semaine ou mois, mettez simplement un script ou une application exécutant cette action respectivement dans <code class="filename">/etc/cron.daily</code>, <code class="filename">/etc/cron.weekly</code> et <code class="filename">/etc/cron.monthly</code>. Ils seront appelés depuis <code class="filename">/etc/crontab</code>, et lancés consécutivement par ordre alphabétique. </p>
+<p>D'un autre côté, si vous avez une tâche qui doit être lancée par un utilisateur particulier, ou à une heure ou à une fréquence bien précise, vous pouvez utiliser <code class="filename">/etc/crontab</code>, ou, mieux encore, <code class="filename">/etc/cron.d/votre_choix</code>. Ces fichiers possèdent aussi un champ supplémentaire qui permet de spécifier sous quelle identité l'action sera exécutée. </p>
+<p>Dans tous les cas, vous n'avez qu'à modifier les fichiers, et cron le remarquera automatiquement. Vous n'avez pas à lancer de commandes spéciales. Pour plus d'informations, lisez cron(8), crontab(5) et <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Arrêter le système </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Pour aller plus loin</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

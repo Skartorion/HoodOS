@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Dateien vorbereiten für das Booten von einem USB-Memory-Stick</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch04.html" title="Kapitel 4. Systeminstallations-Medien beschaffen">
+<link rel="prev" href="ch04s02.html" title="4.2. Dateien von einem Debian-Spiegel-Server herunterladen">
+<link rel="next" href="ch04s04.html" title="4.4. Dateien vorbereiten für das Booten von Festplatte">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Dateien vorbereiten für das Booten von einem USB-Memory-Stick</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 4. Systeminstallations-Medien beschaffen</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Dateien vorbereiten für das Booten von einem USB-Memory-Stick</h2></div></div></div>
+<p>Um den USB-Stick vorzubereiten, wird empfohlen, ein System zu verwenden, auf dem GNU/Linux bereits läuft und das USB unterstützt. Auf aktuellen GNU/Linux-Systemen sollte der USB-Stick automatisch erkannt werden, sobald Sie ihn einstecken. Falls nicht, sollten Sie sicherstellen, dass das Kernelmodul usb-storage geladen ist. Beim Einstecken wird dem USB-Stick ein Gerät namens <code class="filename">/dev/sdX</code> zugewiesen, wobei <span class="quote">„<span class="quote">X</span>“</span> ein Buchstabe im Bereich zwischen a und z ist. Es sollte Ihnen möglich sein zu erkennen, welches Gerät dem Stick zugewiesen wurde, indem Sie den Befehl <span class="command"><strong>lsblk</strong></span> ausführen, bevor und nachdem Sie den USB-Stick eingesteckt haben. (Die Ausgabe von <span class="command"><strong>dmesg</strong></span> (als root) ist eine weitere Methode hierfür.) Um den Stick zu beschreiben, müssen Sie eventuell noch mit dem entsprechenden Schalter am Stick den Schreibschutz deaktivieren (falls Ihr Stick solch einen Schalter hat). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warnung]" src="images/warning.png"></td>
+<th align="left">Warnung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Die in diesem Abschnitt beschriebenen Vorgehensweisen werden alle Daten zerstören, die sich bereits auf dem Gerät befinden! Vergewissern Sie sich, dass Sie den korrekten Gerätenamen (nämlich den Ihres USB-Sticks) verwenden. Wenn Sie einen falschen Namen verwenden, könnte dies dazu führen, dass Sie z.B. alle Daten auf Ihrer Festplatte verlieren! </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Einen USB-Stick vorbereiten mit einem Hybrid-CD/DVD-Image</h3></div></div></div>
+<p>Debian Installations-Images für diese Architektur werden mittels der <span class="command"><strong>isohybrid</strong></span>-Technologie erstellt; das bedeutet, dass Sie direkt auf einen USB-Stick geschrieben werden können, was ein sehr einfacher Weg ist, um ein Installationsmedium zu erstellen. Wählen Sie einfach ein Image, das auf Ihren Stick passt (z.B. das netinst- oder das DVD-1-Image). In <a class="xref" href="ch04s01.html" title="4.1. Offizielle Debian GNU/Linux-Installations-Images">Abschnitt 4.1, „Offizielle Debian GNU/Linux-Installations-Images“</a> finden Sie Informationen darüber, wie Sie sich die Images besorgen können. </p>
+<p>Das Installations-Image, das Sie ausgewählt haben, sollte direkt auf den USB-Stick geschrieben werden, wobei die vorher vorhandenen Daten überschrieben werden. Auf einem GNU/Linux-System kann das Image wie folgt auf den USB-Stick geschrieben werden (nachdem Sie sichergestellt haben, dass der Stick nicht im Dateisystem eingebunden ist): </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Einfach das Installations-Image wie hier beschrieben auf USB zu schreiben, sollte für die meisten Benutzer funktionieren. Für spezielle Anforderungen gibt es diese <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">Wiki-Seite</a>. </p>
+<p>Informationen dazu, wie Sie dies auf anderen Betriebssystemen erledigen, finden Sie in der <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD FAQ</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Wichtig]" src="images/important.png"></td>
+<th align="left">Wichtig</th>
+</tr>
+<tr><td align="left" valign="top"><p>Das Image muss auf das vollständige Gerät geschrieben werden, nicht auf eine einzelne Partition, also z.B. auf /dev/sdb, nicht auf /dev/sdb1. Nutzen Sie keine Werkzeuge wie <span class="command"><strong>unetbootin</strong></span>, da diese das Image verändern. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Dateien von einem Debian-Spiegel-Server herunterladen </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Dateien vorbereiten für das Booten von Festplatte</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

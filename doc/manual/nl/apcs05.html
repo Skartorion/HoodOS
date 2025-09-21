@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian schijfindelingsprogramma's</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apc.html" title="Bijlage C. Schijven indelen voor Debian">
+<link rel="prev" href="apcs04.html" title="C.4. De benaming van apparaten in Linux">
+<link rel="next" href="apd.html" title="Bijlage D. Varia">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian schijfindelingsprogramma's</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage C. Schijven indelen voor Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian schijfindelingsprogramma's</h2></div></div></div>
+<p>De ontwikkelaars van Debian hebben verschillende aantallen schijfindelingsprogramma's aangepast om uiteenlopende types harde schijven en computerarchitecturen te kunnen bedienen. Hierna volgt een lijst met de programma's die voor uw architectuur van toepassing zijn. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Het aanbevolen schijfindelingsgereedschap in Debian. Dit Zwitsers zakmes is ook in staat de partitiegrootte te wijzigen, bestandssystemen aan te maken <span class="phrase"> (<span class="quote">“<span class="quote">formatteren</span>”</span> in Windows-taalgebruik)</span> en ze toe te wijzen aan aankoppelpunten. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Het originele Linux schijfindelingsprogramma; goed voor goeroes. </p>
+<p>Wees voorzichtig als uw machine bestaande FreeBSD-partities heeft. De kernels van het installatiesysteem ondersteunen deze partities, maar de wijze waarop <span class="command"><strong>fdisk</strong></span> ze voorstelt (of dat niet doet) kan maken dat de benaming van de schijven verschilt. Zie de <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Een gemakkelijk te gebruiken schijfindelingsprogramma in een volledig scherm voor de rest onder ons. </p>
+<p>Merk op dat <span class="command"><strong>cfdisk</strong></span> helemaal geen notie heeft van FreeBSD-partities, en nogmaals, als gevolg daarvan kan de benaming van de schijven verschillend zijn. </p>
+</dd>
+</dl></div>
+<p>Een van deze programma's zal standaard uitgevoerd worden als u <span class="guimenuitem">Schijven indelen</span> (of iets dergelijks) selecteert. Het is mogelijk om een ander schijfindelingsprogramma te gebruiken aan de commandoregel op VT2, maar dit wordt niet aangeraden. </p>
+<p>Denk eraan om uw opstartpartitie te markeren als <span class="quote">“<span class="quote">Bootable</span>”</span> (opstartbaar). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4679"></a>C.5.1. Schijven indelen voor <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Indien u een nieuwe harde schijf wilt gebruiken (of de hele partitietabel van uw harde schijf wilt wissen), moet een nieuwe partitietabel aangemaakt worden. De <span class="quote">“<span class="quote">Begeleide schijfindeling</span>”</span> doet dit automatisch, maar indien u de schijfindeling handmatig uitvoert, moet u de selectiebalk plaatsen op het item dat, op het hoogste niveau, verwijst naar de schijf en op <span class="keycap"><strong>Enter</strong></span> drukken. Daardoor zal op die schijf een nieuwe partitietabel aangemaakt worden. In de expertmodus zal u dan gevraagd worden naar het type partitietabel. Voor UEFI-systemen is dit standaard <span class="quote">“<span class="quote">gpt</span>”</span>, terwijl dit voor de oudere BIOS-wereld standaard <span class="quote">“<span class="quote">msdos</span>”</span> is. Bij een installatie op een standaardprioriteitsniveau zullen deze standaardwaarden automatisch gebruikt worden. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wanneer een partitietabel van het type <span class="quote">“<span class="quote">gpt</span>”</span> geselecteerd werd (standaard voor UEFI-systemen), zal automatisch een vrije ruimte van 1 MB aangemaakt worden aan het begin van de schijf. Dit is bedoeld en vereist om er de GRUB2 bootloader in te plaatsen. </p></td></tr>
+</table></div>
+<p>Indien u een ander besturingssysteem, zoals Windows, op de computer heeft staan en dat parallel met de installatie van Debian wilt behouden, zult u de partitie waarop dit besturingssysteem staat, moeten verkleinen om plaats vrij te maken voor de installatie van Debian. Het installatiesysteem ondersteunt het aanpassen van de grootte van zowel FAT- als NTFS-bestandssystemen. Als u tijdens het installatieproces toe komt aan de fase van schijfindeling, moet u de optie <span class="guimenuitem">Handmatig</span> selecteren en dan gewoon een bestaande partitie selecteren en de grootte ervan wijzigen. </p>
+<p>Hoewel moderne UEFI-systemen niet de onderstaande beperkingen kennen, legt het oude PC-BIOS gewoonlijk extra beperkingen op aan de schijfindeling. Er bestaat een limiet voor het aantal <span class="quote">“<span class="quote">primaire</span>”</span> en <span class="quote">“<span class="quote">logische</span>”</span> partities die een schijf kan bevatten. </p>
+<p>Op een dergelijk oud PC-BIOS-systeem vormen de <span class="quote">“<span class="quote">primaire</span>”</span> partities het originele partitieschema voor PC-schijven. Maar daarvan kunnen er slechts vier bestaan. Om deze beperking te omzeilen, werden <span class="quote">“<span class="quote">extended</span>”</span> (uitgebreide) en <span class="quote">“<span class="quote">logical</span>”</span> (logische) partities bedacht. Door een van uw primaire partities in te stellen als uitgebreide partitie, kunt u alle ruimte die aan die partitie toegekend is opdelen in logische partities. U kunt tot 60 logische partities aanmaken per uitgebreide partitie. Op een schijf kunt u echter slechts één uitgebreide partitie hebben. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. De benaming van apparaten in Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> Bijlage D. Varia</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

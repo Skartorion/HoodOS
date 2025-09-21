@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. TFTP 네트워크 부팅에 필요한 파일 준비하기</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch04.html" title="4장. 시스템 설치 미디어 구하기">
+<link rel="prev" href="ch04s04.html" title="4.4. 하드 디스크 부팅에 필요한 파일 준비하기">
+<link rel="next" href="ch04s06.html" title="4.6. 자동 설치">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. TFTP 네트워크 부팅에 필요한 파일 준비하기</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">4장. 시스템 설치 미디어 구하기</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. TFTP 네트워크 부팅에 필요한 파일 준비하기</h2></div></div></div>
+<p>LAN에 연결되어 있다면, 네트워크를 통해 TFTP를 사용해서 다른 컴퓨터에서 부팅할 수도 있습니다. 다른 컴퓨터에서 설치 시스템을 부팅하려고 한다면, 부팅 파일을 특정 위치에 복사해 놓고, 해당 컴퓨터의 부팅을 지원하도록 설정해 놓아야 합니다. </p>
+<p>TFTP 서버를 설정해야 합니다. 그리고 많은 컴퓨터에서 DHCP 서버<span class="phrase">, 아니면 BOOTP 서버</span>를 설정해야 합니다. </p>
+<p> <span class="phrase">BOOTP는 컴퓨터에게 그 IP 주소 및 네트워크의 어디에서 부팅 이미지를 가져와야 하는지 알려주는 IP 프로토콜입니다. </span> DHCP(Dynamic Host Configuration Protocol)는 더 유연하며, BOOTP와 호환되는 확장 기능입니다. 일부 시스템은 DHCP를 이용해야만 설정할 수 있습니다. </p>
+<p>Trivial File Transfer Protocol은(TFTP) 부팅 이미지를 클라이언트에게 넘겨줄 때 사용합니다. 이론상 이 프로토콜을 사용한다면 어떤 플랫폼의 어떤 서버라도 사용할 수 있습니다. 여기서는 SunOS 4.x, SunOS 5.x(Solaris), 그리고 GNU/리눅스에서 사용하는 명령을 예로 듭니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>데비안 GNU/리눅스 서버에서는 <code class="classname">tftpd-hpa</code>를 추천합니다. 이 프로그램은 <code class="classname">syslinux</code> 부트로더와 같은 개발자가 개발했으므로 문제를 일으킬 가능성이 적습니다. 좋은 대안으로는 <code class="classname">atftpd</code>가 있습니다. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. DHCP 서버 준비하기</h3></div></div></div>
+<p>자유 소프트웨어 DHCP 서버의 하나로 ISC <span class="command"><strong>dhcpd</strong></span>가 있습니다. 데비안 GNU/리눅스에서는 <code class="classname">isc-dhcp-server</code> 패키지를 권장합니다. 다음은 간단한 설정 파일 예제입니다 (<code class="filename">/etc/dhcp/dhcpd.conf</code> 파일을 보십시오): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>이 예제에서는, DHCP 서버, TFTP 서버, 네트워크 게이트웨이 역할을 모두 하는 <em class="replaceable"><code>servername</code></em>이라는 서버가 있다고 가정합니다. domain-name 옵션도 바꾸고, 서버 이름과 클라이언트 하드웨어 주소도 바꿔야 합니다. <em class="replaceable"><code>filename</code></em> 옵션은 TFTP로 가져오려는 파일의 이름입니다. </p>
+<p><span class="command"><strong>dhcpd</strong></span> 설정 파일을 편집한 다음에, <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> 명령으로 <span class="command"><strong>dhcpd</strong></span>를 다시 시작하십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2149"></a>4.5.1.1. DHCP 설정에서 PXE 부팅하게 만들기</h4></div></div></div>
+<p>다음은 TFTP의 Pre-boot Execution Environment (PXE) 방식을 이용한 <code class="filename">dhcp.conf</code>의 예입니다. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# 다음 부분은 여러분 경우에 맞춰 바꿔야 합니다
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# 게이트웨이 주소입니다.
+# (예를 들어 인터넷에 접근하는 방법에 따라 다를 수도 있습니다)
+  option routers 192.168.1.1;
+# 사용하려는 DNS
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+ next-server 192.168.1.3;
+ host tftpclient {
+# TFTP 클라이언트 하드웨어 주소
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> PXE 부팅의 경우, 커널 이미지가 아니라 클라이언트 파일 이름 <code class="filename">pxelinux.0</code>이 부트로더입니다. (아래의 <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. TFTP 이미지를 적당한 위치에 놓기">4.5.4절. “TFTP 이미지를 적당한 위치에 놓기”</a> 부분 참고) </p>
+<p>컴퓨터가 부팅할 때 UEFI를 사용하는 경우, UEFI 컴퓨터에 적합한 부트로더를 지정해야 합니다. 예를 들어: </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp 클라이언트 하드웨어 주소
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. BOOTP 서버 준비하기</h3></div></div></div>
+<p>GNU/리눅스용 BOOTP 서버는 두 가지가 있습니다. 하나는 CMU <span class="command"><strong>bootpd</strong></span>이고,다른 프로그램은 실제로 DHCP서버인, ISC <span class="command"><strong>dhcpd</strong></span>가 있습니다. 이 프로그램은 <code class="classname">bootp</code> 와 <code class="classname">isc-dhcp-server</code>라는 패키지로 포함되어 있습니다. </p>
+<p>CMU <span class="command"><strong>bootpd</strong></span>를 사용하려면 먼저 <code class="filename">/etc/inetd.conf</code> 파일의 해당 라인의 주석을 제거(또는 추가)해야 합니다. 데비안 GNU/리눅스에서는 <strong class="userinput"><code>update-inetd --enable bootps</code></strong> 명령을 실행하고 이어 <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> 명령을 실행합니다. BOOTP 서버가 데비안을 실행하지 않는 경우, 문제의 줄은 다음과 같이 합니다: </p>
+<div class="informalexample"><pre class="screen">
+ bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> 여기서 <code class="filename">/etc/bootptab</code> 파일을 만듭니다. 이 파일 형식은 오래전 BSD 방식의 <code class="filename">printcap</code>, <code class="filename">termcap</code>, <code class="filename">disktab</code> 파일처럼 친숙하면서도 알기 어려운 형식으로 되어 있습니다. 자세한 내용은 <code class="filename">bootptab</code> 메뉴얼 페이지를 보십시오. CMU <span class="command"><strong>bootpd</strong></span> 명령은 클라이언트의 하드웨어 (MAC) 주소를 미리 알아둬야 합니다. 다음은 <code class="filename">/etc/bootptab</code>의 예입니다: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p>적어도 클라이언트의 하드웨어 주소를 지정하는 <span class="quote">“<span class="quote">ha</span>”</span> 옵션은 변경해야 합니다. <span class="quote">“<span class="quote">bf</span>”</span> 옵션은 TFTP로 클라이언트가 받게 될 파일을 지정합니다. 자세한 내용은 <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. TFTP 이미지를 적당한 위치에 놓기">4.5.4절. “TFTP 이미지를 적당한 위치에 놓기”</a> 부분을 참조하십시오. </p>
+<p>반대로, ISC <span class="command"><strong>dhcpd</strong></span> 설정은 정말 쉽습니다. BOOTP 클라이언트를 DHCP 클라이언트의 일종의 특별한 케이스로 취급하기 때문입니다. 일부 아키텍쳐에서는 BOOTP로 부팅하게 하려면 복잡한 설정이 필요합니다. 그러한 아키텍처의 경우는 <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. DHCP 서버 준비하기">4.5.1절. “DHCP 서버 준비하기”</a> 부분을 참고하십시오. 그러한 경우가 아니라면, <code class="filename">/etc/dhcp/dhcpd.conf</code> 파일에서 <strong class="userinput"><code>allow bootp</code></strong>를 클라이언트가 들어 있는 서브넷의 설정 부분에 집어 넣고, <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> 명령으로 <span class="command"><strong>dhcpd</strong></span>를 다시 시작하면 됩니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. TFTP 서버 사용하기</h3></div></div></div>
+<p>이동 TFTP 서버를 준비하려면, 먼저 <span class="command"><strong>tftpd</strong></span>이 활성화되어 있는지 확인해야 합니다. </p>
+<p><code class="classname">tftpd-hpa</code>의 경우에 서비스가 실행 될 수 있는 2가지 방법이 있습니다. 그것은 시스템의  <code class="classname">inetd</code> 데몬에서 요구에 따라 시작하거나 독립 데몬으로 실행되도록 설정할 수 있습니다. 이러한 방법 중에 어떤 패키지를 다시 구성하여 설치할 때 사용되며 변경할 수 있습니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>전통적으로 부팅 이미지를 저장하는 위치로 TFTP 서버는 <code class="filename">/tftpboot</code> 디렉터리를 사용합니다. 하지만, 데비안 GNU/리눅스 패키지는 <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a>에 맞추려고 다른 디렉터리를 사용합니다. 예를 들어, <code class="classname">tftpd-hpa</code>는 기본값으로 <code class="filename">/srv/tftp</code>를 사용합니다. 여기서 설명하는 설정 파일 예제에서는 이 점을 고려해서 적용하십시오. </p></td></tr>
+</table></div>
+<p>데비안에서 사용할 수 있는 모든 <span class="command"><strong>in.tftpd</strong></span> 대체품은 기본적으로 시스템 로그에 TFTP 요청을 기록해야 합니다. 그 중에서는 <strong class="userinput"><code>-v</code></strong> 옵션을 사용하면 더 많이 기록합니다. 부팅 문제가 발생한 경우 이 로그 메시지를 확인해 보십시오. 오류의 원인을 파악하는데 좋은 출발점입니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. TFTP 이미지를 적당한 위치에 놓기</h3></div></div></div>
+<p>그 다음에, 필요한 TFTP 부팅 이미지를 <a class="xref" href="ch04s02.html#where-files" title="4.2.1. 설치 파일을 찾을 위치">4.2.1절. “설치 파일을 찾을 위치”</a>에 쓰여 있는 것처럼 <span class="command"><strong>tftpd</strong></span> 부팅 이미지 디렉터리에 복사해 놓으십시오. 이 파일에서, <span class="command"><strong>tftpd</strong></span>가 특정 클라이언트를 부팅할 때 사용하는 특정 파일로 링크를 만들어야 할 것입니다. 불행히도 그 파일의 이름은 TFTP 클라이언트가 결정하고, 어떤 표준도 없습니다. </p>
+<p>PXE 부팅의 경우, 필요한 모든 것이 <code class="filename">netboot/netboot.tar.gz</code> 압축 안에 준비되어 있습니다. 이 압축을 <span class="command"><strong>tftpd</strong></span> 부팅 이미지 디렉터리에서 풀기만 하십시오. <span class="command"><strong>tftpd</strong></span>에 부팅할 파일 이름으로 <code class="filename">pxelinux.0</code>을 넘기도록 DHCP 서버에 설정하십시오. UEFI 컴퓨터의 경우, 적절한 EFI 부팅 이미지 이름을 (예를 들어 <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>) 넘겨야 합니다. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. 하드 디스크 부팅에 필요한 파일 준비하기 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. 자동 설치</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

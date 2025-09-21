@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Встановлення Debian GNU/Linux через паралельну лінію IP (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Додаток D. Різні поради">
+<link rel="prev" href="apds03.html" title="D.3. Встановлення Debian GNU/Linux із системи Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Встановлення Debian GNU/Linux за допомогою PPP через Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Встановлення Debian GNU/Linux через паралельну лінію IP (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток D. Різні поради</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Встановлення Debian GNU/Linux через паралельну лінію IP (PLIP)</h2></div></div></div>
+<p>У цьому розділі описано, як встановити Debian GNU/Linux на комп'ютері без карти Ethernet, але з віддаленим комп'ютером-шлюзом, підключеним за допомогою нуль-модемного кабелю (також званого нуль-принтерним кабелем). Комп'ютер-шлюз має бути підключено до мережі, яка має дзеркало Debian (наприклад, до Інтернету). </p>
+<p>У прикладі в цьому додатку ми налаштуємо PLIP-з'єднання за допомогою шлюзу, підключеного до Інтернету через комутоване з'єднання (ppp0). Ми будемо використовувати IP-адреси 192.168.0.1 та 192.168.0.2 для інтерфейсів PLIP на цільовій системі та системі-джерелі відповідно (ці адреси не повинні використовуватися у вашому мережевому адресному просторі). </p>
+<p>Підключення PLIP, налаштоване під час інсталяції, також буде доступне після перезавантаження у встановлену систему (див. <a class="xref" href="ch07.html" title="Розділ 7. Завантаження у Вашу нову систему Debian">Розділ 7, <i>Завантаження у Вашу нову систему Debian</i></a>). </p>
+<p>Перед початком роботи, потрібно перевірити конфігурацію BIOS (базову адресу вводу-виводу та IRQ) для паралельних портів як вихідної, так і цільової систем. Найпоширенішими значеннями є <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5161"></a>D.4.1. Вимоги</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Цільовий комп'ютер, який називається <span class="emphasis"><em>target</em></span>, на якому буде встановлено Debian. </p></li>
+<li class="listitem"><p>Інсталяційний носій системи; див. <a class="xref" href="ch02s04.html" title="2.4. Інсталяційний носій">Розділ 2.4, «Інсталяційний носій»</a>. </p></li>
+<li class="listitem"><p>Інший комп'ютер, підключений до Інтернету, називається <span class="emphasis"><em>джерело</em></span>, який буде функціонувати як шлюз. </p></li>
+<li class="listitem"><p>Нуль-модемний кабель DB-25. Дивіться <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> для отримання додаткової інформації про цей кабель та інструкції, як зробити свій власний. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5176"></a>D.4.2. Налаштування джерела</h3></div></div></div>
+<p>Наступний сценарій командного інтерпретатора є простим прикладом того, як налаштувати комп'ютер-джерело як шлюз до Інтернету за допомогою ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Ми вилучаємо запущені модулі з ядра, щоб уникнути конфліктів і щоб
+# переналаштувати їх вручну.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Налаштуйте інтерфейс plip (plip0 для мене, див. dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Налаштуйте шлюз
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5186"></a>D.4.3. Встановлення цілі</h3></div></div></div>
+<p>Завантажте інсталяційний носій. Інсталяцію потрібно запустити в експертному режимі; введіть <strong class="userinput"><code>expert</code></strong> у запрошенні до завантаження. Якщо вам потрібно задати параметри для модулів ядра, вам також потрібно зробити це під час завантаження. Наприклад, щоб завантажити програму встановлення і встановити значення параметрів <span class="quote">«<span class="quote">io</span>»</span> і <span class="quote">«<span class="quote">irq</span>»</span> для модуля parport_pc, введіть у запиті до завантаження наступне: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Нижче наведені відповіді, які слід давати на різних етапах інсталяції. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Завантаження компонентів інсталятора з інсталяційного носія</span>
+
+</p>
+<p>Виберіть зі списку опцію <strong class="userinput"><code>plip-modules</code></strong>; це зробить драйвери PLIP доступними для системи встановлення. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Виявлення мережевого обладнання</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Якщо ціль <span class="emphasis"><em>має</em></span> мережеву карту, буде показано список модулів драйверів для виявлених карт. Якщо ви хочете змусити <code class="classname">debian-installer</code> використовувати plip замість цього, вам слід зняти позначку з усіх перелічених модулів драйверів. Очевидно, що якщо ціль не має мережевої карти, програма встановлення не покаже цей список. </p></li>
+<li class="listitem"><p>Оскільки раніше не було виявлено/вибрано жодної мережевої карти, програма встановлення попросить вас вибрати модуль мережевого драйвера зі списку. Виберіть модуль <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Налаштуйте мережу</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Автоматичне налаштування мережі за допомогою DHCP: Ні </p></li>
+<li class="listitem"><p>IP адреса: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Адреса «точка-точка».: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Адреси серверів імен: ви можете ввести ті самі адреси, що й у джерелі (див. <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Встановлення Debian GNU/Linux із системи Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Встановлення Debian GNU/Linux за допомогою PPP через Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

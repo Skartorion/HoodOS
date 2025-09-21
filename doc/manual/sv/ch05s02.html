@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Hjälpmedel</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch05.html" title="Kapitel 5. Starta upp installationssystemet">
+<link rel="prev" href="ch05s01.html" title="5.1. Starta upp installationsprogrammet på 64-bit PC">
+<link rel="next" href="ch05s03.html" title="5.3. Uppstartsparametrar">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Hjälpmedel</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 5. Starta upp installationssystemet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Hjälpmedel</h2></div></div></div>
+<p>Vissa användare kan behöva specifik support på grund av t.ex. någon typ av nedsatt syn. <span class="phrase">USB punktskriftsskärmar detekteras automatiskt (inte seriella skärmar anslutna via en seriell-till-USB-omvandlare), men de flesta andra</span>  tillgänglighetsfunktioner måste aktiveras manuellt. <span class="phrase">På maskiner som stöder det avger uppstartsmenyn pip när den är redo att ta emot tangenttryckningar. Den piper en gång på BIOS-system och piper två gånger på UEFI-system.</span> Vissa uppstartsparametrar kan <span class="phrase">sedan</span> läggas till för att aktivera tillgänglighetsfunktioner<span class="phrase"> ( se även <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Uppstartsskärmen">Avsnitt 5.1.5, ”Uppstartsskärmen”</a>)</span>. Observera att på de flesta arkitekturer tolkar uppstartshanteraren ditt tangentbord som ett QWERTY-tangentbord. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1843"></a>5.2.1. Installationsprogrammets frontend</h3></div></div></div>
+<p>Debian installationsprogrammet stödjer flera olika gränssnitt för att ställa frågor, med varierande bekvämlighet för tillgänglighet: särskilt använder <strong class="userinput"><code>text</code></strong> vanlig text medan <strong class="userinput"><code>newt</code></strong> använder textbaserade dialogrutor. Valet kan göras vid uppstartsprompten, se dokumentationen för <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> i <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametrar för Debian Installer">Avsnitt 5.3.2, ”Parametrar för Debian Installer”</a>. </p>
+<p>Med <strong class="userinput"><code>newt</code></strong> gränsnittet (används mest med punktskrift), väljer man oftast bara svar med piltangenterna och trycker på <span class="keycap"><strong>Enter</strong></span> för att bekräfta valet. Att trycka på <span class="keycap"><strong>Tab</strong></span> eller <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> gör det möjligt att växla mellan dialogelement, och särskilt att komma åt <strong class="userinput"><code>Gå tillbaka</code></strong>-knappen, som återgår till tidigare frågor. Vissa dialogrutor innehåller kryssrutor som kan markeras av och på genom att trycka på <span class="keycap"><strong>Space</strong></span>. </p>
+<p>Med <strong class="userinput"><code>text</code></strong> gränsnittet (används mest med tal), väljer man oftast svar antingen genom att skriva deras nummer följt av att trycka på <span class="keycap"><strong>Enter</strong></span>, eller genom att välja ett svar med piltangenterna och trycka <span class="keycap"><strong>Enter</strong></span> för att bekräfta valet. Man kan också inte skriva någonting och bara trycka på <span class="keycap"><strong>Enter</strong></span> för att helt enkelt acceptera standardvärdet. Skriv <strong class="userinput"><code>&lt;</code></strong> och tryck på <span class="keycap"><strong>Enter</strong></span> återgår till tidigare frågor. När ett urval av val måste göras (t.ex. under uppgiftsval), kan man skriva <strong class="userinput"><code>!</code></strong> för att uttrycka ett tomt val. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1866"></a>5.2.2. Punktskriftsskärmar med USB</h3></div></div></div>
+<p>Punktskriftsskärmar för USB ska identifieras automatiskt. En textversion av installationsprogrammet kommer sedan att väljas automatiskt och stöd för punktskriftsskärmen kommer att installeras automatiskt på målsystemet. Du kan därför bara trycka på <span class="keycap"><strong>Enter</strong></span> vid uppstartsmenyn. När <code class="classname">brltty</code> har startats så kan du välja en punktskriftstabell genom att gå in i inställningsmenyn. Dokumentation för tangentbindingar för punktskriftsskärmar finns tillgänglig på <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"> webbsidan för <code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1873"></a>5.2.3. Punktskriftsskärmar med seriekabel</h3></div></div></div>
+<p>Seriella punktskriftsskärmar kan inte säkert upptäckas automatiskt (eftersom det kan skada vissa av dem). Du måste alltså lägga till uppstartsparametern <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em></code></strong> för att tala om för <code class="classname">brltty</code> vilken drivrutin och port den ska använda sig av. <em class="replaceable"><code>driver</code></em> ska ersättas med tvåbokstavsdrivrutinskoden för din terminal (se <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY-manualen</a>). <em class="replaceable"><code>port</code></em> ska ersättas av namnet på den seriella porten som bildskärmen är ansluten till, <strong class="userinput"><code>ttyS0</code></strong> är standard, <strong class="userinput"><code>ttyUSB0</code></strong> kan vanligtvis användas vid användning en seriell-till-USB-konverterare. En tredje parameter kan tillhandahållas för att välja namnet på punktskriftstabellen som ska användas (se <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY-manualen</a>); den engelska tabellen är standard. Observera att tabellen kan ändras senare genom att gå in i preferensmenyn. En fjärde parameter kan tillhandahållas för att skicka parametrar till punktskriftsdrivrutinen, såsom <strong class="userinput"><code>protocol=foo</code></strong> som behövs för vissa sällsynta modeller. Dokumentation om tangentbindningar för punktskriftsenheter finns på <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> webbplatsen</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1889"></a>5.2.4. Talsynteser (mjukvara)</h3></div></div></div>
+<p>Support for software speech synthesis is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. It can be activated by selecting it in the boot menu by typing <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Enter</strong></span>. The textual version of the installer will then be automatically selected, and support for software speech synthesis will be automatically installed on the target system. </p>
+<p>Om flera ljudkort upptäcks uppmanas du att trycka på <span class="keycap"><strong>Enter</strong></span> när du hör tal från önskat ljudkort. </p>
+<p>Den första frågan (språket) talas på engelska, och resten av installationen talas på det valda språket (om tillgängligt i <code class="classname">espeak</code>). </p>
+<p>Standardtalhastigheten är ganska långsam. För att göra den snabbare, tryck på <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span>. För att göra den långsammare, tryck på <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span>. Standardvolymen ska vara medium. För att göra den högre, tryck på <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span>. För att göra den tystare, tryck på <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span>. För att få mer information om webbgenvägarna, se <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup-guiden</a>. För att bara acceptera standardsvaret för en fråga, tryck helt enkelt på <span class="keycap"><strong>Enter</strong></span> vid prompten. För att ge ett tomt svar på en fråga, skriv <strong class="userinput"><code>!</code></strong> vid prompten. För att gå tillbaka till föregående fråga, skriv <strong class="userinput"><code>&lt;</code></strong> vid prompten. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1915"></a>5.2.5. Talsyntes (maskinvara)</h3></div></div></div>
+<p>Support for hardware speech synthesis devices is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. You thus need to select a <span class="quote">”<span class="quote">Graphical install</span>”</span> entry in the boot menu. </p>
+<p>Talsyntesenheter (maskinvara) kan inte identifieras automatiskt. Du behöver därför lägga till uppstartsparametern <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>drivrutin</code></em></code></strong> för att berätta för <code class="classname">speakup</code> vilken drivrutin som den ska använda. <em class="replaceable"><code>drivrutin</code></em> ska ersättas med koden för drivrutinen för din enhet (se <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">kodlista för drivrutiner</a>). Textversionen av installationsprogrammet kommer sedan att väljas automatiskt och stöd för talsynteser kommer automatiskt att installeras på målsystemet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1925"></a>5.2.6. Brädenheter</h3></div></div></div>
+<p>Vissa hjälpmedelsenheter är faktiska kort som ansluts inne i datorn och som läser test direkt från grafikminnet. För att få dem att fungera så måste stöd för framebuffer inaktiveras genom att använda uppstartsparametern <strong class="userinput"><code>vga=normal</code></strong>.<strong class="userinput"><code>nomodeset</code></strong>  Detta kommer dock att minska antalet tillgängliga språk. </p>
+<p>Om så önskas kan en textversion av startladdaren aktiveras innan startparametern läggs till genom att skriva<strong class="userinput"><code>h</code></strong><span class="keycap"><strong>Enter</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1933"></a>5.2.7. Tema med hög kontrast</h3></div></div></div>
+<p>För användare med nedsatt syn kan installationsprogrammet använda ett färgtema med hög kontrast som gör det mer läsbart. För att aktivera det kan du använda posten <span class="quote">”<span class="quote">Tillgänglighet hög kontrast</span>”</span> från startskärmen med genvägen <strong class="userinput"><code>d</code></strong> eller lägga till startparametern <strong class="userinput"><code>theme=dark</code></strong> . </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1939"></a>5.2.8. Zooma</h3></div></div></div>
+<p>För användare med dålig syn, har det grafiska installationsprogrammet ett mycket grundläggande zoomstöd: <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> och <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> genvägar ökar och minskar teckenstorleken. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1948"></a>5.2.9. Expertinstallation, räddningsläge, automatisk installation</h3></div></div></div>
+<p>Expert, Räddning och Automatiserade installationsalternativ finns också tillgängliga med tillgänglighetsstöd. För att komma åt dem måste man först gå in i undermenyn <span class="quote">”<span class="quote">Avancerade alternativ</span>”</span> från uppstartsmenyn genom att skriva <strong class="userinput"><code>a</code></strong>. När du använder ett BIOS-system (så kommer uppstartsmenyn bara att låta pip en gång), detta måste följas av <span class="keycap"><strong>Enter</strong></span> ; för UEFI-system (använder du UEFI så kommer uppstartsmenyn att pipa två gånger) detta måste inte göras. Sedan, för att aktivera talsyntes, kan <strong class="userinput"><code>s</code></strong> valfritt tryckas ned (följt igen av <span class="keycap"><strong>Enter</strong></span> på BIOS-system men inte på UEFI-system). Därifrån kan olika genvägar användas: <strong class="userinput"><code>x</code></strong> för expertinstallation, <strong class="userinput"><code>r</code></strong> för räddningsläge, eller <strong class="userinput"><code>a</code></strong> för automatiserad installation. Återigen måste dessa följas av <span class="keycap"><strong>Enter</strong></span> när du använder ett BIOS-system. </p>
+<p>Det automatiska installationsvalet gör det möjligt att installera Debian helt automatiskt genom att använda förinställning, vars källa kan anges efter att tillgänglighetsfunktionerna har startat. Själva förinställningen dokumenteras i <a class="xref" href="apb.html" title="Appendix B. Automatiserad installation med förinställningar">Appendix B, <i>Automatiserad installation med förinställningar</i></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1962"></a>5.2.10. Tillgänglighet för det installerade systemet</h3></div></div></div>
+<p>Dokumentation om tillgänglighet för det installerade systemet finns på <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debian tillgänglighet wikisidan</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Starta upp installationsprogrammet på <span class="phrase">64-bit PC</span> </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Uppstartsparametrar</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Användning av individuella komponenter</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch06.html" title="Kapitel 6. Användning av Debian Installer">
+<link rel="prev" href="ch06s02.html" title="6.2. Introduktion till komponenter">
+<link rel="next" href="ch06s04.html" title="6.4. Läsa in saknad fast programvara">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Användning av individuella komponenter</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 6. Användning av Debian Installer</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Användning av individuella komponenter</h2></div></div></div>
+<p>I det här avsnittet kommer vi att beskriva varje installationskomponent i detalj. Komponenterna har blivit grupperade i steg som bör kännas igen av användarna. De presenteras i den ordning de dyker upp under installationen. Observera att inte alla moduler kommer att användas för varje installation; vilka moduler som faktiskt används beror på installationsmetoden du använder och på din maskinvara. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Konfiguration av Debians installationsprogram och maskinvara</h3></div></div></div>
+<p>Låt oss anta att Debian Installer har startat upp och du ser dess första skärm. Vid den här punkten är de färdigheter som <code class="classname">debian-installer</code> har ganska begränsade. Den vet inte mycket om din maskinvara, vilket språk som föredras eller inte ens vilken funktion installation ska ha. Var lugn. På grund av att <code class="classname">debian-installer</code> är ganska smart kan den automatiskt söka av din maskinvara, lokalisera resten av sina komponenter och uppgradera sig själv till ett kapabelt installationssystem. Dock, du behöver fortfarande hjälpa <code class="classname">debian-installer</code> med viss information som den inte kan fastställa automatiskt (såsom välja ditt föredragna språk, tangentbordslayout eller val av nätverksspegel). </p>
+<p>Du kommer att märka att <code class="classname">debian-installer</code> genomför <em class="firstterm">identifiering av maskinvara</em> flera gånger under det här steget. Första gången är målet den maskinvara som behövs för att läsa in komponenter för installationsprogrammet (exempelvis din cd-rom eller nätverkskort). Eftersom alla drivrutiner kanske inte finns tillgängliga under den första körningen behövs en repetering av identifieringen senare i processen. </p>
+<p>Under maskinvarudetektering så kontrollerar <code class="classname">debian-installer</code> om några av drivrutinerna för maskinvaran i ditt system kräver att fast programvara läses in. Om någon fast programvara begärs men inte finns tillgänglig så kommer en dialogruta att visas där saknad fast programvara läses in från ett flyttbart media. Se <a class="xref" href="ch06s04.html" title="6.4. Läsa in saknad fast programvara">Avsnitt 6.4, ”Läsa in saknad fast programvara”</a> för ytterligare detaljer. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Kontrollera tillgängligt minne / minimalt minnesläge</h4></div></div></div>
+<p>En av de första sakerna som <code class="classname">debian-installer</code> gör är att kontrollera tillgängligt minne. Om det tillgängliga minnet är begränsat kommer den här komponenten att göra ändringar i installationsprocessen som förhoppningsvis låter dig installera Debian GNU/Linux på ditt system. </p>
+<p>Den första åtgärden man kan göra för att minska installationsprogrammets minneskonsumtion är att inaktivera översättningar, vilket betyder att installationen endast kan göras på engelska. Du kan så klart fortfarande lokalanpassa det installerade system tefter installationen har färdigställts. </p>
+<p>Om detta inte är tillräckligt kommer installationsprogrammet att minska minnesbehovet ytterligare genom att enbart läsa in de komponenter som är nödvändiga för att genomföra en grundinstallation. Det här minskar installationssystemets funktionalitet. Du kommer att ges möjlighet att läsa in individuella komponenter manuellt, men du ska vara medveten om att varje komponent du väljer använder ytterligare minne och kan således göra att installationen misslyckas. </p>
+<p>När installationsprogrammet har anpassat sig till ett litet minne så bör du skapa en förhållandevis stor växlingspartition (1–2GB). Växlingspartitionen används som virtuellt minne och ökar således mängden minne som är tillgängligt för systemet. Installationsprogrammet kommer att använda växlingspartitionen så snart som möjligt i installationsprocessen. Observera att mycket användning av växlingsutrymmet kommer att minska ditt systems prestanda och kan leda till hög nyttjandegrad av systemets disk. </p>
+<p>Trots dessa åtgärder är det ändå möjligt att ditt system låser sig, att oväntade fel uppstår eller att processer avslutas av kärnan för att systemet har slut på minne (vilket resulterar i <span class="quote">”<span class="quote">Out of memory</span>”</span>-meddelanden på VT4 och i systemloggen). </p>
+<p>Det har till exempel rapporterats om misslyckanden med att skapa ett stort filsystem av typen ext3 i lågminnesläget, när det finns för lite växlingsutrymme. Om ett stort växlingsutrymme inte hjälper, prova då istället att skapa filsystemet som ext2 (vilket är en basfunktion i installationsprogrammet). Det är möjligt att ändra en ext2-partition till ext3 efter installationen. </p>
+<p>Det är möjligt att tvinga installationsprogrammet till att använda en högre lowmem-nivå än den som är baserad på tillgängligt minne genom att använda uppstartsparametern <span class="quote">”<span class="quote">lowmem</span>”</span> som beskrivs i <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametrar för Debian Installer">Avsnitt 5.3.2, ”Parametrar för Debian Installer”</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Val av lokalanpassningsalternativ</h4></div></div></div>
+<p>I de flesta fall är de första frågorna som ställs angående valet av lokalanpassningsalternativ som kommer att användas både för installationen och för det installerade systemet. Lokalanpassningsalternativen består av plats och lokaler. </p>
+<p>Språket du väljer kommer att användas i resten av installationsprocessen om en översättning av de olika dialogerna finns tillgänglig. Om ingen giltig översättning finns tillgänglig för det valda språket kommer installationsprogrammet att falla tillbaka på engelska. </p>
+<p>Den valda geografiska platsen (i de flesta fall ett land) kommer att användas senare i installationsprocessen för att välja rätt tidszon och en Debian spegel som är lämplig för det landet. Språk och land tillsammans hjälper till att bestämma standardspråket för ditt system och välja rätt tangentbordslayout. </p>
+<p>Du kommer först att bli frågad att välja ditt föredragna språk. Namnen på språken listas på både engelska (vänstra sidan) och på själva språket (högra sidan); namnen på högra sidan visas också i språkets korrekta skrift. Listan är sorterad efter de engelska namnen. På toppen av listan finns ett extra alternativ som låter dig att välja lokalen <span class="quote">”<span class="quote">C</span>”</span> istället för ett språk. Välja lokalen <span class="quote">”<span class="quote">C</span>”</span> betyder att installationen fortsätter på engelska; det installerade systemet kommer inte att ha något stöd för lokalanpassning eftersom paketet <code class="classname">locales</code> inte kommer att installeras. </p>
+<p>Därefter blir du ombedd att välja din geografiska plats. Om du valde ett språk som är erkänt som ett officiellt språk för fler än ett land<a href="#ftn.id2590" class="footnote" name="id2590"><sup class="footnote">[4]</sup></a>, kommer du härnäst att bli visad en lista över endast dessa länder. För att välja ett land som inte finns i listan väljer du <span class="guimenuitem">Annat</span> (sista alternativet). Du kommer då att få se en lista över kontinenter; välj en kontintent för att lista relevanta länder på den kontinenten. </p>
+<p>Om språket bara har ett land associerat med det kommer en lista med länder att visas för kontinenten eller regionen landet tillhör, med det landet som standard. Använd <span class="guibutton"><span class="guibutton">Bakåt</span></span> alternativet för att välja länder på en annan kontinent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Det är viktigt att välja det land där du bor eller var du befinner dig eftersom det bestämmer den tidszon som ska konfigureras för det installerade systemet. </p></td></tr>
+</table></div>
+<p>Om du valde en kombination av språk och land för vilket ingen språkkod är definierad och det finns flera språk för språket, låter installationsprogrammet dig välja vilken av dessa språk du föredrar som standardspråk för det installerade systemet<a href="#ftn.id2599" class="footnote" name="id2599"><sup class="footnote">[5]</sup></a>. I alla andra fall kommer en standardlokal att väljas baserat på det valda språket och landet. </p>
+<p>Alla standardlokaler som valts enligt beskrivningen i föregående stycke kommer att använda <em class="firstterm">UTF-8</em> som teckenkodning. </p>
+<p>Om du installerar med låg prioritet har du möjlighet att välja ytterligare lokaler, inklusive så kallade <span class="quote">”<span class="quote">legacy</span>”</span>-lokaler<a href="#ftn.id2605" class="footnote" name="id2605"><sup class="footnote">[6]</sup></a>, som ska genereras för det installerade systemet; om du gör det kommer du att bli tillfrågad vilken av de valda lokalerna som ska vara standard för det installerade systemet. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Val av tangentbord</h4></div></div></div>
+<p>Tangentbord är ofta anpassade efter de tecken som används i ett språk. Välj en layout som gäller för tangentbordet du använder, eller välj något som liknar det om tangentbordslayouten du vill välja inte finns. När installationen av systemet är färdig kommer du kunna välja en tangentbordslayout från en bredare skala (kör <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> som root efter att du har färdigställt installationen). </p>
+<p>Flytta markören till tangentbordsvalet du önskar och tryck på <span class="keycap"><strong>Enter</strong></span>. Använd piltangenterna för att flytta markören — de är på samma plats för alla tangentbordslayouter på alla språk, så de är oberoende av tangentbordskonfiguration. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Leta efter en ISO-avbildning för Debian Installer</h4></div></div></div>
+<p>När installation görs via metoden <span class="emphasis"><em>hd-media</em></span> kommer du till en punkt där du behöver hitta och montera iso-avbildningen för Debian Installer för att få tag på resten av installationsfilerna. Komponenten <span class="command"><strong>iso-scan</strong></span> gör exakt det. </p>
+<p>Först monterar <span class="command"><strong>iso-scan</strong></span> automatiskt alla blockenheter (exempelvis partitioner och logiska volymer) som har något känt filsystem på sig och söker sekventiellt efter filnamn som slutar på <code class="filename">.iso</code> (eller <code class="filename">.ISO</code> för den sakens skull). Tänk på att det första försöket söker endast av filer i rotkatalogen på i första nivån av underkatalogerna (alltså, den hittar <code class="filename">/<em class="replaceable"><code>vadsomhelst</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>vadsomhelst</code></em>.iso</code>, men inte <code class="filename">/data/tmp/<em class="replaceable"><code>vadsomhelst</code></em>.iso</code>). Efter en iso-avbildning har hittats, kontrollerar <span class="command"><strong>iso-scan</strong></span> dess innehåll för att fastställa om avbilden är en giltig Debian-avbild eller inte. I det första fallet är vi klara, i det senare söker <span class="command"><strong>iso-scan</strong></span> efter en annan avbild. </p>
+<p>Om det tidigare försöket att hitta en iso-avbildning för installationsprogrammet misslyckades, kommer <span class="command"><strong>iso-scan</strong></span> att fråga dig om du vill genomföra en mer genomgående sökning. Den här fasen kommer inte bara att se på de översta katalogerna utan gå igenom hela filsystemet. </p>
+<p>Om <span class="command"><strong>iso-scan</strong></span> inte hittar din iso-avbildning för installationsprogrammet,  starta om till ditt ursprungliga operativsystem och kontrollera om avbilden är namngiven korrekt (slutar på <code class="filename">.iso</code>), om den är placerad på ett filsystem som känns igen av <code class="classname">debian-installer</code>, och om det inte är skadat (validera kontrollsumman). Erfarna Unix-användare kunde ha gjort det här på andra konsollen, utan att starta om. </p>
+<p>Observera att partitionen (eller disken) som är värd för ISO-avbildningen inte kan återanvändas under installationsprocessen eftersom den kommer att användas av installationsprogrammet. För att komma runt detta, och förutsatt att du har tillräckligt med systemminne, kan installationsprogrammet kopiera ISO-avbildningen till RAM-minnet innan det monteras. Detta styrs av den lågprioriterade <code class="literal">iso-scan/copy_iso_to_ram</code> debconf-frågan (den frågar bara om minneskravet är uppfyllt). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Konfigurera nätverket</h4></div></div></div>
+<p>När du kommer till det här steget, om systemet upptäcker att du har fler än en nätverksenhet, kommer du att bli frågad att välja vilken enhet som ska vara ditt <span class="emphasis"><em>primära</em></span> nätverksgränssnitt, alltså det som du vill använda för installationen. Övriga gränssnitt kommer inte att bli konfigurerade vid den här tidpunkten. Du kan konfigurera ytterligare gränssnitt efter att installationen är färdig; se manualsidan <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatisk nätverkskonfiguration</h5></div></div></div>
+<p>Som standard är <code class="classname">debian-installer</code> konfigurerat att försöka konfigurera din dators nätverk automatiskt så långt det är möjligt. Om den automatiska konfigurationen misslyckas, kan det bero på många faktorer, från en urkopplad nätverkskabel till saknad infrastruktur för automatisk konfiguration. För ytterligare förklaring vid fel, kontrollera felmeddelandena på den fjärde konsolen. I vilket fall som helst kommer du att bli tillfrågad om du vill försöka igen, eller om du vill utföra en manuell inställning. Ibland kan nätverkstjänsterna som används för autokonfiguration vara långsamma i sina svar, så om du är säker på att allt är på plats, starta helt enkelt autokonfigurationsförsöket igen. Om autokonfigurationen misslyckas upprepade gånger kan du istället välja den manuella nätverksinställningen. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Manuell nätverkskonfiguration</h5></div></div></div>
+<p>Den manuella nätverkskonfigurationen ställer dig i sin tur ett antal frågor om ditt nätverk, särskilt <code class="computeroutput">IP-adress</code>, <code class="computeroutput">Nätmask</code>, <code class="computeroutput">Gateway</code>, <code class="computeroutput">Namnserver adresser</code> och ett <code class="computeroutput">Värdnamn</code>. Dessutom, om du har ett trådlöst nätverksgränssnitt kommer du att bli ombedd att ange ditt <code class="computeroutput">Trådlösa ESSID</code> (<span class="quote">”<span class="quote">trådlöst nätverksnamn</span>”</span>) och en <code class="computeroutput">WEP-nyckel</code> eller <code class="computeroutput">WPA/WPA2-lösenfras</code>. Fyll i svaren från <a class="xref" href="ch03s03.html" title="3.3. Information du behöver">Avsnitt 3.3, ”Information du behöver”</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Några tekniska detaljer du kanske, eller kanske inte, tycker är smidiga: programmet antar att nätverkets IP-adress är bitvis-OCH av ditt systems IP-adress och din nätmask. Den kommer att gissa att broadcast-adressen är bitvis-ELLER av ditt systems IP-adress med bitvis negation av nätmasken. Den kommer även att gissa din gateway. Om du inte kan hitta något av de här svaren, använd dessa standardvärden — du kan ändra dem när systemet har installerats, om det behövs, genom att redigera <code class="filename">/etc/network/interfaces</code> när systemet har blivit installerat. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 och IPv6</h5></div></div></div>
+<p>Från Debian GNU/Linux 7.0 (<span class="quote">”<span class="quote">Wheezy</span>”</span>) och framåt, <code class="classname">debian-installer</code> stödjer IPv6 så väl som <span class="quote">”<span class="quote">klassisk</span>”</span> IPv4. Alla kombinationer av IPv4 och IPv6 (IPv4-endast, IPv6-endast och dual-stack-konfigurationer) är stöda. </p>
+<p>Autokonfiguration för IPv4 görs via DHCP (Dynamic Host Configuration Protocol). Autokonfiguration för IPv6 stöder tillståndslös autokonfiguration med hjälp av NDP (Neighbor Discovery Protocol, inklusive tilldelning av rekursiv DNS-server (RDNSS), tillståndsstyrd autokonfiguration via DHCPv6 och blandad tillståndslös autokonfiguration (adresskonfiguration via NDP, ytterligare parametrar via DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Skapa användare och lösenord</h3></div></div></div>
+<p>Strax innan du konfigurerar klockan kommer installationsprogrammet att låta dig konfigurera <span class="quote">”<span class="quote">root</span>”</span>-kontot och/eller ett konto för den första användaren. Andra användarkonton kan skapas efter att installationen har färdigställts. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Ställa in ett lösenord för root</h4></div></div></div>
+<p>Kontot <span class="emphasis"><em>root</em></span> kallas även för <span class="emphasis"><em>superanvändare</em></span>; det är ett konto som kringgår alla säkerhetsskydd på ditt system. Root-kontot bör endast användas för systemadministration och endast användas under en så kort tid som möjligt. </p>
+<p>Lösenord som du skapar bör innehålla åtminstone 6 tecken och bör innehålla både versaler och gemener, såväl som specialtecken. Ta extra hänsyn när du ställer in ditt root-lösenord eftersom det är ett sådant kraftfullt konto. Undvik ord som man hittar i ordböcker eller användning av personlig information som lätt kan gissas. </p>
+<p>Om någon berättar för dig att de behöver ditt root-lösenord, var extremt försiktig. Du bör normalt sett aldrig ge ut ditt root-lösenord, om du inte administrerar en maskin med fler än en systemadministratör. </p>
+<p>Om du inte anger ett lösenord för <span class="quote">”<span class="quote">root</span>”</span>-användaren här, kommer detta konto att inaktiveras men paketet <span class="command"><strong>sudo</strong></span> kommer att installeras senare för att möjliggöra att administrativa uppgifter kan utföras på det nya systemet. Som standard kommer den första användaren som skapas på systemet att tillåtas använda kommandot <span class="command"><strong>sudo</strong></span> för att bli root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Skapa en vanlig användare</h4></div></div></div>
+<p>Systemet kommer att fråga dig om du önskar att skapa ett vanligt användarkonto vid den här punkten. Det här kontot bör vara ditt huvudsakliga personliga konto. Du bör <span class="emphasis"><em>inte</em></span> använda rootkontot för dagligt bruk eller som ditt personliga konto. </p>
+<p>Varför inte? Tja, en anledning är att undvika att använda roots privilegier är att det är mycket lätt att skada något som root och som inte går att rätta till. En annan anledning är att du kanske luras till att köra en <span class="emphasis"><em>trojansk häst</em></span> — det är ett program som utnyttjar krafterna av din superanvändare för att åsidosätta säkerheten i ditt system bakom din rygg. En bra bok om systemadministration i Unix täcker in det här ämnet mer i detalj — om det här är nytt för dig, fundera på att läsa en sådan bok. </p>
+<p>Du kommer första att bli frågad efter användarens fullständiga namn. Sedan kommer du att bli frågad efter ett namn på användarens konto; generellt sett ditt förnamn eller något liknande det bör räcka och det är även standardvalet här. Till slut kommer du bli frågad efter ett lösenord för kontot. </p>
+<p>Om du vill skapa en annan användare vid en senare punkt efter installationen, använd kommandot <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Konfigurera klockan och tidszon</h3></div></div></div>
+<p>Installationsprogrammet kommer först att försöka att ansluta till en tidsserver på Internet (med <em class="firstterm">NTP</em>-protokollet) för att ställa in systemtiden korrekt. Om detta inte lyckas kommer installationsprogrammet att anta att den tid och datum som hämtas från systemklockan, när installationssystemet startades upp, är korrekt. Det är inte möjligt att manuellt ställa in systemtiden under installationsprocessen. </p>
+<p>Beroende på platsen som valdes i tidigare i installationsprocessen så kommer du kanske att bli visad en lista över tidszoner som är relevanta för den platsen. Om din plats endast har en tidszon och du gör en standardinstallation kommer du inte att bli tillfrågad någonting, systemet antar att det är rätt tidszon. </p>
+<p>I expertläge eller när du installerar med medelprioritet har du det extra alternativet att välja <span class="quote">”<span class="quote">Coordinated Universal Time</span>”</span> (UTC) som tidszon. </p>
+<p>Om du av någon anledning vill ställa in en tidszon för det installerade systemet som <span class="emphasis"><em>inte</em></span> matchar den valda platsen så finns det två alternativ. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Det enklaste alternativet är att bara välja en annan tids-zon efter att installationen har färdigställts och du har startat upp det nya systemet. Kommandot för att göra detta är: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternativt kan tidszonen ställas in i början av installationen genom att skicka parametern <strong class="userinput"><code>time/zone=<em class="replaceable"><code>värde</code></em></code></strong> när du startar upp installationssystemet. Värdet ska så klart vara en giltig tidszon, till exempel <strong class="userinput"><code>Europe/London</code></strong> eller <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>För automatiska installationer kan tidszonen ställas in till önskat värde med förinställning. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Partitionering och val av monteringspunkter</h3></div></div></div>
+<p>Vid den här tidpunkten, efter identifiering av maskinvara har startats en sista gång, bör <code class="classname">debian-installer</code> vara vid sin fulla kraft, anpassad för användarens behov och klar att göra ett riktigt jobb. Precis som titeln på det här avsnittet indikerar är huvudfunktionen för de nästkommande komponenterna partitionering av dina diskar, skapande av filsystem, tilldelning av monteringspunkter och även konfigurering av närliggande saker som krypterade LVM eller RAID-enheter. </p>
+<p>Om du känner dig osäker med partitionering eller bara vill veta mer detaljer, se <a class="xref" href="apc.html" title="Appendix C. Partitionera för Debian">Appendix C, <i>Partitionera för Debian</i></a>. </p>
+<p>Först kommer du få möjligheten att automatiskt partitionera antingen en hel disk eller ledigt utrymme på en disk. Det finns också en så kallad <span class="quote">”<span class="quote">guidad</span>”</span> partitionering. Om du inte vill partitionera automatiskt, välj <span class="guimenuitem">Manuell</span> från menyn. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Partitionsflaggor som stöds</h4></div></div></div>
+<p>Partitioneraren som används i <code class="classname">debian-installer</code> är ganska mångsidig. Det gör det möjligt att skapa många olika partitioneringsscheman, med hjälp av olika partitionstabeller, filsystem och avancerade blockenheter. </p>
+<p>Exakt vilka alternativ som finns beror främst på arkitekturen, men även på andra faktorer. Till exempel, på system med begränsat internminne kanske vissa alternativ inte är tillgängliga. Standardinställningarna kan också variera. Typen av partitionstabell som används som standard kan till exempel vara annorlunda för hårddiskar med stor kapacitet än för mindre hårddiskar. Vissa alternativ kan endast ändras vid installation med medel eller låg debconf-prioritet; vid högre prioriteringar kommer förnuftiga standardvärden att användas. </p>
+<p>Installationsprogrammet har stöd för olika former av avancerad partitionering och användningen av lagringsenheter, vilket i många fall kan kombineras. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logisk volymhantering (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Programvaru-RAID</em></span>
+  </p>
+<p>RAID-nivåer som stöds är 0, 1, 4, 5, 6 och 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Kryptering</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span>(experimentell) </p>
+<p>Se <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">vår Wiki</a> för mer information. Stöd för multipath är för närvarande endast tillgänglig om det är aktiverat när installationsprogrammet startas. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Följande filsystem stöds. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Standardfilsystemet som väljs i de flesta fall är ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (inte tillgänglig på alla arkitekturer) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (inte tillgänglig på alla arkitekturer) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (valfri; inte tillgänglig på alla arkitekturer) </p>
+<p>Stöd för Reiser-filsystemet är inte längre tillgängligt som standard. När installationsprogrammet körs med medium eller låg debconf-prioritet kan det aktiveras genom att välja <code class="classname">partman-reiserfs</code> komponent. Endast version 3 av filsystemet stöds. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Befintliga partitioner kommer att kännas igen och det är möjligt att tilldela monteringspunkter för dem. Det är inte möjligt att skapa nya qnx4-partitioner. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (skrivskyddad) </p>
+<p>Befintliga NTFS-partitioner kan ändras och det är möjligt att tilldela monteringspunkter för dem. Det är inte möjligt att skapa nya NTFS-partitioner. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Partitioneraren accepterar enheter som kraft-av-tio (1 MB = 1000 kB = 1000000 B), såväl som kraft-av-två (1 MiB = 1024 kB = 1048576 B). Enhetsprefix stöds fram till EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Guidad partitionering</h4></div></div></div>
+<p>Om du väljer guidad partitionering har du tre alternativ: skapa partitioner direkt på hårddisken (klassisk metod), skapa dem med logisk volymhantering (LVM), eller att skapa dem med krypterad LVM<a href="#ftn.id2785" class="footnote" name="id2785"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Alternativet att använda (krypterad) LVM kanske inte är tillgängligt på alla arkitekturer. </p></td></tr>
+</table></div>
+<p>När LVM eller krypterad LVM används kommer installationsprogrammet att skapa de flesta partitioner inne i en stor partition; fördelen med den här metoden är att partitioner inne i den här stora partitionen kan man enkelt ändra storlek på senare. I fallet med krypterad LVM, kommer den stora partitionen inte vara läsbar utan att känna till en speciell nyckelfras, vilket ger extra säkerhet för ditt (personliga) data. </p>
+<p>När krypterad LVM används, kommer installationsprogrammet även att automatiskt radera disken genom att skriva slumpmässig data till den. Det här ökar på säkerheten ytterligare (och gör det omöjligt att se vilka delar av disken som används och ser även till att eventuella spår av tidigare installationer raderas), men kan ta lite tid beroende på storleken på din disk. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Om du väljer guidad partitionering med LVM eller krypterad LVM, kommer vissa ändringar i partitionstabellen att behöva skrivas till den valda disken när LVM konfigureras. Dessa ändringar raderar effektivt all data som för närvarande finns på den valda hårddisken och du kommer inte kunna ångra den här åtgärden. Dock kommer installationsprogrammet fråga dig att bekräfta dessa ändringar innan de skrivs till disken. </p></td></tr>
+</table></div>
+<p>Om du väljer guidad partitionering <span class="phrase"> (antingen klassisk eller med (krypterad) LVM)</span> för en hel disk, kommer du först att bli tillfrågad att välja disken som du vill använda. Kontrollera att alla dina diskar är listade och, om du har flera diskar, se till att väljer den korrekta disken. Ordningen som de listas i kan skilja sig från vad du är van med. Storleken på diskarna kan hjälpa dig att särskilja dem. </p>
+<p>Allt data på disken du har valt kommer eventuellt att förloras, men du kommer alltid att bli tillfrågad att bekräfta ändringarna innan de skrivs på disken <span class="phrase"> . Om du har valt klassisk metod för partitioneringen, kommer du kunna ångra ändringarna fram till slutet; när (krypterad) LVM används är det här inte möjligt. </span> </p>
+<p>Next, you will be able to choose from the schemes listed in the table below. All schemes have their pros and cons, some of which are discussed in <a class="xref" href="apc.html" title="Appendix C. Partitionera för Debian">Appendix C, <i>Partitionera för Debian</i></a>. If you are unsure, choose the first one. Bear in mind that guided partitioning needs a certain minimal amount of free space to operate with. If you don't give it at least about 3GB of space (depends on chosen scheme), guided partitioning will fail. Also, on small disks you will probably not see all of the schemes mentioned below. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Partitioneringsplan</th>
+<th>Minsta utrymme</th>
+<th>Skapade partitioner</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Alla filer på en partition</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, växl</td>
+</tr>
+<tr>
+<td>Separat partition för /home</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, växl </td>
+</tr>
+<tr>
+<td>Separata partitioner för /home, /var och /tmp</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, växl </td>
+</tr>
+<tr>
+<td>Separate /srv and /var partitions; swap limited to 1GB (for server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Scheme especially for small disks</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, växl</td>
+</tr>
+</tbody>
+</table></div>
+<p>Om du väljer guidad partitionering med (krypterad) LVM kommer installationsprogrammet även att skapa en separat partition för <code class="filename">/boot</code>. De andra partitionerna, inklusive växlingsutrymmet, kommer att skapas inom LVM-partitionen. </p>
+<p>Om du har startat i EFI-läge kommer det att finnas en extra partition inom den guidade partitioneringsinställningen, formaterad som ett FAT32-startbart filsystem, för EFI-starthanteraren. Denna partition är känd som en EFI System Partition (ESP). Det finns också ett extra menyalternativ i formateringsmenyn för att manuellt ställa in en partition som en ESP. </p>
+<p>Efter du valt en plan kommer nästa skärm att visa din nya partitionstabell, inklusive information om hur och om partitionerna kommer att formateras och var de kommer att monteras. </p>
+<p>Listan över partitioner kan se ut som den här: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primär    16.4 MB  B f ext2       /boot
+        #2 primär   551.0 MB      växl       växl
+        #3 primär     5.8 GB      ntfs
+           pri/log    8.2 MB      LEDIGT UTRYMME
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primär    15.9 MB      ext3
+        #2 primär   996.0 MB      fat16
+        #3 primär     3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logisk     1.0 GB    f ext3       /var
+        #7 logisk   498.8 MB      ext3
+</pre></div>
+<p> Det här exemplet visar två hårddiskar som delats upp i flera partitioner; första disken har ledigt utrymme. Varje partitionsrad innehåller partitionsnumret, dess typ, storlek, valfria flaggor, filsystem och monteringspunkt (om det finns någon). Observera: denna specifika konfiguration kan inte skapas med en guidad partitionering men det visar en möjlig variation som kan uppnås med manuell partitionering. </p>
+<p>Det här sammanfattar den guidade partitioneringen. Om du är nöjd med den genererade partitionstabellen kan du välja <span class="guimenuitem">Slutför partitioneringen och skriv ändringarna till hårddisken</span> från menyn för att implementera den nya partitionstabellen (som beskrivs i slutet av det här avsnittet). Om du inte är nöjd kan du välja att <span class="guimenuitem">Ångra ändringarna på partitionerna</span> och köra den guidade partitioneringen igen eller modifiera de föreslagna ändringarna som beskrivs nedan för manuell partitionering. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Manuell partitionering</h4></div></div></div>
+<p>En liknande skärm till den som visades ovanför kommer att visas om du väljer manuell partitionering förutom att din befintliga partitionstabell kommer att visas och utan monteringspunkterna. Hur du manuellt konfigurerar din partitionstabell och användningen av partitioner av ditt nya Debian-system kommer att täckas in av den återstående delen av det här avsnittet. </p>
+<p>Om du väljer en ren disk som inte har några partitioner eller ledigt utrymme på sig, kommer du bli tillfrågad om en ny partitionstabell ska skapas (det behövs så att du kan skapa nya partitioner). Efter det här ska en ny rad med texten <span class="quote">”<span class="quote">LEDIGT UTRYMME</span>”</span> visas i tabellen under en valda disken. </p>
+<p>Om du väljer ett ledigt utrymme kommer du bli erbjuden att skapa en ny partition. Du kommer att få svara på några snabba frågor om dess storlek, typ (primär eller logisk), och plats (början eller slutet på det lediga utrymmet). Efter det kommer du att bli visad en detaljerad överblick av din nya partition. Huvudinställningen är <span class="guimenuitem">Använd som:</span>, vilken bestämmer om partitionen kommer att innehålla ett filsystem, eller användas som växlingsutrymme<span class="phrase">, programvaru-RAID, LVM, ett krypterat filsystem,</span>  eller inte användas alls. Andra inställningar inkluderar monteringspunkt, monteringsalternativ, och startbar-flaggan; vilka inställningar som visas beror på hur partitionen kommer att användas. Om de förinställda standardvärdena inte passar dig, kan du ändra dem för att passa ditt system. Till exempel genom att välja alternativet <span class="guimenuitem">Använd som:</span>, kan du välja ett annat filsystem för den här partitionen, inklusive alternativ för att använda partitionen som växlingsutrymme,<span class="phrase">  programvaru-RAID, LVM,,</span> eller inte använda alls. När du är nöjd med din nya partition, välj <span class="guimenuitem">Klar med partitionen</span> och du återvänder till huvudskärmen i <span class="command"><strong>partman</strong></span>. </p>
+<p>Om du bestämmer dig för att du vill ändra någonting på din partition, välj helt enkelt partitionen för att ta dig till konfigurationsmenyn för partitioner. Det här är samma skärm som när man skapar en ny partition, så du kan ändra samma inställningar. En sak som kanske inte är självklar vid första anblicken är att du kan ändra storleken på partitionen genom att välja posten som visar partitionens storlek. Filsystem som är kända att fungera är bland annat fat16, fat32, ext2, ext3 och swap (växlingsutrymme). Den här menyn låter dig även ta bort en partition. </p>
+<p>Var säker på att du skapar åtminstone två partitioner: en för <span class="emphasis"><em>rot</em></span>filsystemet (som måste monteras som <code class="filename">/</code>) och en för <span class="emphasis"><em>swap</em></span> (växlingsutrymme). Om du glömde att montera rotfilsystemet kommer <span class="command"><strong>partman</strong></span> inte låta dig fortsätta förrän du har rättat till det. </p>
+<p>Om du startar i EFI-läge men glömmer att välja och formatera en EFI-systempartition, kommer <span class="command"><strong>partman</strong></span> att upptäcka detta och låter dig inte fortsätta förrän du tilldelar en. </p>
+<p>Färdigheterna som <span class="command"><strong>partman</strong></span> besitter kan utökas med moduler, men är beroende på din systemarkitektur. Om du inte kan se alla utlovade godsaker, kontrollera om du har läst in alla nödvändiga moduler (exempelvis <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> eller <code class="filename">partman-lvm</code>). </p>
+<p>Efter att du är nöjd med partitioneringen, välj <span class="guimenuitem">Slutför partitioneringen och skriv ändringarna till hårddisken</span> från partitioneringsmenyn. Du kommer att bli visad ett sammandrag på ändringar gjorda på diskarna och bli frågad att bekräfta skapandet av begärda filsystem. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Konfiguration av multidiskenheter (Programvaru-RAID)</h4></div></div></div>
+<p>Om du har fler än en hårddisk<a href="#ftn.id2879" class="footnote" name="id2879"><sup class="footnote">[8]</sup></a> i din dator, kan du använda <span class="command"><strong>partman-md</strong></span> för att ställa in dina diskar för ökad prestanda eller bättre tillförlitlighet på ditt data. Resultatet kallas för <em class="firstterm">Multidisk Device</em> (eller efter dess mest kända variant <em class="firstterm">programvaru-RAID</em>). </p>
+<p>MD är enkelt sett en samling partitioner som finns på olika diskar och kombineras ihop för att skapa en <span class="emphasis"><em>logisk</em></span> enhet. Den här enheten kan sedan användas som en vanlig partition (alltså, i <span class="command"><strong>partman</strong></span> kan du formatera den, ge den en monteringspunkt, etc.). </p>
+<p>Fördelarna som du får beror på den typ av MD-enhet du skapar. För närvarande stöds: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Är huvudsakligen riktad mot prestanda. RAID0 delar upp all inkommande data i <em class="firstterm">stripes</em> och distribuerar dem jämnt över alla diskar i kedjan. Det här kan öka hastigheten på läs- och skrivoperationer men när en av diskarna går sönder kommer du att förlora <span class="emphasis"><em>allting</em></span> (delar av informationen finns fortfarande på den friska disken (eller flera), den andra delen <span class="emphasis"><em>fanns</em></span> på den trasiga disken). </p>
+<p> Typisk användning för RAID0 är en partition för videoredigering. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Är lämplig för konfigurationer där tillförlitlighet är ledordet. Den innehåller flera (vanligtvis två) lika stora partitioner där varje partition innehåller exakt samma data. Det här betyder tre saker. För det första, om en av dina diskar går sönder, kommer du fortfarande att ha data speglat på de återstående diskarna. För det andra, du kan endast använda en liten del av den tillgängliga kapaciteten (mer specifikt, det är storleken på den minsta partitionen i RAID-kedjan). För det tredje, filläsningar är lastbalanserade mellan diskarna, vilket kan öka prestandan på en server, såsom en filserver, som brukar vara belastad med fler diskläsningar än skrivningar. </p>
+<p> Du kan även ha en reservdisk i kedjan som kommer att ta över platsen för en trasig disk om något går fel. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> Är en bra kompromiss mellan hastighet, tillförlitlighet och dataredundans. RAID5 delar upp all inkommande data i "stripes" och distribuerar dem jämnt på alla utan en disk (liknande RAID0). Tvärtemot RAID0 beräknar även RAID5 <em class="firstterm">paritetsinformation</em>, som skrivs på den återstående disken. Paritetsdisken är inte statisk (det skulle kallas för RAID4), utan förändras periodvis, så att partitetsinformationen distribueras jämnt över alla diskar. När en av diskarna går sönder, kan den saknade delen av informationen beräknas utifrån det återstående datat och dess paritet. RAID5 måste innehålla åtminstone tre aktiva partitioner. Du kan även ha en reservdisk i kedjan som kommer att ta över platsen för en trasig disk om något går fel. </p>
+<p> Som du kan se, RAID5 har tillförlitlighet som liknar den för RAID1 men erbjuder mindre redundans. Å andra sidan är den kanske lite långsammare på skrivoperationer än RAID0 på grund av beräkningarna av paritetsinformation. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Liknar RAID5 förutom att den använder två paritetsdiskar istället för en. </p>
+<p> En RAID6-kedja kan överleva upp till två trasiga diskar. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 kombinerar stripning (som i RAID0) och spegling (som i RAID1). Den skapar <em class="replaceable"><code>n</code></em> kopior av inkommande data och distribuerar dem över partitionerna så att ingen av kopiorna av samma data finns på samma disk. Standardvärdet för <em class="replaceable"><code>n</code></em> är 2, men det kan ställas in till något annat expertläget. Antalet partitioner som används måste vara minst <em class="replaceable"><code>n</code></em>. RAID10 har olika layouter för distribuering av kopior. Standard är nära kopior. Nära kopior har alla kopior på samma position på alla diskarna. Fjärran kopior har kopiorna på olika positioner på diskarna. Positionskopior kopierar stripen, men inte de individuella kopiorna. </p>
+<p> RAID10 kan användas för att uppnå tillförlitlighet och redundans utan nackdelen att behöva beräkna paritetsinformation. </p>
+</dd>
+</dl></div>
+<p> För att summera: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Typ</th>
+<th>Minimum antal enheter</th>
+<th>Reservenhet</th>
+<th>Överlever diskfel?</th>
+<th>Tillgänglig plats</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nej</td>
+<td>nej</td>
+<td>Storlek för den minsta partitionen multiplicerat med antalet enheter i RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>valfri</td>
+<td>ja</td>
+<td>Storlek för den minsta partitionen i RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>valfri</td>
+<td>ja</td>
+<td>Storlek för den minsta partitionen multiplicerat med (antalet enheter i RAID minus en) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>valfri</td>
+<td>ja</td>
+<td>Storlek för den minsta partitionen multiplicerat med (antalet enheter i RAID minus två) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>valfri</td>
+<td>ja</td>
+<td>Totalen för alla partitioner delat med antalet delkopior (standard är två) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Om du vill veta mer om programvaru-RAID, ta en titt på <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>För att skapa en MD-enhet behöver du markera de partitioner som den ska innehålla markerade för användning i ett RAID. (Det här gör man i <span class="command"><strong>partman</strong></span> i menyn <span class="guimenu">Partitionsinställningar</span> där du bör välja <span class="guimenu">Använd som:</span> → <span class="guimenuitem">fysisk volym för RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Försäkra dig om att systemet kan startas upp med partitioneringsplanen som du planerar. I allmänhet är det nödvändigt att skapa ett separat filsystem för <code class="filename">/boot</code> när man använder RAID för rotfilsystemet (<code class="filename">/</code>). De flesta starthanterare <span class="phrase">(inklusive grub)</span> har stöd för speglad (inte striped!) RAID1, så om man till exempel använder RAID5 för <code class="filename">/</code> och RAID1 för <code class="filename">/boot</code> kan det vara ett alternativ. </p></td></tr>
+</table></div>
+<p>Efter det ska du välja <span class="guimenuitem">Konfigurera programvaru-RAID</span> från huvudmenyn i <span class="command"><strong>partman</strong></span>. (Menyn kommer endast att visas om du markerat minst en partition för användning som <span class="guimenuitem">fysisk volym för RAID</span>.) På första skärmen i <span class="command"><strong>partman-md</strong></span>, välj helt enkelt <span class="guimenuitem">Skapa MD-enhet</span>. Du kommer att bli visad en lista på typer av MD-enheter som stöds, från vilken du bör välja en (t.ex. RAID1). Vad som kommer härnäst beror på den MD-typ du har valt. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 är enkel — du kommer att visas en lista över tillgängliga RAID-partitioner och du behöver endast välja de partitioner som ska utgöra MD-enheten. </p></li>
+<li class="listitem"><p>RAID1 är lite mer besvärlig. Först kommer du bli tillfrågad att ange antalet aktiva enheter samt antalet reservenheter som ska utgöra din MD. Sedan behöver du från listan av tillgängliga RAID-partitioner välja vilka som ska vara aktiva och sedan de som ska vara reserver. Antalet valda partitioner måste vara samma som antalet som angavs tidigare. Var lugn, om du gör ett misstag och väljer ett olikt antal partitioner kommer <code class="classname">debian-installer</code> inte låta dig fortsätta förräns du har rättat till det. </p></li>
+<li class="listitem"><p>RAID5 har en liknande inställningsprocedur som RAID1 med undantaget att du behöver använda åtminstone <span class="emphasis"><em>tre</em></span> aktiva partitioner. </p></li>
+<li class="listitem"><p>RAID6 har en liknande inställningsprocedur som RAID1 med undantaget att du behöver använda åtminstone <span class="emphasis"><em>fyra</em></span> aktiva partitioner. </p></li>
+<li class="listitem"><p>RAID10 har också en liknande inställningsprocedur som RAID1 förutom i expertläget. I expertläget kommer <code class="classname">debian-installer</code> att fråga dig om layouten. Layouten har två delar. Den första delen är layouttypen. Den är antingen <code class="literal">n</code> (för nära kopior), <code class="literal">f</code> (för fjärran kopior) eller <code class="literal">o</code> (för positionskopior). Den andra delen är antalet kopior som ska göras av datat. Det måste finnas minst så många aktiva enheter så att var och en av kopiorna kan distribueras till olika diskar. </p></li>
+</ul></div>
+<p>Det är fullt möjligt att ha flera MD-typer samtidigt. Till exempel om du har tre stycken 200 GB stora hårddiskar dedicerade till MD, där varje hårddisk innehåller två stycken 100 GB stora partitioner, kan du kombinera de första partitionerna på alla tre hårddiskar till en RAID0 (300 GB stor för snabb videoredigering) och använda de övriga tre partitionerna (2 aktiva och 1 reserv) för RAID1 (ganska tillförlitlig 100 GB stor partition för <code class="filename">/home</code>). </p>
+<p>Efter att du har konfigurerat MD-enheterna efter dina behov kan du välja <span class="guimenuitem">Slutför</span> i <span class="command"><strong>partman-md</strong></span> för att återgå till <span class="command"><strong>partman</strong></span> för att skapa filsystem på dina nya MD-enheter och ge dem de vanliga attributen såsom monteringspunkter. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Konfigurering av den logiska volymhanteraren (LVM)</h4></div></div></div>
+<p>Om du arbetar med datorer som en systemadministratör eller <span class="quote">”<span class="quote">avancerad</span>”</span> användare har du säkert upplevt en situation där någon diskpartition (oftast den mest viktiga) fått slut på ledigt utrymme medan någon annan partition haft otroligt mycket oanvänt utrymme och du har behövt att hantera den här situationen genom att flytta runt saker, symboliska länkar, etc. </p>
+<p>För att undvika de beskrivna situationen kan du använda logisk volymhantering (LVM). Med LVM kan du kort sagt kombinera dina partitioner (<em class="firstterm">fysiska volymer</em> på LVM-språk) för att forma en virtuell disk (en så kallad <em class="firstterm">volymgrupp</em>) som sedan kan delas upp i virtuella partitioner (<em class="firstterm">logiska volymer</em>). Meningen är att logiska volymer (och så klart de underliggande volymgrupperna) kan spänna över ett flertal fysiska diskar. </p>
+<p>Nu när du har insett att du behöver mer utrymme för din gamla 160 GB stora <code class="filename">/home</code>-partition kan du helt enkelt lägga till en ny 300 GB stor disk till datorn, låta den bli medlem av din befintliga volymgrupp och sedan förändra storleken på den logiska volymen som tillhandahåller filsystemet för <code class="filename">/home</code> och voilá — dina användare har mer plats igen på sin nya 460 GB stora partition. Det här exemplet är så klart lite grovt förenklat. Om du inte har läst den än bör du konsultera <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>. </p>
+<p>LVM-konfiguration i <code class="classname">debian-installer</code> är ganska enkel och stöds fullständigt i <span class="command"><strong>partman</strong></span>. Först måste du markera de partitioner som ska användas som fysiska volymer för LVM. Det här görs i menyn <span class="guimenu">Partitionsinställningar</span> där du ska välja <span class="guimenu">Använd som:</span> → <span class="guimenuitem">fysisk volym för LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varning]" src="images/warning.png"></td>
+<th align="left">Varning</th>
+</tr>
+<tr><td align="left" valign="top"><p>Var medveten om: den nya LVM-inställningen kommer att förstöra all data på alla partitioner markerade med en LVM-typkod. Så om du redan har en LVM på några av dina diskar och vill installera Debian utöver den maskinen, kommer den gamla (redan befintliga) LVM att raderas! Detsamma gäller för partitioner, som (av någon anledning) är vilseledande markerade med en LVM-typkod, men som innehåller något annat (som en krypterad volym). Du måste ta bort sådana diskar från systemet innan du utför en ny LVM-installation! </p></td></tr>
+</table></div>
+<p>När du återvänder till huvudskärmen i <span class="command"><strong>partman</strong></span> kommer du att se ett nytt alternativ <span class="guimenuitem">Konfigurera den logiska volymhanteraren</span>. När du väljer den kommer du att först bli frågad om att bekräfta väntande ändringar till partitionstabellen (om det finns några) och sedan kommer LVM-konfigurationsmenyn att visas. Ovanför menyn visas en sammanfattning av LVM-konfigurationen. Själva menyn är sammanhangskänslig och visar endast giltiga åtgärder. De möjliga åtgärderna är: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Visa konfigurationsdetaljer</span>: visar LVM-enhetsstrukturen, namn och storlekar på logiska volymer och annat </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Skapa volymgrupp</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Skapa logisk volym</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Ta bort volymgrupp</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Ta bort logisk volym</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Utöka volymgrupp</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Minska volymgrupp</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Slutför</span>: återvänd till huvudskärmen för <span class="command"><strong>partman</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Använd alternativen i den menyn för att först skapa en volymgrupp och sedan skapa dina logiska volymer i den. </p>
+<p>Efter du återvänt till huvudskärmen i <span class="command"><strong>partman</strong></span> kommer du att se skapade logiska volymer på samma sätt som vanliga partitioner (och du bör även behandla dem som det). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Konfigurera krypterade volymer</h4></div></div></div>
+<p><code class="classname">debian-installer</code> låter dig konfigurera krypterade partitioner. Varje fil som du skriver på en sådan partition kommer omedelbart att sparas till enheten i krypterad form. Tillgång till krypterat data ges endast efter att en <em class="firstterm">lösenfras</em> har angivits när den krypterade partitionen ursprungligen skapades. Denna funktion är användbart för att skydda känsligt data om till exempel din bärbara dator eller hårddisk blir stulna. Tjuven kanske får fysisk tillgång till hårddisken men utan att känna till den rätta lösenfrasen kommer det data som finns på hårddisken bara att se ut som slumpmässiga tecken. </p>
+<p>De två viktigaste partitionerna att kryptera är: hempartitionen, där din privata data finns, och swap-partitionen, där känslig data kan lagras tillfälligt under drift. Naturligtvis hindrar ingenting dig från att kryptera andra partitioner som kan vara av intresse. Till exempel <code class="filename">/var</code> där databasservrar, e-postservrar eller skrivarservrar lagrar sina data, eller <code class="filename">/tmp</code> som används av olika program för att lagra potentiellt intressanta temporära filer. Vissa människor kanske till och med vill kryptera hela sitt system. I allmänhet är det enda undantaget här <code class="filename">/boot</code>-partitionen som måste förbli okrypterad, eftersom det historiskt sett inte fanns något sätt att ladda kärnan från en krypterad partition. (GRUB kan nu göra det, men <code class="classname">debian-installer</code> saknar för närvarande inbyggt stöd för krypterad <code class="filename">/boot</code>. Installationen täcks därför av ett <a class="ulink" href="https://cryptsetup-team.%20pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separat dokument</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Observera att prestandan för krypterade partitioner kommer att vara mindre än för okrypterade eftersom datan behöver dekrypteras eller krypteras för varje läsning eller skrivning. Prestandaskillnaden beror på din processorhastighet, vald kryptering och nyckellängd. </p></td></tr>
+</table></div>
+<p>För att använda kryptering måste du skapa en ny partition genom att välja ett fritt utrymme i huvudpartitioneringsmenyn. Ett annat alternativ är att välja en befintlig partition (t.ex. en vanlig partition, en logisk LVM-volym eller en RAID-volym). I menyn <span class="guimenu">Partitionsinställningar</span> behöver du välja <span class="guimenuitem">fysisk volym för kryptering</span> för alternativet <span class="guimenu">Använd som:</span>. Menyn kommer att ändras till att inkludera flera krypteringsalternativ för partitionen. </p>
+<p>Krypteringsmetoden som stöds av <code class="classname">debian-installer</code> är <em class="firstterm">dm-crypt</em> (ingår i nyare Linux-kärnor, som också kan vara värd för fysiska LVM-volymer). </p>
+<p>Låt oss ta en titt på tillgängliga alternativ när du väljer kryptering via <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Som vanligt: när du är osäker, använd standardvalen därför att de har noga valts ut med tanke på säkerhet. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Kryptering: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Detta alternativ låter dig välja krypteringsalgoritm (<em class="firstterm">chiffer</em>) som kommer att användas för att kryptera data på partitionen. <code class="classname">debian-installer</code> har för närvarande stöd för följande blockchiffer: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> och <em class="firstterm">twofish</em>. Det är utanför omfånget för detta dokument att diskutera kvaliteterna för dessa olika algoritmer, dock kan det hjälpa dig i ditt val att år 2000 valdes <span class="emphasis"><em>AES</em></span> av American National Institute of Standards and Technology som standardkrypteringsalgoritm för skydd av känslig information för 2000-talet. </p></dd>
+<dt><span class="term">Nyckellängd: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Här kan du ange längden för krypteringsnyckeln. En större nyckellängd ökar generellt styrkan på krypteringen. På andra sidan, ökning av längden på nyckeln har en negativ inverkan på prestandan. Tillgängliga nyckellängder är olika beroende på valt chiffer. </p></dd>
+<dt><span class="term">IV-algoritm: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">Initieringsvektorn</em> eller <em class="firstterm">IV</em>-algoritm används i kryptografi för att se till att tillämpningen av chiffret på samma <em class="firstterm">klartext</em>data med samma nyckel, alltid producerar en unik <em class="firstterm">chiffertext</em>. Idén är att förhindra en attackerare från att kunna utläsa information från upprepade mönster i krypterat data. </p>
+<p>Det minst sårbara alternativet för kända attacker av de som tillhandahålls är standardvalet <strong class="userinput"><code>xts-plain64</code></strong>. Använd endast de andra alternativen när du behöver kompatibilitet med tidigare installerade system som inte kan använda nyare algoritmer. </p>
+</dd>
+<dt><span class="term">Krypteringsnyckel: <strong class="userinput"><code>Lösenfras</code></strong></span></dt>
+<dd>
+<p>Här kan du välja typ av krypteringsnyckel för denna partition. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Lösenfras</span></dt>
+<dd><p>Krypteringsnyckeln kommer att beräknas<a href="#ftn.id3122" class="footnote" name="id3122"><sup class="footnote">[9]</sup></a> med en lösenfras som basis och som du kan ange senare i processen. </p></dd>
+<dt><span class="term">Slumpmässig nyckel</span></dt>
+<dd>
+<p>En ny krypteringsnyckel kommer att genereras från slumpmässigt data varje gång du försöker att ta fram den krypterade partitionen. Med andra ord: vid varje nedstängning av systemet kommer innehållet på partitionen att förloras eftersom nyckeln raderas från minnet. (Så klart, du kan försöka att ta fram nyckeln via en brute force-attack, men såvida det inte finns en okänd sårbarhet i chifferalgoritmen kommer detta inte kunna göras under vår livstid.) </p>
+<p>Slumpmässiga nycklar är användbara för växlingspartitioner därför att du inte behöver bry dig om att komma ihåg lösenfrasen eller att radera känslig information från växlingspartitionen före nedstängning av din dator. Dock betyder det även att du <span class="emphasis"><em>inte</em></span> kommer att kunna använda funktionalitet som <span class="quote">”<span class="quote">suspend-to-disk</span>”</span> som erbjuds av nyare Linux-kärnor eftersom det blir omöjligt (under en efterföljande uppstart) att återhämta suspenderat data som skrivits på växlingspartitionen. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Radera data: <strong class="userinput"><code>ja</code></strong></span></dt>
+<dd><p>Bestämmer huruvida innehållet på denna partition ska skrivas över med slumpmässigt data före krypteringen ställs in. Detta rekommenderas därför att det kan annars vara möjligt för en attackerare att avgöra vilka delar av partitionen som används och vilka som inte används. Dessutom blir det svårare att återskapa data som partitionen innehållit tidigare<a href="#ftn.id3137" class="footnote" name="id3137"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>När du har valt de önskade parametrarna för dina krypterade partitioner, återgå till huvudmenyn för partitionering. Det ska nu finnas en ny menypost som kallas <span class="guimenu">Konfigurera krypterade volymer</span>. När du väljer den kommer du att bli frågad att bekräfta borttagningen av data på de partitioner som markerats för radering och möjligen även andra åtgärder såsom skrivning av en ny partitionstabell. För större partitioner kan detta ta lite tid. </p>
+<p>Härnäst kommer du att bli frågad att ange en lösenfras för de partitioner som konfigurerats att använda en. Bra lösenfraser bör vara längre än 8 tecken, bör innehålla en blandning av bokstäver, siffror och andra tecken och bör inte innehålla vanliga ord som hittas i ordböcker eller information som lätt kan kopplas samman med dig (såsom födelsedatum, eventuell hobby, namn på husdjur, namn på familjemedlemmar eller närstående, etc.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varning]" src="images/warning.png"></td>
+<th align="left">Varning</th>
+</tr>
+<tr><td align="left" valign="top"><p>Innan du matar in några lösenfraser bör du se till att ditt tangentbord är konfigurerat korrekt och genererar de tecken som förväntas. Om du är osäker kan du växla till den andra virtuella konsollen och skriva in text vid prompten. Detta för att du inte bli förvånad senare, t.ex. genom att försöka mata in en lösenfras med en qwerty-tangentbordslayout när du använde en azerty-layout under installationen. Denna situation kan ha flera orsaker. Kanske har du bytt till en annan tangentbordslayout under installationen, eller att den valda tangentbordslayouten kanske inte har ställts in ännu när lösenfrasen för rotfilsystemet anges. </p></td></tr>
+</table></div>
+<p>Om du väljer att använda andra metoder än ett lösenord för att skapa krypteringsnycklar, kan de genereras nu. På grund av att kärnan kanske inte har samlat in en tillräcklig mängd av slumpmässigt data så tidigt i installationen kan denna process ta lång tid. Du kan hjälpa till att snabba på processen genom att generera slumpmässigt data: t.ex. genom att trycka slumpmässigt valda tangenter eller genom att växla till skalet på den andra virtuella konsollen och generera lite nätverk- och disktrafik (hämta några filer, skicka stora filer till <code class="filename">/dev/null</code>, etc.). Detta kommer att upprepas för varje partition som ska krypteras. </p>
+<p>Efter att ha återvänt till huvudmenyn för partitionering kommer du att se alla krypterade volymer som ytterligare partitioner som kan konfigureras på samma sätt som vanliga partitioner. Följande exempel visar en volym krypterad via dm-crypt. </p>
+<div class="informalexample"><pre class="screen">
+Krypterad volym (<em class="replaceable"><code>sda2_crypt</code></em>) - 115,1 GB Linux device-mapper
+      #1 115,1 GB F ext3
+</pre></div>
+<p> Nu är det dags att tilldela monteringspunkter till volymerna och eventuellt ändra filsystemtyperna om standardinställningarna inte passar dig. </p>
+<p>En sak att notera här är identifierarna inom parantes (<em class="replaceable"><code>sda2_crypt</code></em> och i detta fall) samt monteringspunkterna du har tilldelat varje krypterad volym. Du kommer att behöva denna information senare vid uppstart av det nya systemet. Skillnaderna mellan en vanlig uppstartsprocess och en uppstartsprocess med kryptering beskrivs senare i  <a class="xref" href="ch07s02.html" title="7.2. Montering av krypterade volymer">Avsnitt 7.2, ”Montering av krypterade volymer”</a>. </p>
+<p>När du är nöjd med partitioneringsplanen, fortsätt med installationen. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Installation av grundsystemet</h3></div></div></div>
+<p>Även om det här steget är det minst problematiska så tar det en större del av installationen på grund av att det hämtar, validerar och packar upp hela grundsystemet. Om du har en långsam dator eller nätverksanslutning kan det här ta en stund. </p>
+<p>Under installationen av grundsystemet, kommer meddelanden om uppackning och konfigurering omdirigeras till <strong class="userinput"><code>tty4</code></strong>. Du kan komma åt den här terminalen genom att trycka <span class="keycap"><strong>Vänster Alt</strong></span>+<span class="keycap"><strong>F4</strong></span>; gå tillbaka till huvudprocessen för installationsprogrammet med <span class="keycap"><strong>Vänster Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>De olika meddelandena om uppackning/konfigurering som genereras under den här fasen, sparas i <code class="filename">/var/log/syslog</code>. Du kan kontrollera dem där om installationen genomförs över en seriekonsoll. </p>
+<p>Som en del av installationen kommer en Linux-kärna att installeras. Vid standardprioritet kommer installationsprogrammet att välja en åt dig som bäst passar din maskinvara. I lägre prioritetslägen kommer du kunna välja från en lista av tillgängliga kärnor. </p>
+<p>När paket installeras med pakethanteringssystemet kommer det som standard även att installera paket som rekommenderas av dessa paket. Rekommenderade paket krävs inte strikt för kärnfunktionaliteten i den valda programvaran, men de förbättrar den programvaran och bör, enligt paketunderhållarnas uppfattning, normalt installeras tillsammans med den programvaran. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Av tekniska skäl installeras paket som installeras under installationen av bassystemet utan deras <span class="quote">”<span class="quote">Rekommendationer</span>”</span>. Regeln som beskrivs ovan träder i kraft först efter denna punkt i installationsprocessen. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Installera ytterligare programvara</h3></div></div></div>
+<p>Vid det här tillfället kan du ett användbart men begränsat system. De flesta användare kommer att installera ytterligare programvara på systemet för att anpassa det till sina behov och installationsprogrammet låter dem göra det. Det här steget kan ta ännu längre tid än installationen av grundsystemet om du har en långsam dator eller nätverk. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Konfigurera apt</h4></div></div></div>
+<p>Ett av verktygen som används för att installera paket på ett Debian GNU/Linux-system är programmet som kallas <span class="command"><strong>apt</strong></span>, från paketet <code class="classname">apt</code><a href="#ftn.id3180" class="footnote" name="id3180"><sup class="footnote">[11]</sup></a> Andra gränssnitt för pakethantering, såsom <span class="command"><strong>aptitude</strong></span> och <span class="command"><strong>synaptic</strong></span> används också. Dessa gränssnitt rekommenderas för nybörjare, eftersom de innehåller vissa extrafunktioner (paketsökning och statuskontroller) i ett trevligt användargränssnitt. </p>
+<p><span class="command"><strong>apt</strong></span> måste konfiguras så att den vet var den ska hämta paket ifrån. Resultat av den här konfigurationen skrivs till filen <code class="filename">/etc/apt/sources.list</code> och du kan undersöka och redigera den för att passa dina behov efter att installationen är färdig. </p>
+<p>Om du installerar med standardprioritet kommer installationsprogrammet att ta hand om det mesta av konfigurationen automatiskt, baserat på installationsmetoden som du använder och om möjligt använda val gjorda tidigare i installationen. I de flesta fall kommer installationsprogrammet att automatiskt lägga till en säkerhetsspegel och, om du installerar den stabila distributionen, en spegel för uppdateringstjänsten <span class="quote">”<span class="quote">stable-updates</span>”</span>. </p>
+<p>Om du installerar med en lägre priotet (t.ex. i expertläget) kommer du att kunna bestämma mer vad som ska göras. Du kan välja om du vill använda uppdateringstjänsten för säkerhet och/eller stable-updates, och du kan välja att lägga till paket från sektionerna <span class="quote">”<span class="quote">contrib</span>”</span>, <span class="quote">”<span class="quote">non-free</span>”</span>, och <span class="quote">”<span class="quote">non-free-firmware</span>”</span> sektionerna av arkivet. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Installing from more than one DVD image</h5></div></div></div>
+<p>If you are installing from a DVD image that is part of a larger set, the installer will ask if you want to scan additional installation media. If you have such additional media available, you probably want to do this so the installer can use the packages included on them. </p>
+<p>Om du inte har fler cd eller dvd-media så är det inget problem: användning av dem är inte nödvändigt. Om du i tillägg till det inte använder en nätverksspegel (som förklaras i nästa avsnitt) kandet betyda att inte alla paket som tillhör funktionerna kan installeras som du har valt i nästa steg i installationen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Packages are included on DVD images in the order of their popularity. This means that for most uses only the first image of a set is needed and that only very few people actually use any of the packages included on the last images of a set. </p>
+<p>It also means that buying or downloading and burning a full DVD set is just a waste of money as you'll never use most of them. In most cases you are better off getting only the first 1 to 2 DVDs and installing any additional packages you may need from the Internet by using a mirror. </p>
+</td></tr>
+</table></div>
+<p>Om du skannar flera installationsmedia kommer installationsprogrammet att uppmana dig att byta ut dem när det behöver paket från ett som för närvarande inte finns i enheten. Observera att endast skivor som tillhör samma uppsättning ska skannas. Ordningen som de skannas i spelar egentligen ingen roll, men att skanna dem i stigande ordning minskar risken för misstag. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Använda en nätverksspegel</h5></div></div></div>
+<p>En fråga som kommer att ställas under de flesta installationer är om en nätverksspegel ska användas som en paketkälla. I de flesta fall är standardsvaret ett bra svar men det finns några undantag. </p>
+<p>If you are <span class="emphasis"><em>not</em></span> installing from a DVD image, you really should use a network mirror as otherwise you will end up with only a very minimal system. However, if you have a limited Internet connection it is best <span class="emphasis"><em>not</em></span> to select the <code class="literal">desktop</code> task in the next step of the installation. </p>
+<p>Om du installerar från DVD kommer de paket som behövs under installationen att finnas på den första dvd-skivan. avbild Användning av en nätverksspegel är valfritt. </p>
+<p>One advantage of adding a network mirror is that updates, that have occurred since the DVD images were created and have been included in a point release, will become available for installation, thus extending the life of your DVD set without compromising the security or stability of the installed system. </p>
+<p>För att summera: välja en nätverksspegel är oftast en bra idé, förutom när du har en långsam internetanslutning. Om den aktuella versionen för ett paket finns tillgänglig på installationsmedia, så kommer installationsprogrammet att använda den. Mängden data som kommer att hämtas ner om du väljer en spegel beror på </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>funktionera som du väljer i nästa steg av installationen, </p></li>
+<li class="listitem"><p>vilka paket som behövs för dessa funktioner, </p></li>
+<li class="listitem"><p>vilka av dessa paket som finns på de installationsmedia som du har sökt igenom, samt </p></li>
+<li class="listitem"><p>huruvida några uppdaterade versioner av paketen som inkluderats på installationsmedia finns tillgängliga från en spegelserver (antingen en vanlig paketspegel eller en spegelserver för säkerhet eller stabila uppdateringar). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Observera att sista punkten betyder, även om du väljer att inte använda en nätverksspegel, att vissa paket kan hämtas ner från Internet ändå om det finns en säkerhets eller stabila uppdatering tillgänglig för dem och att dessa tjänster har konfigurerats. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Välj en nätverksspegel</h5></div></div></div>
+<p>Om du inte väljer att använda en nätverksspegel, kommer du att få en lista över nätverksspeglar baserat på ditt landsval tidigare i installationsprocessen. Att välja standard erbjuds är vanligtvis bra. </p>
+<p>Den erbjudna standard är deb.debian.org, som inte är en spegel i sig utan kommer att omdirigera till en spegel som ska vara uppdaterad och snabb. Dessa speglar stöder TLS (https-protokoll) och IPv6. Denna tjänst underhålls av Debian System Administration (DSA)-teamet. </p>
+<p>En spegel kan också specificeras för hand genom att välja <span class="quote">”<span class="quote">ange information manuellt</span>”</span>Du kan sedan ange ett spegelvärdnamn och ett valfritt portnummer. Detta måste faktiskt vara en URL bas, dvs när man anger en IPv6-adress måste man till exempel lägga till hakparenteser runt den t.ex <span class="quote">”<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Om din dator är på ett IPv6-endast nätverk (vilket förmodligen inte är fallet för de allra flesta användare) kanske det inte fungerar att använda standardspegeln för ditt land. Alla speglarna i listan är tillgängliga via IPv4, men bara några av dem kan användas via IPv6. Eftersom anslutningsmöjligheterna för enskilda speglar kan förändras över tiden, är denna information inte tillgänglig i installationsprogrammet. Om det inte finns någon IPv6-anslutning för standardspegeln för ditt land kan du antingen prova några av de andra speglar som erbjuds dig eller välja alternativet <span class="quote">”<span class="quote">ange information manuellt</span>”</span>. Du kan sedan ange <span class="quote">”<span class="quote">ftp.ipv6.debian.org</span>”</span> som spegelnamnet, vilket är ett alias för en spegel tillgänglig via IPv6, även om det förmodligen inte kommer att vara det snabbaste möjliga. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Val och installation av programvara</h4></div></div></div>
+<p>Under installationsprocessen får du möjligheten att välja ytterligare programvara att installera. Hellre än att välja individuella programvarupaket från de <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    paket som finns tillgängliga fokuserar det här steget av installationsprocessen på att välja och installera fördefinierade samlingar av programvara för att snabbt ställa in din dator att genomföra olika funktioner. </p>
+<p>De här funktionerna representerar löst ett antal olika jobb eller saker du vill utföra med din dator, såsom <span class="quote">”<span class="quote">Skrivbordsmiljö</span>”</span>, <span class="quote">”<span class="quote">Webbserver</span>”</span>, eller <span class="quote">”<span class="quote">SSHserver</span>”</span><a href="#ftn.id3242" class="footnote" name="id3242"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Nödvändig diskplats för funktioner">Avsnitt D.2, ”Nödvändig diskplats för funktioner”</a> listar utrymmet som krävs för de tillgängliga funktionerna. </p>
+<p>Vissa funktioner kan vara förvalda baserade på egenskaperna för datorn som du installerar. Om du inte godkänner de här valen kan du avmarkera dem. Du kan även välja att inte installera några funktioner alls. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tips]" src="images/tip.png"></td>
+<th align="left">Tips</th>
+</tr>
+<tr><td align="left" valign="top"><p>I standardanvändargränssnittet för installationsprogrammet kan du använda blankslag för att växla markering av en funktion. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><span class="quote">”<span class="quote">Skrivbordsmiljö</span>”</span> uppgiften kommer att installera en grafisk skrivbordsmiljö. </p>
+<p>Som standard så installerar <code class="classname">debian-installer</code> <span class="phrase">Gnome</span>  skrivbordsmiljö. Det är möjligt att interaktivt välja en annan skrivbordsmiljö under installationen. Det är också möjligt att installera flera skrivbordsmiljöer, men vissa kombinationer av skrivbordsmiljöer kanske inte är saminstallerbara. </p>
+<p>Note that this will only work if the packages needed for the desired desktop environment are actually available. Installing any of the available desktop environments this way should work fine if you are using a DVD image or any other installation method with a network mirror. </p>
+</td></tr>
+</table></div>
+<p>De olika serveruppgifterna installerar programvara ungefär enligt följande. Webbserver:<code class="classname">apache2</code>;SSH server: <code class="classname">openssh</code>. </p>
+<p>The <span class="quote">”<span class="quote">Standard system utilities</span>”</span> task will install any package that has a priority <span class="quote">”<span class="quote">standard</span>”</span>. This includes a lot of common utilities that are normally available on any Linux or Unix system. You should leave this task selected unless you know what you are doing and want a really minimal system. </p>
+<p>Om en standardlokal annan än lokalen <span class="quote">”<span class="quote">C</span>”</span> väljs under språkvalet så kommer <span class="command"><strong>tasksel</strong></span> att kontrollera om några lokalanpassningsfunktioner har definierats för den lokalen och kommer sedan automatiskt att försöka installera relevanta lokalanpassningspaket. Detta inkluderar till exempel paket som innehåller ordlistor eller speciella typsnitt för ditt språk. Om en skrivbordsmiljö har valts så kommer den även att installera lämpliga lokalanpassningspaket för det (om det finns några). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Starting with Debian Trixie, <code class="classname">debian-installer</code> allows to install Debian Pure Blends directly. There is an entry <span class="quote">”<span class="quote">Choose a Debian Blend for installation</span>”</span> at the bottom of the tasks list, which enables an additional choices dialog to appear, after <span class="command"><strong>tasksel</strong></span> has finished. </p>
+<p>In that dialog (<span class="command"><strong>blendsel</strong></span>), you can choose which blend to install, similar to this tasks selection. </p>
+<p>See <a class="ulink" href="https://www.debian.org/blends" target="_top">the Debian website</a> for more information about Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>När du har valt dina funktioner, välj <span class="guibutton">Fortsätt</span>. Vid det här tillfället kommer <span class="command"><strong>apt</strong></span> att installera paketen som är en del av de funktioner som du har valt. Om ett specifikt program behöver mer information från användare så kommer den att fråga dig under denna process. </p>
+<p>You should be aware that especially the Desktop task is very large. Especially when installing from a netinst CD image in combination with a mirror for packages not on the netinst, the installer may want to retrieve a lot of packages over the network. If you have a relatively slow Internet connection, this can take a long time. There is no option to cancel the installation of packages once it has started. </p>
+<p>Even when packages are included on the installation image, the installer may still retrieve them from the mirror if the version available on the mirror is more recent than the one included on the image. If you are installing the stable distribution, this can happen after a point release (an update of the original stable release); if you are installing the testing distribution this will happen if you are using an older image. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Gör ditt system klart för uppstart</h3></div></div></div>
+<p>Om du installerar en disklös arbetsstation, är uppstarter från den lokala disken så klart inte ett användbart alternativ och det här steget kommer att hoppas över. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Sökning efter andra operativsystem</h4></div></div></div>
+<p>Innan en starthanterare blir installerad kommer installationsprogrammet att försöka att söka efter andra operativsystem som finns installerade på maskinen. Om den hittar ett operativsystem som stöds kommer du bli informerad om det under installationssteget för starthanteraren och datorn kommer att bli konfigurerad att starta upp det här andra operativsystemet i tillägg till Debian. </p>
+<p>Observera att uppstart av flera operativsystem på samma maskin fortfarande är lite av svart magi. Det automatiska stödet för identifiering och inställning av starthanterare för att starta upp andra operativsystem varierar mellan arkitekturer och även för underarkitekturer. Om det inte fungerar bör du konsultera dokumentationen för din starthanterare för mer information. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3290"></a>6.3.7.2. Installera starthanteraren <span class="command"><strong>Grub</strong></span> på en disk</h4></div></div></div>
+<p>Den starthanterare som är standard på amd64 kallas för <span class="quote">”<span class="quote">grub</span>”</span>. Grub är en flexibel och robust starthanterare och ett bra standardval både för nybörjare och erfarna användare. </p>
+<p>Som standard kommer grub att installeras på UEFI-partitionen/startposten för den primära enheten, där den tar över fullständig kontroll över uppstartsprocessen. Om du föredrar det kan du installera det någon annanstans. Se grubmanualen för fullständig information. </p>
+<p>Om du inte vill installera grub alls kan du använda <span class="guibutton">Bakåt</span>-knappen för att komma till huvudmenyn och därifrån välja den starthanterare som du vill använda. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Fortsätt utan starthanterare</h4></div></div></div>
+<p>Det här alternativet kan användas för att färdigställa installationen även om inte starthanterare kommer att installeras, antingen på grund av att arkitekturen/underarkitekturen inte erbjuder en eller på grund av att ingen önskas (exempelvis, du vill använda den befintliga starthanteraren). </p>
+<p>Om du planerar att manuellt konfigurera din starthanterare, bör du kontrollera namnet på den installerade kärnan i <code class="filename">/target/boot</code>. Du bör också kontrollera den katalogen om det finns en <em class="firstterm">initrd</em>; om det finns en ska du antagligen instruera din starthanterare att använda den. Övrig information som du behöver ange är disken och partition du har valt för ditt <code class="filename">/</code>-filsystem och, om du valde att installera <code class="filename">/boot</code> på en separat partition, även ditt <code class="filename">/boot</code>-filsystem. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Färdigställ installationen</h3></div></div></div>
+<p>Det här är det sista steget i Debians installationsprocess under vilket installationsprogrammet kommer att göra de sista justeringarna. Det består mestadels av att knyta ihop allt efter <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Ställa in systemklockan</h4></div></div></div>
+<p>Installationsprogrammet kan fråga dig om datorns klocka är inställd till UTC. Normalt sett undviks den här frågan om möjligt och installationsprogrammet försöker lista ut om klockan är inställd till UTC baserat på vilka andra operativsystem som är installerade. </p>
+<p>I expertläget kan du alltid välja om eller inte klockan är inställd till UTC.  <span class="phrase">System som (även) kör Windows är vanligtvis inställda till lokal tid. Om du vill använda dubbel uppstart, välj lokal tid istället för UTC.</span> </p>
+<p>Vid det här tillfället kommer <code class="classname">debian-installer</code> även att försöka spara den aktuella tiden till systemets hårdvaruklocka. Det här görs antingen i UTC eller lokal tid, beroende på det val som tidigare gjordes. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Starta om systemet</h4></div></div></div>
+<p>Du kommer att bli uppmanad att mata ut uppstartsmediumet (cd-skiva, USB minne, etc) som du använde för att starta upp installationsprogrammet med. Efter det kommer systemet att startas om till ditt nya Debian-system. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Felsökning</h3></div></div></div>
+<p>Komponenterna som listas i det här avsnittet är normalt sett inte inblandade i installationsprocessen men väntar i bakgrunden för att hjälpa användaren om något går fel. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Spara installationsloggar</h4></div></div></div>
+<p>Om installationen lyckas, kommer loggfilerna som skapas under installationsprocessen att automatiskt sparas till <code class="filename">/var/log/installer/</code> på ditt nya Debian-system. </p>
+<p>Välj <span class="guimenuitem">Spara felsökningsloggar</span> från huvudmenyn låter dig spara loggfilerna till en USB minne, nätverk, hårddisk eller annat media. Det kan vara användbart om du påträffar allvarliga problem under installationen och vill undersöka loggarna på ett annat system eller bifoga dem i en installationsrapport. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Användning av skalet och visning av loggar</h4></div></div></div>
+<p>Det finns flera metoder som du kan välja för att få ett skal under tiden du kör en installation. På de flesta system, och om du inte installerar över en seriekonsoll, är den enklaste metoden att växla till den andra <span class="emphasis"><em>virtuella konsollen</em></span> genom att trycka <span class="keycap"><strong>Vänster Alt</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3337" class="footnote" name="id3337"><sup class="footnote">[13]</sup></a> (på ett Mac-tangentbord, <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Använd <span class="keycap"><strong>Vänster Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> för att växla tillbaka till själva installationsprogrammet. </p>
+<p>För det grafiska installationsprogrammet, se även <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Användning av det grafiska installationsprogrammet">Avsnitt 6.1.1, ”Användning av det grafiska installationsprogrammet”</a>. </p>
+<p>Om du inte kan växla mellan konsollerna finns även alternativet <span class="guimenuitem">Starta ett skal</span> i huvudmenyn som kan användas för att starta ett skal. Du kan komma till huvudmenyn från de flesta dialoger genom att använda <span class="guibutton">Bakåt</span>-knappen en eller flera gånger. Ange <strong class="userinput"><code>exit</code></strong> för att stänga skalet och återvända till installationsprogrammet. </p>
+<p>Vid den här tidpunkten har du startat upp från RAM-disken, och det finns en begränsad uppsättning Unix-verktyg tillgängliga för dig. Du kan se vilka program som finns tillgängliga med kommandot <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> och genom att skriva <span class="command"><strong>help</strong></span>. Skalet är ett Bourne-skalklon kallat <span class="command"><strong>ash</strong></span> och har några trevliga funktioner som till exempel automatisk komplettering och historik. </p>
+<p>För att redigera och visa filer, använd textredigeraren <span class="command"><strong>nano</strong></span>. Loggfiler för installationssystemet kan hittas i katalogen <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Även om du kan göra i stort sett allt ett skal som de tillgängliga kommandona tillåter dig att göra, är alternativet att använda ett skal egentliga endast där om någonting skulle gå fel och att du behöver felsöka. </p>
+<p>Göra saker manuellt från skalet kan störa installationsprocessen och resultera i fel eller en ofullständig installation. Specifikt bör du alltid låta installationsprogrammet aktivera din växlingspartition och inte göra det själv från ett skal. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installation över network-console</h3></div></div></div>
+<p>En av de mer intressanta komponenterna är <em class="firstterm">network-console</em>. Den låter dig göra en stor del av installationen över nätverket via SSH. Användningen av nätverk antyder att du måste genomföra de första stegen av installationen från konsollen, åtminstone till punkten där nätverket ställs in. (Dock kan du automatisera den delen med <a class="xref" href="ch04s06.html" title="4.6. Automatisk installation">Avsnitt 4.6, ”Automatisk installation”</a>.) </p>
+<p>Den här komponenten läses inte in i huvudmenyn som standard så du måste specifikt begära den. Om du installerar från ett optiskt media behöver du starta upp med mediumprioritet eller annars kan du starta huvudmenyn och välja <span class="guimenuitem">Läs in installationskomponenter från installationsmedia</span> och från listan av ytterligare komponenter välja <span class="guimenuitem">network-console: Fortsätt installationen genom fjärråtkomst med SSH</span>. En lyckad inläsning indikeras av en ny menypost kallad <span class="guimenuitem">Fortsätt installationen genom fjärråtkomst med SSH</span>. </p>
+<p><span class="phrase">Efter du har valt den här nya posten kommer du</span>  att bli frågad efter ett nytt lösenord som ska användas för anslutning till installationssystemet och för att bekräfta det. Det är allt. Nu bör du se en skärm som instruerar dig att göra en fjärrinloggning som användaren <span class="emphasis"><em>installer</em></span> med lösenordet som du precis angav. En annan viktig detalj att notera på den här skärmen är fingeravtrycket av det här systemet. Du behöver överföra fingeravtrycket på ett säkert sätt till personen som kommer att fortsätta fjärrinstallationen. </p>
+<p>Bestämmer du dig för att fortsätta med installationen lokalt kan du alltid trycka <span class="keycap"><strong>Enter</strong></span>, vilket tar dig tillbaka till huvudmenyn, där du kan välja en annan komponent. </p>
+<p>Låt oss nu hoppa över till andra sidan av kabeln. Som en förutsättning behöver du konfigurera din terminal för teckenkodningen UTF-8, på grund av att installationssystemet använder den kodningen. Om du inte gör det kommer fjärrinstallation fortfarande vara möjlig men du kommer att uppleva konstiga skärmproblem som förstörda dialogrutor eller oläsbara tecken som inte är ascii. Etablera en anslutning till installationssystemet är så enkelt som att ange: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>installationsvärd</code></em></code></strong>
+</pre></div>
+<p> Där <em class="replaceable"><code>installationsvärd</code></em> är antingen namnet eller IP-adress till den dator som ska installeras. Före den faktiska inloggningen kommer fingeravtrycket för fjärrsystemet att visas och du behöver bekräfta att det är korrekt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><span class="command"><strong>ssh</strong></span>-servern i installationsprogrammet använder en standardkonfiguration som inte skickar keep-alive-paket. I princip ska en anslutning till systemet som blir installerat hållas öppen hela tiden. Dock kan i vissa situationer — beroende på din lokala nätverkskonfiguration — anslutning kopplas ned efter en viss inaktivitetsperiod. Ett vanligt fall där detta kan hända är när det finns någon form av adressöversättning (NAT) på nätverket mellan klienten och systemet som blir installerat. Beroende på var i installationen anslutningen bröts så kanske du kan, eller kanske inte kan, återuppta installationen efter ny etablering av anslutningen. </p>
+<p>Du kanske kan förhindra att anslutningen bryts genom att lägga till flaggan <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>värde</code></em></code></strong> när <span class="command"><strong>ssh</strong></span>-anslutningen startas, eller genom att lägga till den flaggan i din konfigurationsfil för <span class="command"><strong>ssh</strong></span>. Observera dock att i vissa fall kan denna flagga även <span class="emphasis"><em>orsaka</em></span> att en anslutning bryts (till exempel om keep-alive-paket skickas under en kort tid med nätverkproblem, från vilken <span class="command"><strong>ssh</strong></span> själv skulle ha återhämtat sig), så den ska endast användas när den behövs. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Om du installerar flera datorer i turordning och de råkar ha samma IP-adress eller värdnamn kommer <span class="command"><strong>ssh</strong></span> att vägra att ansluta till en sådan värd. Anledningen är att den kommer att ha ett olikt fingeravtryck, vilket är ett vanligt tecken på en spoofingattack. Om du är säker att så inte är fallet, behöver du ta bort den relevanta raden från <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3399" class="footnote" name="id3399"><sup class="footnote">[14]</sup></a> och försöka igen. </p></td></tr>
+</table></div>
+<p>Efter inloggningen kommer du att se den initiala skärmen där du har två möjligheter kallade <span class="guimenuitem">Starta menyn</span> och <span class="guimenuitem">Starta ett skal</span>. Den första tar dig till huvudmenyn i installationsprogrammet, där du kan fortsätta med installationen som vanligt. Den senare startar upp ett skal från vilket du kan undersöka och möjligen rätta till fjärrsystemet. Du bör endast starta en SSH-session för installationsmenyn, men kan starta flera sessioner för skal. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varning]" src="images/warning.png"></td>
+<th align="left">Varning</th>
+</tr>
+<tr><td align="left" valign="top"><p>Efter att du har startat fjärrinstallationen över SSH bör du inte gå tillbaka till installationssessionen som kör på den lokala konsollen. Om du gör det kan databasen som tillhandahåller konfigurationen av det nya systemet skadas. Det i sin tur kan resultera i en misslyckad installation eller problem med det installerade systemet. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2590" class="footnote"><p><a href="#id2590" class="para"><sup class="para">[4] </sup></a> I tekniska termer: där flera lokalanpassningar finns för det språket men med olika landskoder. </p></div>
+<div id="ftn.id2599" class="footnote"><p><a href="#id2599" class="para"><sup class="para">[5] </sup></a> Med medelhög och låg prioritet kan du alltid välja din föredragna lokal bland de som är tillgängliga för det valda språket (om det finns fler än ett). </p></div>
+<div id="ftn.id2605" class="footnote"><p><a href="#id2605" class="para"><sup class="para">[6] </sup></a>Äldre lokaler är lokaler som inte använder UTF-8, men en av de äldre standarderna för teckenkodning som ISO 8859-1 (används av västeuropeiska språk) eller EUC-JP (används av japanska). </p></div>
+<div id="ftn.id2785" class="footnote"><p><a href="#id2785" class="para"><sup class="para">[7] </sup></a> Installationsprogrammet kommer att kryptera LVM-volymgruppen med en 256 bitars AES-nyckel och använder kärnans stöd för <span class="quote">”<span class="quote">dm-crypt</span>”</span>. </p></div>
+<div id="ftn.id2879" class="footnote"><p><a href="#id2879" class="para"><sup class="para">[8] </sup></a> Det går faktiskt att bygga en MD-enhet även från partitioner som finns på samma fysiska disk, men det kommer inte att ge dig några fördelar. </p></div>
+<div id="ftn.id3122" class="footnote"><p><a href="#id3122" class="para"><sup class="para">[9] </sup></a> Att använda en lösenfras som nyckel betyder att partitionen måste konfigureras med <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3137" class="footnote"><p><a href="#id3137" class="para"><sup class="para">[10] </sup></a> Det är dock troligt att personal från tre-bokstavs-myndigheter kan återskapa data från magnetoptiska media även efter ett flertal överskrivningar. </p></div>
+<div id="ftn.id3180" class="footnote"><p><a href="#id3180" class="para"><sup class="para">[11] </sup></a> Observera att det program som faktiskt installerar paketen kallas för <span class="command"><strong>dpkg</strong></span>. Dock är det här programmet mer av ett lågnivåverktyg. <span class="command"><strong>apt-get</strong></span> är ett verktyg på högre nivå som anropar <span class="command"><strong>dpkg</strong></span> när det behövs. Det vet hur man hämtar paket från ditt installationsmedia, nätverket, eller varifrån. Det har också möjligheten att automatiskt installera andra paket som krävs för att få det paket som du försöker installera att fungera korrekt. </p></div>
+<div id="ftn.id3242" class="footnote"><p><a href="#id3242" class="para"><sup class="para">[12] </sup></a> Du bör känna till att för att visa den här listan, anropar installationsprogrammet helt enkelt programmet <span class="command"><strong>tasksel</strong></span>. Det kan köras när som helst efter installationen för att installera (eller ta bort) fler paket, eller så kan du använda ett mer finkornigt verktyg såsom <span class="command"><strong>aptitude</strong></span>. Om du letar efter ett enda specifikt paket, efter att installationen är färdig, kör helt enkelt <strong class="userinput"><code>aptitude install <em class="replaceable"><code>paket</code></em></code></strong>, där <em class="replaceable"><code>paket</code></em> är namnet på paketet du letar efter. </p></div>
+<div id="ftn.id3337" class="footnote"><p><a href="#id3337" class="para"><sup class="para">[13] </sup></a> Alltså: tryck ner <span class="keycap"><strong>Alt</strong></span>-tangenten på vänster sida av <span class="keycap"><strong>blankstegs</strong></span>-tangenten och funktionstangenten <span class="keycap"><strong>F2</strong></span> samtidigt. </p></div>
+<div id="ftn.id3399" class="footnote"><p><a href="#id3399" class="para"><sup class="para">[14] </sup></a> Följande kommando kommer att ta bort en befintlig post för en värd: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>värdnamn</code></em>|<em class="replaceable"><code>IP-adress</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Introduktion till komponenter </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Läsa in saknad fast programvara</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. L'arborescence des fichiers</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Annexe C. Partitionnement pour Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Décider des partitions et de leurs tailles">
+<link rel="next" href="apcs03.html" title="C.3. Schéma de partitionnement recommandé">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. L'arborescence des fichiers</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Annexe C. Partitionnement pour Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. L'arborescence des fichiers</h2></div></div></div>
+<p>Debian GNU/Linux adhère à la <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">norme sur l'organisation des systèmes de fichiers</a> pour le nommage des fichiers et des répertoires. Cette norme permet aux utilisateurs et aux auteurs de logiciel de prévoir l'emplacement des fichiers et des répertoires. Le répertoire racine est simplement représenté par la barre oblique <code class="filename">/</code>. Au niveau de la racine, tous les systèmes Debian incluent ces répertoires : </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Répertoire</th>
+<th>Contenu</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>Binaires (exécutables) des commandes essentielles</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>Fichiers statiques pour le programme d'amorçage</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>Fichiers des pilotes de périphériques</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Configuration système propre à la machine</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>Répertoires personnels des utilisateurs</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Bibliothèques partagées et modules noyaux essentiels</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>Points de montage pour les supports amovibles</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Point de montage pour les montages temporaires</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Répertoire virtuel pour les informations système</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>Répertoire personnel de l'utilisateur root</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Données variables d'exécution</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>Exécutables système essentiels</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Répertoire virtuel pour les informations système</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>Fichiers temporaires</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Hiérarchie secondaire</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Données variables</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Données pour les services fournis par le système</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Répertoire pour d'autres logiciels</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>La liste suivante décrit quelques caractéristiques importantes des répertoires et des partitions. L'utilisation de l'espace disque varie grandement avec la configuration du système et les modes d'utilisation. Les principes généraux énoncés ici constituent une introduction au partitionnement des disques. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>La partition racine <code class="filename">/</code> doit toujours contenir les répertoires : <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> et <code class="filename">/usr</code>, sinon votre système ne pourra pas démarrer. Ce qui signifie qu'il faut prévoir 700 à 850 Mo pour la partition racine incluant <code class="filename">/usr</code>, ou 5 à 6 Go pour un poste de travail ou un serveur ; </p></li>
+<li class="listitem"><p><code class="filename">/var</code> : toutes les données variables comme les articles des forums usenet, les messages électroniques, les sites web, le cache du système des paquets, etc. seront placées dans ce répertoire. La place nécessaire dépend énormément de l'usage que vous faites de votre ordinateur, mais pour la plupart des administrateurs, elle sera dictée par la charge due aux outils de gestion des paquets. Si vous envisagez de faire une installation complète de tout ce que Debian peut vous offrir en une seule fois, réserver 2 à 3 Go d'espace pour <code class="filename">/var</code> devrait suffire. Si vous préférez installer le tout en plusieurs étapes (p. ex. d'abord les services et utilitaires, puis les outils texte, puis X11...), vous pouvez vous contenter de 300 à 500 Mo. Si l'espace disque est une contrainte majeure et que vous ne voulez pas faire de mises à jour majeures, vous pouvez vous en tirer avec 30 à 40 Mo ; </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code> : si un programme crée des données temporaires, elles seront probablement placées dans <code class="filename">/tmp</code>. 40 à 100 Mo devraient suffire. Certaines applications, gestionnaires d'archives, outils pour créer des CD/DVD, logiciels multimédias, peuvent se servir de <code class="filename">/tmp</code> pour stocker provisoirement des images. Si vous comptez utiliser ces programmes, vous devrez recalculer l'espace nécessaire dans <code class="filename">/tmp</code>. </p></li>
+<li class="listitem"><p><code class="filename">/home</code> : chaque utilisateur mettra ses données dans un sous-répertoire de ce répertoire. La place nécessaire dépend du nombre d'utilisateurs sur le système, et du genre de fichiers qu'ils devront stocker. Selon l'utilisation du système, vous devriez réserver environ 100 Mo par utilisateur. Réservez beaucoup plus d'espace si des fichiers multimédias (images, MP3, films) seront conservés dans le répertoire. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Décider des partitions et de leurs tailles </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Schéma de partitionnement recommandé</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

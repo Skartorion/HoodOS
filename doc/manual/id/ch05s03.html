@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Parameter Boot</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Bab 5. Mem-boot Sistem Instalasi">
+<link rel="prev" href="ch05s02.html" title="5.2. Aksesibilitas">
+<link rel="next" href="ch05s04.html" title="5.4. Penelusuran Masalah Proses Instalasi">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Parameter Boot</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 5. Mem-boot Sistem Instalasi</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Parameter Boot</h2></div></div></div>
+<p>Parameter boot adalah parameter kernel Linux yang umumnya digunakan untuk memastikan bahwa periferal ditangani dengan benar. Untuk sebagian besar, kernel dapat mendeteksi informasi secara otomatis tentang periferal Anda. Namun, dalam beberapa kasus Anda harus sedikit membantu kernel. </p>
+<p>Jika ini adalah pertama kalinya Anda mem-boot sistem, coba parameter boot baku (yaitu, jangan coba mengatur parameter) dan lihat apakah itu berfungsi dengan benar. Mungkin akan begitu. Jika tidak, Anda dapat reboot nanti dan mencari parameter khusus yang menginformasikan sistem tentang perangkat keras Anda. </p>
+<p>Informasi tentang banyak parameter boot dapat ditemukan di <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, termasuk tips untuk perangkat keras yang tidak jelas. Bagian ini hanya berisi sketsa parameter yang paling menonjol. Beberapa poin umum disertakan di bawah dalam <a class="xref" href="ch05s04.html" title="5.4. Penelusuran Masalah Proses Instalasi">Bagian 5.4, “Penelusuran Masalah Proses Instalasi”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Boot konsol serial</h3></div></div></div>
+<p>Jika Anda boot dengan konsol serial, umumnya kernel akan otomatis mendeteksi ini. Jika Anda memiliki kartu video (framebuffer) dan papan tik juga terpasang ke komputer yang ingin Anda boot melalui konsol serial, Anda mungkin harus meneruskan argumen <strong class="userinput"><code>console=<em class="replaceable"><code>peranti</code></em></code></strong> ke kernel, di mana <em class="replaceable"><code>peranti</code></em> adalah perangkat serial dari target, yang biasanya sesuatu seperti <code class="filename">ttyS0</code>. </p>
+<p>Anda mungkin perlu menentukan parameter untuk port serial, seperti kecepatan dan parity, misalnya <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; kecepatan umum lainnya mungkin 57600 atau 115200. Pastikan untuk menentukan opsi ini setelah <span class="quote">“<span class="quote">---</span>”</span>, sehingga disalin ke dalam konfigurasi bootloader untuk sistem yang dipasang (jika didukung oleh pemasang untuk bootloader). </p>
+<p>Untuk memastikan tipe terminal yang digunakan oleh pemasang cocok dengan emulator terminal Anda, parameter <strong class="userinput"><code>TERM=<em class="replaceable"><code>tipe</code></em></code></strong> dapat ditambahkan. Perhatikan bahwa pemasang hanya mendukung tipe terminal berikut: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code>, dan <code class="literal">dumb</code>. Baku untuk konsol serial di <code class="classname">debian-installer</code> adalah <strong class="userinput"><code>vt102</code></strong>. Jika Anda menggunakan konsol IPMI, atau alat virtualisasi yang tidak memberikan konversi ke tipe terminal itu sendiri, misalnya QEMU/KVM, Anda dapat memulainya di dalam sesi <span class="command"><strong>screen</strong></span>. Itu memang akan melakukan terjemahan ke dalam tipe terminal <code class="literal">screen</code>, yang sangat dekat dengan <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parameter Pemasang Debian</h3></div></div></div>
+<p>Sistem instalasi mengenali beberapa parameter boot tambahan<a href="#ftn.id2558" class="footnote" name="id2558"><sup class="footnote">[3]</sup></a> yang mungkin berguna. </p>
+<p>Sejumlah parameter memiliki <span class="quote">“<span class="quote">bentuk pendek</span>”</span> yang membantu menghindari keterbatasan opsi baris perintah kernel dan membuat memasukkan parameter lebih mudah. Jika parameter memiliki bentuk pendek, itu akan tercantum dalam tanda kurung di belakang bentuk panjang (normal). Contoh dalam manual ini biasanya akan menggunakan bentuk pendek juga. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Parameter ini menetapkan prioritas pesan terendah yang akan ditampilkan. </p>
+<p>Instalasi baku menggunakan <strong class="userinput"><code>priority=high</code></strong>. Ini berarti bahwa pesan prioritas tinggi dan kritis ditampilkan, tetapi pesan prioritas sedang dan rendah dilewati. Jika masalah dihadapi, pemasang menyesuaikan prioritas sesuai kebutuhan. </p>
+<p>Jika Anda menambahkan <strong class="userinput"><code>priority=medium</code></strong> sebagai parameter boot, Anda akan ditunjukkan menu instalasi dan mendapatkan lebih banyak kontrol atas instalasi. Ketika <strong class="userinput"><code>priority=low</code></strong> digunakan, semua pesan ditampilkan (ini setara dengan metode boot <span class="emphasis"><em>ahli</em></span> ). Dengan <strong class="userinput"><code>priority=critical</code></strong>, sistem instalasi hanya akan menampilkan pesan penting dan mencoba melakukan hal yang benar tanpa repot. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Parameter boot ini mengontrol jenis antarmuka pengguna yang digunakan untuk pemasang. Pengaturan parameter yang mungkin saat ini adalah: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> Front end baku adalah <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> mungkin lebih disukai untuk instalasi konsol serial. Beberapa jenis media instalasi khusus mungkin hanya menawarkan pilihan front end terbatas, tetapi front end <strong class="userinput"><code>newt</code></strong> dan <strong class="userinput"><code>text</code></strong> tersedia di sebagian besar media instalasi baku. Pada arsitektur yang mendukungnya, pemasang grafis menggunakan front end <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Mengatur parameter boot ini ke 2 akan menyebabkan proses boot pemasang di-log secara rinci. Mengaturnya ke 3 membuat shell debug tersedia di titik-titik strategis dalam proses boot. (Keluar dari shell untuk melanjutkan proses boot.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Ini adalah baku.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Lebih bertele-tele dari biasanya.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Banyak informasi debug.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Shell dijalankan di berbagai titik dalam proses boot untuk memungkinkan debug terperinci. Keluar dari shell untuk melanjutkan boot. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Menyebabkan penginstal mengirim pesan log ke syslog jarak jauh pada host dan port yang ditentukan serta ke berkas lokal. Jika tidak ditentukan, port dibakukan ke port syslog standar 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Dapat digunakan untuk memaksa penginstal ke tingkat lowmem yang lebih tinggi dari yang ditetapkan penginstal secara default berdasarkan memori yang tersedia. Nilai yang mungkin adalah 1 dan 2. Lihat juga <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Periksa memori yang tersedia / mode memori rendah">Bagian 6.3.1.1, “Periksa memori yang tersedia / mode memori rendah”</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Mencegah pemasang menawarkan shell interaktif pada tty2 dan tty3. Berguna untuk instalasi tanpa pengawasan di mana keamanan fisik terbatas. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Beberapa arsitektur menggunakan kernel framebuffer untuk menawarkan instalasi dalam sejumlah bahasa. Jika framebuffer menyebabkan masalah pada sistem, Anda dapat menonaktifkan fitur menggunakan parameter <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Gejala masalah adalah pesan kesalahan tentang bterm atau bogl, layar kosong, atau membeku dalam beberapa menit setelah memulai instalasi. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>Tema menentukan bagaimana antarmuka pengguna penginstal terlihat (warna, ikon, dll.). Tema mana yang tersedia mungkin berbeda per frontend. Saat ini frontend newt dan gtk memiliki (terlepas dari tampilan default) hanya satu tema tambahan bernama tema <span class="quote">“<span class="quote">gelap</span>”</span>, yang dirancang untuk pengguna yang mengalami masalah visual. Atur tema ini dengan mem-boot dengan <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (ada juga pintasan papan ketik <strong class="userinput"><code>d</code></strong> untuk ini di menu boot). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>Secara default, <code class="classname">debian-installer</code> secara otomatis menyelidiki konfigurasi jaringan melalui konfigurasi otomatis IPv6 dan DHCP. Jika probe berhasil, Anda tidak akan memiliki kesempatan untuk meninjau dan mengubah pengaturan yang diperoleh. Anda bisa masuk ke pengaturan jaringan manual hanya jika konfigurasi otomatis gagal. </p>
+<p>Jika Anda memiliki router IPv6 atau server DHCP di jaringan lokal Anda, tetapi ingin menghindarinya karena misalnya mereka memberikan jawaban yang salah, Anda dapat menggunakan parameter <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> untuk mencegah konfigurasi otomatis jaringan (baik v4 maupun v6) dan untuk memasukkan informasi secara manual. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Atur ke <strong class="userinput"><code>false</code></strong> untuk mencegah memulai layanan PCMCIA, jika itu menyebabkan masalah. Beberapa laptop dikenal baik untuk perilaku buruk ini. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Menyatakan url ke berkas prakonfigurasi untuk diunduh dan digunakan untuk mengotomatisasi instalasi. Lihat <a class="xref" href="ch04s06.html" title="4.6. Instalasi Otomatis">Bagian 4.6, “Instalasi Otomatis”</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Menyatakan path ke berkas prakonfigurasi yang akan dimuat untuk mengotomatisasi instalasi. Lihat <a class="xref" href="ch04s06.html" title="4.6. Instalasi Otomatis">Bagian 4.6, “Instalasi Otomatis”</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Atur ke <strong class="userinput"><code>true</code></strong> untuk menampilkan pertanyaan bahkan jika mereka telah di-preseed. Dapat berguna untuk menguji atau men-debug berkas prakonfigurasi. Perhatikan bahwa ini tidak akan berpengaruh pada parameter yang dilewatkan sebagai parameter boot, tetapi bagi mereka sintaks khusus dapat digunakan. Lihat <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Menggunakan preseed untuk mengubah nilai baku">Bagian B.5.2, “Menggunakan preseed untuk mengubah nilai baku”</a> untuk rinciannya. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Tunda pertanyaan yang biasanya diajukan sebelum preseed dimungkinkan sampai setelah jaringan dikonfigurasi. Lihat <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modus otomatis">Bagian B.2.3, “Modus otomatis”</a> untuk detail tentang menggunakan ini bagi instalasi terotomatisasi. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Selama instalasi dari serial atau konsol manajemen, konsol virtual reguler (VT1 ke VT6) biasanya dinonaktifkan di <code class="filename">/etc/inittab</code>. Atur ke <strong class="userinput"><code>true</code></strong> untuk mencegah hal ini. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>Secara default, sebelum reboot, <code class="classname">debian-installer</code> secara otomatis mengeluarkan media optik yang digunakan selama instalasi. Ini bisa tidak perlu jika sistem tidak secara otomatis mem-boot media tersebut. Dalam beberapa kasus bahkan mungkin tidak diinginkan, misalnya jika drive optik tidak dapat memasukkan kembali media itu sendiri dan pengguna tidak ada di sana untuk melakukannya secara manual. Banyak slot loading, slim-line, dan caddy style drive tidak dapat memuat ulang media secara otomatis. </p>
+<p>Atur ke <strong class="userinput"><code>false</code></strong> untuk menonaktifkan ejeksi otomatis, dan ketahuilah bahwa Anda mungkin perlu memastikan bahwa sistem tidak secara otomatis boot dari drive optik setelah instalasi awal. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Dengan mengatur opsi ini menjadi <strong class="userinput"><code>false</code></strong>, sistem manajemen paket akan dikonfigurasi untuk tidak menginstal <span class="quote">“<span class="quote">Recommends</span>”</span> secara otomatis, baik selama instalasi maupun untuk sistem yang diinstal. Lihat juga <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Memasang Sistem Dasar">Bagian 6.3.5, “Memasang Sistem Dasar”</a>. </p>
+<p>-Perhatikan bahwa opsi ini memungkinkan untuk memiliki sistem yang lebih ramping, tetapi juga dapat mengakibatkan fitur hilang yang biasanya Anda harapkan tersedia. Anda mungkin harus menginstal beberapa paket yang direkomendasikan secara manual untuk mendapatkan fungsionalitas penuh yang Anda inginkan. Oleh karena itu, opsi ini hanya boleh digunakan oleh pengguna yang sangat berpengalaman. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Secara default penginstal mengharuskan repositori diautentikasi menggunakan kunci gpg yang dikenal. Atur ke <strong class="userinput"><code>true</code></strong> untuk menonaktifkan autentikasi tersebut. <span class="bold"><strong>Peringatan: tidak aman, tidak disarankan.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Atur ke <strong class="userinput"><code>true</code></strong> untuk memasuki mode penyelamatan daripada melakukan instalasi normal. Lihat <a class="xref" href="ch08s06.html" title="8.6. Memulihkan Sistem yang Rusak">Bagian 8.6, “Memulihkan Sistem yang Rusak”</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Menggunakan parameter boot untuk menjawab pertanyaan</h3></div></div></div>
+<p>Dengan beberapa pengecualian, nilai dapat diatur pada prompt boot untuk setiap pertanyaan yang diajukan selama instalasi, meskipun ini hanya benar-benar berguna dalam kasus-kasus tertentu. Petunjuk umum bagaimana melakukan ini dapat ditemukan di <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Menggunakan parameter boot untuk pertanyaan preseed">Bagian B.2.2, “Menggunakan parameter boot untuk pertanyaan preseed”</a>. Beberapa contoh spesifik tercantum di bawah ini. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Ada dua cara untuk menentukan bahasa, negara, dan lokal yang akan digunakan untuk instalasi dan sistem yang dipasang. </p>
+<p>Yang pertama dan termudah adalah hanya meneruskan parameter <code class="literal">locale</code>. Bahasa dan negara kemudian akan berasal dari nilainya. Anda misalnya dapat menggunakan <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> untuk memilih bahasa Jerman sebagai bahasa dan Swiss sebagai negara (<code class="literal">de_CH.UTF-8</code> akan ditetapkan sebagai lokal baku untuk sistem yang dipasang). Keterbatasannya adalah bahwa tidak semua kombinasi bahasa, negara, dan lokal yang mungkin dapat dicapai dengan cara ini. </p>
+<p>Opsi kedua yang lebih fleksibel adalah menentukan <code class="literal">language</code> dan <code class="literal">country</code> secara terpisah. Dalam hal ini <code class="literal">locale</code> secara opsional dapat ditambahkan untuk menentukan lokal baku tertentu untuk sistem yang dipasang. Contoh: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Dapat digunakan untuk memuat komponen penginstal secara otomatis yang tidak dimuat secara default. Contoh komponen opsional yang mungkin berguna adalah <code class="classname">openssh-client-udeb</code> (sehingga Anda dapat menggunakan <span class="command"><strong>scp</strong></span> selama instalasi)<span class="phrase"> dan <code class="classname">ppp-udeb</code> (lihat <a class="xref" href="apds05.html" title="D.5. Memasang Debian GNU/Linux menggunakan PPP over Ethernet (PPPoE)">Bagian D.5, “Memasang Debian GNU/Linux menggunakan PPP over Ethernet (PPPoE)”</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Atur ke <strong class="userinput"><code>true</code></strong> jika Anda ingin menonaktifkan konfigurasi otomatis IPv6 dan DHCP dan sebagai gantinya memaksa konfigurasi jaringan statis. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>Secara default installer akan menggunakan protokol http untuk mengunduh berkas dari mirror Debian dan mengubahnya menjadi ftp tidak dimungkinkan selama instalasi pada prioritas normal. Dengan mengatur parameter ini ke <strong class="userinput"><code>ftp</code></strong>, Anda dapat memaksa penginstal untuk menggunakan protokol itu sebagai gantinya. Perhatikan bahwa Anda tidak dapat memilih cermin ftp dari daftar, Anda harus memasukkan nama host secara manual. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Dapat digunakan untuk memilih tugas yang tidak tersedia dari daftar tugas interaktif, seperti tugas <code class="literal">kde-desktop</code>. Lihat <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Memilih dan Memasang Perangkat Lunak">Bagian 6.3.6.2, “Memilih dan Memasang Perangkat Lunak”</a> untuk informasi tambahan. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Meneruskan parameter ke modul kernel</h3></div></div></div>
+<p>Jika driver dikompilasi ke dalam kernel, Anda dapat meneruskan parameter kepada mereka seperti yang dijelaskan dalam dokumentasi kernel. Namun, jika driver dikompilasi sebagai modul dan karena modul kernel dimuat sedikit berbeda selama instalasi daripada saat mem-boot sistem yang dipasang, tidak mungkin untuk meneruskan parameter ke modul seperti biasanya. Sebagai gantinya, Anda perlu menggunakan sintaks khusus yang dikenali oleh pemasang yang kemudian akan memastikan bahwa parameter disimpan dalam berkas konfigurasi yang tepat dan dengan demikian akan digunakan ketika modul benar-benar dimuat. Parameter juga akan dipropagasi secara otomatis ke konfigurasi untuk sistem yang dipasang. </p>
+<p>Perhatikan bahwa sekarang cukup jarang parameter perlu diteruskan ke modul. Dalam kebanyakan kasus kernel akan dapat menyelidiki perangkat keras yang ada dalam sistem dan mengatur baku yang baik dengan cara itu. Namun, dalam beberapa situasi mungkin masih diperlukan untuk mengatur parameter secara manual. </p>
+<p>Sintaks yang digunakan untuk mengatur parameter untuk modul adalah: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>module_name</code></em>.<em class="replaceable"><code>nama_parameter</code></em>=<em class="replaceable"><code>nilai</code></em>
+</pre></div>
+<p> Jika Anda perlu meneruskan beberapa parameter ke modul yang sama atau berbeda, ulangi saja ini. Misalnya, untuk mengatur kartu antarmuka jaringan 3Com lama untuk menggunakan konektor BNC (coax) dan IRQ 10, Anda akan meneruskan: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Mencekal modul kernel</h3></div></div></div>
+<p>Terkadang mungkin perlu memasukkan modul ke daftar hitam untuk mencegahnya dimuat secara otomatis oleh kernel dan udev. Salah satu alasannya adalah modul tertentu menyebabkan masalah dengan perangkat keras Anda. Kernel juga terkadang mencantumkan dua driver berbeda untuk perangkat yang sama. Hal ini dapat menyebabkan perangkat tidak berfungsi dengan benar jika driver atau jika driver yang salah dimuat terlebih dahulu. </p>
+<p>Anda dapat memasukkan modul ke daftar hitam menggunakan sintaks berikut: <strong class="userinput"><code><em class="replaceable"><code>nama_modul</code></em>.blacklist=yes</code></strong>. Ini akan menyebabkan modul masuk daftar hitam di <code class="filename">/etc/modprobe.d/blacklist.local</code> baik selama instalasi maupun untuk sistem yang dipasang. </p>
+<p>Perhatikan bahwa modul mungkin masih dimuat oleh sistem instalasi itu sendiri. Anda dapat mencegah hal itu terjadi dengan menjalankan instalasi dalam mode pakar dan membatalkan pilihan modul dari daftar modul yang ditampilkan selama fase deteksi perangkat keras. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2558" class="footnote"><p><a href="#id2558" class="para"><sup class="para">[3] </sup></a> Dengan kernel saat ini (2.6.9 atau yang lebih baru) Anda dapat menggunakan 32 opsi baris perintah dan 32 opsi lingkungan. Jika angka-angka ini terlampaui, kernel akan panik. Juga ada batas 255 karakter untuk seluruh baris perintah kernel, segala sesuatu di atas batas ini dapat dipotong secara diam-diam. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Aksesibilitas </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Penelusuran Masalah Proses Instalasi</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

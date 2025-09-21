@@ -1,0 +1,88 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Eine Voreinstellungsdatei erstellen</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apb.html" title="Anhang B. Automatisieren der Installation mittels Voreinstellung">
+<link rel="prev" href="apbs02.html" title="B.2. Voreinstellung nutzen">
+<link rel="next" href="apbs04.html" title="B.4. Inhalt der Voreinstellungsdatei (für Trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Eine Voreinstellungsdatei erstellen</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang B. Automatisieren der Installation mittels Voreinstellung</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Eine Voreinstellungsdatei erstellen</h2></div></div></div>
+<p>Die Voreinstellungsdatei hat das gleiche Format, wie es auch vom Befehl <span class="command"><strong>debconf-set-selections</strong></span> verwendet wird. Das grundsätzliche Format einer Zeile in einer Voreinstellungsdatei ist Folgendes: </p>
+<div class="informalexample"><pre class="screen">&lt;owner&gt; &lt;question name&gt; &lt;question type&gt; &lt;value&gt;
+( &lt;Eigentümer&gt; &lt;Name der Frage&gt; &lt;Typ der Frage&gt; &lt;Wert&gt; )
+</pre></div>
+<p>
+
+</p>
+<p>Die Datei sollte mit <code class="literal">#_preseed_V1</code> beginnen. </p>
+<p>Es gibt ein paar Regeln, die man im Hinterkopf behalten sollte, wenn man eine Voreinstellungsdatei schreibt: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Fügen Sie zwischen Typ und Wert nur ein einzelnes Leerzeichen oder einen Tab ein; jedes zusätzliche Leerzeichen wird interpretiert, als ob es zum Wert gehört. </p></li>
+<li class="listitem"><p>Eine Zeile kann in mehrere aufgeteilt werden, indem ein Backslash (<span class="quote">„<span class="quote"><code class="literal">\</code></span>“</span>) als Zeilenfortsetzungszeichen angefügt wird. Eine gute Stelle, um die Zeile aufzuteilen, ist hinter dem Namen der Frage; eine schlechte ist zwischen Typ und Wert. Solche geteilten Zeilen werden in eine einzige zusammengeführt, wobei alle führenden (vor dem Backslash) und folgenden Leerzeichen (hinter dem Backslash) in ein einziges Leerzeichen konvertiert werden. </p></li>
+<li class="listitem"><p>Für debconf-Variablen (Templates), die nur im Installer selbst benutzt werden, muss der Eigentümer (owner) auf <span class="quote">„<span class="quote">d-i</span>“</span> gesetzt werden; um Variablen im neu installierten System voreinzustellen, muss der Name des Pakets, das die entsprechenden debconf-Templates enthält, verwendet werden. Nur Variablen, deren Eigentümer auf einen anderen Wert als <span class="quote">„<span class="quote">d-i</span>“</span> gesetzt ist, werden der debconf-Datenbank des installierten Systems zugewiesen. </p></li>
+<li class="listitem"><p>Für die meisten Fragen müssen bei der Voreinstellung die gültigen Werte in englischer Sprache benutzt werden und nicht die übersetzten Werte. Allerdings gibt es auch einige (zum Beispiel in <code class="classname">partman</code>), wo die übersetzten Werte verwendet werden müssen. </p></li>
+<li class="listitem"><p>Einige Fragen verwenden einen Code als Wert statt des englischen Textes, der während der Installation angezeigt wird. </p></li>
+<li class="listitem"><p><code class="literal">#_preseed_V1</code> an den Anfang der Datei schreiben. </p></li>
+<li class="listitem"><p>Eine Zeile, die mit einem Raute-Zeichen (<span class="quote">„<span class="quote"><code class="literal">#</code></span>“</span>) <span class="emphasis"><em>beginnt</em></span>, wird komplett als Kommentar angesehen und somit funktional nicht ausgewertet. </p></li>
+</ul></div>
+<p>Der einfachste Weg, eine Voreinstellungsdatei zu erzeugen ist, die Beispieldatei aus <a class="xref" href="apbs04.html" title="B.4. Inhalt der Voreinstellungsdatei (für Trixie)">Abschnitt B.4, „Inhalt der Voreinstellungsdatei (für Trixie)“</a> als Basis zu nehmen und sich von dort aus vorzuarbeiten. </p>
+<p>Eine andere Methode ist, eine manuelle Installation durchzuführen und dann nach dem Neustart den Befehl <span class="command"><strong>debconf-get-selections</strong></span> aus dem Paket <code class="classname">debconf-utils</code> zu verwenden, um sowohl die debconf-Datenbank als auch die cdebconf-Datenbank des Installers in eine Datei einzulesen: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>datei</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>datei</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>datei</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Allerdings wird eine Datei, die auf diese Art erzeugt wurde, einige Einträge enthalten, die besser nicht voreingestellt werden sollten; deshalb wird die Beispieldatei für die meisten Benutzer ein besserer Ausgangspunkt sein. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Diese Methode basiert auf der Tatsache, dass die cdebconf-Datenbank des Installers zum Ende der Installation nach <code class="filename">/var/log/installer/cdebconf</code> gesichert wird. Allerdings könnte die Datenbank sensible Informationen enthalten und ist deswegen nur für root lesbar. </p>
+<p>Das Verzeichnis <code class="filename">/var/log/installer</code> und alle Dateien darin werden von Ihrem System gelöscht, wenn Sie das Paket <code class="classname">installation-report</code> löschen und dabei die Option <span class="quote">„<span class="quote">purge</span>“</span> (vollständiges Entfernen inkl. Konfigurationsdateien) aktivieren. </p>
+</td></tr>
+</table></div>
+<p>Um mögliche Werte für Voreinstellungseinträge herauszufinden, können Sie den Editor <span class="command"><strong>nano</strong></span> benutzen, um die Dateien in <code class="filename">/var/lib/cdebconf/</code> zu betrachten, während die Installation im Gange ist. <code class="filename">templates.dat</code> enthält die rohen Einträge (Templates) und in <code class="filename">questions.dat</code> finden Sie die aktuellen Werte zu den Templates sowie die Werte, die den Variablen zugewiesen sind. </p>
+<p>Um vor dem Start einer Installation zu überprüfen, ob das Format Ihrer Voreinstellungsdatei gültig ist, können Sie den Befehl <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span> verwenden. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Voreinstellung nutzen </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Inhalt der Voreinstellungsdatei (für Trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

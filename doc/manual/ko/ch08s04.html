@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. 시스템에 전자메일 준비하기</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch08.html" title="8장. 다음 단계 및 그 다음에 할 일">
+<link rel="prev" href="ch08s03.html" title="8.3. 그 외의 읽을 거리 및 정보">
+<link rel="next" href="ch08s05.html" title="8.5. 새 커널 컴파일하기">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. 시스템에 전자메일 준비하기</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">8장. 다음 단계 및 그 다음에 할 일</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. 시스템에 전자메일 준비하기</h2></div></div></div>
+<p>오늘날, 전자 메일은 많은 사람의 삶의 중요한 일부가 되어 있습니다. 전자 메일을 사용할 수 있도록 설정하기 전에 전자메일을 설정을 선택하고 정확하게 설정되었는지가 중요합니다. 데비안 유틸리티에서 기본적인 사항을 설명합니다. </p>
+<p>전자메일 시스템은 크게 세 가지로 구성됩니다. 우선 사용자가 실제로 전자메일을 작성하고 읽는데 사용하는 <em class="firstterm">Mail User Agent</em>(MUA)가 있습니다. 그리고 한 컴퓨터에서 다른 컴퓨터로 전자메일을 전달하는 <em class="firstterm">Mail Transfer Agent</em>(MTA)가 있습니다. 마지막으로 받은 전자메일을 사용자의 편지함으로 전달하는 일을 하는 <em class="firstterm">Mail Delivery Agent</em>(MDA)가 있습니다. </p>
+<p>이 세가지 기능은 각각 다른 프로그램에서 담당할 수도 있고, 한 개나 두 개 프로그램에서 담당할 수도 있습니다. 또한 전자메일 종류별로 여러가지 프로그램이 담당할 수도 있습니다. </p>
+<p>리눅스 및 유닉스 시스템에서는 전통적으로 <span class="command"><strong>mutt</strong></span>가 아주 널리 쓰이는 MUA입니다. 전통적인 리눅스 프로그램 대부분과 마찬가지로 텍스트 기반 프로그램입니다. <span class="command"><strong>mutt</strong></span>는 보통 <span class="command"><strong>exim</strong></span>이나 <span class="command"><strong>sendmail</strong></span>을 MTA로 쓰고 <span class="command"><strong>procmail</strong></span>을 MDA로 씁니다. </p>
+<p>그래픽 데스크톱 시스템의 증가와 인기로, GNOME의 <span class="command"><strong>evolution</strong></span>, KDE의 <span class="command"><strong>kmail</strong></span> 또는 Mozilla의 <span class="command"><strong>thunderbird</strong></span> 같은 그래픽 전자 메일 프로그램 사용이 더 일반적으로 되어 있습니다. 이 프로그램에는 MUA, MTA 및 MDA의 기능이 결합되어 있지만, 기존의 Linux 도구와 —함께 사용할 수— 있습니다. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. 기본 전자메일 설정</h3></div></div></div>
+<p>그래픽 메일 프로그램을 사용한다고 해도, 데비안 GNU/리눅스 시스템 전통적인 MTA/MDA를 설치하고 정확하게 설정하면 좋습니다. 시스템에서 동작하는 여러가지 유틸리티 <a href="#ftn.id4229" class="footnote" name="id4229"><sup class="footnote">[16]</sup></a> 시스템 관리자에게 문제(또는 잠재적인 문제)와 바뀐 사항을 알릴 때 전자 우편으로 중요한 알림을 보낼 수 있기 때문입니다. </p>
+<p>이렇게 하려면 <code class="classname">exim4</code> 및 <code class="classname">mutt</code> 패키지를 설치할 수 있고(<span class="command"><strong>apt install exim4 mutt</strong></span> 명령 사용), 용량이 작지만 매우 유연한 MTA/MDA 조합입니다. 하지만 기본값으로 시스템의 로컬 메일만 처리하도록 설정되어 있고 시스템 관리자에게 (루트 계정) 보내는 메일은 설치할 때 만드는 사용자 계정으로 배달합니다<a href="#ftn.id4239" class="footnote" name="id4239"><sup class="footnote">[17]</sup></a>. </p>
+<p>시스템 전자메일을 배달할 때 그 메일은 <code class="filename">/var/mail/<em class="replaceable"><code>계정_이름</code></em></code> 파일 뒤에 추가됩니다. 해당 전자메일은 <span class="command"><strong>mutt</strong></span>로 읽을 수 있습니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. 시스템 외부에 전자메일 보내기</h3></div></div></div>
+<p>앞에서 말한 것처럼, 설치한 데비안 시스템은 시스템 내부의 전자 메일을 처리하도록 설정되어 있고, 타인에게 메일을 보내거나 외부에서 메일을 받도록 설정되지 않습니다. </p>
+<p><code class="classname">exim4</code>에서 외부 전자메일을 처리하도록 하려면, 다음의 기초 설정 옵션을 참고하십시오. 테스트 메일을 올바르게 보내고 받는지 확인하십시오. </p>
+<p>그래픽 메일 프로그램을 사용하고 여러분의 인터넷 서비스 회사 혹은 여러분의 회사의 메일 서버를 사용한다면, 외부 전자메일을 처리하려고 <code class="classname">exim4</code>를 설정할 필요가 전혀 없습니다. 사용하려는 그래픽 메일 프로그램을 설정해서 전자메일을 보내고 받는 데 이용할 서버를 올바르게 설정하십시오. (이 설정 방법은 이 안내서의 범위를 벗어납니다.) </p>
+<p>그러나, 그 경우에는 올바르게 전자 메일을 보낼 수 있도록 각 유틸리티를 설정해야 할지도 모릅니다. 그러한 유틸리티 하나는 데비안 패키지에 대한 버그 보고서를 보내는 기능을 하는 프로그램인 <span class="command"><strong>reportbug</strong></span>가 있습니다. 기본적으로 버그 리포트를 제출하려면 <code class="classname">exim4</code>를 사용할 수 있습니다. </p>
+<p><span class="command"><strong>reportbug</strong></span>가 외부 메일 서버를 사용하도록 설정하려면, <span class="command"><strong>reportbug --configure</strong></span> 명령을 실행해서 MTA가 있는지 여부를 묻는 질문에 <span class="quote">“<span class="quote">no</span>”</span>라고 답하십시오. 그러면 그 다음에 버그 보고를 보낼 때 사용할 SMTP 서버를 입력할 수 있습니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Exim4 MTA 설정하기</h3></div></div></div>
+<p>시스템에서 외부 전자메일까지 처리하게 만드려면, <code class="classname">exim4</code> 패키지를 다시 설정해야 합니다<a href="#ftn.id4264" class="footnote" name="id4264"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>명령어를 실행하면(루트 권한으로), 설정 파일을 작은 파일로 나눌지 여부를 물어봅니다. 잘 모르겠으면 기본 옵션을 선택하십시오. </p>
+<p>그 다음에 자주 사용하는 여러 가지 전자메일 시나리오를 표시합니다. 필요한 사항에 가장 가까운 시나리오를 선택하십시오. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">인터넷 사이트</span></dt>
+<dd><p>시스템이 네트워크에 연결되어 있고 메일은 SMTP를 사용해 직접 보내고 받습니다. 다음 화면에서 시스템의 메일 이름이나 사용할 도메인의 목록 등 기본적인 질문을 물어봅니다. </p></dd>
+<dt><span class="term">스마트호스트가 메일 보내기</span></dt>
+<dd>
+<p>이 시나리오에서는 다른 컴퓨터를 통해 메일을 보냅니다. 그 다른 컴퓨터를 <span class="quote">“<span class="quote">스마트호스트</span>”</span>라고 하고, 메일을 목적지에 보내는 역할을 담당합니다. 스마트호스트는 보통 받은 메일을 저장해 놓고 있으므로, 여러분의 컴퓨터를 계속 연결해 놓지 않아도 됩니다. 메일을 받을 때는 fetchmail과 같은 프로그램으로 가져올 수도 있습니다. </p>
+<p>보통 스마트호스트는 인터넷 서비스 회사의 메일 서버를 말합니다. 전화 접속 사용자의 경우에는 분명히 인터넷 서비스 회사의 서버를 말합니다. 스마트호스트는 회사의 메일 서버가 될 수도 있고, 내부 네트워크에 있는 다른 시스템이 될 수도 있습니다. </p>
+</dd>
+<dt><span class="term">스마트호스트가 메일을 보내고, 로컬 메일 없음</span></dt>
+<dd><p>이 옵션은 앞의 옵션과 같지만 로컬 전자메일 도메인에 대한 메일을 처리하지 않습니다. 시스템 내부의 메일은(예를 들어 시스템 관리자에게 보내는 메일은) 계속 처리합니다. </p></dd>
+<dt><span class="term">로컬 배달</span></dt>
+<dd><p>시스템이 기본값으로 이렇게 설정되어 있습니다. </p></dd>
+<dt><span class="term">지금 설정 안함</span></dt>
+<dd><p>무슨 일을 하는지 확실히 알고 있는 경우에만 선택합니다. 이 옵션을 사용하면 메일 시스템을 설정되지 않은 상태로 남겨 놓습니다. 설정하지 않으면 메일을 보내거나 받을 수 없을 뿐만아니라 시스템 유틸리티가 보내는 중요한 메시지를 놓칠 수 있습니다. </p></dd>
+</dl></div>
+<p>이 시나리오가 모두 맞지 않거나, 아니면 좀 더 세밀한 설정을 하고 싶다면, 설치를 다 마친 다음에 <code class="filename">/etc/exim4</code> 디렉터리 아래의 설정 파일을 설정할 수 있습니다. <code class="classname">exim4</code>에 대한 좀 더 자세한 정보는 <code class="filename">/usr/share/doc/exim4</code>에 들어 있습니다. <code class="filename">README.Debian.gz</code> 파일에 <code class="classname">exim4</code>에 설정에 대한 더 자세한 정보가 들어 있고 어디에서 더 자세한 문서를 찾을 수 있는지 쓰여 있습니다. </p>
+<p>공식적인 도메인 이름이 없을 때 인터넷으로 직접 메일을 보내면 받는 서버의 스팸 방지 장치 때문에 메일이 거부될 수도 있습니다. ISP의 메일 서버를 사용하는 게 좋습니다. 정말로 메일을 직접 보내고 싶다면, 기본으로 만드는 전자메일 주소가 아닌 다른 주소를 사용하십시오. <code class="filename">/etc/email-addresses</code>에 한 줄 추가하면 전자메일 주소를 바꿀 수 있습니다. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4229" class="footnote"><p><a href="#id4229" class="para"><sup class="para">[16] </sup></a> 예를 들어: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id4239" class="footnote"><p><a href="#id4239" class="para"><sup class="para">[17] </sup></a> 루트 메일을 전달하는 계정은 <code class="filename">/etc/aliases</code>에 설정되어 있습니다. 물론 일반 사용자 계정을 만들지 않았다면 메일은 루트 계정 자체에 배달합니다. </p></div>
+<div id="ftn.id4264" class="footnote"><p><a href="#id4264" class="para"><sup class="para">[18] </sup></a> 물론 <code class="classname">exim4</code>를 지우고 다른 MTA/MDA로 바꿔 버릴 수도 있습니다. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. 그 외의 읽을 거리 및 정보 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. 새 커널 컴파일하기</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

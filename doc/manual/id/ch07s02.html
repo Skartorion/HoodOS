@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Mengait volume terenkripsi</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Bab 7. Boot Ke Sistem Debian Baru Anda">
+<link rel="prev" href="ch07s01.html" title="7.1. Momen Kebenaran">
+<link rel="next" href="ch07s03.html" title="7.3. Log Masuk">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Mengait volume terenkripsi</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 7. Boot Ke Sistem Debian Baru Anda</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Mengait volume terenkripsi</h2></div></div></div>
+<p>Jika Anda membuat volume terenkripsi selama instalasi dan menetapkan titik kait, Anda akan diminta untuk memasukkan frasa sandi bagi masing-masing volume ini selama boot. </p>
+<p>Untuk partisi yang dienkripsi menggunakan dm-crypt Anda akan diperlihatkan prompt berikut selama boot: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> Di baris pertama prompt, <em class="replaceable"><code>part</code></em> adalah nama partisi yang mendasarinya, misalnya sda2 atau md0. Anda sekarang mungkin bertanya-tanya <span class="emphasis"><em>untuk volume mana</em></span> Anda benar-benar memasukkan frasa sandi. Apakah itu berhubungan dengan <code class="filename">/home</code> Anda? Atau ke <code class="filename">/var</code>? Tentu saja, jika Anda hanya memiliki satu volume terenkripsi, ini mudah dan Anda cukup memasukkan frasa sandi yang Anda gunakan saat mengatur volume ini. Jika Anda mengatur lebih dari satu volume terenkripsi selama instalasi, catatan yang Anda tulis sebagai langkah terakhir dalam <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Mengonfigurasi Volume Terenkripsi">Bagian 6.3.4.6, “Mengonfigurasi Volume Terenkripsi”</a> berguna. Jika Anda tidak mencatat pemetaan antara <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> dan titik kait sebelumnya, Anda masih dapat menemukannya di <code class="filename">/etc/crypttab</code> dan <code class="filename">/etc/fstab</code> dari sistem baru Anda. </p>
+<p>Prompt mungkin terlihat agak berbeda ketika sistem berkas root terenkripsi dipasang. Ini tergantung pada generator initramfs mana yang digunakan untuk menghasilkan initrd yang digunakan untuk mem-boot sistem. Contoh di bawah ini adalah untuk initrd yang dihasilkan menggunakan <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Tidak ada karakter (bahkan tanda bintang) yang akan ditampilkan saat memasukkan frasa sandi. Jika Anda memasukkan kata sandi yang salah, Anda memiliki dua percobaan lagi untuk memperbaikinya. Setelah percobaan ketiga, proses boot akan melewati volume ini dan terus memasang sistem berkas berikutnya. Silakan lihat <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Penelusuran masalah">Bagian 7.2.1, “Penelusuran masalah”</a> untuk informasi lebih lanjut. </p>
+<p>Setelah memasukkan semua frasa sandi, boot mesti berlanjut seperti biasa. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Penelusuran masalah</h3></div></div></div>
+<p>Jika beberapa volume terenkripsi tidak dapat dikait karena frasa sandi yang salah dimasukkan, Anda harus mengaitnya secara manual setelah boot. Ada beberapa kasus. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Kasus pertama menyangkut partisi root. Ketika tidak dipasang dengan benar, proses boot akan berhenti dan Anda harus me-reboot komputer untuk mencoba lagi. </p></li>
+<li class="listitem">
+<p>Kasus termudah adalah untuk volume terenkripsi yang menyimpan data seperti <code class="filename">/home</code> atau <code class="filename">/srv</code>. Anda cukup memasangnya secara manual setelah boot. </p>
+<p>Namun untuk dm-crypt ini agak rumit. Pertama, Anda perlu mendaftarkan volume dengan <span class="application">device mapper</span> dengan menjalankan: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Ini akan memindai semua volume yang disebutkan dalam <code class="filename">/etc/crypttab</code> dan akan membuat perangkat yang sesuai di bawah direktori <code class="filename">/dev</code> setelah memasukkan frasa sandi yang benar. (Volume yang sudah terdaftar akan dilewati, sehingga Anda dapat mengulangi perintah ini beberapa kali tanpa khawatir.) Setelah pendaftaran berhasil, Anda cukup memasang volume dengan cara biasa: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/titik_kait</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Jika ada volume yang menyimpan berkas sistem non kritis tidak dapat dipasang (<code class="filename">/usr</code> atau <code class="filename">/var</code>), sistem harus tetap boot dan Anda harus dapat memasang volume secara manual seperti pada kasus sebelumnya. Namun, Anda juga perlu (memulai kembali) layanan apa pun yang biasanya berjalan di runlevel default Anda karena kemungkinan besar layanan tersebut tidak dimulai. Cara termudah adalah dengan me-reboot komputer. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Momen Kebenaran </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Log Masuk</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

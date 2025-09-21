@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. Zich mentaal instellen op Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch08.html" title="Hoofdstuk 8. De volgende stappen en waar u hierna nog terecht kunt">
+<link rel="prev" href="ch08s01.html" title="8.1. Het systeem afsluiten">
+<link rel="next" href="ch08s03.html" title="8.3. Aanvullende lectuur en informatie">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. Zich mentaal instellen op Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 8. De volgende stappen en waar u hierna nog terecht kunt</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. Zich mentaal instellen op Debian</h2></div></div></div>
+<p>Debian verschilt een beetje van andere distributies. Zelfs als u vertrouwd bent met Linux in andere distributies, zijn er zaken die u moet weten over Debian om uw systeem in een goede en zuivere staat te kunnen houden. Dit hoofdstuk bevat materiaal dat u kan helpen bij het vinden van de juiste richting. Het is niet opgevat als een beginnershandleiding over het gebruik van Debian. Het biedt slechts een vluchtige inkijk in het systeem ten behoeve van wie erg gehaast is. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3583"></a>8.2.1. Het pakketbeheersysteem van Debian</h3></div></div></div>
+<p>Het belangrijkste concept dat u goed moet begrijpen is het systeem van pakketbeheer in Debian. In essentie komt het erop neer dat een groot deel van uw systeem gecontroleerd wordt door dat pakketbeheersysteem. Daaronder vallen: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (met uitzondering van <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (maar u kunt <code class="filename">/var/local</code> aanmaken en daarin bent u dan veilig) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> Als u bijvoorbeeld <code class="filename">/usr/bin/perl</code> vervangt, zal dat werken, maar als u nadien uw <code class="classname">perl</code>-pakket opwaardeert, zal het bestand dat u daar geplaatst had, vervangen worden. Geoefende gebruikers kunnen dit omzeilen door in <span class="command"><strong>aptitude</strong></span> pakketten te markeren als <span class="quote">“<span class="quote">te handhaven</span>”</span> (ze on <span class="quote">“<span class="quote">hold</span>”</span> te plaatsen). </p>
+<p>Een van de beste installatiemethodes is apt. U kunt de commandoregelversie van <span class="command"><strong>apt</strong></span> gebruiken of gereedschap zoals <span class="application">aptitude</span> of <span class="application">synaptic</span> (die alleen maar grafische frontends zijn voor <span class="command"><strong>apt</strong></span>). Merk op dat apt u toelaat de pakketbronnen main, contrib, non-free en non-free-firmware te combineren, zodat u tegelijk pakketten met verspreidingsbeperkingen (die strikt genomen niet tot Debian behoren) als pakketten van Debian GNU/Linux kunt gebruiken. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3614"></a>8.2.2. Extra software die voor Debian beschikbaar is</h3></div></div></div>
+<p>Er zijn officiële en niet-officiële softwarebronnen die bij een standaardinstallatie van Debian niet automatisch geactiveerd worden. Ze bevatten software die veel mensen belangrijk vinden en waarvan ze ook verwachten dat ze beschikbaar is. Informatie over die extra bonnen kunt u vinden op deze Wiki-pagina van Debian: <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">The Software Available for Debian's Stable Release</a> (De software die voor de stabiele uitgave van Debian beschikbaar is). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3618"></a>8.2.3. Het versiebeheer van toepassingssoftware</h3></div></div></div>
+<p>Het beheer van verschillende versies van een bepaalde toepassing gebeurt met update-alternatives. Indien u meerdere versies van een toepassing behoudt op uw systeem, lees dan de man-pagina van update-alternatives. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3621"></a>8.2.4. Het beheer van cron-taken</h3></div></div></div>
+<p>Alle taken die tot het bevoegdheidsgebied van de systeembeheerder behoren, moeten zich in <code class="filename">/etc</code> bevinden, vermits het om configuratiebestanden gaat. Indien u werkt met dagelijkse, wekelijkse of maandelijkse cron-taken van de systeembeheerder, moet u ze respectievelijk in <code class="filename">/etc/cron.{daily,weekly,monthly}</code> opnemen. Deze taken worden vanuit <code class="filename">/etc/crontab</code> aangeroepen en worden na elkaar in alfabetische volgorde uitgevoerd. </p>
+<p>Anderzijds, als u een cron-taak heeft die (a) door een specifieke gebruiker of (b) op een specifiek moment of met een specifieke frequentie uitgevoerd moet worden, kunt u ofwel <code class="filename">/etc/crontab</code> gebruiken, of nog beter zelfs, <code class="filename">/etc/cron.d/willekeurige-naam</code>. Deze specifieke bestanden bevatten een extra veld waarin u kunt specificeren onder welke gebruikersaccount de taak uitgevoerd wordt. </p>
+<p>In beide gevallen dient u enkel de bestanden te bewerken. Het cron-mechanisme zal ze automatisch opmerken. U dient daartoe geen speciaal commando uit te voeren. Raadpleeg voor bijkomende informatie de man-pagina's cron(8) en crontab(5) en het bestand <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Het systeem afsluiten </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Aanvullende lectuur en informatie</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

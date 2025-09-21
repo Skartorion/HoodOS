@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. アクセシビリティ</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch05.html" title="第5章 インストールシステムの起動">
+<link rel="prev" href="ch05s01.html" title="5.1. 64-bit PC でのインストーラーの起動">
+<link rel="next" href="ch05s03.html" title="5.3. 起動パラメータ">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. アクセシビリティ</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第5章 インストールシステムの起動</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. アクセシビリティ</h2></div></div></div>
+<p>あるユーザにとっては、目が不自由であるといった理由により、それぞれに見合った支援が必要なことがあります。<span class="phrase">USB 点字ディスプレイは自動認識します (シリアル-USB 変換経由で接続されているシリアルディスプレイでは自動認識しません) 。しかしその他多くの</span>アクセシビリティ機能は手動で有効にする必要があります。<span class="phrase">サポートするマシンでは、キーストロークを受ける準備ができるとブートメニューがビープ音を放ちます。BIOS システムでは1回、UEFI システムでは2回鳴ります。</span><span class="phrase">その後、</span>アクセシビリティ機能を有効にするために、起動パラメータを付加できます<span class="phrase"> (<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. ブート画面">「ブート画面」</a>もご覧ください)</span>。ほとんどのアーキテクチャでは、キーボードを QWERTY キーボードとして認識することに注意してください。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1837"></a>5.2.1. インストーラーのフロントエンド</h3></div></div></div>
+<p>Debian インストーラーは質問方法にアクセシビリティの異なる複数のフロントエンドをサポートしています: 特に挙げると <strong class="userinput"><code>text</code></strong> では平文のテキストを使い、一方 <strong class="userinput"><code>newt</code></strong> ではテキストベースのダイアログボックスを使います。ブートプロンプトで選択できます。詳しくは <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian Installer パラメータ">「Debian Installer パラメータ」</a> の <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> を見てください。 </p>
+<p><strong class="userinput"><code>newt</code></strong>点字方式でよく使われているフロントエンドでは、答えを矢印キーで選び <span class="keycap"><strong>Enter</strong></span> を押すことで項目を選択できます。また、<span class="keycap"><strong>Tab</strong></span> や <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> で項目間の移動ができ <strong class="userinput"><code>Go Back</code></strong> で直前の質問に戻ることができます。いくつかの項目にはチェックボックスがついており <span class="keycap"><strong>Space</strong></span> を押すことで選択または選択解除できます。 </p>
+<p><strong class="userinput"><code>text</code></strong>音声読み上げ方式でよく使われているフロントエンドでは、答えを数字キーまたは矢印キーで選び <span class="keycap"><strong>Enter</strong></span> を押すことで項目を選択できます。また、enterkey; を単に押せば規定の設定値を選択でき、 <strong class="userinput"><code>&lt;</code></strong> と <span class="keycap"><strong>Enter</strong></span> で直前の質問に戻れます。 何かを選択しなければならない場合、例えばタスクの選択等で、何も選ばない場合は <strong class="userinput"><code>!</code></strong> を押します。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1858"></a>5.2.2. USB 点字ディスプレイ</h3></div></div></div>
+<p>USB 点字ディスプレイは自動認識するはずです。その後テキスト版インストーラーでは、自動的に選択され、ターゲットシステムに、点字ディスプレイのサポートを自動的にインストールします。あとはブートメニューで <span class="keycap"><strong>Enter</strong></span> を押すだけです。一度 <code class="classname">brltty</code> が起動すると、設定メニューから点字テーブルを選択できます。点字デバイスのキーバインドは、<a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> のウェブサイト</a> に文書があります。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1865"></a>5.2.3. シリアル接続点字ディスプレイ</h3></div></div></div>
+<p>シリアル接続点字ディスプレイは、(ある種のものを破損する可能性があるため) 安全に自動検出できません。そのため、起動パラメータに <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em></code></strong> と追加し、<code class="classname">brltty</code> にどのドライバ及びポートを使用するべきか教える必要があります。<em class="replaceable"><code>driver</code></em> を、あなたの端末用の 2 文字のドライバコードに置き換えてください (<a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY マニュアル</a> 参照)。<em class="replaceable"><code>port</code></em> は、ディスプレイを接続するシリアルポート名に置き換えてください。デフォルトは <strong class="userinput"><code>ttyS0</code></strong> で、<strong class="userinput"><code>ttyUSB0</code></strong> をシリアル-USB 接続変換を使う時に一般的に使います。3つ目のパラメータを提供することで使用する点字テーブルの名前を選択できます (<a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY マニュアル</a> 参照)。デフォルトは英語になっています。テーブルは、後で設定メニューで変更できることに注意してください。4つ目のパラメータを提供することで <strong class="userinput"><code>protocol=foo</code></strong> のように一部の珍しいモデルで必要となるパラメータを点字ドライバに渡せます。点字デバイスのキーバインドは、<a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> のウェブサイト</a> にドキュメントがあります。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1881"></a>5.2.4. ソフトウェア音声合成</h3></div></div></div>
+<p>ソフトウェア音声合成のサポートは、グラフィカルインストーラーがあるインストーラーイメージで利用できます。つまり、netinst すべてとDVD イメージ、netboot の gtk 版で利用できます。ソフトウェア音声合成サポートを有効にするには、ブートメニューで <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Enter</strong></span> と入力します。その後、テキスト版インストーラーが自動的に選択され、ターゲットシステムに、ソフトウェア音声合成のサポートを自動的にインストールします。 </p>
+<p>複数のサウンドカードが検出された場合、任意のサウンドカードから音声が聞こえた時点で <span class="keycap"><strong>Enter</strong></span> を入力するよう促されます。 </p>
+<p>最初の質問 (言語) は英語で発声します。それ以降のインストールには選択した言語で発声します (<code class="classname">espeak</code> が有効な場合)。 </p>
+<p>デフォルトの発話速度は非常にゆっくりです。速くするには、<span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span> を押してください。遅くするには、<span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span> を押してください。デフォルトのボリュームは中間になっているはずです。大きくするには、<span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span> を押してください。小さくするには、<span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span> を押してください。ショートカットについての詳細は、<a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup guide</a> を参照してください。ある質問に対する回答がデフォルト値で良ければプロンプトで単に <span class="keycap"><strong>Enter</strong></span> を押してください。空の値を回答するにはプロンプトで <strong class="userinput"><code>!</code></strong> を入力してください。前の質問に戻るにはプロンプトで <strong class="userinput"><code>&lt;</code></strong> を入力してください。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1907"></a>5.2.5. ハードウェア音声合成</h3></div></div></div>
+<p>ハードウェア音声合成デバイスのサポートは、グラフィカルインストーラーがあるインストーライメージで利用できます。つまり、netinst すべて、DVD イメージ、netboot の gtk 版で利用できます。そのため、ブートメニューで <span class="quote">「<span class="quote">Graphical install</span>」</span> エントリを選択する必要があります。 </p>
+<p>ハードウェア音声合成デバイスは自動認識されないため、起動パラメータで <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>driver</code></em></code></strong> とし、<code class="classname">speakup</code> にどのドライバを使用するべきか教える必要があります。<em class="replaceable"><code>driver</code></em> は、あなたのデバイスのドライバコードに置き換えてください (<a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">ドライバコードリスト</a>参照)。テキスト版インストーラーは自動的に選択し、音声合成デバイスのサポートをターゲットシステムに自動でインストールします。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1917"></a>5.2.6. 基板デバイス</h3></div></div></div>
+<p>いくつかのアクセシビリティデバイスは、マシンの内部に接続した実際の基板で、ビデオメモリから直接テキストを読みます。動作させるには、<strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong> 起動パラメータを用いて、フレームバッファのサポートを無効にしなければなりません。しかし、これにより使用できる言語が減ってしまいます。 </p>
+<p>テキスト版ブートローダが必要な場合は、起動パラメータを追加する前に<strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Enter</strong></span> をタイプしてください。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1925"></a>5.2.7. 高コントラストテーマ</h3></div></div></div>
+<p>視力の弱いユーザのために、インストーラーは、より見やすい高コントラストの配色を採用したテーマを使用できます。これを有効にするには、起動画面にて <strong class="userinput"><code>d</code></strong> ショートカットを押して <span class="quote">「<span class="quote">Accessible high contrast</span>」</span> を使うか、または起動パラメータに <strong class="userinput"><code>theme=dark</code></strong> を追加してください。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1931"></a>5.2.8. 拡大</h3></div></div></div>
+<p>視力の弱いユーザ向けに、グラフィカルインストーラーでは非常に基本的な拡大機能をサポートしています: <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> と <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> のショートカットでそれぞれフォントサイズを拡大、縮小します。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1940"></a>5.2.9. Expert モード、Rescue モード、自動化インストール</h3></div></div></div>
+<p>Expert モードや Rescue モード、自動化インストールの選択はアクセシビリティのサポートも利用できるようになっています。それぞれの選択肢にアクセスするには最初に ブートメニューで <strong class="userinput"><code>a</code></strong> を入力して<span class="quote">「<span class="quote">Advanced options</span>」</span>サブメニューに進む必要があります。BIOS システムを使っている場合 (ブートメニューは一度だけビープ音を鳴らします) は続いて <span class="keycap"><strong>Enter</strong></span> を押さないといけません。UEFI システムの場合 (ブートメニューは二回ビープ音を鳴らします) は <span class="keycap"><strong>Enter</strong></span> を押してはいけません。それから、オプションとして <strong class="userinput"><code>s</code></strong> を押すと (UEFI システムではなく BIOS システムの場合は、ここでも続いて <span class="keycap"><strong>Enter</strong></span> を押さないといけません)、音声合成が有効になります。それから様々なショートカットが使えるようになります: <strong class="userinput"><code>x</code></strong> は expert モードでのインストール、<strong class="userinput"><code>r</code></strong> は rescue モード、<strong class="userinput"><code>a</code></strong> は自動化インストールです。繰り返しますが、BIOS システムを使っている場合はそれぞれ続いて <span class="keycap"><strong>Enter</strong></span> を押さないといけません。 </p>
+<p>自動化インストールを選択することで、preseed を使い完全に自動で Debian をインストールできます。preseed のソースはアクセシビリティ機能開始後に入力できます。preseed 自体については <a class="xref" href="apb.html" title="付録B preseed を利用したインストールの自動化">付録B <i>preseed を利用したインストールの自動化</i></a> で言及しています。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1955"></a>5.2.10. インストールしたシステムのアクセシビリティ</h3></div></div></div>
+<p>インストールしたシステムのアクセシビリティについての文書は、<a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debian Accessibility wiki ページ</a> で利用できます。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. <span class="phrase">64-bit PC</span> でのインストーラーの起動 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. 起動パラメータ</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

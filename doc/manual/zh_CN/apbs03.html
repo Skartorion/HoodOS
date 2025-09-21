@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. 创建预置文件</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apb.html" title="附录 B. 使用预置自动进行安装">
+<link rel="prev" href="apbs02.html" title="B.2. 使用预置">
+<link rel="next" href="apbs04.html" title="B.4. 预置文件的内容(trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. 创建预置文件</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 B. 使用预置自动进行安装</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. 创建预置文件</h2></div></div></div>
+<p>预置文件是 <span class="command"><strong>debconf-set-selections</strong></span> 命令使用的格式。通常预置文件中每一行的格式为： </p>
+<div class="informalexample"><pre class="screen">&lt;owner&gt; &lt;question name&gt; &lt;question type&gt; &lt;value&gt;
+</pre></div>
+<p>
+
+</p>
+<p>文件应该以 <code class="literal">#_preseed_V1</code>开始 </p>
+<p>编写预置文件的时候要留意几条规则。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>在类型和值之间只有一个空格或者 tab：任何额外的空格将被解释为值的一部分。 </p></li>
+<li class="listitem"><p>一行可以通过行尾的反斜杠(<span class="quote">“<span class="quote"><code class="literal">\</code></span>”</span>)连接符分成多行。分割一行比较妥当的地方是在问题后面；在类型和值之间分割则是糟糕做法。被分割的行连接时会把行首和行尾的空格缩减为一个空格，再组成单独一行。 </p></li>
+<li class="listitem"><p>只在安装程序自己使用的 debconf 变量(模板)，owner 应该设置为 <span class="quote">“<span class="quote">d-i</span>”</span>; 要在安装后的系统里面预置变量，应该使用名称中包含对应 debconf 模板的软件包。只有那些 owner 为非 <span class="quote">“<span class="quote">d-i</span>”</span> 的变量将被保存到安装后系统的 debconf 数据库里面。 </p></li>
+<li class="listitem"><p>大多数问题需要使用有效的英文预置值，而不是翻译过的值。但有些问题(例如 <code class="classname">partman</code>)，需要使用翻译过的值。 </p></li>
+<li class="listitem"><p>有些问题在安装过程中显示值的代码而不是英文文本。 </p></li>
+<li class="listitem"><p>以<code class="literal">#_preseed_V1</code>开始 </p></li>
+<li class="listitem"><p>注释行必须以井号（<span class="quote">“<span class="quote"><code class="literal">#</code></span>”</span>）<span class="emphasis"><em>打头</em></span>，一直延续到行尾。 </p></li>
+</ul></div>
+<p>建立预置文件最简单的方法是使用例子文件作为工作的基础，它位于 <a class="xref" href="apbs04.html" title="B.4. 预置文件的内容(trixie)">第 B.4 节 “预置文件的内容(trixie)”</a>。 </p>
+<p>另一种方法是手动安装，重启后使用 <code class="classname">debconf-utils</code> 软件包里面的 <span class="command"><strong>debconf-get-selections</strong></span>，将 debconf 数据库和安装程序的 cdebconf 数据库导出到单一一个文件： </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>但用此方法产生的文件，有些项无法预置。对于大多数用户，示例文件是一个较佳的开始。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>这种方法在安装的最后，安装程序的 cdebconf 数据库被保存到新安装系统的 <code class="filename">/var/log/installer/cdebconf</code> 文件。由于数据库里面常还有敏感的信息，默认只为 root 可读。 </p>
+<p>如果您清除 <code class="classname">installation-report</code> 软件包，那么 <code class="filename">/var/log/installer</code> 目录及其中的所有文件将从您的系统中删除。 </p>
+</td></tr>
+</table></div>
+<p>为了检测问题答案可用的值，您可以在安装进行中使用 <span class="command"><strong>nano</strong></span> 检查 <code class="filename">/var/lib/cdebconf</code> 下的文件。<code class="filename">templates.dat</code> 是原始的模板，<code class="filename">questions.dat</code> 是当前变量设置的值。 </p>
+<p>为了在安装之前测试您的预置文件是否有效，您可以使用 <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span> 命令。 </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. 使用预置 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> B.4. 预置文件的内容(trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

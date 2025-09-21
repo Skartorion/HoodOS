@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. 暗号化ボリュームのマウント</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch07.html" title="第7章 新しい Debian システムを起動してみる">
+<link rel="prev" href="ch07s01.html" title="7.1. 決定的瞬間">
+<link rel="next" href="ch07s03.html" title="7.3. ログイン">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. 暗号化ボリュームのマウント</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第7章 新しい Debian システムを起動してみる</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. 暗号化ボリュームのマウント</h2></div></div></div>
+<p>インストール中に暗号化ボリュームを作成し、マウントポイントに割り当てると、そのボリュームに対して、起動中にパスフレーズを入力するように訊いてきます。 </p>
+<p>dm-crypt で暗号化したパーティションでは、起動中に以下のようなプロンプトが表示されます。</p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> プロンプトの最初の行の <em class="replaceable"><code>part</code></em> は、たとえば sda2 や md0 のような、基本的なパーティション名です。おそらく、<span class="emphasis"><em>ボリュームごとに</em></span> パスフレーズを入力することに、違和感を覚えるのではないでしょうか。これは <code class="filename">/home</code> や <code class="filename">/var</code> それぞれでパスフレーズを入力させられるのでしょうか? もちろんそうです。暗号化したボリュームが一つだけなら、話は簡単で、セットアップのときに入力したパスフレーズを入力するだけです。インストール時に、暗号化ボリュームを少なくとも一つは設定しているなら、<a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. 暗号化ボリュームの設定">「暗号化ボリュームの設定」</a> の最後のステップに書き留めたメモが役に立つでしょう。以前の <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> とマウントポイントの間のマッピングを記録しない場合、新しいシステムの <code class="filename">/etc/crypttab</code> と <code class="filename">/etc/fstab</code> にあります。 </p>
+<p>暗号化されたルートファイルシステムがマウントされる時は、プロンプトは少し違って見えるかもしれません。それは、システムの起動に使用される initrd を生成するために、どの initramfs ジェネレータが使われたかによります。以下の例は、<code class="classname">initramfs-tools</code> で生成された initrd の場合です。 </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>パスフレーズの入力時には、入力した文字 (やアスタリスク) は表示されません。パスフレーズを間違えた場合、訂正するために 2 回までは試行できます。入力を 3 回間違えると、そのボリュームをスキップして、次のファイルシステムをマウントしようとします。詳細は、<a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. トラブルシューティング">「トラブルシューティング」</a> をご覧ください。 </p>
+<p>パスフレーズをすべて入力すると、通常と同様に起動を継続します。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. トラブルシューティング</h3></div></div></div>
+<p>パスフレーズを間違えて、暗号化ボリュームをマウントできなかった場合、ブート後に手動でマウントする必要があります。以下の状況が考えられます。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>まずはじめの状況は、ルートパーティションに関することです。正しくマウントできないとブートプロセスが停止し、再起動してもう一度行わなければなりません。 </p></li>
+<li class="listitem">
+<p>最も考えられる状況は <code class="filename">/home</code> や <code class="filename">/srv</code> のようにデータを保持する暗号化ボリュームです。単純にブート後に手作業でマウントできます。 </p>
+<p>dm-crypt の場合は少しトリッキーです。まず <span class="application">device mapper</span> を実行して、ボリュームを登録する必要があります。</p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> <code class="filename">/etc/crypttab</code> に記述されたボリュームすべてを検査し、正しいパスフレーズを入力すると、<code class="filename">/dev</code> ディレクトリ以下に、適切なデバイスを作成します。(既に登録されたボリュームはスキップするので、何度実行しても警告がでません) 登録に成功すると、以下のように通常の方法でマウントできます。 </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>クリティカルでないシステムファイルを扱うボリューム (<code class="filename">/usr</code> や <code class="filename">/var</code>) がマウントできなかった場合、それでもシステムが起動し、前述の状況のように手動でボリュームをマウントできるでしょう。しかし、デフォルトのランレベルで通常動作しているサービスを、起動していない可能性があるので、(再) 起動する必要があります。最も簡単なのはコンピュータの単純な再起動です。 </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. 決定的瞬間 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. ログイン</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

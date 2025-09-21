@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. USB メモリでの起動用ファイルの準備</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch04.html" title="第4章 システムインストールメディアの入手">
+<link rel="prev" href="ch04s02.html" title="4.2. Debian ミラーサイトからのファイルのダウンロード">
+<link rel="next" href="ch04s04.html" title="4.4. ハードディスク起動ファイルの準備">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. USB メモリでの起動用ファイルの準備</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第4章 システムインストールメディアの入手</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. USB メモリでの起動用ファイルの準備</h2></div></div></div>
+<p>USB メモリの準備をするには、GNU/Linux が既に動いていて、USB をサポートしているシステムを使うことをお勧めします。現在の GNU/Linux では、USB メモリを挿すと自動的に認識するでしょう。そうならない場合は、usb-storage カーネルモジュールをロードしているかを確認してください。USB メモリを挿すと、<code class="filename">/dev/sdX</code> (<span class="quote">「<span class="quote">X</span>」</span> は a〜zの範囲の文字) というデバイスにマッピングされます。どのデバイスが USB メモリかについては、挿入の前後で <span class="command"><strong>lsblk</strong></span> コマンドを実行することで確認できます (もう一つ可能な方法としては <span class="command"><strong>dmesg</strong></span> の出力を (root ユーザーで) 確認するのがあります)。USB メモリに書き込むには、書き込み禁止スイッチをオフにする必要があるかもしれません。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>この方法を使うとデバイス上の既存の物は破壊されてしまいます! USB メモリの正しいデバイス名を必ず確認して使用してください。間違ったデバイス名を使用すると、例えばハードディスク内のすべてのデータを失うといったことが起こります。 </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. ハイブリッド CD/DVD イメージを使った USB メモリの準備</h3></div></div></div>
+<p>このアーキテクチャ向けの Debian のインストールイメージは <span class="command"><strong>isohybrid</strong></span> の技術を利用して作られています。これは、インストールイメージを直接 USB メモリに書き込みできるのでインストール用メディアを作成するのがとても簡単である、ということです。USB メモリに合うイメージ (netinstまたは DVD-1 等) を選んでください。インストールイメージの取得については <a class="xref" href="ch04s01.html" title="4.1. Debian GNU/Linux 公式インストールイメージ">「Debian GNU/Linux 公式インストールイメージ」</a> を参照してください。 </p>
+<p>選択したインストールイメージは、既存の内容を上書きして、直接 USB メモリに書き込む必要があります。例えば、既存の GNU/Linux システムを使っている場合、以下のようにしてイメージファイルを USB メモリに書き込めます。完了したら、確実にアンマウントしてください</p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> ほとんどのユーザは、インストールイメージを単にUSBメモリに書き込むだけでうまく行くでしょう。特殊な要件がある場合向けには<a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">この wiki ページ</a>があります。 </p>
+<p>他のオペレーティングシステムでのやり方については、<a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD FAQ</a> で確認できます。 </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[重要]" src="images/important.png"></td>
+<th align="left">重要</th>
+</tr>
+<tr><td align="left" valign="top"><p>イメージはパーティションではなくディスクデバイス全体を指定する必要があります。例えば /dev/sdb1 ではなく /dev/sdb となります。イメージの書き換える <span class="command"><strong>unetbootin</strong></span> のようなツールは使わないでください。 </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Debian ミラーサイトからのファイルのダウンロード </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. ハードディスク起動ファイルの準備</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

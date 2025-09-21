@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apd.html" title="附录 D. 其他">
+<link rel="prev" href="apds03.html" title="D.3. 通过 Unix/Linux 系统来安装 Debian GNU/Linux">
+<link rel="next" href="apds05.html" title="D.5. 通过 PPP over Ethernet（PPPPoE）安装 Debian GNU/Linux">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 D. 其他</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux</h2></div></div></div>
+<p>本节将说明在没有以太网卡的情况下，如何通过一条 Null-Modem 线（也称为 Null-Printer 线），连接到远端网关计算机来安装 Debian GNU/Linux。充当网关的计算机应该连接到具有 Debian 镜像的网络（比如，互联网）。 </p>
+<p>本附录里面的例子中，我们将建立一个 PLIP 连接，使用的网关通过拨号连接（ppp0）到互联网。我们还分别为目标和源系统的 PLIP 接口使用 192.168.0.1 和 192.168.0.2 IP 地址（这些地址在您的网络地址空间里面未被占用）。 </p>
+<p>在安装时建立的 PLIP 连接，重新启动后在新安装的系统里面仍然可用（参阅 <a class="xref" href="ch07.html" title="第 7 章 引导进入新的 Debian 系统">第 7 章 <i>引导进入新的 Debian 系统</i></a>）。 </p>
+<p>开始前，您需要检查一下源与目标系统并口的 BIOS 设置（IO 基地址和 IRQ）。常用的值为 <code class="literal">io=0x378</code>，<code class="literal">irq=7</code>。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5095"></a>D.4.1. 需求</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>目标计算机，称为 <span class="emphasis"><em>target</em></span>，将要安装 Debian。 </p></li>
+<li class="listitem"><p>系统安装介质；参阅 <a class="xref" href="ch02s04.html" title="2.4. 安装介质">第 2.4 节 “安装介质”</a>。 </p></li>
+<li class="listitem"><p>另外一台连接到互联网的计算机，称为 <span class="emphasis"><em>source</em></span>，功能是网关。 </p></li>
+<li class="listitem"><p>一条 DB-25 Null-Modem 线。参阅 <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> 了解这种线的更多信息，以及如何自己制作。 </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5110"></a>D.4.2. 建立源</h3></div></div></div>
+<p>下面的脚本是一个简单例子，说明如何配置使用 ppp0 连接到互联网的充当网关的源计算机。 </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# We remove running modules from kernel to avoid conflicts and to
+# reconfigure them manually.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configure the plip interface (plip0 for me, see dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configure gateway
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5120"></a>D.4.3. 安装目标</h3></div></div></div>
+<p>启动安装介质。安装需要运行在 expert 模式; 在启动提示符下输入 <strong class="userinput"><code>expert</code></strong>。如果您需要为内核模块设置参数，同样要在启动提示符下输入。例如，要启动安装程序，并为 parport_pc 模块的 <span class="quote">“<span class="quote">io</span>”</span> 和 <span class="quote">“<span class="quote">irq</span>”</span> 选项设置值，在启动提示符后面输入：</p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> 下面是安装过程中各阶段所要提供的答案。 </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">从安装介质加载安装组件</span>
+
+</p>
+<p>从列表里面选择 <strong class="userinput"><code>plip-modules</code></strong> 选项; 它使安装系统可以使用 PLIP 驱动。 </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">探测网络硬件</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>如果目标系统<span class="emphasis"><em>有</em></span>网卡，将显示探测到的网卡的驱动模块列表。如果您希望强制 <code class="classname">debian-installer</code> 使用 plip，您应该排斥所有列出的驱动模块。显然，如果目标系统没有网卡，安装程序不会显示该列表。 </p></li>
+<li class="listitem"><p>因为前面没有网卡探测/选择，安装程序将要求您从列表中选择网络驱动模块。选择 <strong class="userinput"><code>plip</code></strong> 模块。 </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">配置网络</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Auto-configure network with DHCP: No </p></li>
+<li class="listitem"><p>IP address: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Point-to-point address: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Name server addresses: 您可以使用与源计算机相同的地址（参见 <code class="filename">/etc/resolv.conf</code>） </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. 通过 Unix/Linux 系统来安装 Debian GNU/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> D.5. 通过 PPP over Ethernet（PPPPoE）安装 Debian GNU/Linux</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

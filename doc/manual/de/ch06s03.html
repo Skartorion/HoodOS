@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Die einzelnen Komponenten</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch06.html" title="Kapitel 6. Den Debian-Installer verwenden">
+<link rel="prev" href="ch06s02.html" title="6.2. Einführung in die Komponenten">
+<link rel="next" href="ch06s04.html" title="6.4. Fehlende Firmware nachladen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Die einzelnen Komponenten</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 6. Den Debian-Installer verwenden</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Die einzelnen Komponenten</h2></div></div></div>
+<p>In diesem Kapitel beschreiben wir detailliert jede Komponente des Installers. Die Komponenten sind in (für Benutzer sinnvolle) Gruppen gegliedert. Sie werden in der Reihenfolge vorgestellt, in der sie auch während der Installation vorkommen. Bedenken Sie, dass nicht alle Module bei jeder Installation benutzt werden; welche Komponenten jeweils benutzt werden, hängt von der Installationsmethode und Ihrer Hardware ab. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Den Debian-Installer einrichten und Konfiguration der Hardware</h3></div></div></div>
+<p>Nehmen wir an, dass der <code class="classname">debian-installer</code> gebootet ist und Sie sein erstes Bild sehen. In diesem Moment sind die Fähigkeiten des Debian-Installers noch sehr begrenzt. Er weiß noch nicht viel über Ihre Hardware, Ihre bevorzugte Sprache oder die Aufgabe, die er erledigen soll. Machen Sie sich darüber keine Sorgen. Da der <code class="classname">debian-installer</code> sehr clever ist, kann er automatisch Ihre Hardware erkennen, seine restlichen noch nicht geladenen Komponenten finden und sich selbst zu einem leistungsfähigen Installationssystem machen. Allerdings benötigt er immer noch Ihre Hilfe, um einige Informationen zu bekommen, die er nicht automatisch erkennen kann (wie die bevorzugte Sprache, die Tastaturbelegung oder den gewünschten Internet-Spiegel-Server). </p>
+<p>Sie werden feststellen, dass der <code class="classname">debian-installer</code> mehrmals während dieses Schrittes eine <em class="firstterm">Hardware-Erkennung</em> durchführt. Das erste Mal geht es hauptsächlich um die Hardware, die benötigt wird, um die Installer-Komponenten zu laden (z.B. Ihr CD-ROM-Laufwerk oder Ihre Netzwerkkarte). Weil allerdings im ersten Durchlauf möglicherweise noch nicht alle Treiber zur Verfügung stehen, muss die Hardware-Erkennung später eventuell noch einmal wiederholt werden. </p>
+<p>Während der Hardware-Erkennung prüft der <code class="classname">debian-installer</code>, ob einer der für Ihre Hardware benötigten Treiber das Nachladen von Firmware in das Gerät erfordert. Falls dies der Fall ist, jedoch keine Firmware verfügbar ist, wird ein Dialog angezeigt, der das Laden der fehlenden Firmware von einem transportablen Medium ermöglicht. Details finden Sie in <a class="xref" href="ch06s04.html" title="6.4. Fehlende Firmware nachladen">Abschnitt 6.4, „Fehlende Firmware nachladen“</a>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Verfügbaren Arbeitsspeicher prüfen / Low-Memory-Modus</h4></div></div></div>
+<p>Einer der ersten Tests, die der <code class="classname">debian-installer</code> durchführt, ist zu überprüfen, wieviel Arbeitsspeicher zur Verfügung steht. Ist der verfügbare Speicher knapp, führt dieses Modul einige Änderungen am Installationsprozess durch, die Ihnen hoffentlich ermöglichen, Debian GNU/Linux trotzdem auf Ihrem System zu installieren. </p>
+<p>Die erste Maßnahme, die getroffen wird, um den Speicherbedarf des Installers zu reduzieren, ist die Deaktivierung aller Übersetzungen, was bedeutet, dass die Installation nur in Englisch durchgeführt werden kann. Das installierte System kann natürlich trotzdem an Ihre Sprache angepasst werden, nachdem die Installation abgeschlossen ist. </p>
+<p>Falls dies noch nicht ausreichend ist, kann der Speicherbedarf weiter reduziert werden, indem nur diejenigen Komponenten geladen werden, die unbedingt erforderlich sind, um eine Basisinstallation abzuschließen. Dies schränkt die Fähigkeiten des Installers ein. Sie haben die Gelegenheit, zusätzliche Komponenten manuell zu laden, aber Sie sollten bedenken, dass jede solche Komponente auch zusätzlichen Speicher benötigt und so dazu führen könnte, dass die Installation fehlschlägt. </p>
+<p>Wenn der Installer im Low-Memory-Modus läuft, ist es empfehlenswert, eine relativ große Swap-Partition (1–2 GB) zu erstellen. Diese wird als virtueller Speicher genutzt und vergrößert so den Arbeitsspeicher, der dem System zur Verfügung steht. Der Installer wird die Swap-Partition so früh wie möglich während des Installationsprozesses aktivieren. Bedenken Sie, dass die starke Nutzung von Swap-Speicher die Performance des Systems reduziert und zu hoher Festplattenaktivität führen kann. </p>
+<p>Trotz all dieser Maßnahmen ist es immer noch möglich, dass Ihr System einfriert oder sich aufhängt, dass unerwartete Fehler auftreten oder dass Prozesse vom Kernel beendet werden, weil kein freier Speicher mehr verfügbar ist (erkennbar an Meldungen mit <span class="quote">„<span class="quote">Out of memory</span>“</span> auf VT4 und im Syslog). </p>
+<p>Es wurde zum Beispiel berichtet, dass die Erzeugung eines großen ext3-Dateisystems im Low-Memory-Modus fehlgeschlagen ist, wenn die Swap-Partition zu klein gewählt war. Wenn die Vergrößerung des Swap-Speichers nicht hilft, sollten Sie das Dateisystem stattdessen als ext2 erzeugen (dies ist eine Standardkomponente des Installers, während ext3 eine der Komponenten ist, die im Low-Memory-Modus nicht standardmäßig geladen wird). Nach Abschluss der Installation ist es möglich, die ext2-Partition in ext3 umzuwandeln. </p>
+<p>Es ist möglich, eine höhere lowmem-Stufe zu verwenden als die, die auf dem verfügbaren physischen Speicher beruht. Nutzen Sie dazu den Boot-Parameter <span class="quote">„<span class="quote">lowmem</span>“</span> wie in <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian-Installer-Parameter">Abschnitt 5.3.2, „Debian-Installer-Parameter“</a> beschrieben. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Lokalisierungsoptionen auswählen</h4></div></div></div>
+<p>In den meisten Fällen betreffen die ersten Fragen, die Ihnen gestellt werden, die Auswahl von Lokalisierungsoptionen, die sowohl für die Installation als auch für das installierte System genutzt werden. Diese Lokalisierungsoptionen bestehen aus der Sprache, dem Standort und dem Gebietsschema (Locale). </p>
+<p>Die Sprache, die Sie wählen, wird für den Rest des Installationsprozesses genutzt, vorausgesetzt, eine Übersetzung der verschiedenen Dialoge in diese Sprache ist vorhanden. Falls keine passende Übersetzung für die gewählte Sprache verfügbar ist, nutzt der Installer die Standardeinstellung Englisch. </p>
+<p>Der ausgewählte geographische Standort (in den meisten Fällen ein Land) wird später im Installationsprozess verwendet, um die korrekte Zeitzone und einen für Ihr Land passenden Debian-Spiegel-Server auszuwählen. Sprache und Land zusammen werden dabei hilfreich sein, das Standardgebietsschema für Ihr System festzulegen und die korrekte Tastaturbelegung auszuwählen. </p>
+<p>Als erstes werden Sie aufgefordert, die gewünschte Sprache auszuwählen. Die Sprachen sind sowohl in Englisch (links) als auch in der jeweiligen Sprache selbst (rechts) angegeben; die Namen auf der rechten Seite werden direkt in einer passenden Schriftart für die Sprache dargestellt. Die Liste ist sortiert nach den englischen Namen. Am Anfang der Liste gibt es eine zusätzliche Option, mit der Sie die <span class="quote">„<span class="quote">C</span>“</span>-Locale wählen können statt einer Sprache. Die Auswahl der <span class="quote">„<span class="quote">C</span>“</span>-Locale führt zu einem Installationsprozess in englischer Sprache; das installierte System hat keine Unterstützung für unterschiedliche Lokalisierungen, da das Paket <code class="classname">locales</code> nicht installiert wird. </p>
+<p>Die nächste Frage betrifft Ihren geographischen Standort. Falls sie eine Sprache gewählt haben, die offizielle Sprache in mehr als einem Land ist <a href="#ftn.id2613" class="footnote" name="id2613"><sup class="footnote">[4]</sup></a>, wird Ihnen eine Liste mit diesen Ländern angezeigt. Falls Sie ein Land wählen möchten, das in dieser Liste nicht enthalten ist, wählen Sie <span class="guimenuitem"><span class="quote">„<span class="quote">weitere</span>“</span></span> (der letzte Eintrag). Es wird dann eine Liste der Kontinente angezeigt; bei Auswahl eines Kontinents erscheint eine Liste mit diesem Kontinent zugehörigen Ländern. </p>
+<p>Falls es für die von Ihnen gewählte Sprache nur ein zugehöriges Land gibt, wird eine Liste mit Ländern für den Kontinent oder das Gebiet angezeigt, zu dem dieses Land gehört; dabei ist dieses Land in der Liste bereits standardmäßig vorgewählt. Verwenden Sie den <span class="guibutton">Zurück</span>-Button, um ein Land auf einem anderen Kontinent auszuwählen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Es ist wichtig, das Land auszuwählen, in dem Sie leben oder in dem Sie sich befinden, da daraus die Zeitzone ermittelt wird, die auf dem installierten System eingestellt wird. </p></td></tr>
+</table></div>
+<p>Wenn Sie eine Kombination aus Sprache und Land auswählen, für die kein Gebietsschema definiert ist oder wenn mehrere Gebietsschemata für die Sprache existieren, gibt der Installer Ihnen die Möglichkeit festzulegen, welches der Gebietsschemata Sie als Standardgebietsschema auf dem installierten System bevorzugen <a href="#ftn.id2622" class="footnote" name="id2622"><sup class="footnote">[5]</sup></a>. In allen anderen Fällen wird ein Standardgebietsschema basierend auf der Auswahl für Sprache und Land festgelegt. </p>
+<p>Jedes Standardgebietsschema, das wie im vorherigen Abschnitt beschrieben festgelegt wird, nutzt <em class="firstterm">UTF-8</em> als Zeichenkodierung. </p>
+<p>Wenn Sie mit niedriger Priorität installieren, haben Sie die Möglichkeit, zusätzliche Gebietsschemata für das installierte System generieren zu lassen, inklusive der sogenannten <span class="quote">„<span class="quote">Legacy</span>“</span>-Gebietsschemata <a href="#ftn.id2628" class="footnote" name="id2628"><sup class="footnote">[6]</sup></a>; falls Sie davon Gebrauch machen, werden Sie gefragt, welches der ausgewählten Gebietsschemata das Standardgebietsschema für das installierte System sein soll. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Auswahl der Tastaturbelegung</h4></div></div></div>
+<p>Tastaturen sind oft auf die Zeichen zugeschnitten, die in einer bestimmten Sprache benutzt werden. Wählen Sie eine Belegung, die der Tastatur, die Sie verwenden entspricht, oder wählen Sie eine ähnliche aus, falls die gewünschte Belegung nicht vorhanden ist. Wenn die Systeminstallation abgeschlossen ist, können Sie aus einer größeren Auswahl an Tastaturen wählen (führen Sie dazu den Befehl <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> als root aus, wenn die Installation abgeschlossen ist). </p>
+<p>Setzen Sie die Markierung auf die gewünschte Auswahl und drücken Sie <span class="keycap"><strong>Enter</strong></span>. Benutzen Sie die Pfeiltasten, um die Markierung zu bewegen – sie befinden sich bei allen Tastatur-Layouts an der gleichen Stelle, daher sind sie von der Tastaturkonfiguration unabhängig. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Das ISO-Image des Debian-Installers suchen</h4></div></div></div>
+<p>Wenn Sie mittels der <span class="emphasis"><em>hd-media</em></span>-Methode installieren, werden Sie an einen Punkt kommen, wo Sie das ISO-Image des Debian-Installers suchen und ins Dateisystem einbinden müssen, um die restlichen Installationsdateien zu bekommen. Die Komponente <span class="command"><strong>iso-scan</strong></span> erledigt genau dies für Sie. </p>
+<p>Als erstes bindet <span class="command"><strong>iso-scan</strong></span> automatisch alle blockorientierten Geräte (wie Festplattenpartitionen und logische LVM-Volumes) ein, die ein bekanntes, unterstütztes Dateisystem haben, und sucht systematisch nach Dateien, deren Name auf <code class="filename">.iso</code> endet (oder <code class="filename">.ISO</code>). Bedenken Sie, dass im ersten Versuch nur das Wurzelverzeichnis / und alle Verzeichnisse eine Ebene tiefer durchsucht werden (beispielsweise werden <code class="filename">/<em class="replaceable"><code>whatever</code></em>.iso</code> und <code class="filename">/data/<em class="replaceable"><code>whatever</code></em>.iso</code> gefunden, aber nicht <code class="filename">/data/tmp/<em class="replaceable"><code>whatever</code></em>.iso</code>). Nachdem ein ISO-Image gefunden wurde, überprüft <span class="command"><strong>iso-scan</strong></span>, ob es sich dabei um ein gültiges Debian-ISO-Image handelt. Falls ja, sind wir hier fertig, ansonsten sucht <span class="command"><strong>iso-scan</strong></span> nach einem anderen Image. </p>
+<p>Falls der erste Anlauf, ein Installer-Image zu finden, fehlschlägt, fragt <span class="command"><strong>iso-scan</strong></span>, ob Sie eine vollständige Durchsuchung durchführen möchten. Hierbei werden nicht nur die oberen Verzeichnisebenen durchsucht, sondern das ganze Dateisystem. </p>
+<p>Wenn <span class="command"><strong>iso-scan</strong></span> Ihr ISO-Image nicht finden kann, starten Sie wieder Ihr Original-Betriebssystem und überprüfen, ob das Image richtig bezeichnet ist (ob es auf <code class="filename">.iso</code> endet), ob es auf einem Dateisystem liegt, das vom <code class="classname">debian-installer</code> erkannt wird und ob es nicht beschädigt ist (überprüfen Sie die Prüfsumme). Erfahrene Unix-Nutzer können dies auch auf der zweiten Konsole erledigen, ohne den Rechner neu zu booten. </p>
+<p>Beachten Sie, dass die Partition (oder die Platte), die das ISO-Image beherbergt, während der Installation nicht ohne weiteres genutzt werden kann, da sie bereits durch den Installer verwendet wird. Um dies zu umgehen, kann der Installer - vorausgesetzt, Sie haben genügend Arbeitsspeicher - das ISO-Image in den Arbeitsspeicher kopieren, bevor er es einbindet. Dies kann über die <code class="literal">iso-scan/copy_iso_to_ram</code>-debconf-Frage (nur in einer Experten-Installation unter niedriger Priorität verfügbar und auch nur, wenn die Anforderungen an die Größe des Arbeitsspeichers erfüllt sind) eingestellt werden. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Netzwerkkonfiguration</h4></div></div></div>
+<p>Wenn Sie in diesen Schritt einsteigen und das System erkennt, dass Sie mehr als eine Netzwerkkarte haben, werden Sie gefragt, welche Ihre <span class="emphasis"><em>primäre</em></span> Netzwerkschnittstelle ist; diese wird zum Beispiel auch für die Installation verwendet. Weitere Netzwerkkarten werden zu diesem Zeitpunkt nicht konfiguriert. Sie können zusätzliche Schnittstellen konfigurieren, nachdem die Installation beendet ist; lesen Sie dazu die <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>-Handbuchseite. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatische Konfiguration</h5></div></div></div>
+<p>Standardmäßig versucht der <code class="classname">debian-installer</code>, das Netzwerk Ihres Computers soweit wie möglich automatisch zu konfigurieren. Wenn die automatische Konfiguration fehlschlägt, kann dies durch verschiedene Faktoren von einem nicht korrekt eingesteckten Netzwerkkabel bis hin zu fehlender Infrastruktur für solch eine automatische Konfiguration ausgelöst werden. Zur weiteren Diagnose kontrollieren Sie, ob Fehlermeldungen auf der vierten Konsole aufgelaufen sind. Sie werden auf jeden Fall gefragt, ob Sie es erneut versuchen möchten, oder ob Sie die Einstellungen manuell vornehmen möchten. Manchmal haben die Netzwerkdienste für die automatische Konfiguration lange Antwortzeiten; wenn Sie also sicher sind, dass alles korrekt ist, starten Sie die automatische Konfiguration einfach nochmal. Falls die automatische Konfiguration wiederholt fehlschlägt, können Sie stattdessen die manuelle Einrichtung wählen. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Manuelle Konfiguration</h5></div></div></div>
+<p>Beim manuellen Netzwerk-Setup werden einige Angaben über Ihr Netzwerk erfragt, hauptsächlich <code class="computeroutput">IP-Adresse</code>, <code class="computeroutput">Subnetzmaske</code>, <code class="computeroutput">Gateway (Adresse für die Verbindung ins Internet)</code>, <code class="computeroutput">Nameserver-Adressen (DNS)</code> und <code class="computeroutput">Hostname (Rechnername)</code>. Wenn Sie ein drahtloses Netzwerk haben, werden Sie außerdem noch nach der <code class="computeroutput">Wireless ESSID</code> (dem <span class="quote">„<span class="quote">Namen</span>“</span> des drahtlosen Netzwerks) und dem <code class="computeroutput">WEP-Schlüssel</code> bzw. der <code class="computeroutput">WPA/WPA2-Passphrase</code> gefragt. Geben Sie hier die Angaben aus <a class="xref" href="ch03s03.html" title="3.3. Benötigte Informationen">Abschnitt 3.3, „Benötigte Informationen“</a> an. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Einige technische Details, die Sie vielleicht praktisch finden werden (oder auch nicht): das Programm nimmt an, dass die Netzwerk-IP-Adresse die bit-weise UND-Verknüpfung der IP-Adresse Ihres Systems und der Subnetzmaske ist. Die Broadcast-Adresse wird über eine bit-weise ODER-Verknüpfung der IP-Adresse Ihres Systems mit der bit-weise umgekehrten Subnetzmaske errechnet. Ebenso versucht es, Ihre Gateway-Adresse zu erraten. Wenn Ihnen also diese Angaben nicht zur Verfügung stehen, verwenden Sie die vom Installer vorgeschlagenen Werte – falls notwendig, können Sie sie durch Bearbeiten der Datei <code class="filename">/etc/network/interfaces</code> ändern, sobald das System installiert ist. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 und IPv6</h5></div></div></div>
+<p>Ab Debian GNU/Linux 7.0 (<span class="quote">„<span class="quote">Wheezy</span>“</span>) unterstützt der <code class="classname">debian-installer</code> zusätzlich zum <span class="quote">„<span class="quote">klassischen</span>“</span> IPv4 auch IPv6. Alle Kombinationen von IPv4 und IPv6 (nur IPv4, nur IPv6 oder eine Dual-Stack-Konfiguration, in der beide Protokolle parallel laufen) werden unterstützt. </p>
+<p>Die automatische Konfiguration für IPv4 wird über DHCP (Dynamic Host Configuration Protocol) durchgeführt. Für IPv6 wird zustandslose (stateless) Autokonfiguration mittels NDP (Neighbor Discovery Protocol, inklusive rekursiver DNS-Server-Zuweisung (RDNSS)) unterstützt, außerdem zustandsbehaftete (stateful) Autokonfiguration über DHCPv6, und schließlich noch die gemischte Variante von zustandsloser und zustandsbehafteter Autokonfiguration (Adresskonfiguration über NDP, zusätzliche Parameter über DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Benutzerzugänge und Passwörter einrichten</h3></div></div></div>
+<p>Bevor die Uhr eingerichtet wird, gibt der Installer Ihnen die Möglichkeit, den <span class="quote">„<span class="quote">root</span>“</span>-Zugang (Super-User) und/oder einen Zugang für den ersten Benutzer einzurichten. Weitere Benutzerzugänge können nach Abschluß der Installation hinzugefügt werden. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Das root-Passwort setzen</h4></div></div></div>
+<p>Der <span class="emphasis"><em>root</em></span>-Zugang wird auch <span class="emphasis"><em>Super-User</em></span> genannt; es ist ein Benutzerzugang, der alle Sicherheitsvorkehrungen auf Ihrem System umgeht. Der root-Zugang sollte nur zur Systemadministration genutzt werden und dabei nicht länger als unbedingt nötig. </p>
+<p>Jedes Passwort, das Sie festlegen, sollte mindestens 6 Zeichen lang sein und sowohl Groß- und Kleinbuchstaben als auch Sonderzeichen enthalten. Seien Sie besonders sorgsam, wenn Sie das root-Passwort festlegen, da dies ein sehr mächtiger Zugang ist. Vermeiden Sie Wörter, die in Lexika vorkommen und verwenden Sie keine persönlichen Informationen, die man erraten könnte. </p>
+<p>Falls irgend jemand Ihnen sagt, er bräuchte Ihr root-Passwort, seien Sie besonders auf der Hut. Sie sollten normalerweise niemals Ihr root-Passwort herausgeben, es sei denn, Sie verwalten einen Rechner mit mehreren Systemadministratoren. </p>
+<p>Wenn Sie hier kein Passwort für den <span class="quote">„<span class="quote">root</span>“</span>-Benutzer festlegen, führt das zur Deaktivierung dieses Kontos, aber später wird das <span class="command"><strong>sudo</strong></span>-Paket installiert, damit administrative Aufgaben auf dem neuen System durchgeführt werden können. Standardmäßig wird in diesem Fall der erste auf dem System eingerichtete Benutzer die Berechtigung erhalten, den <span class="command"><strong>sudo</strong></span>-Befehl zu verwenden, um root zu werden. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Einen normalen Benutzer anlegen</h4></div></div></div>
+<p>Das System fragt Sie an diesem Punkt, ob Sie einen normalen Benutzerzugang anlegen möchten. Dies sollte Ihr hauptsächlicher persönlicher Login sein. Sie sollten <span class="emphasis"><em>nicht</em></span> den root-Zugang für die tägliche Arbeit oder als persönlichen Login benutzen. </p>
+<p>Warum nicht? Nun, ein Grund, keine root-Privilegien zu nutzen, ist der, dass man als Superuser leicht irreparable Schäden anrichten kann! Ein anderer ist, dass Sie Gefahr laufen könnten, ein Trojanisches Pferd zu starten – das ist ein Programm, das sich die Superuser-Rechte zunutze macht, um die Sicherheit Ihres System hinter Ihrem Rücken zu kompromittieren. Jedes gute Buch über die Administration eines Unix-Systems wird dieses Thema detaillierter behandeln – Sie sollten eines lesen, wenn dies Neuland für Sie ist. </p>
+<p>Sie werden nach dem vollen Namen des Benutzers gefragt. Danach wird ein Name für den Benutzerzugang verlangt. Grundsätzlich ist Ihr Vorname oder etwas ähnliches hier gut geeignet; deshalb ist dieser auch die Standardvorgabe. Dann müssen sie noch ein Passwort für diesen Zugang angeben. </p>
+<p>Wenn Sie zu irgendeinem Zeitpunkt nach der Installation einen weiteren Benutzer anlegen möchten, benutzen Sie das <span class="command"><strong>adduser</strong></span>-Kommando. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Konfiguration der Uhr und Zeitzone</h3></div></div></div>
+<p>Der Installer wird zunächst versuchen, einen Zeit-Server im Internet zu kontaktieren (mittels dem <em class="firstterm">NTP</em>-Protokoll), um die Systemzeit korrekt einzustellen. Falls dies nicht gelingt, geht der Installer davon aus, dass Datum und Zeit so, wie sie beim Start des Installationssystems von der CMOS-Uhr empfangen wurden, korrekt sind. Es ist während des Installationsprozesses nicht möglich, die Systemzeit manuell einzustellen. </p>
+<p>Abhängig vom Standort, der vorher während des Installationsprozesses ausgewählt wurde, könnte Ihnen eine Liste mit für diesen Ort relevanten Zeitzonen präsentiert werden. Wenn Ihr Land nur eine Zeitzone hat und Sie eine Standardinstallation durchführen, werden Sie nicht gefragt, das System wählt einfach diese Zeitzone aus. </p>
+<p>Im Experten-Modus oder bei Installation mit Priorität medium haben Sie die zusätzliche Option, <span class="quote">„<span class="quote">Coordinated Universal Time</span>“</span> (UTC, Koordinierte Weltzeit) als Zeitzone auszuwählen. </p>
+<p>Falls Sie aus irgendeinem Grund eine Zeitzone für das zu installierende System einstellen möchten, die <span class="emphasis"><em>nicht</em></span> zu dem ausgewählten Standort gehört, gibt es zwei Möglichkeiten: </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Das Einfachste ist, eine andere Zeitzone zu wählen, nachdem die Installation abgeschlossen ist und Sie das neue System gebootet haben. Der Befehl dazu ist: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternativ kann die Zeitzone direkt beim Start der Installation gesetzt werden, indem Sie den Parameter <strong class="userinput"><code>time/zone=<em class="replaceable"><code>Wert</code></em></code></strong> anhängen, wenn Sie den Installer booten. Der Wert sollte natürlich eine gültige Zeitzone sein, z.B. <strong class="userinput"><code>Europe/Berlin</code></strong> oder <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Bei automatisierten Installationen kann die Zeitzone mittels Voreinstellung auf jeden gewünschten Wert gesetzt werden. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Partitionierung und Auswahl der Einbindungspunkte im Dateisystem</h3></div></div></div>
+<p>Jetzt, nachdem die Hardware-Erkennung ein letztes Mal durchgeführt wurde, sollte der <code class="classname">debian-installer</code> seine volle Funktionalität erreicht haben, optimal abgestimmt auf die Bedürfnisse des Benutzers und bereit, mit der richtigen Arbeit zu beginnen. Wie der Titel dieses Abschnitts erkennen lässt, liegt die Hauptaufgabe der jetzt folgenden Komponenten im Partitionieren Ihrer Laufwerke, Erstellen von Dateisystemen, Festlegen der Einbindungspunkte sowie damit eng verwandten Optionen wie der Einrichtung von RAID, LVM oder verschlüsselten Laufwerken. </p>
+<p>Wenn Sie sich mit Partitionierung nicht auskennen oder einfach mehr Details benötigen lesen Sie <a class="xref" href="apc.html" title="Anhang C. Partitionieren für eine Debian-Installation">Anhang C, <i>Partitionieren für eine Debian-Installation</i></a>. </p>
+<p>Zuerst wird Ihnen die Auswahl geboten, automatisch entweder eine gesamte Platte zu partitionieren oder nur den freien Speicherplatz auf einer Platte, falls solcher vorhanden ist. Dies wird auch als <span class="quote">„<span class="quote">Geführte Partitionierung</span>“</span> bezeichnet. Wenn Sie keine automatische Partitionierung wollen, wählen Sie <span class="guimenuitem">Manuell</span>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Unterstützte Partitionierungsoptionen</h4></div></div></div>
+<p>Der im <code class="classname">debian-installer</code> verwendete Partitionierer ist ziemlich vielseitig. Er erlaubt die Erstellung vieler verschiedener Partitionierungsschemata sowie die Verwendung von verschiedenen Partitionstabellen, Dateisystemen und erweiterten blockorientierten Geräten. </p>
+<p>Welche Optionen genau verfügbar sind, hängt hauptsächlich von der Systemarchitektur ab, aber auch von einigen weiteren Faktoren. Auf Systemen mit begrenztem Arbeitsspeicher könnten zum Beispiel einige Optionen nicht verfügbar sein. Auch die Standardwerte können variieren. So kann zum Beispiel der Typ der verwendeten Partitionstabelle bei einer Festplatte mit sehr großer Kapazität ein anderer sein als bei kleinen Festplatten. Einige Optionen können nur verändert werden, wenn mit mittlerer oder niedriger Priorität installiert wird; bei höheren Prioritäten werden sichere Standardwerte verwendet. </p>
+<p>Der Installer unterstützt verschiedene Formen der fortgeschrittenen Partitionierung sowie der Verwendung von Speichergeräten, die in vielen Fällen auch kombiniert genutzt werden können. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logical Volume Management (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Software-RAID</em></span>
+  </p>
+<p>Unterstützt werden Level 0, 1, 4, 5, 6 und 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Verschlüsselung</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimentell) </p>
+<p>Lesen Sie unser <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">Wiki</a> bezüglich weiterer Informationen. Unterstützung für Multipath ist derzeit nur verfügbar, wenn es bereits beim Booten des Installers aktiviert wird. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Die folgenden Dateisysteme werden unterstützt: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Das Standard-Dateisystem ist in den meisten Fällen ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (nicht auf allen Architekturen verfügbar) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (nicht auf allen Architekturen verfügbar) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (optional; nicht auf allen Architekturen verfügbar) </p>
+<p>Unterstützung für das Reiser-Dateisystem ist nicht mehr standardmäßig verfügbar. Wenn der Installer mit mittlerer oder niedriger Priorität gestartet wird, kann es durch Auswahl der Komponente <code class="classname">partman-reiserfs</code> zur Verfügung gestellt werden. Es wird nur Version 3 des Dateisystems unterstützt. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Vorhandene Paritionen werden erkannt und es können diesen auch Einbindungspunkte zugeordnet werden. Es ist nicht möglich, neue qnx4-Partitionen zu erstellen. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (nur Lesen) </p>
+<p>Vorhandene Partitionen können in der Größe verändert und es können diesen auch Einbindungspunkte zugeordnet werden. Es ist nicht möglich, neue NTFS-Partitionen zu erstellen. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Das Partitionierungsprogramm akzeptiert Einheiten sowohl als Zehnerpotenzen (1 MB = 1000 kB = 1000000 B), als auch als Zweierpotenzen (1 MiB = 1024 kiB = 1048576 B). Für die Einheiten werden Präfixe bis EB/EiB (Exabyte/Exbibyte) unterstützt. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Geführte Partitionierung</h4></div></div></div>
+<p>Wenn Sie Geführte Partitionierung wählen, haben Sie drei Möglichkeiten: Partitionen direkt auf der Festplatte erzeugen (die klassische Methode), LVM (Logical Volume Management) benutzen oder verschlüsseltes LVM benutzen<a href="#ftn.id2807" class="footnote" name="id2807"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Die Option zur Nutzung von LVM (Standard oder verschlüsselt) ist möglicherweise nicht auf allen Architekturen verfügbar. </p></td></tr>
+</table></div>
+<p>Bei der Verwendung von LVM oder verschlüsseltem LVM erzeugt der Installer die meisten Partitionen innerhalb einer großen Partition; der Vorteil dabei ist, dass die Partitionen innerhalb der großen Partition sehr einfach nachträglich in der Größe verändert werden können. Im Fall von verschlüsseltem LVM ist die große Partition ohne Kenntnis einer speziellen Passphrase nicht lesbar und bietet deshalb zusätzliche Sicherheit Ihrer (persönlichen) Daten. </p>
+<p>Wenn Sie verschlüsseltes LVM verwenden, wird der Installer auch automatisch die Festplatte löschen, indem Zufallsdaten darauf geschrieben werden. Dies verbessert zusätzlich die Sicherheit (da es so unmöglich ist zu erkennen, welche Teile der Platte genutzt werden und außerdem alle Spuren von früheren Installationen gelöscht werden), könnte aber einiges an Zeit benötigen, abhängig von der Größe der Festplatte. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wenn Sie Geführte Partitionierung<span class="phrase"> (mittels LVM oder verschlüsseltem LVM)</span> wählen, müssen einige Änderungen in der Partitionstabelle auf die ausgewählten Festplatten geschrieben werden, während LVM eingerichtet wird. Diese Änderungen löschen effektiv alle Daten, die zu dieser Zeit auf den entsprechenden Festplatten gespeichert sind und sind nicht rückgängig zu machen! Der Installer fordert Sie aber auf, diese Änderungen zu bestätigen, bevor sie auf die Platten geschrieben werden. </p></td></tr>
+</table></div>
+<p>Nachdem Sie Geführte Partitionierung (entweder klassisch oder mittels (verschlüsseltem) LVM) für eine ganze Festplatte ausgewählt haben, müssen Sie die Platte angeben, die Sie nutzen möchten. Überprüfen Sie, ob alle Ihre Festplatten aufgelistet sind und, falls Sie mehrere haben, achten Sie darauf, dass Sie die richtige wählen. Die Reihenfolge, in der sie aufgelistet sind, könnte anders sein, als sie es gewohnt sind. Die Größe der Festplatten kann Ihnen helfen, sie zu identifizieren. </p>
+<p>Alle Daten auf den ausgewählten Festplatten könnten verloren gehen, aber Sie werden immer aufgefordert, jegliche Änderungen zu bestätigen, bevor sie auf die Festplatten geschrieben werden. <span class="phrase"> Wenn Sie die klassische Partitionierungsmethode gewählt haben, können Sie bis zuletzt alle Änderungen rückgängig machen; bei der Verwendung von LVM (Standard oder verschlüsselt) ist dies nicht möglich. </span> </p>
+<p>Als nächstes können Sie aus der Liste ein Partitionsschema auswählen. Alle Schemata haben ihre Vor- und Nachteile, von denen einige im <a class="xref" href="apc.html" title="Anhang C. Partitionieren für eine Debian-Installation">Anhang C, <i>Partitionieren für eine Debian-Installation</i></a> erörtert sind. Wenn Sie sich nicht sicher sind, wählen Sie die erste Möglichkeit. Beachten Sie, dass die automatische Partitionierung ein gewisses Minimum an freiem Speicher benötigt. Wenn Sie nicht mindestens 3GB Platz (abhängig vom gewählten Schema) zur Verfügung stellen, wird die automatische Partitionierung fehlschlagen. Bei kleinen Festplatten werden Ihnen möglicherweise nicht alle unten aufgeführten Schemata angezeigt. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Partitionierungsschema</th>
+<th>Mindestens erforderlicher Festplattenplatz</th>
+<th>Erstellte Partitionen</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Alle Dateien in eine Partition</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, Swap</td>
+</tr>
+<tr>
+<td>Separate /home-Partition</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, Swap </td>
+</tr>
+<tr>
+<td>Separate /home-, /var- und /tmp-Partitionen</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, Swap </td>
+</tr>
+<tr>
+<td>Separate /srv- und /var-Partitionen; Swap wird begrenzt auf 1GB (Schema für Server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, Swap </td>
+</tr>
+<tr>
+<td>Schema speziell für kleine Festplatten</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, Swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Wenn Sie Geführte Partitionierung mit LVM (Standard oder verschlüsselt) wählen, wird der Installer zusätzlich eine separate <code class="filename">/boot</code>-Partition erzeugen. Alle anderen Partitionen (inklusive Swap) werden innerhalb der LVM-Partition erstellt. </p>
+<p>Wenn Sie im EFI-Modus gebootet haben, wird bei der Geführten Partitionierung eine zusätzliche Partition, formatiert als boot-fähiges FAT32-Dateisystem, für den EFI-Bootloader erstellt. Diese Partition ist als EFI System Partition (ESP) bekannt. Es gibt ebenfalls einen zusätzlichen Menüpunkt im Format-Menü, um eine Partition manuell als ESP einzurichten. </p>
+<p>Nachdem Sie ein Schema ausgewählt haben, erscheint im nächsten Bild Ihre neue Partitionstabelle mit Informationen darüber, ob und wie die Partitionen formatiert werden und wo sie ins Dateisystem eingebunden werden. </p>
+<p>Die Liste der Partitionen sieht in ihrer Struktur ähnlich aus wie diese: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primär    16.4 MB  B f ext2       /boot
+        #2 primär   551.0 MB      swap       swap
+        #3 primär     5.8 GB      ntfs
+           pri/log    8.2 MB      FREIER SPEICHER
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primär    15.9 MB      ext3
+        #2 primär   996.0 MB      fat16
+        #3 primär     3.9 GB      xfs        /home
+        #5 logisch    6.0 GB    f ext4       /
+        #6 logisch    1.0 GB    f ext3       /var
+        #7 logisch  498.8 MB      ext3
+</pre></div>
+<p> Dieses Beispiel zeigt, wie zwei Festplatten in mehrere Partitionen aufgeteilt wurden; die erste Platte enthält noch etwas freien Platz. Jede dieser Zeilen mit jeweils einer Partition besteht aus der Partitionsnummer, dem Typ (primär, erweitert, logisch), der Größe, optionalen Markierungen, dem Dateisystemtyp und dem Einbindungspunkt im Dateisystem (falls vorhanden). Hinweis: dieses spezielle Setup kann nicht mittels Geführter Partitionierung erstellt werden, aber es zeigt mögliche Variationen, die mit manueller Partitionierung erreicht werden können. </p>
+<p>Hiermit ist die Vorauswahl der automatischen Partitionierung beendet. Wenn Sie mit der erstellten Partitionstabelle zufrieden sind, wählen Sie <span class="guimenuitem">Partitionierung beenden und Änderungen übernehmen</span>, um die neue Partitionstabelle zu aktivieren (wie am Ende dieses Kapitels beschrieben). Sind Sie nicht zufrieden, können Sie <span class="guimenuitem">Änderungen an den Partitionen rückgängig machen</span> wählen, um die automatische Partitionierung erneut zu starten, oder Sie nehmen die Vorschläge als Basis und führen daran noch manuelle Änderungen durch, wie unten für das manuelle Partitionieren erläutert. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Manuelle Partitionierung</h4></div></div></div>
+<p>Ein ähnliches Bild wie oben wird Ihnen angezeigt, wenn Sie <span class="quote">„<span class="quote">Manuell</span>“</span> wählen, mit dem Unterschied, dass Ihre derzeit existierende Partitionstabelle angezeigt wird, aber die Einbindungspunkte fehlen. Wie Sie die Partitionstabelle manuell einrichten (sowie einiges über die Nutzung der Partitionen durch Ihr neues Debian-System) wird im Rest dieses Kapitels beschrieben. </p>
+<p>Wenn Sie eine neue, unberührte Platte auswählen, die weder Partitionen noch freien Speicher enthält, werden Sie gefragt, ob eine neue Partitionstabelle erstellt werden soll (dies ist nötig, um neue Partitionen anlegen zu können). Danach sollte eine neue Zeile <span class="quote">„<span class="quote">FREIER SPEICHER</span>“</span> in der Tabelle unter den ausgewählten Festplatten erscheinen. </p>
+<p>Wenn Sie eine Zeile mit freiem Speicher auswählen, haben Sie die Gelegenheit, eine neue Partition zu erstellen. Sie müssen einige Fragen über ihre Größe, den Typ (primär oder logisch) und die Lage auf der Platte (am Anfang oder am Ende des freien Speicherbereichs) beantworten. Danach wird eine detaillierte Übersicht der neuen Partition angezeigt. Die wichtigste Option hier ist <span class="guimenuitem">Benutzen als:</span>, welche festlegt, ob die Partition ein Dateisystem enthalten soll oder als Swap<span class="phrase">, Software-RAID, LVM, verschlüsseltem LVM </span>oder überhaupt nicht verwendet werden soll. Andere Einträge enthalten den Einbindungspunkt im zukünftigen Dateisystem, Optionen zum Einbinden und die <span class="quote">„<span class="quote">Boot-Flag</span>“</span>-Markierung (ob die Partition bootfähig ist oder nicht). Welche Einträge angezeigt werden, hängt von der Art der Nutzung der Partition ab. Falls Ihnen die gewählten Standardwerte nicht zusagen, scheuen Sie sich nicht, sie Ihren Bedürfnissen entsprechend zu ändern. Z.B. können Sie mittels der <span class="guimenuitem">Benutzen als:</span>-Option ein anderes Dateisystem für die Partition auswählen sowie haben die Möglichkeit, die Partition als Swap (um Arbeitsspeicher auf die Platte auszulagern)<span class="phrase">, Software-RAID, LVM</span> oder überhaupt nicht zu nutzen. Wenn Sie mit der neu erstellten Partition zufrieden sind, wählen Sie <span class="guimenuitem">Anlegen der Partition beenden</span>, um zurück zum <span class="command"><strong>partman</strong></span>-Hauptbildschirm zu gelangen. </p>
+<p>Wenn Sie meinen, noch etwas an Ihren Partitionen ändern zu müssen, wählen Sie einfach eine aus und Sie kommen zum Partitions-Konfigurationsmenü. Dies ist das gleiche Bild wie beim Erstellen von Partitionen; deshalb stehen auch die gleichen Optionen zur Auswahl. Eine Sache, die vielleicht auf den ersten Blick nicht ganz einleuchtend sein könnte, ist die Möglichkeit, eine Partition in der Größe zu verändern, indem Sie das Element auswählen, das die Größe anzeigt. Dateisysteme, bei denen das bekanntermaßen funktioniert, sind FAT16, FAT32, EXT2, EXT3 und Swap. In diesem Menü ist es ebenfalls möglich, eine Partition zu löschen. </p>
+<p>Sie müssen mindestens zwei Partitionen erzeugen: eine für das <span class="emphasis"><em>root</em></span>-Dateisystem (das als <code class="filename">/</code> eingebunden werden muss) und eine für <span class="emphasis"><em>Swap</em></span>. Falls Sie vergessen, die Root-Partition einzubinden, gestattet <span class="command"><strong>partman</strong></span> Ihnen nicht, fortzufahren, bis diese Angelegenheit behoben ist. </p>
+<p>Falls Sie im EFI-Modus gebootet, aber vergessen haben, eine EFI System Partition auszuwählen und zu formatieren, wird <span class="command"><strong>partman</strong></span> dies erkennen und lässt Sie nicht weiter fortfahren, bis Sie eine zugewiesen haben. </p>
+<p>Die Fähigkeiten von <span class="command"><strong>partman</strong></span> können mittels zusätzlicher Installer-Module noch ausgebaut werden, dies ist allerdings abhängig von Ihrer Systemarchitektur. Falls also nicht alle angekündigten Optionen sichtbar sind, stellen Sie sicher, dass die erforderlichen Module geladen sind (wie z.B. <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> oder <code class="filename">partman-lvm</code>). </p>
+<p>Wenn Sie mit der Partitionierung zufrieden sind, wählen Sie <span class="guimenuitem">Partitionierung beenden und Änderungen übernehmen</span> aus dem Partitionierungsmenü. Es wird eine Zusammenfassung aller Änderungen, die vorgenommen wurden, angezeigt und Sie werden aufgefordert, die Erstellung der Dateisysteme zu bestätigen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. <span class="quote">„<span class="quote">Multidisk Devices</span>“</span> (Software-RAID) konfigurieren</h4></div></div></div>
+<p>Wenn Sie mehr als eine Festplatte in Ihrem Rechner haben <a href="#ftn.id2904" class="footnote" name="id2904"><sup class="footnote">[8]</sup></a>, können Sie <span class="command"><strong>partman-md</strong></span> für die Einrichtung Ihrer Festplatten benutzen, um die Performance zu erhöhen und/oder eine höhere Datensicherheit zu erreichen. Das Ergebnis nennt sich <em class="firstterm">Multidisk Device</em> (oder nach der bekanntesten Variante auch <em class="firstterm">Software-RAID</em>). </p>
+<p>MD ist im Prinzip ein Verbund von Partitionen auf unterschiedlichen Festplatten, die zu einer Art <span class="emphasis"><em>logischem</em></span> Laufwerk zusammengefasst sind. Dieses Laufwerk kann wie eine gewöhnliche Partition genutzt werden (z.B. kann man es mit <span class="command"><strong>partman</strong></span> formatieren, einen Einbindungspunkt festlegen usw.). </p>
+<p>Welchen Vorteil Ihnen das bringt, hängt vom Typ des MD-Laufwerks ab. Im Moment werden unterstützt: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Dieser Typ zielt hauptsächlich auf die Performance ab. RAID0 splittet alle ankommenden Daten in <em class="firstterm">Stripes</em> (Streifen) und verteilt sie gleichmäßig auf alle Festplatten im Verbund. Dies kann die Geschwindigkeit von Schreib-/Leseoperationen erhöhen, wenn jedoch eins der Laufwerke ausfällt, verlieren Sie <span class="emphasis"><em>alle</em></span> Daten (ein Teil der Informationen ist immer noch auf einem/mehreren funktionierenden Laufwerk(en), der andere Teil <span class="emphasis"><em>war</em></span> auf der defekten Platte). </p>
+<p> Ein typischer Anwendungsfall für RAID0 ist eine Partition zum Editieren von Videos. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Dieser Typ eignet sich für Setups, wo die Datensicherheit das oberste Gebot ist. RAID1 besteht aus mehreren (gewöhnlich zwei) gleich großen Partitionen, wobei beide Partitionen exakt die gleichen Daten enthalten. Dies bedeutet dreierlei. Erstens: wenn eine Disk ausfällt, haben Sie immer noch die gespiegelten Daten auf den anderen Laufwerken. Zweitens: Sie können nur einen Teil der tatsächlichen Kapazität nutzen (genauer gesagt die Größe der kleinsten Partition im Verbund). Drittens: Bei Dateileseoperationen wird die Last auf die Festplatten aufgeteilt; dies kann die Performance auf einem Server verbessern, z.B. auf einem Dateiserver, der mehr Lese- als Schreibvorgänge tätigt. </p>
+<p> Zusätzlich können Sie eine Reserve-Disk im Verbund haben, die im Fehlerfall den Platz des defekten Laufwerks einnimmt. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> Dies ist ein guter Kompromiss zwischen Geschwindigkeit, Datensicherheit und Redundanz. RAID5 splittet alle ankommenden Daten in kleine Teile (Stripes) und verteilt Sie gleichmäßig auf alle Laufwerke außer einem (vergleichbar zu RAID0). Im Unterschied zu RAID0 erzeugt der RAID5-Typ zusätzlich <em class="firstterm">Paritäts</em>-Informationen, die auf die verbleibende Disk geschrieben werden. Die Paritäts-Disk ist nicht statisch festgelegt (dies wäre RAID4), sondern wechselt periodisch, so dass die Paritäts-Informationen gleichmäßig auf allen Platten vorhanden sind. Wenn eine Festplatte ausfällt, können die fehlenden Informationen aus den verbleibenden Daten und Ihrer Parität wiederhergestellt werden. Ein RAID5-Verbund muss aus mindestens drei aktiven Partitionen bestehen. Zusätzlich können Sie eine Reserve-Disk im Verbund haben, die im Fehlerfall den Platz der defekten Platte einnimmt. </p>
+<p> Wie Sie sehen, erreicht RAID5 einen ähnlichen Grad an Betriebssicherheit wie RAID1, aber weniger Redundanz. Auf der anderen Seite könnte es bei Schreibvorgängen etwas langsamer sein, da zusätzlich die Paritätsinformationen errechnet werden müssen. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Vergleichbar mit RAID5, allerdings verwendet RAID6 zwei Paritäts-Disks statt einer. </p>
+<p> Ein RAID6-Array kann den Ausfall von bis zu zwei Festplatten überstehen. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 vereint das Aufteilen der Daten in kleine Teile (Stripes, wie in RAID0) mit dem Spiegeln von Festplatten (wie in RAID1). Es erzeugt <em class="replaceable"><code>n</code></em> Kopien der ankommenden Daten und verteilt Sie so über die Partitionen, dass mehrere Kopien der gleichen Daten nie auf ein und derselben Festplatte liegen. Der Standardwert für <em class="replaceable"><code>n</code></em> ist 2, aber er kann im Experten-Modus auch auf einen anderen Wert gesetzt werden. Die Zahl der verwendeten Partitionen muss mindestens <em class="replaceable"><code>n</code></em> sein. RAID10 enthält verschiedene Layouts für das Verteilen der Daten-Kopien: Der Standard ist <span class="quote">„<span class="quote">near copies</span>“</span>. Bei near copies liegen die Kopien an nahezu der gleichen Stelle auf allen Platten (ungefähr identischer Offset). Bei <span class="quote">„<span class="quote">far copies</span>“</span> ist der Offset auf den Festplatten unterschiedlich. <span class="quote">„<span class="quote">Offset copies</span>“</span> kopiert die Stripes (die aufgesplitteten Teile der Daten), nicht die individuellen Daten direkt. </p>
+<p> RAID10 kann genutzt werden, um Betriebssicherheit und Redundanz zu erreichen ohne den Nachteil, Parityinformationen berechnen zu müssen. </p>
+</dd>
+</dl></div>
+<p> Um es nochmal zusammenzufassen: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Typ</th>
+<th>Mindestanzahl benötigter Laufwerke</th>
+<th>Reserve-Laufwerk</th>
+<th>Übersteht einen Laufwerkscrash?</th>
+<th>Verfügbarer Speicherplatz</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nein</td>
+<td>nein</td>
+<td>Größe der kleinsten Partition multipliziert mit der Anzahl der Laufwerke</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>optional</td>
+<td>ja</td>
+<td>Größe der kleinsten Partition im Verbund</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>optional</td>
+<td>ja</td>
+<td>Größe der kleinsten Partition multipliziert mit (Anzahl der Laufwerke minus 1) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>optional</td>
+<td>ja</td>
+<td>Größe der kleinsten Partition multipliziert mit (Anzahl der Laufwerke minus 2) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>optional</td>
+<td>ja</td>
+<td>Summe aller Partitionen dividiert durch die Anzahl der Daten-Kopien (Standard ist 2) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Wenn Sie mehr über Software-RAID erfahren wollen, werfen Sie einen Blick in das <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software-RAID-HowTo</a>. </p>
+<p>Wenn Sie ein MD-Laufwerk erstellen möchten, müssen die beteiligten Partitionen für die Nutzung im RAID gekennzeichnet werden. (Dies erledigen Sie in <span class="command"><strong>partman</strong></span> in den <span class="guimenu">Partitionseinstellungen</span>, wo Sie unter <span class="guimenu">Benutzen als:</span> → <span class="guimenuitem">Physisches Volume für RAID</span> auswählen.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Stellen Sie sicher, dass das System tatsächlich von dem Partitionsschema, das Sie planen, booten kann. Grundsätzlich wird es notwendig sein, ein separates Dateisystem für <code class="filename">/boot</code> zu erstellen, wenn RAID für das root-Dateisystem (<code class="filename">/</code>) benutzt wird. Die meisten Bootloader <span class="phrase">(inklusive grub)</span> unterstützen gespiegelte RAID1-Systeme, jedoch keine gesplitteten! Es wäre also z.B. möglich, RAID5 für <code class="filename">/</code> und RAID1 für <code class="filename">/boot</code> zu verwenden. </p></td></tr>
+</table></div>
+<p>Als nächstes wählen Sie <span class="guimenuitem">Software-RAID konfigurieren</span> aus dem <span class="command"><strong>partman</strong></span>-Hauptmenü. (Das Menü erscheint nur, wenn Sie mindestens eine Partition für die Nutzung als <span class="guimenuitem">Physisches Volume für RAID</span> markiert haben.) Im ersten Bild von <span class="command"><strong>partman-md</strong></span> wählen Sie einfach <span class="guimenuitem">MD-Gerät erstellen</span>. Eine Liste unterstützter Typen von MD-Laufwerken wird angezeigt, von denen Sie einen auswählen (z.B. RAID1). Die folgenden Schritte unterscheiden sich abhängig davon, welchen Typ Sie gewählt haben: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 ist einfach – Sie bekommen eine Liste der verfügbaren RAID-Partitionen und Sie müssen lediglich auswählen, aus welchen Partitionen das MD bestehen soll. </p></li>
+<li class="listitem"><p>RAID1 ist ein wenig komplizierter. Als erstes müssen Sie die Anzahl der aktiven Laufwerke und der Reserve-Laufwerke angeben, aus denen das MD bestehen soll. Als nächstes wählen Sie aus der Liste der verfügbaren RAID-Partitionen diejenigen aus, die aktiv sein und diejenigen, die Reserve bleiben sollen. Die Gesamtanzahl der ausgewählten Partitionen muss mit der zuvor angezeigten Anzahl übereinstimmen. Aber keine Sorge, wenn Sie einen Fehler machen und eine falsche Anzahl Partitionen auswählen, wird der <code class="classname">debian-installer</code> dies nicht zulassen und Sie können erst fortfahren, wenn Sie dies korrigiert haben. </p></li>
+<li class="listitem"><p>Die Einrichtungsprozedur von RAID5 ist ähnlich der von RAID1 mit der Ausnahme, dass Sie mindestens <span class="emphasis"><em>drei</em></span> aktive Partitionen benutzen müssen. </p></li>
+<li class="listitem"><p>Die Einrichtungsprozedur von RAID6 ist ebenfalls ähnlich zu der von RAID1, allerdings werden mindestens <span class="emphasis"><em>vier</em></span> aktive Partitionen benötigt. </p></li>
+<li class="listitem"><p>Auch RAID10 hat eine Einrichtungsprozedur, die der von RAID1 ähnlich ist, lediglich im Experten-Modus gibt es Unterschiede. Im Experten-Modus fragt der <code class="classname">debian-installer</code> nach dem gewünschten Layout. Das Layout besteht aus zwei Teilen. Der erste Teil ist der Layout-Typ. Dies kann <code class="literal">n</code> (für near copies), <code class="literal">f</code> (für far copies) oder <code class="literal">o</code> (für offset copies) sein. Der zweite Teil ist die Anzahl der Kopien, die von den Daten erstellt werden sollen. Es müssen mindestens so viele aktive Festplatten vorhanden sein, dass alle Kopien der Daten auf verschiedene Platten verteilt werden können. </p></li>
+</ul></div>
+<p>Es ist uneingeschränkt möglich, verschiedene Typen von MDs gleichzeitig zu benutzen. Wenn Sie zum Beispiel drei 200GB-Festplatten haben, die für MD genutzt werden sollen, und jede enthält zwei 100GB-Partitionen, können Sie die jeweils erste Partition auf allen drei Platten zu einem RAID0 kombinieren (eine schnelle 300GB-Videobearbeitungs-Partition) und die anderen drei Partitionen (zwei aktive und eine als Reserve) für ein RAID1 benutzen (eine hochverfügbare 100GB-Partition z.B. für <code class="filename">/home</code>). </p>
+<p>Wenn Sie die MD-Laufwerke nach Ihren Wünschen eingerichtet haben, kehren Sie mit <span class="guimenuitem">Beenden</span> zu <span class="command"><strong>partman</strong></span> zurück, um dort Dateisysteme auf Ihren neuen MD-Laufwerken zu erstellen und die Attribute wie z.B. Einbindungspunkte festzulegen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Den <span class="quote">„<span class="quote">Logical Volume Manager</span>“</span> (LVM) konfigurieren</h4></div></div></div>
+<p>Wenn Sie als Systemadministrator oder <span class="quote">„<span class="quote">erfahrener</span>“</span> Benutzer mit Computern zu tun haben, werden Sie bestimmt schon einmal die Situation erlebt haben, dass auf einigen Festplattenpartitionen (meistens auf den wichtigsten) der freie Platz knapp wurde, während einige andere Partitionen ziemlich ungenutzt waren, und Sie mussten diese Situation lösen, indem Sie einige Sachen umlagerten, symbolische Links verwendeten oder ähnliches. </p>
+<p>Um die beschriebene Situation zu vermeiden, können Sie den <span class="quote">„<span class="quote">Logical Volume Manager</span>“</span> (LVM) verwenden. Einfach ausgedrückt: mit LVM können Sie ihre Partitionen (in der LVM-Sprache <em class="firstterm">Physische Volumes</em> genannt) zusammenfassen, um eine virtuelle Festplatte (eine so genannte <em class="firstterm">Volume-Gruppe</em>) zu erstellen, die dann wieder in virtuelle Partitionen (<em class="firstterm">Logische Volumes</em>) aufgeteilt wird. Der Trick dabei ist, dass sich die Logischen Volumes (und damit natürlich auch die darunter liegenden Volume-Gruppen) über mehrere physische Laufwerke verteilen können. </p>
+<p>Wenn Sie sich jetzt vorstellen, dass Sie mehr Platz auf Ihrer alten 160GB-<code class="filename">/home</code>-Partition benötigen, können Sie einfach eine neue 300GB Festplatte in Ihren Rechner einbauen, zu Ihrer vorhandenen Volume-Gruppe hinzufügen und dann das Logische Volume, welches Ihr <code class="filename">/home</code> beherbergt, vergrößern und voilà – schon haben Ihre Nutzer wieder Platz auf Ihrer erneuerten 460GB-Partition. Dieses Beispiel ist natürlich etwas sehr stark vereinfacht. Falls noch nicht geschehen, sollten Sie auf jeden Fall das <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM-HowTo</a> lesen. </p>
+<p>LVM im <code class="classname">debian-installer</code> einzurichten ist sehr einfach und wird vollständig von <span class="command"><strong>partman</strong></span> unterstützt. Als erstes müssen Sie die Partitionen festlegen, die als Physische Volumes für LVM genutzt werden sollen (dies erledigen Sie im Menü <span class="guimenu">Partitionseinstellungen</span>, wo Sie unter <span class="guimenu">Benutzen als:</span> → <span class="guimenuitem">physisches Volume für LVM</span> auswählen). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warnung]" src="images/warning.png"></td>
+<th align="left">Warnung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Bitte unbedingt beachten: durch eine neue LVM-Einrichtung werden alle Daten auf all denjenigen Partitionen gelöscht, die mit einem LVM-Typ-Code markiert sind. Wenn Sie also bereits ein LVM auf einigen Ihrer Festplatten haben, und Debian zusätzlich auf diesem Rechner installieren möchten, wird das alte (bereits vorhandene) LVM gelöscht! Das gleiche gilt für Partitionen, die (aus welchem Grund auch immer) fälschlicherweise mit einem LVM-Typ-Code markiert sind, aber irgendwelche anderen Daten enthalten (wie z.B. ein verschlüsseltes Volume). Sie müssen daher solche Festplatten aus dem System entfernen, bevor Sie eine neue LVM-Einrichtung starten! </p></td></tr>
+</table></div>
+<p>Sobald Sie zum Hauptbildschirm von <span class="command"><strong>partman</strong></span> zurückkehren, finden Sie eine neue Option <span class="guimenuitem">Logical Volume Manager konfigurieren</span>. Wenn Sie sie auswählen, müssen Sie als Erstes anstehende Änderungen an der Partitionstabelle (falls es welche gibt) bestätigen; danach wird das LVM-Konfigurationsmenü angezeigt. Über dem Menü sehen Sie eine Zusammenfassung der LVM-Konfiguration. Das Menü selbst ist kontext-abhängig: es werden nur gültige Aktionen angezeigt. Die möglichen Aktionen sind: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Konfigurationsdetails anzeigen</span>: zeigt die Struktur der LVM-Geräte, die Namen und Größen der Logischen Volumes usw. </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volume-Gruppe erstellen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logisches Volume erstellen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volume-Gruppe löschen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logisches Volume löschen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volume-Gruppe erweitern</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volume-Gruppe reduzieren</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Fertigstellen</span>: zurück zum <span class="command"><strong>partman</strong></span>-Hauptbildschirm </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Verwenden Sie diese Optionen, um zunächst eine Volume-Gruppe zu erzeugen und dann innerhalb dieser Ihre logischen Volumes anzulegen. </p>
+<p>Wenn Sie zum <span class="command"><strong>partman</strong></span>-Hauptbildschirm zurückkehren, erscheinen dort die erstellten Logischen Volumes wie gewöhnliche Partitionen (und sie sollten auch als solche behandelt werden). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Verschlüsselte Dateisysteme konfigurieren</h4></div></div></div>
+<p><code class="classname">debian-installer</code> erlaubt es, verschlüsselte Dateisysteme einzurichten. Jede Datei, die auf eine solche Partition geschrieben wird, wird direkt in verschlüsselter Form auf dem Gerät gespeichert. Zugriff auf die verschlüsselten Daten wird nur nach Eingabe der korrekten <em class="firstterm">Passphrase</em> gewährt, die bei der Erstellung der verschlüsselten Partition benutzt wurde. Diese Funktion ist z.B. sinnvoll, um sensible Daten zu schützen für den Fall, dass Ihr Laptop oder Ihre Festplatte gestohlen wird. Der Dieb kann zwar physischen Zugriff auf die Platte haben, aber ohne Kenntnis der richtigen Passphrase werden die Daten wie zufällig erzeugte Zeichen erscheinen. </p>
+<p>Die beiden wichtigsten Partitionen, die Sie verschlüsseln sollten, sind: Ihre Home-Partition, auf der Ihre privaten Daten liegen und die Swap-Partition, auf der sensible Daten möglicherweise vorübergehend während des Betriebes gespeichert werden könnten. Natürlich kann Sie nichts davon abhalten, auch irgendeine andere Partition zu verschlüsseln, die vielleicht von Interesse ist. Zum Beispiel <code class="filename">/var</code>, wo Datenbankserver, Mailserver oder Printserver ihre Daten ablegen, oder <code class="filename">/tmp</code>, das von verschiedensten Programmen genutzt wird, um potentiell interessante temporäre Dateien zu speichern. Einige Leute möchten vielleicht sogar ihr ganzes System verschlüsseln. Grundsätzlich ist ist die <code class="filename">/boot</code>-Partition hier die einzige Ausnahme: sie muss unverschlüsselt bleiben. Dies rührt daher, dass es historisch keinen Weg gab, einen Kernel von einer verschlüsselten Partition zu laden. (GRUB ist seit neuestem hierzu in der Lage, aber der <code class="classname">debian-installer</code> unterstützt dies derzeit noch nicht. Das Setup hierfür ist daher in einer <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separaten Anleitung</a> abgelegt.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Bedenken Sie bitte, dass die Performance von verschlüsselten Partitionen geringer ist als die von unverschlüsselten, da die Daten für jeden Lese- und Schreibvorgang ent- oder verschlüsselt werden müssen. Der Performance-Unterschied ist abhängig von der Geschwindigkeit Ihrer CPU, der gewählten Verschlüsselung und der Schlüssellänge. </p></td></tr>
+</table></div>
+<p>Um Verschlüsselung zu benutzen, müssen Sie eventuell eine neue Partition erstellen, indem Sie im Haupt-Partitionierungsmenu freien Speicher auswählen. Eine andere Möglichkeit ist, eine vorhandene Partition (wie z.B. eine reguläre Partition, ein logisches LVM-Volume oder ein RAID-Volume) zu verwenden. Im Menü <span class="guimenu">Partitionseinstellungen</span> müssen Sie unter <span class="guimenu">Benutzen als:</span> den Punkt <span class="guimenuitem">physisches Volume für Verschlüsselung</span> wählen. Es wird dann in ein anderes Menü gewechselt, das verschiedene Verschlüsselungsoptionen für die Partition enthält. </p>
+<p>Der <code class="classname">debian-installer</code> unterstützt die Verschlüsselungsmethode <em class="firstterm">dm-crypt</em> (in neueren Linux-Kernel enthalten; hat die Fähigkeit, physische Volumes für LVM beherbergen zu können). </p>
+<p>Wir wollen jetzt die Optionen betrachten, die verfügbar sind, wenn Sie Verschlüsselung via <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong> wählen. Generell gilt: wenn Sie nicht sicher sind, verwenden Sie die Standardwerte, da sie unter Berücksichtigung von Sicherheitsaspekten sorgfältig ausgewählt wurden. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Verschlüsselung: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Mit dieser Option können Sie den Verschlüsselungsalgorithmus (<em class="firstterm">cipher</em>) wählen, der genutzt wird, um die Daten auf der Partition zu verschlüsseln. <code class="classname">debian-installer</code> unterstützt derzeit die folgenden Blockverschlüsselungen: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> und <em class="firstterm">twofish</em>. Es ist nicht Ziel dieses Dokuments, die Qualitäten dieser verschiedenen Algorithmen zu diskutieren, aber vielleicht hilft es Ihnen bei der Entscheidung, wenn Sie wissen, dass <span class="emphasis"><em>AES</em></span> im Jahre 2000 vom American National Institute of Standards and Technology zum Standard-Verschlüsselungsalgorithmus für den Schutz sensibler Informationen im 21. Jahrhundert gewählt wurde. </p></dd>
+<dt><span class="term">Schlüssellänge: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Hier können Sie die Länge des Schlüssels festlegen. Mit einem größeren Schlüssel wird generell die Stärke der Verschlüsselung erhöht. Auf der anderen Seite hat es für gewöhnlich einen negativen Einfluss auf die Performance, wenn die Länge des Schlüssels vergrößert wird. Die möglichen Schlüssellängen variieren abhängig vom gewählten Algorithmus. </p></dd>
+<dt><span class="term">IV-Algorithmus: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>Der Initialisierungsvektor oder auch <em class="firstterm">IV</em>-Algorithmus wird in der Kryptographie verwendet, um sicherzustellen, dass die mehrfache Anwendung einer Verschlüsselung auf den gleichen <em class="firstterm">Klartext</em> immer unterschiedliche, einzigartige <em class="firstterm">geheime Zeichenfolgen</em> ergibt. Dem liegt der Gedanke zugrunde, zu vermeiden, dass der Angreifer aufgrund von sich wiederholenden Mustern in den verschlüsselten Daten auf die zu schützenden Informationen schließen kann. </p>
+<p>Der Standardwert <strong class="userinput"><code>xts-plain64</code></strong> ist unter den auszuwählenden Möglichkeiten derzeit der gegen bekannte Angriffe am wenigsten verwundbare. Sie sollten die anderen Alternativen nur verwenden, wenn Sie Kompatibilität zu früher installierten Systemen gewährleisten müssen, die die neueren Algorithmen nicht nutzen können. </p>
+</dd>
+<dt><span class="term">Schlüssel: <strong class="userinput"><code>Passphrase</code></strong></span></dt>
+<dd>
+<p>Hier können Sie den Typ des Schlüssels für diese Partition wählen. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Passphrase</span></dt>
+<dd><p>Der Schlüssel wird errechnet<a href="#ftn.id3149" class="footnote" name="id3149"><sup class="footnote">[9]</sup></a> auf Basis einer Passphrase, die Sie später im Prozess eingeben müssen. </p></dd>
+<dt><span class="term">Zufälliger Schlüssel</span></dt>
+<dd>
+<p>Jedes Mal, wenn Sie versuchen, die verschlüsselte Partition zu aktivieren, wird ein neuer Schlüssel aus zufälligen Daten erzeugt. Mit anderen Worten: nach jedem Herunterfahren des Systems ist der Inhalt der Partition verloren, da der Schlüssel aus dem Speicher gelöscht wird. (Sie könnten natürlich versuchen, mittels einer Brute-Force-Attacke den Schlüssel zu erraten, aber dies wird innerhalb eines Menschenlebens wohl nicht machbar sein, es sei denn, es gibt eine unbekannte Schwäche im Verschlüsselungsalgorithmus.) </p>
+<p>Zufällige Schlüssel sind nützlich für Swap-Partitionen, da man sich nicht damit beschäftigen muss, sich an die Passphrase zu erinnern oder sensible Informationen vor dem Herunterfahren des Systems von der Swap-Partition zu löschen. Allerdings bedeutet dies, dass Sie <span class="emphasis"><em>nicht</em></span> die <span class="quote">„<span class="quote">Suspend-to-Disk</span>“</span>-Funktion nutzen können, die neuere Linux-Kernel bieten, da es unmöglich sein wird, die Daten, die auf die Swap-Partition geschrieben wurden, nach dem nächsten Start wiederherzustellen. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Daten löschen: <strong class="userinput"><code>ja</code></strong></span></dt>
+<dd><p>Legt fest, ob der Inhalt dieser Partition mit Zufallsdaten überschrieben werden soll, bevor die Verschlüsselung eingerichtet wird. Dies wird empfohlen, da es andernfalls für einen Angreifer möglich wäre, zu erkennen, welche Teile der Partition genutzt sind und welche nicht. Und zusätzlich wird hierdurch erschwert, übrig gebliebene Daten von früheren Installationen wiederherzustellen<a href="#ftn.id3164" class="footnote" name="id3164"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Nachdem Sie die gewünschten Parameter für Ihre verschlüsselten Partitionen festgelegt haben, kehren Sie in das Haupt-Partitionierungsmenü zurück. Dort sollte es nun einen neuen Eintrag geben namens <span class="guimenu">Verschlüsselte Datenträger konfigurieren</span>. Wenn Sie ihn auswählen, werden Sie aufgefordert, das Löschen von zum Entfernen markierten Partitionen zu bestätigen sowie eventuell weiterer Aktionen wie dem Schreiben einer neuen Partitionstabelle. Bei großen Partitionen kann dies eine Weile dauern. </p>
+<p>Als nächstes müssen Sie für Partitionen, bei denen die Nutzung einer Passphrase festgelegt wurde, eine eben solche eingeben. Gute Passphrasen sollten länger als 8 Zeichen sein, aus einer Mischung von Buchstaben, Zahlen und anderen Zeichen bestehen und keine Wörter aus allgemeinen Wörterbüchern enthalten oder Informationen, die leicht mit Ihnen in Verbindung gebracht werden könnten (wie Geburtsdaten, Hobbies, Namen oder Kosenamen von Haustieren, Familienmitgliedern oder Angehörigen etc.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warnung]" src="images/warning.png"></td>
+<th align="left">Warnung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Bevor Sie irgendeine Passphrase eingeben, sollten Sie sicherstellen, dass Ihre Tastatur korrekt konfiguriert ist und die erwarteten Zeichen erzeugt. Wenn Sie nicht sicher sind, können Sie auf die zweite virtuelle Konsole wechseln und dort auf der Eingabeaufforderung einen Text eingeben. Dies stellt sicher, dass Sie später keine Überraschung erleben, wenn Sie z.B. versuchen, eine Passphrase auf einer qwerty-Tastatur einzugeben, während Sie bei der Installation ein azerty-Layout verwendet haben. Diese Situation kann durch mehrere Gründe hervorgerufen werden: vielleicht haben Sie während der Installation auf ein anderes Tastaturlayout gewechselt oder das gewählte Layout ist eventuell noch nicht eingerichtet gewesen, als Sie die Passphrase für das Root-Dateisystem eingegeben haben. </p></td></tr>
+</table></div>
+<p>Wenn Sie andere Verschlüsselungsmethoden statt Passphrase gewählt haben, um die Schlüssel zu erzeugen, werden diese jetzt erzeugt. Da der Kernel in diesem frühen Stadium der Installation eventuell noch nicht genügend Zufallsinformationen (Entropy) gesammelt hat, kann dieser Prozess recht lange dauern. Sie können die Erzeugung von Zufallsdaten beschleunigen, indem Sie z.B. zufällig irgendwelche Tasten drücken oder indem Sie auf die Shell der zweiten virtuellen Konsole wechseln und ein bisschen Netzwerk- und Festplattenverkehr erzeugen (z.B. durch das Herunterladen von Dateien, indem Sie einige große Dateien nach <code class="filename">/dev/null</code> schicken etc.) Dies wird für jede zu verschlüsselnde Partition wiederholt. </p>
+<p>Nachdem Sie zum Partitionierungsmenü zurückgekehrt sind, werden Ihnen alle verschlüsselten Dateisysteme als zusätzliche Partitionen angezeigt, die auf die gleiche Art konfiguriert werden können wie gewöhnliche Partitionen. Im folgenden Beispiel sehen Sie ein mit dm-crypt verschlüsseltes Dateisystem. </p>
+<div class="informalexample"><pre class="screen">
+Verschlüsseltes Volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Jetzt ist es Zeit, den Dateisystemen Einbindungspunkte zuzuweisen und zusätzlich vielleicht die Dateisystemtypen zu ändern, falls die Standardwerte Ihnen nicht zusagen. </p>
+<p>Achten Sie auf die Identifikationskennungen, die in Klammern stehen (in diesem Fall <em class="replaceable"><code>sda2_crypt</code></em>) sowie auf die Einbindungspunkte, die Sie ihnen zugeordnet haben. Sie benötigen diese Informationen später, wenn Sie das neue System starten. Die Unterschiede zwischen einem normalen Boot-Prozess und einem Boot-Prozess mit beteiligten verschlüsselten Dateisystemen wird später im <a class="xref" href="ch07s02.html" title="7.2. Verschlüsselte Dateisysteme einbinden">Abschnitt 7.2, „Verschlüsselte Dateisysteme einbinden“</a> behandelt. </p>
+<p>Wenn Sie mit dem Partitionierungsschema zufrieden sind, können Sie mit der Installation fortfahren. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Installation des Basissystems</h3></div></div></div>
+<p>Obwohl dieser Schritt der am wenigsten problematische ist, benötigt er einen erheblichen Teil der Zeit, da hier das komplette Basissystem heruntergeladen, überprüft und entpackt wird. Wenn Sie einen langsamen Rechner oder eine langsame Netzwerkverbindung haben, kann das schon einige Zeit dauern. </p>
+<p>Während der Installation des Basissystems werden Meldungen über das Entpacken von Paketen und das Setup auf <strong class="userinput"><code>tty4</code></strong> umgeleitet. Sie können durch Drücken von <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> auf dieses Terminal umschalten; um wieder zum Haupt-Installationsprozess zurückzukehren, drücken Sie <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Die während dieser Phase erzeugten Meldungen über das Entpacken und das Setup werden auch in <code class="filename">/var/log/syslog</code> gespeichert. Sie können Sie auch dort beobachten, wenn die Installation über eine serielle Konsole erfolgt. </p>
+<p>Als Teil der Installation wird ein Linux-Kernel installiert. In der Standardprioritätseinstellung wählt der Installer einen für Sie aus, der am besten zu Ihrer Hardware passt. Bei niedrigeren Prioritätseinstellungen können Sie selbst aus einer Liste verfügbarer Kernel auswählen. </p>
+<p>Wenn Pakete mittels dem Paketmanagementsystem installiert werden, wird dieses standardmäßig auch solche Pakete mit installieren, die von den ursprünglich zu installierenden vorgeschlagen werden (<span class="quote">„<span class="quote">Recommends</span>“</span>). Solche vorgeschlagenen Pakete werden für die Kernfunktionalitäten der ausgewählten Software nicht unbedingt benötigt, aber sie werten die Software auf und sollten – aus der Sicht des Paketbetreuers – normalerweise mit installiert werden. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Aus technischen Gründen werden für Pakete des Basissystems die vorgeschlagenen Pakete (<span class="quote">„<span class="quote">Recommends</span>“</span>) nicht mit installiert. Die oben beschriebene Regel greift erst nach diesem Schritt des Installationsprozesses (nach der Installation des Basissystems). </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Installation zusätzlicher Software</h3></div></div></div>
+<p>Sie haben nun ein nutzbares, aber noch sehr eingeschränktes System. Die meisten Benutzer werden zusätzliche Software auf dem System installieren wollen, um es an ihre Anforderungen anzupassen, und der Installer ermöglicht dies auch. Dieser Schritt kann sogar länger als die Installation des Basissystems dauern, wenn Sie einen langsamen Rechner oder eine langsame Netzwerkverbindung haben. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. apt konfigurieren</h4></div></div></div>
+<p>Eines der Programme, die zur Paketinstallation auf einem Debian GNU/Linux-System verwendet werden können, ist <span class="command"><strong>apt</strong></span> aus dem Paket <code class="classname">apt</code> <a href="#ftn.id3208" class="footnote" name="id3208"><sup class="footnote">[11]</sup></a>. Es gibt auch andere Bedienoberflächen (Frontends) für die Paketverwaltung, die anders aussehen können, aber im Hintergrund die gleichen Prozesse nutzen; dies sind z.B. <span class="command"><strong>aptitude</strong></span> oder <span class="command"><strong>synaptic</strong></span>. Diese Frontends werden für neue Debian-Benutzer empfohlen, da sie einige zusätzliche Funktionen (wie Paketsuche und Statusüberprüfungen) in einer hübschen Oberfläche integriert haben. </p>
+<p><span class="command"><strong>apt</strong></span> muss konfiguriert werden, so dass es weiß, woher es benötigte Pakete bekommen kann. Das Ergebnis dieser Konfiguration wird in die Datei <code class="filename">/etc/apt/sources.list</code> geschrieben. Sie können sie anschauen und an Ihre Bedürfnisse anpassen, nachdem die Installation beendet ist. </p>
+<p>Wenn Sie mit Standardpriorität installieren, kümmert sich der Installer größtenteils automatisch um die Konfiguration, basierend auf der Installationsmethode, die Sie nutzen, und unter Umständen auch durch Verwendung von vorher im Installationsverlauf bereits von Ihnen getroffenen Entscheidungen. In den meisten Fällen wird der Installer automatisch einen Spiegel-Server für Sicherheitsaktualisierungen hinzufügen sowie, falls Sie die Stable-Distribution installieren, einen Spiegel-Server für den <span class="quote">„<span class="quote">stable-updates</span>“</span>-Service. </p>
+<p>Wenn Sie mit einer niedrigeren Priorität installieren (z.B. im Experten-Modus), haben Sie die Möglichkeit, mehr Entscheidungen selbst zu treffen. Sie können wählen, ob Sie Sicherheitsaktualisierungen und <span class="quote">„<span class="quote">stable-updates</span>“</span> nutzen möchten oder nicht, und ob Sie Pakete aus den Archivbereichen <span class="quote">„<span class="quote">contrib</span>“</span>, <span class="quote">„<span class="quote">non-free</span>“</span> und <span class="quote">„<span class="quote">non-free-firmware</span>“</span> verwenden möchten. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Von mehr als einem DVD-Image installieren</h5></div></div></div>
+<p>Wenn Sie von einem DVD-Image installieren, das Teil eines größeren Sets von Images ist, wird der Installer Sie fragen, ob Sie weitere Installationsmedien einlesen möchten. Wenn Sie solche Medien vorliegen haben, sollten Sie dies tun, so dass der Installer die dort enthaltenen Pakete verwenden kann. </p>
+<p>Falls Sie jedoch keine weiteren Medien haben, ist dies kein Problem: es ist nicht zwingend nötig, solche zu verwenden. Falls Sie auch keinen Internet-Spiegel-Server verwenden (wie im nächsten Abschnitt beschrieben), kann dies bedeuten, dass nicht alle Pakete installiert werden können, die Sie im nächsten Schritt der Installation über die Programmgruppen auswählen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Pakete sind auf den Installationsmedien in der Reihenfolge Ihrer Popularität enthalten. Dies bedeutet, dass für die meisten Anwendungsfälle nur die ersten Images eines Sets benötigt werden; nur sehr wenige Leute benötigen wirklich Pakete von den letzten Images eines Sets. </p>
+<p>Das heißt ebenfalls, dass es einfach Geldverschwendung ist, einen kompletten DVD-Satz zu kaufen oder herunterzuladen und zu brennen, da Sie die meisten davon nie nutzen werden. In den meisten Fällen werden Sie besser fahren, wenn Sie sich lediglich die ersten 1 bis 2 DVDs besorgen und alle weiteren, zusätzlichen Pakete, die Sie benötigen könnten, über das Internet von einem Spiegel-Server installieren. </p>
+</td></tr>
+</table></div>
+<p>Falls Sie mehrere Installationsmedien einlesen, wird der Installer Sie auffordern, das Medium auszutauschen, wenn Pakete von einem anderen Medium benötigt werden, als gerade eingelegt/eingesteckt ist. Beachten Sie, dass nur Medien eingelesen werden sollten, die zu dem gleichen Set gehören. Die Reihenfolge, in der sie eingelesen werden, ist nicht wirklich von Bedeutung, aber es reduziert die Wahrscheinlichkeit von Fehlern, wenn sie in aufsteigender Reihenfolge eingelesen werden. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Einen Internet-Spiegel-Server verwenden</h5></div></div></div>
+<p>Eine Frage, die Ihnen in den meisten Fällen gestellt wird ist, ob Sie einen Internet-Spiegel-Server als Paketquelle verwenden möchten oder nicht. Meistens können Sie die Standardantwort übernehmen, aber es gibt einige Ausnahmen. </p>
+<p>Falls Sie <span class="emphasis"><em>nicht</em></span> von einem DVD-Image installieren, sollten Sie auf jeden Fall einen Internet-Spiegel-Server verwenden, da Sie ansonsten nur ein sehr minimalistisches System erhalten werden. Wenn Sie aber nur über eine relativ langsame Internet-Verbindung verfügen, empfiehlt es sich wiederum, im nächsten Schritt <span class="emphasis"><em>nicht</em></span> die <code class="literal">Arbeitsplatz</code>-Programmgruppe zur Installation auszuwählen. </p>
+<p>Wenn Sie von einem DVD-Image installieren, sollten alle Pakete, die während der Installation benötigt werden, im ersten DVD-Image enthalten sein. Die Nutzung eines Internet-Spiegel-Servers ist in diesen Fällen optional. </p>
+<p>Ein Vorteil davon, einen Internet-Spiegel-Servers zu verwenden ist, dass Aktualisierungen, die seit der Erstellung der DVD-Images veröffentlicht wurden und die Teil einer Zwischen-Veröffentlichung (<span class="quote">„<span class="quote">point release</span>“</span>) waren, sofort während der Installation verfügbar sind, so dass die Lebensdauer der Installationsmedien verlängert wird, ohne die Sicherheit oder Stabilität des installierten Systems zu beeinträchtigen. </p>
+<p>Alles in allem: einen Internet-Spiegel-Server auszuwählen ist grundsätzlich eine gute Idee, außer Sie haben eine langsame Internet-Verbindung. Wenn die derzeit aktuellste Version eines Pakets auf dem Installationsmedium enthalten ist, wird der Installer sie auf jeden Fall verwenden. Die Summe der herunterzuladenen Daten (falls Sie einen Internet-Spiegel-Server auswählen) hängt also von folgenden Faktoren ab: </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>welche Programmgruppen Sie im nächsten Installationsschritt auswählen, </p></li>
+<li class="listitem"><p>welche Pakete für diese Programmgruppen benötigt werden, </p></li>
+<li class="listitem"><p>welche dieser Pakete auf den Installationsmedien, die Sie eingelesen haben, enthalten sind, und </p></li>
+<li class="listitem"><p>ob eventuell aktualisierte Versionen von Paketen, die auf den Medien enthalten sind, auf einem Internet-Spiegel-Server bereitstehen (entweder auf einem regulären Paket-Spiegel-Server oder auf einem Spiegel-Server für Sicherheitsaktualisierungen bzw. für <span class="quote">„<span class="quote">stable-updates</span>“</span>). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Beachten Sie, dass eine Zwischen-Veröffentlichung (<span class="quote">„<span class="quote">point release</span>“</span>) dazu führen kann, dass einige Pakete über das Internet heruntergeladen werden könnten, obwohl Sie keinen Internet-Spiegel-Server ausgewählt haben, nämlich wenn eine Sicherheitsaktualisierung oder eine Aktualisierung aus <span class="quote">„<span class="quote">stable-updates</span>“</span> für diese Pakete verfügbar ist und wenn die entsprechenden Dienste konfiguriert wurden. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Auswahl eines Netzwerk-Spiegel-Servers</h5></div></div></div>
+<p>Basierend auf dem vorher in der Installation ausgewählten Land wird Ihnen eine Liste von geografisch nahe gelegenen (und aufgrunddessen hoffentlich schnellen) Netzwerk-Spiegel-Servern angezeigt (außer, Sie haben die Auswahl getroffen, dass Sie keinen Netzwerk-Spiegel verwenden möchten). Der als Standard markierte Server ist für gewöhnlich eine gute Wahl. </p>
+<p>Der eingestellte Standard-Server ist deb.debian.org, was nicht direkt ein Spiegel-Server ist, sondern ein Dienst, der Sie zu einem aktuellen und schnellen Spiegel-Server weiterleitet. Diese Server unterstützen TLS (das https-Protokoll) und IPv6. Dieser Dienst wird vom Debian-System-Administration-Team (DSA) betreut. </p>
+<p>Ein Spiegel-Server kann über <span class="quote">„<span class="quote">Daten von Hand eingeben</span>“</span> auch händisch festgelegt werden. Sie können dann für den Spiegel einen Rechnernamen (host name) und optional eine Portnummer angeben.Dies muss URL-basiert geschehen, d.h. wenn eine IPv6-Adresse angegeben wird, muss diese in eckigen Klammern eingeschlossen werden, z.B. <span class="quote">„<span class="quote">[2001:db8::1]</span>“</span>. </p>
+<p>Falls Ihr Computer sich in einem ausschließlichen IPv6-Netzwerk befindet (was wahrscheinlich bei der großen Mehrheit der Nutzer nicht der Fall sein wird), könnte der Standard-Spiegel-Server für Ihr Land unter Umständen nicht funktionieren. Alle Spiegel in der Liste können via IPv4 erreicht werden, aber nur einige via IPv6. Da der Anschluß von einzelnen Spiegel-Servern sich über die Dauer der Zeit verändern kann, ist diese Information im Installer nicht verfügbar. Wenn die Verbindung über IPv6 bei dem Standard-Spiegel-Server Ihres Landes nicht funktioniert, können Sie entweder einen der anderen angebotenen Spiegel ausprobieren oder Sie wählen <span class="quote">„<span class="quote">Daten von Hand eingeben</span>“</span>. Sie können dann <span class="quote">„<span class="quote">ftp.ipv6.debian.org</span>“</span> als Spiegel-Server eingeben, was ein Alias für einen über IPv6 erreichbaren Server ist (obwohl dies für Sie nicht unbedingt der schnellste sein muss). </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Software auswählen und installieren</h4></div></div></div>
+<p>Während des Installationsprozesses wird Ihnen die Möglichkeit geboten, zusätzliche Software zur Installation auszuwählen. Statt aber einzelne Programme aus den <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    derzeit verfügbaren Paketen herauszusuchen, zielt dieser Punkt der Installation mehr darauf ab, aus vorbereiteten Software-Zusammenstellungen die auszuwählen, die den künftigen Aufgaben des Rechners am nächsten kommen. </p>
+<p>Diese Programmgruppen (Tasks) repräsentieren eine lockere Zusammenstellung von verschiedenen Aufgaben oder Dingen, die Sie mit Ihrem Computer erledigen können, wie <span class="quote">„<span class="quote">Desktop environment</span>“</span> (Arbeitsplatzrechner), <span class="quote">„<span class="quote">Web-Server</span>“</span> (Inhalte für das Internet bereitstellen) oder <span class="quote">„<span class="quote">SSH-Server</span>“</span> <a href="#ftn.id3275" class="footnote" name="id3275"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Festplattenplatz, der für die Programmgruppen benötigt wird">Abschnitt D.2, „Festplattenplatz, der für die Programmgruppen benötigt wird“</a> gibt eine Übersicht über den erforderlichen Speicherplatz für die verschiedenen Programmgruppen. </p>
+<p>Einige der Programmgruppen sind unter Umständen vorgewählt, abhängig von der Charakteristik des Rechners, den Sie installieren. Falls Sie mit der Vorauswahl nicht zufrieden sind, können Sie sie ändern. Sie können sich sogar entscheiden, an dieser Stelle gar keine Programmgruppen zu installieren. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tipp]" src="images/tip.png"></td>
+<th align="left">Tipp</th>
+</tr>
+<tr><td align="left" valign="top"><p>In der Standard-Benutzeroberfläche des Installers können Sie die Leertaste benutzen, um den Auswahlzustand der Programmgruppen zu ändern. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Durch die Installation der Programmgruppe <span class="quote">„<span class="quote">Debian desktop environment</span>“</span> wird eine grafische Arbeitsplatz-Oberfläche installiert. </p>
+<p>Standardmäßig installiert der <code class="classname">debian-installer</code> die <span class="phrase">Gnome</span>-Arbeitsplatz-Oberfläche. Es ist aber möglich, während der Installation interaktiv eine andere Oberfläche auszuwählen. Auch können mehrere Desktop-Oberflächen gleichzeitig installiert werden, wobei es dabei allerdings Kombinationen geben könnte, die so nicht installierbar sind. </p>
+<p>Beachten Sie aber, dass dies nur funktionieren wird, wenn die Pakete, die für die gewünschte Oberfläche benötigt werden, auch verfügbar sind. Eine der verfügbaren Arbeitsplatz-Oberflächen auf diesem Weg zu installieren, sollte gut funktionieren, wenn Sie von einem DVD-Image installieren oder bei einer anderen Installationsmethode mit einem Netzwerk-Spiegelserver. </p>
+</td></tr>
+</table></div>
+<p>Die verschiedenen Server-Programmgruppen installieren grob gesagt folgende Software: Web-Server: <code class="classname">apache2</code>; SSH-Server: <code class="classname">openssh</code>. </p>
+<p>Die Programmgruppe <span class="quote">„<span class="quote">Standard-Systemwerkzeuge</span>“</span> wird jedes Paket mit der Priorität <span class="quote">„<span class="quote">standard</span>“</span> installieren. Dazu gehören viele grundsätzliche Werkzeuge, die normalerweise auf einem Linux- oder Unix-System vorhanden sind. Sie sollten diese Gruppe ausgewählt lassen, außer Sie wissen, was Sie tun und möchten ein absolut minimalistisches System. </p>
+<p>Wenn Sie bei der Sprachauswahl als Standard-Gebietsschema nicht <span class="quote">„<span class="quote">C</span>“</span> ausgewählt haben, wird <span class="command"><strong>tasksel</strong></span> überprüfen, ob für diese Locale irgendwelche Lokalisierungs-Programmgruppen definiert sind. Falls dies der Fall ist, wird automatisch versucht, die entsprechenden Lokalisierungspakete zu installieren. Dazu gehören zum Beispiel Pakete, die Wortlisten oder spezielle Schriftarten für Ihre Sprache enthalten. Falls eine Arbeitsplatz-Oberfläche zur Installation ausgewählt wurde, werden auch die passenden Lokalisierungspakete dazu installiert (falls solche verfügbar sind). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Beginnend mit Debian Trixie erlaubt der <code class="classname">debian-installer</code>, Debian Pure Blends direkt während der Installation zu installieren. Es gibt einen Eintrag <span class="quote">„<span class="quote">Choose a Debian Blend for installation</span>“</span> ganz unten in der Liste der Programmgruppen (Tasks); dieser aktiviert die Anzeige eines zusätzlichen Dialogs, nachdem <span class="command"><strong>tasksel</strong></span> seine Aufgabe abgeschlossen hat. </p>
+<p>In diesem Dialog (<span class="command"><strong>blendsel</strong></span>) können Sie auswählen, welchen Blend Sie installieren möchten, ähnlich wie bei der Auswahl der Programmgruppen. </p>
+<p>Besuchen Sie die <a class="ulink" href="https://www.debian.org/blends" target="_top">Debian-Website</a>, wenn Sie weitere Informationen über die Debian Pure Blends wünschen. </p>
+</td></tr>
+</table></div>
+<p>Wenn Sie die gewünschten Programmgruppen ausgewählt haben, drücken Sie <span class="guibutton">Weiter</span>. <span class="command"><strong>apt</strong></span> wird jetzt alle Pakete, die zu den gewählten Programmgruppen gehören, installieren. Wenn ein Programm zusätzliche Informationen vom Benutzer benötigt, werden Sie während dieses Installationsschrittes danach gefragt. </p>
+<p>Sie sollten beachten, dass besonders die Programmgruppe <span class="quote">„<span class="quote">Desktop environment</span>“</span> sehr groß ist. Speziell wenn Sie von einem Netinst-Image installieren und zusätzliche Pakete, die dort nicht enthalten sind, von einem Spiegel-Server beziehen, muss der Installer unter Umständen sehr viele Pakete über das Netzwerk herunterladen. Falls Sie eine relativ langsame Internetverbindung haben, kann dies recht lange dauern. Es gibt keine Möglichkeit, die Installation der Pakete abzubrechen, wenn sie einmal gestartet wurde. </p>
+<p>Sogar wenn Pakete in dem Image enthalten sind, könnte der Installer sie trotzdem über das Internet herunterladen, wenn die auf dem Spiegel-Server verfügbare Version neuer ist als die im Image. Falls Sie die Stable-Distribution installieren, kann dies vorkommen, wenn eine Zwischen-Aktualisierung von Stable stattgefunden hat (ein sogenanntes Point-Release; hierbei werden Pakete aktualisiert, um Sicherheitslücken oder gravierende Fehler zu beheben). Falls Sie Testing installieren, kann dies passieren, wenn Sie ein älteres Image verwenden. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Ihr System boot-fähig machen</h3></div></div></div>
+<p>Wenn Sie gerade ein Arbeitsplatzsystem ohne Festplatte installieren, ist das Booten von Festplatte natürlich keine sinnvolle Sache; deswegen wird der Schritt in diesem Fall übersprungen. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Andere Betriebssysteme erkennen</h4></div></div></div>
+<p>Bevor ein Bootloader installiert wird, versucht der Installer, andere Betriebssysteme, die eventuell auf dem Rechner installiert sind, zu erkennen. Wird ein unterstütztes Betriebssystem gefunden, werden Sie darüber während der Installation des Bootloaders informiert und der Computer wird so konfiguriert, dass dieses andere System zusätzlich zu Debian gestartet werden kann. </p>
+<p>Bedenken Sie, dass es immer noch so etwas wie schwarze Magie ist, mehrere Betriebssysteme auf einem Rechner zu booten. Die automatische Unterstützung, andere Betriebssysteme zu erkennen und den Bootloader passend einzurichten, variiert abhängig von der Architektur oder sogar der Unterarchitektur. Falls es nicht funktioniert, konsultieren Sie die Dokumentation Ihres Bootloaders bezüglich detaillierter Informationen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3325"></a>6.3.7.2. Den <span class="command"><strong>grub</strong></span>-Bootloader auf einem Laufwerk installieren</h4></div></div></div>
+<p>Der Bootloader für amd64 ist <span class="command"><strong>grub</strong></span>. Grub ist ein flexibler und robuster Bootloader und eine gute Wahl sowohl für Linux-Neulinge als auch für erfahrene Nutzer. </p>
+<p>Standardmäßig wird grub in die UEFI-Partition/den Boot Record installiert, wo er die volle Kontrolle über den Boot-Prozess übernimmt. Wenn Sie es vorziehen, können Sie ihn auch woanders installieren. Das grub-Handbuch enthält vollständige Informationen. </p>
+<p>Wenn Sie grub nicht installieren möchten, verwenden Sie den <span class="guibutton">Zurück</span>-Button, um zum Hauptmenü zu gelangen und dort den Bootloader auszuwählen, den Sie nutzen möchten. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Ohne Bootloader fortfahren</h4></div></div></div>
+<p>Diese Option kann benutzt werden, um die Installation zu beenden, obwohl kein Bootloader installiert wird, sei es, weil die Architektur/Unterarchitektur keinen unterstützt oder weil keiner gewünscht wird (z.B. weil ein vorhandener Bootloader benutzt werden soll). </p>
+<p>Wenn Sie vorhaben, Ihren Bootloader manuell zu konfigurieren, sollten Sie den Namen des installierten Kernels in <code class="filename">/target/boot</code> überprüfen. Sie sollten in diesem Verzeichnis ebenfalls kontrollieren, ob eine <em class="firstterm">initrd</em> (Initial RAM-Disk) vorhanden ist; falls eine existiert, müssen Sie Ihren Bootloader unter Umständen anweisen, sie zu benutzen. Weitere Informationen, die Sie benötigen, sind die Festplatte und die Partition, die Sie für Ihr <code class="filename">/</code>-Dateisystem gewählt haben sowie für /boot (falls Sie /boot auf einer separaten Partition angelegt haben). </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Die Installation beenden</h3></div></div></div>
+<p>Dies ist der letzte Schritt im Debian-Installationsprozess, es werden noch einige letzte Aufgaben erledigt. Hauptsächlich geht es darum, nach der Installation ein wenig aufzuräumen. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Die Systemuhr stellen</h4></div></div></div>
+<p>Der Installer fragt Sie vielleicht, ob die Uhr des Computers auf UTC (Universal Coordinated Time, koordinierte Weltzeit) eingestellt ist. Die Frage wird nach Möglichkeit unterdrückt und der Installer versucht selbst herauszufinden, ob die Uhr auf UTC eingestellt ist, basierend auf verschiedenen Dingen wie z.B. welche anderen Betriebssysteme installiert sind. </p>
+<p>Im Experten-Modus haben Sie immer die Möglichkeit anzugeben, ob die Uhr auf UTC eingestellt ist oder nicht. <span class="phrase">Auf Systemen, auf denen (auch) Windows läuft, ist die Uhr normalerweise auf lokale Zeit eingestellt. Wenn Sie diese Betriebssysteme auch auf dem Rechner laufen haben möchten, wählen Sie lokale Zeit statt UTC.</span> </p>
+<p>An diesem Punkt wird der <code class="classname">debian-installer</code> auch versuchen, die aktuelle Zeit in die Hardware-Uhr des Systems zu schreiben. Dies geschieht entweder als UTC oder als lokale Zeit, abhängig von der Auswahl, die vorher getroffen wurde. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Den Rechner neu starten</h4></div></div></div>
+<p>Sie werden aufgefordert, das Boot-Medium (CD, USB-Stick, etc.), welches Sie zur Installation verwendet haben, aus dem Rechner zu entfernen. Danach wird der Rechner neu gebootet und das neue Debian-System startet. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Fehlersuche/-behebung</h3></div></div></div>
+<p>Die Komponenten, die wir hier auflisten, sind normalerweise nicht am Installationsprozess beteiligt, warten aber im Hintergrund, um den Benutzer zu unterstützen, falls etwas schief läuft. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Die Protokolldateien der Installation sichern</h4></div></div></div>
+<p>Wenn die Installation erfolgreich verläuft, werden die Logdateien, die das System während des Installationsprozesses erzeugt, automatisch in das Verzeichnis <code class="filename">/var/log/installer/</code> Ihres neuen Debian-Systems kopiert. </p>
+<p>Falls Sie <span class="guimenuitem">Installationsprotokolle speichern</span> aus dem Menü auswählen, haben Sie die Gelegenheit, die Logdateien auf einen USB-Stick, über Netzwerk auf ein fernes Laufwerk, auf Festplatte oder ein anderes Medium zu sichern. Dies könnte nützlich sein, wenn Sie während der Installation gravierende Probleme feststellen und die Dateien auf einem anderen System genauer analysieren oder zu einem Installationsbericht hinzufügen möchten. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Verwenden der Shell und Auswerten der Protokolldateien</h4></div></div></div>
+<p>Es gibt mehrere Möglichkeiten, wie Sie während der Installation eine Shell (Eingabeaufforderung) bekommen können. Auf den meisten Systemen und wenn Sie nicht über serielle Konsole installieren ist es am einfachsten, mit <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3368" class="footnote" name="id3368"><sup class="footnote">[13]</sup></a> auf die zweite <span class="emphasis"><em>virtuelle Konsole</em></span> zu wechseln (auf einer Mac-Tastatur <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Wieder zurück zum Installer kommen Sie mit <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Details zum grafischen Installer finden Sie unter <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Den grafischen Installer verwenden">Abschnitt 6.1.1, „Den grafischen Installer verwenden“</a>. </p>
+<p>Falls es nicht möglich ist, auf andere Konsolen umzuschalten, gibt es auch die Möglichkeit, über den Eintrag <span class="guimenuitem">Eine Shell ausführen</span> im Hauptmenü eine Shell zu starten. Sie können von den meisten Dialogen aus zurück zum Hauptmenü gelangen, indem Sie einmal oder mehrmals den <span class="guibutton">Zurück</span>-Button betätigen. Um die Shell zu schließen und zurück zum Installer zu kommen, geben Sie <strong class="userinput"><code>exit</code></strong> ein. </p>
+<p>Zu diesem Zeitpunkt ist das System von der RAM-Disk gestartet und eine eingeschränkte Auswahl an Unix-Werkzeugen ist verfügbar. Sie können sich ansehen, welche Programme verfügbar sind, indem Sie das Kommando <strong class="userinput"><code>ls /bin /sbin /usr/bin /usr/sbin</code></strong> ausführen oder <span class="command"><strong>help</strong></span> eintippen. Die Shell ist ein Bourne-Shell-Klon namens <span class="command"><strong>ash</strong></span> und hat tolle Funktionen wie automatische Vervollständigung und Speicherung der letzten Befehle. </p>
+<p>Um Dateien zu bearbeiten und zu betrachten, nutzen Sie den Texteditor <span class="command"><strong>nano</strong></span>. Protokolldateien für das Installationssystem finden Sie im Verzeichnis <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Obwohl Sie prinzipiell alles in einer Shell tun können, was die verfügbaren Kommandos Ihnen erlauben, ist die Option zur Nutzung einer Shell nur für den Fall gedacht, dass etwas schief läuft und zur Fehlersuche. </p>
+<p>Irgendwelche Dinge manuell auf der Shell zu erledigen könnte den Installationsprozess stören und zu Fehlern oder einer unvollständigen Installation führen. Vor allem sollten Sie stets den Installer nutzen, um Ihre Swap-Partition zu aktivieren, statt dies manuell auf der Shell zu erledigen. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installation über die Netzwerk-Konsole</h3></div></div></div>
+<p>Eine der interessanteren Komponenten ist <em class="firstterm">network-console</em> (Netzwerk-Konsole). Sie erlaubt es, einen großen Teil der Installation über das Netzwerk via SSH zu erledigen. Die Nutzung des Netzwerks bedeutet, dass Sie die ersten Schritte der Installation auf der Konsole durchführen müssen, zumindest bis zu dem Punkt, wo das Netzwerk eingerichtet wird (obwohl Sie auch diesen Teil automatisieren können; lesen Sie dazu <a class="xref" href="ch04s06.html" title="4.6. Automatische Installation">Abschnitt 4.6, „Automatische Installation“</a>). </p>
+<p>Die Komponente <em class="firstterm">network-console</em> wird nicht standardmäßig in das Installer-Hauptmenü geladen, Sie müssen sie also explizit aufrufen. Wenn Sie von einem optischen Datenträger installieren, booten Sie mit Priorität medium oder rufen Sie das Installer-Hauptmenü auf und wählen <span class="guimenuitem">Installer-Komponenten vom Installationsmedium laden</span>; aus der angezeigten Liste zusätzlicher Komponenten wählen Sie <span class="guimenuitem">network-console: Continue installation remotely using SSH</span> aus. Wenn Sie einen neuen Menüeintrag namens <span class="guimenuitem">Installation über Fernzugriff (SSH) fortsetzen</span> im Hauptmenü sehen, wurde die Komponente erfolgreich geladen. </p>
+<p><span class="phrase">Nachdem Sie diesen neuen Eintrag gewählt haben, werden Sie</span> nach einem neuen Passwort gefragt, das für die Verbindung zum Installationssystem verwendet wird. Anschließend müssen Sie das Passwort noch einmal bestätigen. Das war's. Sie sollten jetzt einen Bildschirm sehen, der Sie anweist, sich per Fernzugriff als Nutzer <span class="emphasis"><em>installer</em></span> anzumelden (mit dem Passwort, das Sie gerade festgelegt haben). Ein weiteres wichtiges Detail, das Sie hier beachten sollten, ist der <span class="quote">„<span class="quote">Fingerabdruck</span>“</span> des Systems. Sie müssen den Fingerabdruck auf sicherem Wege zu der Person übertragen, die die Installation per Fernzugriff fortsetzt. </p>
+<p>Sollten Sie sich entscheiden, die Installation lokal fortzuführen, können Sie <span class="keycap"><strong>Enter</strong></span> drücken; dies bringt Sie zurück zum Hauptmenü, wo Sie einen anderen Installationsschritt auswählen können. </p>
+<p>Lassen Sie uns jetzt auf die andere Seite der Leitung wechseln. Als Grundvoraussetzung müssen Sie Ihr Terminal auf UTF8-Zeichenkodierung konfigurieren, weil das Installationssystem diese nutzt. Falls Sie dies nicht tun, ist eine Installation per Fernzugriff zwar trotzdem möglich, Sie werden aber möglicherweise befremdende Artefakte in der Anzeige feststellen, wie nicht vorhandene Ränder an Dialogfenstern oder unlesbare nicht-ASCII-Zeichen. Eine Verbindung zum Installationssystem aufzubauen ist einfach. Geben Sie ein: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> Dabei ist <em class="replaceable"><code>install_host</code></em> entweder der Name oder die IP-Adresse des Rechners, auf dem Debian GNU/Linux installiert werden soll. Vor der eigentlichen Anmeldung wird der Fingerabdruck des fernen Systems angezeigt und Sie müssen ihn vergleichen und bestätigen, dass er korrekt ist. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Der <span class="command"><strong>ssh</strong></span>-Server im Installer nutzt eine Standardkonfiguration, bei der keine <span class="quote">„<span class="quote">keep-alive</span>“</span>-Pakete gesendet werden. Prinzipiell sollte die Verbindung zu dem zu installierenden System unbegrenzt offen gehalten werden. Allerdings könnte es – abhängig von Ihrer Netzwerkkonfiguration vor Ort – passieren, dass nach einiger Zeit der Inaktivität die Verbindung verloren geht. Ein üblicher Fall, in dem dies vorkommen könnte, ist, wenn eine Form von NAT (Network Address Translation) irgendwo zwischen dem Client und dem zu installierenden System existiert. Abhängig davon, an welchem Punkt der Installation die Verbindung abgebrochen ist, ist es möglich oder auch nicht möglich, die Installation fortsetzen, nachdem die Verbindung wieder aufgebaut wurde. </p>
+<p>Sie können vielleicht vermeiden, dass die Verbindung abbricht, indem Sie die Option <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>Wert</code></em></code></strong> hinzufügen, wenn Sie die <span class="command"><strong>ssh</strong></span>-Verbindung aufbauen, oder indem Sie diese Option zu Ihrer <span class="command"><strong>ssh</strong></span>-Konfigurationsdatei hinzufügen. Beachten Sie aber, dass gerade das Hinzufügen dieser Option einen Verbindungsabbruch <span class="emphasis"><em>verursachen</em></span> kann (z.B. wenn <span class="quote">„<span class="quote">keep-alive</span>“</span>-Pakete während eines kurzen Netzwerkausfalls gesendet werden, von dem <span class="command"><strong>ssh</strong></span> sonst nichts mitbekommen hätte), deshalb sollte sie nur wenn nötig genutzt werden. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wenn Sie mehrere Computer hintereinander installieren und diese haben die gleiche IP-Adresse oder den gleichen Hostnamen, wird <span class="command"><strong>ssh</strong></span> sich weigern, sich mit einem solchen Host zu verbinden. Der Grund hierfür ist, dass diese Rechner unterschiedliche Fingerabdrücke haben, was üblicherweise ein Zeichen für eine Spoofing-Attacke ist. Wenn Sie sicher sind, dass dies nicht der Fall ist, müssen Sie die entsprechende Zeile aus <code class="filename">~/.ssh/known_hosts</code> entfernen<a href="#ftn.id3435" class="footnote" name="id3435"><sup class="footnote">[14]</sup></a> und können es dann noch einmal probieren. </p></td></tr>
+</table></div>
+<p>Nach der Anmeldung wird Ihnen ein Startbildschirm präsentiert und Sie haben zwei Möglichkeiten: <span class="guimenuitem">Menü öffnen</span> und <span class="guimenuitem">Shell starten</span>. Die erste bringt Sie zum Installer-Hauptmenü und Sie können die Installation wie gewohnt fortsetzen. Die zweite Möglichkeit startet eine Shell, über die Sie das ferne System untersuchen und möglicherweise reparieren können, falls es Probleme gibt. Für das Installer-Menü sollten Sie nur eine einzige SSH-Sitzung öffnen, Sie können jedoch mehrere weitere Sitzungen mit Shell-Eingabeaufforderungen starten. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warnung]" src="images/warning.png"></td>
+<th align="left">Warnung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Sobald Sie die Installation per Fernzugriff über SSH gestartet haben, sollten Sie nicht zur Installation auf der lokalen Konsole zurück wechseln. Dies könnte die Datenbank beschädigen, die die Konfiguration des neuen Systems verwaltet. Und das wiederum kann zu einer fehlgeschlagenen Installation oder zu Problemen mit dem installierten System führen. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2613" class="footnote"><p><a href="#id2613" class="para"><sup class="para">[4] </sup></a> Technisch gesehen: wenn verschiedene Gebietsschemata für diese Sprache mit unterschiedlichen Landeskennungen existieren. </p></div>
+<div id="ftn.id2622" class="footnote"><p><a href="#id2622" class="para"><sup class="para">[5] </sup></a> Bei mittlerer und niedriger Priorität haben Sie immer die Möglichkeit, das von Ihnen bevorzugte Gebietsschema aus den für Ihr Land zur Verfügung stehenden auszuwählen (falls es mehr als eines gibt). </p></div>
+<div id="ftn.id2628" class="footnote"><p><a href="#id2628" class="para"><sup class="para">[6] </sup></a> Legacy-Gebietsschemata nutzen kein UTF-8, sondern einen der älteren Standards zur Zeichenkodierung wie zum Beispiel ISO 8859-1 (verwendet für westeuropäische Sprachen) oder EUC-JP (für Japanisch). </p></div>
+<div id="ftn.id2807" class="footnote"><p><a href="#id2807" class="para"><sup class="para">[7] </sup></a> Der Installer verschlüsselt die LVM-Volumegruppe mittels eines 256 Bit-AES-Schlüssels und nutzt dazu die <span class="quote">„<span class="quote">dm-crypt</span>“</span>-Unterstützung des Kernels. </p></div>
+<div id="ftn.id2904" class="footnote"><p><a href="#id2904" class="para"><sup class="para">[8] </sup></a> Wir wollen ehrlich sein: Sie können auch ein MD-Gerät aus Partitionen einer einzigen Festplatte erstellen, dies bringt Ihnen aber keinen sinnvollen Vorteil. </p></div>
+<div id="ftn.id3149" class="footnote"><p><a href="#id3149" class="para"><sup class="para">[9] </sup></a> Das Verwenden einer Passphrase als Schlüssel bedeutet derzeit, dass die Partition unter Benutzung von <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a> eingerichtet wird. </p></div>
+<div id="ftn.id3164" class="footnote"><p><a href="#id3164" class="para"><sup class="para">[10] </sup></a> Man glaubt allerdings, dass die Jungs vom Geheimdienst Daten sogar noch nach mehrfachem Überschreiben des magneto-optischen Mediums wiederherstellen können. </p></div>
+<div id="ftn.id3208" class="footnote"><p><a href="#id3208" class="para"><sup class="para">[11] </sup></a> Beachten Sie, dass das Programm, das letztendlich die Pakete installiert, <span class="command"><strong>dpkg</strong></span> heißt. Allerdings ist dies mehr ein Low-Level-Programm (was unter anderem bedeutet, dass es nicht direkt vom Benutzer aufgerufen wird). <span class="command"><strong>apt</strong></span> spielt eine Stufe höher und wird <span class="command"><strong>dpkg</strong></span> nach Bedarf aufrufen. Es weiß, wie es die Pakete vom Installationsmedium, über Netzwerk oder sonst woher bekommen kann. Außerdem kann es automatisch andere Pakete mit installieren, die benötigt werden, damit die Pakete, die Sie installieren möchten, korrekt funktionieren. </p></div>
+<div id="ftn.id3275" class="footnote"><p><a href="#id3275" class="para"><sup class="para">[12] </sup></a> Sie sollten wissen, dass der Installer lediglich das Programm <span class="command"><strong>tasksel</strong></span> aufruft, in dem dann diese Liste angezeigt wird. <span class="command"><strong>tasksel</strong></span> kann auch nach der Installation jederzeit aufgerufen werden, um weitere Pakete zu installieren (oder sie zu entfernen), oder Sie benutzen ein feinkörnigeres Werkzeug wie <span class="command"><strong>aptitude</strong></span>. Wenn Sie nach Abschluß der Installation ein bestimmtes einzelnes Paket suchen, führen Sie einfach <strong class="userinput"><code>aptitude install <em class="replaceable"><code>package</code></em></code></strong> aus, wobei <em class="replaceable"><code>package</code></em> der Name des Pakets ist, das Sie benötigen. </p></div>
+<div id="ftn.id3368" class="footnote"><p><a href="#id3368" class="para"><sup class="para">[13] </sup></a> Dies bedeutet: drücken Sie die <span class="keycap"><strong>Alt</strong></span>-Taste links neben der <span class="keycap"><strong>Leertaste</strong></span> und gleichzeitig die Funktionstaste <span class="keycap"><strong>F2</strong></span>. </p></div>
+<div id="ftn.id3435" class="footnote"><p><a href="#id3435" class="para"><sup class="para">[14] </sup></a> Der folgende Befehl entfernt einen vorhandenen Eintrag für einen Rechner: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>Rechnername</code></em>|<em class="replaceable"><code>IP–Adresse</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Einführung in die Komponenten </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Fehlende Firmware nachladen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

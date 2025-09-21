@@ -1,0 +1,237 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Диагностика проблем процесса установки</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Глава 5. Загрузка системы установки">
+<link rel="prev" href="ch05s03.html" title="5.3. Параметры загрузки">
+<link rel="next" href="ch06.html" title="Глава 6. Использование программы установки Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Диагностика проблем процесса установки</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 5. Загрузка системы установки</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Диагностика проблем процесса установки</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Reliability of optical media</h3></div></div></div>
+<p>Sometimes, especially with older drives, the installer may fail to boot from an optical disc. The installer may also — even after booting successfully from such disc — fail to recognize the disc or return errors while reading from it during the installation. </p>
+<p>Такие проблемы могут возникать по разным причинам. Мы можем описать только общие из них и предложить общие решения. Остальное зависит от вас. </p>
+<p>Есть несколько простых вещей, которые вы можете попробовать сделать в первую очередь. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>If the disc does not boot, check that it was inserted correctly and that it is not dirty. </p></li>
+<li class="listitem"><p>If the installer fails to recognize the disc, try just running the option <span class="guimenuitem">Detect and mount installation media</span> a second time. Some DMA related issues with very old CD-ROM drives are known to be resolved in this way. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>If this does not work, then try the suggestions in the subsections below. Most, but not all, suggestions discussed there are valid for CD-ROM and DVD. </p>
+<p>If you cannot get the installation working from optical disc, try one of the other installation methods that are available. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2293"></a>5.4.1.1. Общие причины</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Некоторые старые приводы CD-ROM не поддерживают чтение с дисков, которые были записаны на высоких скоростях в современных устройствах записи CD. </p></li>
+<li class="listitem"><p>Некоторые очень старые приводы CD-ROM работают неправильно, если включён <span class="quote">«<span class="quote">прямой доступ к памяти</span>»</span> (DMA). </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2301"></a>5.4.1.2. Как изучать и может быть решить проблему</h4></div></div></div>
+<p>If the optical disc fails to boot, try the suggestions listed below. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Check that your BIOS/UEFI actually supports booting from optical disc (only an issue for very old systems) and that booting from such media is enabled in the BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>If you downloaded an iso image, check that the md5sum of that image matches the one listed for the image in the <code class="filename">MD5SUMS</code> file that should be present in the same location as where you downloaded the image from. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Next, check that the md5sum of the burned disc matches as well. The following command should work. It uses the size of the image to read the correct number of bytes from the disc. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>If, after the installer has been booted successfully, the disc is not detected, sometimes simply trying again may solve the problem. If you have more than one optical drive, try changing the disc to the other drive. If that does not work or if the disc is recognized but there are errors when reading from it, try the suggestions listed below. Some basic knowledge of Linux is required for this. To execute any of the commands, you should first switch to the second virtual console (VT2) and activate the shell there. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Переключитесь в VT4 или посмотрите файл <code class="filename">/var/log/syslog</code> (в качестве редактора используется <span class="command"><strong>nano</strong></span>), чтобы найти сообщения о специфических ошибках. После этого также проверьте вывод команды <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Check in the output of <span class="command"><strong>dmesg</strong></span> if your optical drive was recognized. You should see something like (the lines do not necessarily have to be consecutive): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> If you don't see something like that, chances are the controller your drive is connected to was not recognized or may be not supported at all. If you know what driver is needed for the controller, you can try loading it manually using <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Check that there is a device node for your optical drive under <code class="filename">/dev/</code>. In the example above, this would be <code class="filename">/dev/sr0</code>. There should also be a <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Use the <span class="command"><strong>mount</strong></span> command to check if the optical disc is already mounted; if not, try mounting it manually: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Check if there are any error messages after that command. </p>
+</li>
+<li class="listitem">
+<p>Check if DMA is currently enabled: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> A <span class="quote">«<span class="quote">1</span>»</span> in the first column after <code class="literal">using_dma</code> means it is enabled. If it is, try disabling it: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Make sure that you are in the directory for the device that corresponds to your optical drive. </p>
+</li>
+<li class="listitem"><p>If there are any problems during the installation, try checking the integrity of the installation media using the option near the bottom of the installer's main menu. This option can also be used as a general test if the disc can be read reliably. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2353"></a>5.4.2. Настройка загрузки</h3></div></div></div>
+<p>Если у вас возникли проблемы и ядро падает во время загрузки, не распознает имеющуюся периферию или неправильно распознаются диски, сперва проверьте параметры загрузки, как это обсуждается в <a class="xref" href="ch05s03.html" title="5.3. Параметры загрузки">Раздел 5.3, «Параметры загрузки»</a>. </p>
+<p>В некоторых случаях, неисправность может быть вызвана отсутствием микропрограммы устройства (смотрите <a class="xref" href="ch02s02.html" title="2.2. Устройства, которым требуются микропрограммы">Раздел 2.2, «Устройства, которым требуются микропрограммы»</a> и <a class="xref" href="ch06s04.html" title="6.4. Загрузка отсутствующих микропрограмм">Раздел 6.4, «Загрузка отсутствующих микропрограмм»</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2360"></a>5.4.3. ПО речевого синтеза</h3></div></div></div>
+<p>Если ПО речевого синтеза не работает, то, вероятно, есть проблемы со звуковой картой — обычно из-за того, что в программе установки отсутствует нужный драйвер, или в нём используется необычные названия регулировок громкости, которые по умолчанию выключают звук. Вам нужно отправить сообщение об ошибке, добавив результат вывода следующих команд, запущенных на этой машине из системы Linux, в которой точно работает звук (например, загрузившись с live-CD). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Распространённые проблемы установки на <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Есть некоторое количество распространённых проблем установки, которые можно решить или избежать с помощью передачи параметров загрузки программе установки. </p>
+<p>Если во время загрузки ядра экран выглядит странно, например, он полностью белый, чёрный или замусорен разными цветами, то ваша система, вероятно, имеет проблемную видеокарту, которая неправильно переключается в режим фрейм-буфера. В этом случае, вы можете попробовать указать параметр загрузки <strong class="userinput"><code>vga=normal nomodeset</code></strong>, чтобы выключить фрейм-буфер на консоли. Из-за ограничений консоли установка будет доступна только на нескольких языках. Подробней см. <a class="xref" href="ch05s03.html" title="5.3. Параметры загрузки">Раздел 5.3, «Параметры загрузки»</a>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2383"></a>5.4.4.1. Система подвисает во время настройки PCMCIA</h4></div></div></div>
+<p>Про некоторые очень старые модели ноутбуков Dell известно, что они виснут когда при определении PCMCIA устройства производится попытка доступа по некоторым аппаратным адресам. Похожие проблемы могут иметь и другие ноутбуки. Если у вас возникла такая проблема и вам не нужна поддержка PCMCIA во время установки, то вы можете выключить PCMCIA с помощью параметра загрузки <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. После установки вы сможете настроить PCMCIA, исключив диапазон ресурсов, с которым возникают проблемы. </p>
+<p>Другой вариант: вы можете загрузить программу установки в экспертном режиме. Вас попросят указать диапазон ресурсов, который используется аппаратным обеспечением. Например, если у вас один из ноутбуков Dell, упомянутых выше, то вы должны ввести <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>. Также, есть список распространённых диапазонов ресурсов в <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a>. Заметим, что при вводе значений в программу установки вы не должны указывать запятых, если они есть. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Интерпретация загрузочных сообщений ядра</h3></div></div></div>
+<p>Во время загрузки вы можете увидеть много сообщений вида <code class="computeroutput">can't find <em class="replaceable"><code>что-то</code></em> </code> или <code class="computeroutput"> <em class="replaceable"><code>что-то</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>что-то</code></em> </code> или даже <code class="computeroutput">this driver release depends on <em class="replaceable"><code>чего-то</code></em> </code>. Большинство этих сообщений безвредны. Вы видите их потому что устанавливаемое ядро собрано так, чтобы запускаться на компьютерах с самыми различными периферийными устройствами. Очевидно, ни один компьютер не может содержать все доступные устройства, так что операционная система может немного пожаловаться во время поиска периферии, которой у вас нет. Также, вы можете заметить, что система иногда замирает. Это случается из-за ожидания ответа от устройства, которого нет в вашей системе. Если вы посчитаете, что загрузка системы занимает недопустимо долгое время, вы можете позже создать собственное ядро <span class="phrase">(смотрите <a class="xref" href="ch08s05.html" title="8.5. Сборка нового ядра">Раздел 8.5, «Сборка нового ядра»</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Сообщение о проблемах при установке</h3></div></div></div>
+<p>If you get through the initial boot phase but cannot complete the install, the menu option <span class="guimenuitem">Save debug logs</span> may be helpful. It lets you store system error logs and configuration information from the installer on a storage medium, or download them using a web browser. This information may provide clues as to what went wrong and how to fix it. If you are submitting a bug report, you may want to attach this information to the bug report. </p>
+<p>Другие сообщения, имеющие отношение к установке, можно найти в <code class="filename">/var/log/</code> во время установки, и в <code class="filename">/var/log/installer/</code> после того, как компьютер загрузит установленную систему. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Отправка отчётов об ошибках установки</h3></div></div></div>
+<p>If you still have problems, please submit an installation report (in English please, whenever possible). We also encourage installation reports to be sent even if the installation is successful, so that we can get as much information as possible on the largest number of hardware configurations. </p>
+<p>Заметим, что отчёт об установке будет опубликован в системе отслеживания ошибок Debian (BTS) и переслан в открытый список рассылки. Проверьте, что вы используете адрес электронной почты, который не жалко опубликовывать. </p>
+<p>Если система Debian заработала, самый простой путь отправки отчёта об установке — установить пакеты <code class="classname">installation-report</code> и <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>), настроить <code class="classname">reportbug</code>, как это описывается в <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Отправка почты из системы">Раздел 8.4.2, «Отправка почты из системы»</a> и запустить команду <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Alternatively you can use this template when filling out installation reports, and file the report as a bug report against the <code class="classname">installation-reports</code> pseudo package, by sending it to <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Description of the install, in prose, and any thoughts, comments
+      and ideas you had during the initial install.&gt;
+
+Please make sure that any installation logs that you think would
+be useful are attached to this report. (You can find them in the installer
+system in /var/log/ and later on the installed system under
+/var/log/installer.) Please compress large files using gzip.
+
+</pre></div>
+<p> In the bug report, describe what the problem is, including the last visible kernel messages in the event of a kernel hang. Describe the steps that you did which brought the system into the problem state. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Параметры загрузки </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> Глава 6. Использование программы установки Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

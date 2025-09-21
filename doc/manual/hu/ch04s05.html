@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Fájlok előkészítése TFTP hálózati bootoláshoz</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch04.html" title="4. fejezet - Rendszertelepítési adathordozó beszerzése">
+<link rel="prev" href="ch04s04.html" title="4.4. Fájlok előkészítése merevlemezről történő bootoláshoz">
+<link rel="next" href="ch04s06.html" title="4.6. Automatikus telepítés">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Fájlok előkészítése TFTP hálózati bootoláshoz</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">4. fejezet - Rendszertelepítési adathordozó beszerzése</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Fájlok előkészítése TFTP hálózati bootoláshoz</h2></div></div></div>
+<p>Ha a géped csatlakozik egy helyi hálózathoz, akkor lehetőség van arra, hogy egy másik gépről, TFTP segítségével bootolj. Ha egy másik gépről szeretnéd elindítani a telepítési rendszert, a boot fájlokat az adott gépen meghatározott helyekre kell elhelyezni, és a gépet úgy kell konfigurálni, hogy támogassa a saját géped bootolását. </p>
+<p>Be kell állítanod egy TFTP szervert, és sok gép esetében egy DHCP szervert<span class="phrase">, vagy BOOTP szervert</span>. </p>
+<p> <span class="phrase">A BOOTP egy IP protokoll, amely tájékoztatja a számítógépet az IP-címéről és arról, hogy a hálózaton hol találja meg a boot képet.</span> A DHCP (Dynamic Host Configuration Protocol) egy rugalmasabb, visszafelé kompatibilis kiterjesztése a BOOTP-nek. Egyes rendszerek csak DHCP-n keresztül konfigurálhatók. </p>
+<p>Az egyszerű fájlátviteli protokollt (TFTP) használják a boot kép kiszolgálására a kliensnek. Elméletileg bármilyen szerver, bármilyen platformon, amely megvalósítja ezeket a protokollokat, használható. Az ebben a részben található példákhoz SunOS 4.x, SunOS 5.x (ismertebb nevén Solaris) és GNU/Linux parancsokat fogunk megadni. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Egy Debian GNU/Linux szerverhez a <code class="classname">tftpd-hpa</code> használatát ajánljuk. Ugyanaz az írója, mint a <code class="classname">syslinux</code> bootloadernek, így ez a legkevésbé valószínű, hogy problémát okoz. Egy jó alternatíva az <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. DHCP szerver beállítása</h3></div></div></div>
+<p>Egy ingyenes DHCP szerver szoftver az ISC <span class="command"><strong>dhcpd</strong></span>. Debian GNU/Linux rendszeren a <code class="classname">isc-dhcp-server</code> csomagot ajánljuk. Itt egy példa konfigurációs fájl (lásd <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>Ebben a példában van egy <em class="replaceable"><code>servername</code></em> szerver, amely elvégzi a DHCP szerver, TFTP szerver és hálózati átjáró minden feladatát. Szinte biztosan módosítanod kell a domain-név opciókat, valamint a szerver nevét és a kliens hardvercímét. A <em class="replaceable"><code>filename</code></em> opciónak annak a fájlnak a nevét kell megadnod, amelyet TFTP-n keresztül fogsz letölteni. </p>
+<p>Miután szerkesztetted a <span class="command"><strong>dhcpd</strong></span> konfigurációs fájlt, indítsd újra ezzel a paranccsal: <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1606"></a>4.5.1.1. PXE bootolás engedélyezése a DHCP konfigurációban</h4></div></div></div>
+<p>Itt van egy másik példa egy <code class="filename">dhcp.conf</code> fájlra, amely a Pre-boot Execution Environment (PXE) módszert használja a TFTP-hez. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# A következő bekezdést a saját esetedhez kell igazítani
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# az átjáró cím, amely eltérhet
+# (például internet eléréshez)
+  option routers 192.168.1.1;
+# add meg a használni kívánt DNS-t
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp kliens hardvercíme
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Fontos megjegyezni, hogy PXE bootolás esetén a kliens fájlneve, <code class="filename">pxelinux.0</code>, egy boot loader, nem pedig egy kernel kép (lásd az alábbi <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Helyezd át a TFTP képeket a megfelelő helyre">4.5.4. szakasz - Helyezd át a TFTP képeket a megfelelő helyre</a> részt). </p>
+<p>Ha a géped UEFI-t használ a bootoláshoz, meg kell adnod egy UEFI gépekhez megfelelő boot loader-t, például </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp kliens hardvercíme
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. BOOTP szerver beállítása</h3></div></div></div>
+<p>Két BOOTP szerver érhető el GNU/Linux rendszerekhez. Az egyik a CMU <span class="command"><strong>bootpd</strong></span>. A másik valójában egy DHCP szerver: az ISC <span class="command"><strong>dhcpd</strong></span>. Debian GNU/Linux alatt ezek a <code class="classname">bootp</code> és az <code class="classname">isc-dhcp-server</code> csomagokban találhatók meg. </p>
+<p>A CMU <span class="command"><strong>bootpd</strong></span> használatához először ki kell kommentelned (vagy hozzá kell adnod) a megfelelő sort a <code class="filename">/etc/inetd.conf</code> fájlban. Debian rendszeren futtathatod az <strong class="userinput"><code>update-inetd --enable bootps</code></strong> parancsot, majd az <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> parancsot. Ha a BOOTP szervered nem Debianon fut, akkor a kérdéses sor így nézzen ki: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Most létre kell hoznod egy <code class="filename">/etc/bootptab</code> fájlt. Ennek a formátuma hasonló a régi BSD <code class="filename">printcap</code>, <code class="filename">termcap</code> és <code class="filename">disktab</code> fájlokéhoz, ami ismerős, de kissé rejtélyes lehet. További információért nézd meg a <code class="filename">bootptab</code> kézikönyv oldalát. A CMU <span class="command"><strong>bootpd</strong></span> esetében tudnod kell a kliens hardver (MAC) címét. Itt van egy példa <code class="filename">/etc/bootptab</code> fájlra: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> Legalább a <span class="quote">„<span class="quote">ha</span>”</span> opciót kell megváltoztatnod, amely a kliens hardver címét adja meg. A <span class="quote">„<span class="quote">bf</span>”</span> opció azt a fájlt jelzi, amelyet a kliensnek TFTP-n keresztül le kell töltenie; további részletekért lásd a <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Helyezd át a TFTP képeket a megfelelő helyre">4.5.4. szakasz - Helyezd át a TFTP képeket a megfelelő helyre</a> részt. </p>
+<p>Ezzel szemben, a BOOTP beállítása az ISC <span class="command"><strong>dhcpd</strong></span> segítségével igazán egyszerű, mivel a BOOTP klienseket a DHCP kliensek egy speciális eseteként kezeli. Néhány architektúra bonyolult konfigurációt igényel a BOOTP-n keresztüli kliens indításhoz. Ha a tiéd is ilyen, olvasd el a <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. DHCP szerver beállítása">4.5.1. szakasz - DHCP szerver beállítása</a> szakaszt. Ellenkező esetben valószínűleg elég lesz, ha egyszerűen hozzáadod az <strong class="userinput"><code>allow bootp</code></strong> direktívát annak a hálózati alhálózatnak a konfigurációs blokkjához, amelyik a klienst tartalmazza a <code class="filename">/etc/dhcp/dhcpd.conf</code> fájlban, majd újraindítod a <span class="command"><strong>dhcpd</strong></span>-t a <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> paranccsal. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. A TFTP szerver engedélyezése</h3></div></div></div>
+<p>Ahhoz, hogy a TFTP szerver készen álljon, először győződj meg róla, hogy a <span class="command"><strong>tftpd</strong></span> engedélyezve van. </p>
+<p>A <code class="classname">tftpd-hpa</code> esetében két módon lehet futtatni a szolgáltatást. A rendszer <code class="classname">inetd</code> démonja indíthatja el igény szerint vagy önálló démonként is beállítható. Hogy melyik módszer kerül alkalmazásra, az a csomag telepítésekor választható ki, és a csomag újrakonfigurálásával megváltoztatható. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Régebben a TFTP szerverek a <code class="filename">/tftpboot</code> könyvtárat használták a képek kiszolgálására. Azonban a Debian GNU/Linux csomagok más könyvtárakat használhatnak a <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> (Fájlrendszer hierarchia szabványnak) betartása érdekében. Például a <code class="classname">tftpd-hpa</code> alapértelmezés szerint a <code class="filename">/srv/tftp</code> könyvtárat használja. Előfordulhat, hogy ennek megfelelően módosítanod kell a szakaszban található konfigurációs példákat. </p></td></tr>
+</table></div>
+<p>Minden Debian-ban elérhető <span class="command"><strong>in.tftpd</strong></span> alternatíva alapértelmezetten naplózza a TFTP kéréseket a rendszer naplóiba. Néhányuk támogatja a <strong class="userinput"><code>-v</code></strong> argumentumot a részletesség növelésére. Ajánlott ellenőrizni ezeket a naplóüzeneteket, ha boot problémák merülnek fel, mivel ezek jó kiindulópontot jelentenek a hibák okának diagnosztizálásához. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Helyezd át a TFTP képeket a megfelelő helyre</h3></div></div></div>
+<p>Ezután helyezd el a szükséges TFTP boot képet, amelyet a <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Hol találhatóak a telepítési fájlok">4.2.1. szakasz - Hol találhatóak a telepítési fájlok</a> szakaszban találsz, a <span class="command"><strong>tftpd</strong></span> boot képek könyvtárába. Lehet, hogy létre kell hoznod egy linket ahhoz a fájlhoz, amelyet a <span class="command"><strong>tftpd</strong></span> egy adott kliens indításához fog használni. Sajnos a fájlnevet a TFTP kliens határozza meg, és nincsenek szigorú szabványok rá. </p>
+<p>PXE bootoláshoz minden szükséges beállítás megtalálható a <code class="filename">netboot/netboot.tar.gz</code> tarballban. Egyszerűen csomagold ki ezt a tarballt a <span class="command"><strong>tftpd</strong></span> boot képek könyvtárába. Győződj meg róla, hogy a dhcp szerver úgy van beállítva, hogy a <code class="filename">pxelinux.0</code> fájlnevet adja át a <span class="command"><strong>tftpd</strong></span>-nek indítási céllal. UEFI gépeknél egy megfelelő EFI boot képnevet kell megadnod (például <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Fájlok előkészítése merevlemezről történő bootoláshoz </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Automatikus telepítés</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

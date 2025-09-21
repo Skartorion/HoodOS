@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Utilització de la configuració prèvia</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia">
+<link rel="prev" href="apbs01.html" title="B.1. Introducció">
+<link rel="next" href="apbs03.html" title="B.3. Preparar un fitxer de configuració prèvia">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Utilització de la configuració prèvia</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Utilització de la configuració prèvia</h2></div></div></div>
+<p>Primer de tot heu de preparar un fitxer de configuració prèvia i posar-lo al lloc des d'on voleu fer-lo servir. La preparació de fitxers de configuració prèvia es tractarà després. Col·locar-los correctament és fàcil en el cas de la configuració per xarxa o si voleu llegir el fitxer des d'una memòria USB. Si voleu incloure el fitxer en una imatge ISO d'instal·lació, heu de regenerar la imatge. El procediment per incloure el fitxer a l'«initrd» no s'explica aquí; consulteu la documentació per als desenvolupadors del <code class="classname">debian-installer</code>. </p>
+<p>Teniu a l'abast un exemple de fitxer de configuració prèvia que podeu emprar com a base per al vostre a <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Aquest fitxer es basa en els fragments de configuració inclosos en aquest apèndix. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Càrrega del fitxer de configuració prèvia</h3></div></div></div>
+<p>Si esteu emprant una configuració prèvia de l'«initrd», només heu d'assegurar-vos que hi haja un fitxer <code class="filename">preseed.cfg</code> inclòs al directori arrel de l'«initrd». L'instal·lador comprovarà automàticament si aquest fitxer és present i el carregarà. </p>
+<p>En els altres mètodes de configuració prèvia heu de dir-li a l'instal·lador el fitxer que s'usarà quan l'arrenqueu. Això es fa normalment indicant al nucli un paràmetre d'arrencada, bé manualment en el moment d'arrencar o bé editant el fitxer de configuració del carregador <span class="phrase">(p. ex. <code class="filename">syslinux.cfg</code>) i afegint el paràmetre al final de la (les) línia (línies) addicionals per al nucli.</span> </p>
+<p>Si especifiqueu el fitxer a la configuració del carregador, podeu modificar la configuració prèvia per no haver de prémer enter per arrencar l'instal·lador. <span class="phrase">En el «syslinux» això vol dir ajustar el temps d'espera (timeout) a <code class="literal">1</code>, a <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Per assegurar-vos que l'instal·lador obté el fitxer de configuració prèvia correcte, podeu especificar-ne una suma de verificació. Actualment ha de ser una «md5sum», i si l'especifiqueu ha de correspondre al fitxer de preconfiguració, altrament l'instal·lador no voldrà fer-la servir. </p>
+<div class="informalexample"><pre class="screen">Paràmetres d'arrencada que cal especificar:
+- si esteu arrencant en xarxa:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- o
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- si esteu arrencant amb una imatge d'instal.lació reconfigurada:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- si esteu instal·lant des d'un dispositiu USB (poseu el  fitxer
+  de preconfiguració al directori principal de la memòria USB):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Adoneu-vos que <code class="filename">preseed/url</code> pot escurçar-se a tan sols <code class="filename">url</code>, <code class="filename">preseed/file</code> a <code class="filename">file</code> i <code class="filename">preseed/file/checksum</code> a <code class="filename">preseed-md5</code> quan són passats com a paràmetres d'arrencada. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Utilització dels paràmetres d'arrencada per complementar la configuració prèvia</h3></div></div></div>
+<p>Si no es pot utilitzar un fitxer de preconfiguració per fer la configuració prèvia per alguns passos, la instal·lació encara es pot automatitzar completament, ja que podeu passar valors de la configuració prèvia a línia d'ordres quan està arrencant l'instal·lador. </p>
+<p>També podeu utilitzar els paràmetres d'arrencada si no voleu utilitzar la configuració prèvia, però voleu donar una resposta a una pregunta específica. Hi ha alguns exemples on açò pot ser útil, documentats per tot arreu en aquest manual. </p>
+<p>Per donar un valor que s'utilitze dins el <code class="classname">debian-installer</code>, passeu <strong class="userinput"><code><em class="replaceable"><code>ruta/a/la/variable</code></em>=<em class="replaceable"><code>valor</code></em></code></strong> per qualsevol de les variables que es poden configurar prèviament que són als exemples en aquest apèndix. Si un valor s'utilitza per configurar paquets al sistema destí, necessitareu afegir abans el <em class="firstterm">propietari</em><a href="#ftn.id3976" class="footnote" name="id3976"><sup class="footnote">[19]</sup></a> de la variable com <strong class="userinput"><code><em class="replaceable"><code>propietari</code></em>:<em class="replaceable"><code>ruta/a/la/variable</code></em>=<em class="replaceable"><code>valor</code></em></code></strong>. Si no especifiqueu el propietari, el valor de la variable no es copiarà a la base de dades debconf en el sistema destí i no s'utilitzarà a la configuració del paquet rellevant. </p>
+<p>Normalment, la preconfiguració d'una pregunta d'aquesta manera, implicarà que la pregunta no es farà. Per donar un valor específic per a una pregunta, però fer que encara es faça la pregunta, utilitzeu <span class="quote">«<span class="quote">?=</span>»</span> en comptes de <span class="quote">«<span class="quote">=</span>»</span> com a operador. Vegeu <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Ús de la configuració prèvia per canviar els valors predeterminats">Secció B.5.2, «Ús de la configuració prèvia per canviar els valors predeterminats»</a>. </p>
+<p>Adoneu-vos que algunes variables a les que es dona valors freqüentment a l'indicador de l'arrencada tenen una forma curta. Si hi ha una forma curta, s'utilitzarà en els exemples d'aquest apèndix en comptes de la variable completa. Per exemple, la variable <code class="literal">preseed/url</code> te com a forma curta <code class="literal">url</code>. Un altre exemple és la forma curta <code class="literal">tasks</code>, que es tradueix a <code class="literal">tasksel:tasksel/first</code> . </p>
+<p>Un <span class="quote">«<span class="quote">---</span>»</span> a les opcions d'arrencada té un significat especial. Els paràmetres del nucli que apareixen després de l'últim <span class="quote">«<span class="quote">---</span>»</span> es poden copiar al carregador d'arrencada del sistema instal·lat (si ho suporta l'instal·lador del carregador d'arrencada). L'instal·lador automàticament filtrarà qualsevol opció (com les opcions preconfigurades) que reconegui. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Els nuclis actuals (2.6.9 i posteriors) accepten un màxim de 32 opcions a la línia d'ordres i 32 opcions d'entorn, que inclou qualsevol opció afegida per defecte per l'instal·lador. Si es superen aquestes quantitats, el nucli farà un «pànic» (petarà). (Als nuclis anteriors, aquestes quantitats eren inferiors). </p></td></tr>
+</table></div>
+<p>A quasi totes les instal·lacions es poden esborrar amb seguretat algunes de les opcions per defecte en el fitxer de configuració del carregador d'arrencada, com <code class="literal">vga=normal</code>, que us permetrà que afegiu més opcions per a la configuració prèvia. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>No sempre és possible passar valors amb espais als paràmetres d'arrencada, encara que els delimiteu amb cometes. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Mode auto</h3></div></div></div>
+<p>Hi ha algunes característiques de l'instal·lador de Debian que combinen la simplicitat de la línia d'ordres de l'indicador d'arrencada per aconseguir unes instal·lacions automàtiques personalitzades arbitràriament complexes. </p>
+<p>Això és possible fent servir l'opció d'arrencada <code class="literal">Instal·lació automàtica</code>, també anomenada <code class="literal">auto</code> per algunes arquitectures o mètodes d'arrencada. En aquesta secció , <code class="literal">auto</code> no és paràmetre, es refereix a seleccionar aquesta opció d'arrencada, i afegir els següents paràmetres d'arrencada en l'indicador d'arrencada. <span class="phrase">Vegeu <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Pantalla de benvinguda">Secció 5.1.5, «Pantalla de benvinguda»</a> per obtenir informació sobre com afegir un paràmetre d'arrencada.</span> </p>
+<p>Per il·lustrar-ho, ací teniu alguns exemples que es poden utilitzar a l'indicador de l'arrencada: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Aquesta part dona per suposat que hi ha un servidor DHCP que posarà la màquina en un punt on el <code class="literal">autoserver</code> es pot resoldre per DNS, pot ser després d'afegir el domini local si s'ha proporcionat per DHCP. Si es fa a un lloc on el domini és <code class="literal">exemple.com</code>, i té una configuració ben pensada, podria donar com a resultat que el fitxer de configuració prèvia es trobe a <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>L'última part de l'adreça (<code class="literal">d-i/trixie/./preseed.cfg</code>) s'agafa d'<code class="literal">auto-install/defaultroot</code>. Per defecte açò inclou el directori <code class="literal">trixie</code> per que permeti que les futures versions donen el seu nom codi propi i permeti que la gent migre d'una forma controlada. El <code class="literal">/./</code> s'utilitza per indicar un origen al qual les rutes subsegüents es referiran (per utilitzar en «preseed/include» i «preseed/run»). Açò es pot utilitzar per construir uns guions més portables de forma que una estructura completa de guions es pugui moure a una nova localització sense trencar-la, per exemple copiant els fitxers a un llapis USB quan s'inicia des d'un servidor web. En aquest exemple, si el fitxer de configuració prèvia dona el valor <code class="literal">/scripts/late_command.sh</code> a <code class="literal">preseed/run</code> aleshores el fitxer es descarregarà des de <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Si no hi ha cap servidor DHCP o infraestructura DNS, o si no voleu utilitzar la ruta per defecte a <code class="filename">preseed.cfg</code>, encara podeu utilitzar una adreça explícita, i si no utilitzeu l'element <code class="literal">/./</code> es referirà a l'inici de la ruta (es a dir, el tercer <code class="literal">/</code> a la URL). Ací hi ha un exemple que necessita d'un suport mínim de la infraestructura local de la xarxa: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/ruta/al/fitxer.configuració.previa</code></em>
+</pre></div>
+<p> Aquesta és la manera per a què funcioni: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>si la URL no conté un protocol, es suposa http, </p></li>
+<li class="listitem"><p>si la secció «hostname» no té períodes, té el domini derivat del DHCP afegit, i </p></li>
+<li class="listitem"><p>si no hi ha cap <code class="literal">/</code> després del «hostname», aleshores s'afegeix la ruta per defecte. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Addicionalment a especificar la url, podeu també donar els paràmetres que no afecten directament el comportament del <code class="classname">debian-installer</code>, però que es poden passar a traves dels guions donats utilitzant <code class="literal">preseed/run</code> al fitxer de configuració prèvia carregat. En aquest moment, l'únic exemple d'aquest és <code class="literal">auto-install/classes</code>, que té d'àlies <code class="literal">classes</code>. Açò es pot utilitzar així: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>classe_A;classe_B</code></em>
+</pre></div>
+<p> Les classes podrien per exemple indicar el tipus de sistema que s'instal·larà o la localització a utilitzar. </p>
+<p>Per suposat, es pot estendre aquest concepte, i si ho feu, és raonable que s'utilitze l'espai de noms «auto-install» per fer-ho. Així que hauríeu de tenir quelcom de l'estil <code class="literal">auto-install/style</code> que s'utilitza aleshores als vostres guions. Si creieu que necessiteu fer-ho, digeu-ho a la llista de correu <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> de forma que ens sigui possible evitar conflictes a l'espai de noms, i pot ser afegir un àlies del paràmetre per a vosaltres. </p>
+<p>L'etiqueta d'arrencada <code class="literal">auto</code> no està definida a tots els llocs. El mateix efecte es pot aconseguir afegint dos paràmetres <code class="literal">auto=true priority=critical</code> a la línia d'ordres del nucli. El paràmetre <code class="literal">auto</code> és un àlies d'<code class="literal">auto-install/enable</code> i establir-lo a <code class="literal">true</code> posposa les preguntes sobre la configuració local («locale») i del teclat fins que es tingui oportunitat de fer la configuració prèvia d'aquestes, mentre <code class="literal">priority</code> és un àlies per <code class="literal">debconf/priority</code> i donant-li el valor <code class="literal">critical</code> evita que es faci qualsevol pregunta amb una prioritat més baixa. </p>
+<p>Quan es selecciona una instal·lació automàtica sense especificar també una configuració predeterminada, es demanarà a l'usuari que propocioni una ubicació predeterminada. Altrenativament, si s'ha especificat una configuració predeterminada, aleshores aquest missatge normalment s'oculta per permetre un installació completa no interactiva. Tot i això, si la intenció és modificar els valors predeterminats a través de un <code class="literal"> preseed.cfg </code> en un initrd, aleshores el resultat s'hauria de comportant com si no s'hagués especificat cap configuració predeterminada, tot i que s'hagi fet. En aquest cas, la variable de debconf <code class="literal"> auto-install/cloak_initrd_preseed </code> es pot posar a <code class="literal"> true </code> (per exemple, en el <code class="literal"> preseed.cfg </code> del initrd), per a obtenir el comportament requerit. </p>
+<p>Les opcions addicionals que poden interessar mentre s'intenta automatitzar una instal·lació que faci ús de DHCP són: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> que fa que la màquina agafe el primer NIC i espere a aconseguir una resposta a la seva petició DHCP. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Suggeriment]" src="images/tip.png"></td>
+<th align="left">Suggeriment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Podeu trobar un exemple detallat de com utilitzar aquest entorn, incloent guions i classes d'exemple, a <a class="ulink" href="http://hands.com/d-i/" target="_top">la pàgina del seu desenvolupador</a>. Els exemples disponibles també mostren altres usos positius que es poden aconseguir mitjançant l'ús creatiu del sistema de preconfiguració. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Àlies útils amb la configuració prèvia</h3></div></div></div>
+<p>Els àlies que hi ha a continuació poden ser útils quan s'utilitza la configuració prèvia (mode auto). Adoneu-vos que es tracta d'àlies curts per a noms de preguntes, i que sempre cal que especifiqueu també un valor: per exemple, <code class="literal">auto=true</code> o <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Exemples de configuració prèvia del menú d'arrencada</h3></div></div></div>
+<p>Aquí teniu alguns exemples de com el menú d'arrencada pot mostrar-se (us caldrà adaptar-ho a les vostres necessitats <span class="phrase">; també vegeu <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Pantalla de benvinguda">Secció 5.1.5, «Pantalla de benvinguda»</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Per posar el francès com a idioma i França com a país:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Per posar l'anglès com a idioma i Alemanya com a país, i usar la distribució de teclat alemanya:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Per instal·lar l'escriptori MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Per instal·lar la tasca de servidor web:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Utilitzar un servidor DHCP per especificar els fitxers de configuració prèvia</h3></div></div></div>
+<p>També és possible fer servir DHCP per especificar un fitxer de configuració prèvia i descarregar-lo des de la xarxa. DHCP permet especificar un nom de fitxer. Normalment s'indiquen fitxers per a arrencar la màquina per xarxa, però si es tracta d'una URL, aleshores els mitjans d'instal·lació que suporten configuracions prèvies per xarxa es descarregaran el fitxer i l'utilitzaran per a la configuració. A continuació teniu un exemple de com s'ha de configurar el fitxer «dhcpd.conf» per a la versió 3 del servidor DHCP del ISC (el paquet «isc-dhcp-server» a Debian). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+  filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Tingueu en compte que l'exemple anterior limita el fitxer a clients DHCP que s'identifiquin com <span class="quote">«<span class="quote">d-i</span>»</span>, i per tant no afectarà a la resta de clients DHCP, només al instal·lador. També podeu indicar un text per a una màquina en particular de manera que no afecti a la resta d'instal·lacions de la vostra xarxa. </p>
+<p>Una bona manera d'usar la configuració prèvia amb DHCP és fer-ho només per a valors específics de la xarxa, com el servidor rèplica que es vol utilitzar. Així totes les instal·lacions de la xarxa seleccionaran una rèplica adequada automàticament, però la resta de la instal·lació es podrà fer interactivament. Si voleu fer instal·lacions automatitzades completes de Debian fent servir configuracions prèvies i DHCP haureu d'anar amb més cura. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3976" class="footnote"><p><a href="#id3976" class="para"><sup class="para">[19] </sup></a>Normalment, el propietari d'una variable «debconf» (o una plantilla) és el nom del paquet que conté la plantilla «debconf» que es correspon a la plantilla «debconf» corresponent. Per a les variables utilitzades en l'instal·lador en sí mateix, el propietari és <span class="quote">«<span class="quote">d-i</span>»</span>. Les plantilles i variables poden tenir més d'un propietari que ajuden a determinar si es poden esborrar de la base de dades «debconf» quan el paquet s'esborre completament.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Introducció </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Preparar un fitxer de configuració prèvia</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

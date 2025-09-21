@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. 高度なオプション</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="prev" href="apbs04.html" title="B.4. 事前設定ファイルの内容 (trixie 用)">
+<link rel="next" href="apc.html" title="付録C Debian でのパーティション分割">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. 高度なオプション</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録B preseed を利用したインストールの自動化</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. 高度なオプション</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. インストール中のカスタムコマンド実行</h3></div></div></div>
+<p>事前設定ツールには、インストール中の一定の箇所でコマンドやスクリプトを実行するといった、とても強力で柔軟なオプションが存在します。 </p>
+<p>ターゲットシステムのファイルシステムがマウントされると <code class="filename">/target</code> 以下で利用できるようになります。インストールCD/DVDを利用している場合はマウント後には <code class="filename">/cdrom</code> 以下で利用できるようになります。 </p>
+<div class="informalexample"><pre class="screen">#注意: d-i 事前設定予約は本質的に安全ではありません。
+#インストーラはバッファオーバーフローやその他の悪意のある
+#操作に対するチェックを行いません。信頼できるソースからのみ、
+#事前設定ファイルを使用してください。
+#これらはインストーラ内で任意のシェルコマンドを自動的に
+#実行する便利な機能を紹介します。
+
+# 最初のコマンドが事前設定が読み込まれた直後に実行されます。
+#d-i preseed/early_command string anna-install some-udeb
+# これは、パーティションマネージャが起動する直前に実行されます。
+#  前述のコマンド実行時に発見されなかった動的なディスクも事前予約の
+# 対象として設定されるので便利です。
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# このコマンドはインストールが完了する直前、まだ /target が存在
+# している間に実行されます。/target に chroot したり、apt-install や
+# in-target を利用してパッケージをインストールしたり、コマンドを
+# 実行したりすることができます
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. preseed を用いたデフォルト値変更</h3></div></div></div>
+<p>事前設定を用いて質問へのデフォルトの回答を変更できますが、その状態で質問を表示もできます。それには、質問への回答を設定した後で、<em class="firstterm">seen</em> フラグを <span class="quote">「<span class="quote">false</span>」</span> に再設定してください。</p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> ブートプロンプトで <code class="classname">preseed/interactive=true</code> パラメータを設定し、<span class="emphasis"><em>すべて</em></span> の質問に対して同じ効果を及ぼすこともできます。これは事前設定ファイルのテストやデバッグにも便利です。 </p>
+<p><span class="quote">「<span class="quote">d-i</span>」</span> という owner は、インストーラ自身が使用する変数でのみ、使用するべきであることに注意してください。ターゲットシステムにインストールされたパッケージに属する変数用には、パッケージ名を代わりに使用するべきです。<a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. preseed が質問するブートパラメータの利用">「preseed が質問するブートパラメータの利用」</a> の脚注をご覧ください。 </p>
+<p>ブートパラメータを利用して preseed を行う場合、質問に対して <span class="quote">「<span class="quote">?=</span>」</span> 演算子を使用して回答できます。例: <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong> (もしくは <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>) これはもちろん、インストール中に実際に表示される質問に対応するパラメータにのみ効果を及ぼし、<span class="quote">「<span class="quote">内部</span>」</span>パラメータには効果を及ぼしません。 </p>
+<p>詳細なデバッグ情報を取得するためには、ブートパラメータ <code class="classname">DEBCONF_DEBUG=5</code> を使用してください。これにより <code class="classname">debconf</code> が、各変数の現在の設定と各パッケージのインストールスクリプトの動作について、より詳細な情報を出力してくれます。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. 事前設定ファイルのチェーンロード</h3></div></div></div>
+<p>事前設定ファイルから他の事前設定ファイルを読み込めます。先に読み込まれたファイルの既存設定を、後から読み込まれた設定で上書きします。これは例えば、あるファイルに一般的なネットワークの設定を書いておき、他のファイルで具体的な設定を指定する、という使い方ができます。 </p>
+<div class="informalexample"><pre class="screen"># 複数のファイルをスペース区切りで指定でき、すべてを読み込みます。
+#同一ディレクトリ内のファイルも事前予約の適用を受けます。注: 相対パスで
+#指定されたファイル名は、設定ファイルと同じディレクトリにある
+#ものとみなされます。
+#d-i preseed/include string x.cfg
+
+# インストーラーはオプションとして、使用する設定ファイルの
+# チェックサムを検証できます。現時点では md5sum のみサポートされて
+#います。ディレクトリにあるファイルと同じ順番で md5sum を列挙してください。
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# より柔軟な方法として、シェルコマンドを実行し、その出力が
+#設定ファイル名であれば、それらのファイルを読み込むこともできます。
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# 最も柔軟な方法として、シェルスクリプト実行することができます。
+#このプログラムは debconf-set コマンドなどを用いて debconf 
+#データベースを操作できます。複数のスクリプトをスペース区切りで指定
+#できます。相対パスで指定されたファイル名は、実行する設定ファイルと
+#同じディレクトリにあるものとみなされます。
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>また initrd や file preseed の段階で、あらかじめ用意したファイルの preseed/url で設定した network preseed へ、チェーンロードを行うことができます。これにより、ネットワークに接続した時点で network preseed を行えます。この場合、2 種類の異なる preseed が実行されることに注意してください。例えば、preseed/early コマンドを実行する機会が 2 度あり、2 回目はネットワークに接続した時に発生するということです。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. 事前設定ファイルの内容 (trixie 用) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 付録C Debian でのパーティション分割</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

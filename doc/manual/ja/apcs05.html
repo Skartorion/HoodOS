@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian のパーティション分割プログラム</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apc.html" title="付録C Debian でのパーティション分割">
+<link rel="prev" href="apcs04.html" title="C.4. Linux におけるデバイス名">
+<link rel="next" href="apd.html" title="付録D 雑多な事柄">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian のパーティション分割プログラム</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録C Debian でのパーティション分割</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian のパーティション分割プログラム</h2></div></div></div>
+<p>いろいろな種類のパーティション分割ツールが Debian 開発者によって組み込まれ、 様々な形式のハードディスクやコンピュータアーキテクチャで 動作するようになっています。 以下に、それらのアーキテクチャで使えるプログラムのリストを示します。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Debian 推奨のパーティション分割ツールです。このアーミーナイフは、 パーティションサイズを変更したり、ファイルシステムを作成 <span class="phrase"> (Windows で言うところの <span class="quote">「<span class="quote">フォーマット</span>」</span>) </span> したり、マウントポイントを指定したりすることもできます。 </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>上級魔術師用の、Linux オリジナルのディスクパーティション作成プログラムです。 </p>
+<p>すでにコンピュータに FreeBSD のパーティションが存在する場合は注意が必要です。 インストール用のカーネルはこのパーティションをサポートしていますが、 <span class="command"><strong>fdisk</strong></span> の表示方法では名前が異なります (そもそも表示されないかもしれません)。 <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a> をご覧になってください。 </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>一般ユーザのための、操作の容易なフルスクリーン表示ディスクパーティション 作成プログラムです。 </p>
+<p><span class="command"><strong>cfdisk</strong></span> は FreeBSD パーティションを全く理解しません。 したがって、こちらでもデバイス名が変わってしまうかもしれません。 </p>
+</dd>
+</dl></div>
+<p><span class="guimenuitem">ディスクのパーティショニング</span> (あるいは同様のもの) を選択すると、上記のプログラムの中のひとつがデフォルトで実行されます。 VT2 のコマンドラインから、異なるパーティション分割ツールを使うこともできますが お勧めしません。 </p>
+<p>ブートパーティションを <span class="quote">「<span class="quote">起動可能 (Bootable)</span>」</span> にマークするのをお忘れなく。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4672"></a>C.5.1. <span class="phrase">64-bit PC</span> でのパーティション分割</h3></div></div></div>
+<p>新しいハードディスクを使っている (またはあなたのディスクのパーティションテーブル全体を消したい) 場合は、新しいパーティションテーブルを作成する必要があります。<span class="quote">「<span class="quote">ガイドによるパーティショニング</span>」</span>がこれを自動で行ってくれますが、手動でパーティショニングを行うときは、そのディスクの一番上の階層のエントリを選択して <span class="keycap"><strong>Enter</strong></span> を押してください。そのディスクに新しいパーティションテーブルを作成します。エキスパートモードでは、その後そのパーティションテーブルの種類を聞かれます。UEFI ベースのシステムでは <span class="quote">「<span class="quote">gpt</span>」</span> がデフォルトですが、古い BIOS の世界でのデフォルト値は <span class="quote">「<span class="quote">msdos</span>」</span> です。標準の優先度でのインストール時はこれらのデフォルトが自動的に使われます。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>パーティションテーブルの種類に <span class="quote">「<span class="quote">gpt</span>」</span> を選択した場合は (UEFI システムのデフォルト)、1 MB の空き領域がそのディスクの先頭に自動で作成されます。これは意図されたもので、GRUB2 ブートローダを埋め込むのに必要です。 </p></td></tr>
+</table></div>
+<p>Windows のような他の既存のオペレーティングシステムがあり、Debian をインストールする際にそのオペレーティングシステムを失わないようにする場合、 Debian をインストールするスペースを解放するためにパーティションサイズを変更 する必要があるでしょう。インストーラは、FAT および NTFS ファイルシステムの両方の サイズ変更をサポートしています。インストーラのパーティション分割のステップになり、 <span class="guimenuitem">手動</span> オプションを選択した場合は、 単に既存のパーティションを選択し、サイズを変更してください。 </p>
+<p>最近の UEFI システムには次に挙げるような制限はありませんが、古い PC の BIOS は、一般的に、ディスクパーティションにさらに制限をかけます。1 つのドライブに作成できる <span class="quote">「<span class="quote">基本</span>」</span> および <span class="quote">「<span class="quote">論理</span>」</span> パーティションの個数に制限があることもその一つです。 </p>
+<p><span class="quote">「<span class="quote">基本</span>」</span> パーティションは、PC ディスクに元々あった パーティションの仕組みです。 しかし、その個数はたった 4 つに限られています。 このような制限を乗り越えるため、 <span class="quote">「<span class="quote">拡張</span>」</span> および <span class="quote">「<span class="quote">論理</span>」</span> パーティションが考案されました。 基本パーティションの 1 つを拡張パーティションとして設定すると、 そのパーティションの全領域を、 いくつかの論理パーティションにさらに分割することができます。 1 つの拡張パーティションには、論理パーティションを 60 個まで作成できます。 ただし、1 つのディスクに作成できる拡張パーティションは 1 つだけです。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Linux におけるデバイス名 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 付録D 雑多な事柄</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

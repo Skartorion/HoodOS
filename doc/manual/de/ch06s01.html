@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.1. Wie der Installer funktioniert</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch06.html" title="Kapitel 6. Den Debian-Installer verwenden">
+<link rel="prev" href="ch06.html" title="Kapitel 6. Den Debian-Installer verwenden">
+<link rel="next" href="ch06s02.html" title="6.2. Einführung in die Komponenten">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.1. Wie der Installer funktioniert</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 6. Den Debian-Installer verwenden</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2390"></a>6.1. Wie der Installer funktioniert</h2></div></div></div>
+<p>Für diese Architektur unterstützt der <code class="classname">debian-installer</code> zwei verschiedene Benutzeroberflächen: eine grafische und eine textbasierte. Standardmäßig wird die grafische Oberfläche verwendet, außer Sie wählen einen <span class="quote">„<span class="quote">Install</span>“</span>-Eintrag aus dem Boot-Menü. Mehr Informationen über das Booten des grafischen Installers finden Sie im <a class="xref" href="ch05s01.html#graphical" title="5.1.6. Der Grafische Installer">Abschnitt 5.1.6, „Der Grafische Installer“</a>. </p>
+<p>Der Debian-Installer besteht aus einer Reihe von Komponenten für spezielle Zwecke, die die einzelnen Installationsaufgaben übernehmen. Jede Komponente führt seine Aufgabe aus und fragt vom Benutzer die dazu nötigen Informationen ab. Den Fragen selbst sind Prioritäten zugeteilt und die Prioritätsstufe der Fragen, die gestellt werden, kann beim Start des Installers festgelegt werden. </p>
+<p>Wenn eine Standardinstallation durchgeführt wird, werden nur wichtige Fragen (mit hoher Priorität) gestellt. Dies führt zu einem stark automatisierten Installationsprozess, der wenig Eingriffe seitens des Benutzers erfordert. Die Komponenten werden automatisch der Reihe nach abgearbeitet; welche Komponenten gestartet werden, hängt hauptsächlich von der Installationsmethode, die Sie gewählt haben, und von Ihrer Hardware ab. Der Installer wird für Fragen, die nicht gestellt werden, Standardwerte eintragen. </p>
+<p>Tritt ein Problem auf, wird ein Fehler-Bildschirm angezeigt und unter Umständen auch das Installer-Menü, über das eine alternative Aktion gestartet werden kann. Treten keine Probleme auf, wird der Benutzer das Installer-Menü nicht zu sehen bekommen, sondern einfach die Fragen für die einzelnen Komponenten der Reihe nach beantworten. Gravierende Fehleranzeigen haben die Priorität <span class="quote">„<span class="quote">kritisch</span>“</span>, so dass der Benutzer hierüber immer informiert wird. </p>
+<p>Einige der Standardwerte, welche der Installer für Fragen benutzt, die unterdrückt werden, können beeinflusst werden, indem dem <code class="classname">debian-installer</code> beim Start Boot-Parameter übergeben werden. Wenn Sie zum Beispiel eine statische Netzwerkkonfiguration erzwingen möchten (standardmäßig und falls verfügbar werden automatische IPv6-Konfiguration und/oder DHCP verwendet), können Sie den Boot-Parameter <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> benutzen; <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian-Installer-Parameter">Abschnitt 5.3.2, „Debian-Installer-Parameter“</a> informiert über die verfügbaren Optionen. </p>
+<p>Fortgeschrittene Benutzer werden vielleicht mit einer menü-basierten Oberfläche besser zurecht kommen, wo sie jeden Schritt besser kontrollieren können, statt dass der Installer diese Schritte der Reihe nach automatisch ausführt. Um den Installer auf manuelle, menü-basierte Art zu verwenden, fügen Sie den Boot-Parameter <strong class="userinput"><code>priority=medium</code></strong> hinzu. </p>
+<p>Falls Ihre Hardware es erforderlich macht, Optionen für Kernel-Module anzugeben, die bei deren Installation angewendet werden, müssen Sie den Installer im <span class="quote">„<span class="quote">Experten-Modus</span>“</span> starten. Dies ist entweder möglich, indem Sie den Installer durch den Befehl <span class="command"><strong>expert</strong></span> starten, oder indem Sie den Boot-Parameter <strong class="userinput"><code>priority=low</code></strong> angeben. Der Experten-Modus erlaubt die volle Kontrolle über den <code class="classname">debian-installer</code>. </p>
+<p>In der textbasierten Umgebung wird die Verwendung einer Maus nicht unterstützt. Die folgenden Tasten können zum Navigieren durch die verschiedenen Dialoge benutzt werden: Der Pfeil nach <span class="keycap"><strong>rechts</strong></span> oder die <span class="keycap"><strong>Tab</strong></span>-Taste springen <span class="quote">„<span class="quote">vorwärts</span>“</span> und der Pfeil nach <span class="keycap"><strong>links</strong></span> oder <span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>Tab</strong></span> springen <span class="quote">„<span class="quote">rückwärts</span>“</span> zwischen den angezeigten Schaltflächen und Auswahlfeldern. Die Pfeile nach <span class="keycap"><strong>oben</strong></span> und <span class="keycap"><strong>unten</strong></span> wählen verschiedene Elemente in Listen aus und scrollen auch die Liste selbst. Zusätzlich können Sie einen Buchstaben eintippen, um direkt zu den Elementen zu springen, die mit diesem Buchstaben beginnen oder Sie nutzen <span class="keycap"><strong>Bild hoch</strong></span> und <span class="keycap"><strong>Bild runter</strong></span> zum seitenweisen Scrollen der Liste. Die <span class="keycap"><strong>Leertaste</strong></span> aktiviert Elemente wie z.B. Checkboxen. Verwenden Sie <span class="keycap"><strong>Enter</strong></span>, um eine Auswahl z.B. in einer Drop-Down-Liste zu aktivieren. </p>
+<p>Einige Dialoge bieten zusätzliche Hilfeinformationen an. Falls solch eine Hilfe verfügbar ist, erkennen Sie dies daran, dass in der Fußzeile unten am Bildschirmrand zusätzlich <span class="quote">„<span class="quote">F1 Hilfe</span>“</span> angezeigt wird. </p>
+<p>Fehlermeldungen und Logdaten werden auf die vierte Konsole umgeleitet. Sie können durch Drücken von <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> auf diese Konsole wechseln (halten Sie die linke <span class="keycap"><strong>Alt</strong></span>-Taste gedrückt und drücken Sie die Funktionstaste <span class="keycap"><strong>F4</strong></span>); zurück zum Installer-Hauptprogramm gelangen Sie mit <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Diese Meldungen finden Sie auch unter <code class="filename">/var/log/syslog</code>. Nach der Installation wird diese Datei nach <code class="filename">/var/log/installer/syslog</code> auf dem neuen System kopiert. Weitere Installationsmeldungen finden Sie während der Installation unter <code class="filename">/var/log/</code> und nach dem Start des neuen Systems unter <code class="filename">/var/log/installer/</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="gtk-using"></a>6.1.1. Den grafischen Installer verwenden</h3></div></div></div>
+<p>Der grafische Installer funktioniert genauso wie der textbasierte und deshalb kann der Rest dieses Handbuchs Sie auch dabei durch den weiteren Installationsprozess leiten. </p>
+<p>Wenn Sie es vorziehen, statt der Maus die Tastatur zu verwenden, gibt es zwei Dinge, die Sie wissen sollten. Um eine ausklappbare Liste (wie z.B. die zur Auswahl der Länder sortiert nach Kontinenten) ein- oder auszuklappen, können Sie die Tasten <span class="keycap"><strong>+</strong></span> und <span class="keycap"><strong>-</strong></span> benutzen. Bei Fragen, bei denen mehr als eine Option ausgewählt werden kann (z.B. bei der Auswahl der Programmgruppen), müssen Sie - wenn Sie Ihre Auswahl getroffen haben - zunächst mit der <span class="keycap"><strong>Tab</strong></span>-Taste der Tastatur den Fokus zur <span class="guibutton">Weiter</span>-Schaltfläche wechseln, bevor Sie Enter drücken; einfach nur Enter zu drücken würde die gerade aktive Markierung umschalten, statt <span class="guibutton">Weiter</span> zu aktivieren. </p>
+<p>Falls ein Dialog zusätzliche Hilfeinformationen anbietet, wird ein <span class="guibutton">Hilfe</span>-Button angezeigt. Sie können die Hilfe entweder über Betätigung des Buttons oder durch Drücken der <span class="keycap"><strong>F1</strong></span>-Taste erreichen. </p>
+<p>Um auf eine andere Konsole umzuschalten, müssen Sie zusätzlich zur Tastenkombination im textbasierten Installer die <span class="keycap"><strong>Strg</strong></span>-Taste mit benutzen, wie beim X-Window-System. Um zum Beispiel auf VT2 (die erste Shell (Eingabeaufforderung), die Sie zur Fehlersuche benutzen können) umzuschalten, benutzen Sie: <span class="keycap"><strong>Strg</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span>. Der grafische Installer selbst läuft auf VT5, Sie können also <span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F5</strong></span> verwenden, um wieder dorthin zurück zu gelangen. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Kapitel 6. Den Debian-Installer verwenden </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 6.2. Einführung in die Komponenten</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

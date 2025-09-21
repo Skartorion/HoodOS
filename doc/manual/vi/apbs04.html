@@ -1,0 +1,661 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn">
+<link rel="prev" href="apbs03.html" title="B.3. Tạo tập tin định cấu hình sẵn">
+<link rel="next" href="apbs05.html" title="B.5. Tùy chọn cấp cao">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)</h2></div></div></div>
+<p>Những đoạn cấu hình được dùng trong phụ lục này cũng sẵn sàng dạng tập tin định cấu hình sẵn ví dụ tại <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Ghi chú rằng mẫu này dựa vào tiến trình cài đặt vào kiến trúc kiểu x86 Intel. Nếu bạn đang cài đặt vào kiến trúc khác, một số phần mẫu (v.d. phần chọn bố trí bàn phím và phần cài đặt bộ nạp khởi động) có lẽ không phải là thích hợp, cũng sẽ cần phải được thay thế bằng thiết lập debconf thích hợp với kiến trúc đó. </p>
+<p>Có thể tìm thêm chi tiết về cách làm việc thực sự của các thành phần khác nhau của Trình Cài đặt Debian tại <a class="xref" href="ch06s03.html" title="6.3. Sử dụng mỗi thành phần">Phần 6.3, “Sử dụng mỗi thành phần”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Địa phương hoá</h3></div></div></div>
+<p>During a normal install the questions about localization are asked first, so these values can only be preseeded via the initrd or kernel boot parameter methods. Auto mode (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Chế độ tự động">Phần B.2.3, “Chế độ tự động”</a>) includes the setting of <code class="literal">auto-install/enable=true</code> (normally via the <code class="literal">auto</code> preseed alias). This delays the asking of the localisation questions, so that they can be preseeded by any method. </p>
+<p>Miền địa phương (locale) có thể được dùng để xác định cả hai ngôn ngữ và quốc gia, và có thể là bất cứ tổ hợp nào một ngôn ngữ được <code class="classname">debian-installer</code> hỗ trợ và một quốc gia nhận ra. Nếu tổ hợp này không làm một miền địa phương hợp lệ thì trình cài đặt tự động chọn một miền địa phương vẫn hợp lệ cho ngôn ngữ đã chọn. Để chỉ định miền địa phương dưới dạng một tham số khởi động, hãy dùng <strong class="userinput"><code>locale=<em class="replaceable"><code>vi_VN.UTF-8</code></em></code></strong>. </p>
+<p>Mặc dù phương pháp này rất dễ sử dụng, nó không cho phép chèn sẵn tất cả các tổ hợp các ngôn ngữ, quốc gia và miền địa phương<a href="#ftn.id4837" class="footnote" name="id4837"><sup class="footnote">[20]</sup></a>. Cũng có thể ghi rõ từng giá trị. Hoặc có thể ghi rõ ngôn ngữ và quốc gia dưới dạng tham số khởi động. </p>
+<div class="informalexample"><pre class="screen"># Chỉ chèn sẵn miền địa phương, ngôn ngữ và quốc gia.
+d-i debian-installer/locale string vi_VN.UTF-8
+
+# Cũng có thể chèn sẵn từng giá trị riêng, để uyển chuyển hơn.
+#d-i debian-installer/language string vi
+#d-i debian-installer/country string AU
+#d-i debian-installer/locale string vi_VN.UTF-8
+# Tuỳ chọn có thể ghi rõ thêm miền địa phương.
+#d-i localechooser/supported-locales multiselect vi.UTF-8, en_US.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Keyboard configuration consists of selecting a keymap and (for non-latin keymaps) a toggle key to switch between the non-latin keymap and the US keymap. Only basic keymap variants are available during installation. Advanced variants are available only in the installed system, through <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Chọn bàn phím.
+d-i keyboard-configuration/xkb-keymap select vn
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Để bỏ qua bước cấu hình bàn phím, hãy chèn sẵn <code class="classname">keymap</code> bằng <strong class="userinput"><code>skip-config</code></strong> (bỏ qua cấu hình). Kết quả là bố trí bàn phím của hạt nhân còn lại hoạt động. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Speech synthesis</h3></div></div></div>
+<p>When installing with software speech synthesis (i.e. <code class="literal">speakup.synth=soft</code> passed on the kernel command line), the sound board and the voice to be used can be preseeded. </p>
+<p>Since speech synthesis is started very early, this can only be preseeded from initrd or the kernel command line. </p>
+<p>Preseeding <code class="literal">espeakup/voice</code> also enables configuring the installed system with speech accessibility features. This takes effect even if software speech synthesis was not actually enabled inside the installer. </p>
+<div class="informalexample"><pre class="screen"># Which ALSA card to be used for software speech.
+# Can be a number from 0, or an ID as seen in
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Which espeak-ng voice to be used
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Cấu hình mạng</h3></div></div></div>
+<p>Of course, preseeding the network configuration won't work if you're loading your preconfiguration file from the network. But it's great when you're booting from optical disc or USB stick. If you are loading preconfiguration files from the network, you can pass network config parameters by using kernel boot parameters. </p>
+<p>Nếu bạn cần phải chọn một giao diện riêng khi khởi động qua mạng, trước khi tải tập tin cấu hình sẵn qua mạng, hãy nhập tham số khởi động như <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Mặc dù thường không thể chèn sẵn cấu hình mạng khi dùng khả năng chèn trước qua mạng (dùng địa chỉ Mạng <span class="quote">“<span class="quote">preseed/url</span>”</span>), bạn vẫn còn có khả năng sử dụng dãy câu lệnh theo đây để chỉnh sửa sự hạn chế này, chẳng hạn nếu bạn muốn đặt một địa chỉ tĩnh cho giao diện mạng. Dãy câu lệnh này ép buộc cấu hình mạng chạy lại sau khi nạp tập tin chèn sẵn, bằng cách tạo văn lệnh <span class="quote">“<span class="quote">preseed/run</span>”</span> chứa những câu lệnh này: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Theo đây có những biến debconf thích hợp với cấu hình mạng. </p>
+<div class="informalexample"><pre class="screen"># Disable network configuration entirely. This is useful for cdrom
+# installations on non-networked devices where the network questions,
+# warning and long timeouts are a nuisance.
+#d-i netcfg/enable boolean false
+
+# netcfg will choose an interface that has link if possible. This makes it
+# skip displaying a list if there is more than one interface.
+d-i netcfg/choose_interface select auto
+
+# To pick a particular interface instead:
+#d-i netcfg/choose_interface select eth1
+
+# To set a different link detection timeout (default is 3 seconds).
+# Values are interpreted as seconds.
+#d-i netcfg/link_wait_timeout string 10
+
+# If you have a slow dhcp server and the installer times out waiting for
+# it, this might be useful.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Automatic network configuration is the default.
+# If you prefer to configure the network manually, uncomment this line and
+# the static network configuration below.
+#d-i netcfg/disable_autoconfig boolean true
+
+# If you want the preconfiguration file to work on systems both with and
+# without a dhcp server, uncomment these lines and the static network
+# configuration below.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Static network configuration.
+#
+# IPv4 example
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6 example
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Any hostname and domain names assigned from dhcp take precedence over
+# values set here. However, setting the values still prevents the questions
+# from being shown, even if values come from dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# If you want to force a hostname, regardless of what either the DHCP
+# server returns or what the reverse DNS entry for the IP is, uncomment
+# and adjust the following line.
+#d-i netcfg/hostname string somehost
+
+# Disable that annoying WEP key dialog.
+d-i netcfg/wireless_wep string
+# The wacky dhcp hostname that some ISPs use as a password of sorts.
+#d-i netcfg/dhcp_hostname string radish
+
+# If you want to completely disable firmware lookup (i.e. not use firmware
+# files or packages that might be available on installation images):
+#d-i hw-detect/firmware-lookup string never
+
+# If non-free firmware is needed for the network or other hardware, you can
+# configure the installer to always try to load it, without prompting. Or
+# change to false to disable asking.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Ghi chú rằng <span class="command"><strong>netcfg</strong></span> sẽ tự động quyết định mặt nạ mạng nếu <code class="classname">netcfg/get_netmask</code> không phải được chèn sẵn. Trong trường hợp này, biến phải được đánh dấu là <code class="literal">seen</code> (được thấy) cho quá trình tự động cài đặt. Tương tự, <span class="command"><strong>netcfg</strong></span> sẽ chọn một địa chỉ thích hợp nếu không đặt <code class="classname">netcfg/get_gateway</code>. Như một trường hợp đặc biệt, bạn cũng có thể đặt <code class="classname">netcfg/get_gateway</code> thành <span class="quote">“<span class="quote">none</span>”</span> (không có) để chỉ định không nên dùng cổng ra nào. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Bàn giao tiếp mạng</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Dùng thiết lập theo đây nếu bạn muốn sử dụng thành phần
+# bàn giao tiếp mạng (network-console) để cài đặt từ xa
+# thông qua SSH (trình bao bảo mật). Trường hợp này chỉ hữu ích
+# nếu bạn định tự thực hiện phần còn lại của quá trình cài đặt.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>More information related to network-console can be found in <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Installation over network-console">Phần 6.3.10, “Installation over network-console”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Thiết lập máy nhân bản</h3></div></div></div>
+<p>Phụ thuộc vào phương pháp cài đặt bạn dùng, máy nhân bản có thể được dùng để tải về thành phần cài đặt thêm, để cài đặt hệ thống cơ bản, và để thiết lập danh sách các nguồn <code class="filename">/etc/apt/sources.list</code> cho hệ thống đã cài đặt. </p>
+<p>Tham số <code class="classname">mirror/suite</code> xác định bộ phần mềm đối với hệ thống đã cài đặt. </p>
+<p>Tham số <code class="classname">mirror/udeb/suite</code> quyết định bộ phần mềm đối với thành phần nào thêm vào trình cài đặt. Nó có ích chỉ nếu thành phần nào tựchật sự được tải về qua mạng, cũng nên tương ứng với bộ phần mềm được dùng để xây dựng initrd cho phương pháp cài đặt được dùng. Bình thường, trình cài đặt tự động sử dụng giá trị đúng thì không nên lập tham số này. </p>
+<div class="informalexample"><pre class="screen"># Mirror protocol:
+# If you select ftp, the mirror/country string does not need to be set.
+# Default value for the mirror protocol: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Suite to install.
+#d-i mirror/suite string testing
+# Suite to use for loading installer components (optional).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Thiết lập tài khoản</h3></div></div></div>
+<p>The password for the root account and name and password for a first regular user's account can be preseeded. For the passwords you can use either clear text values or crypt(3) <span class="emphasis"><em>hashes</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Be aware that preseeding passwords is not completely secure as everyone with access to the preconfiguration file will have the knowledge of these passwords. Storing hashed passwords is considered secure unless a weak hashing algorithm like DES or MD5 is used which allow for bruteforce attacks. Recommended password hashing algorithms are SHA-256 and SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Skip creation of a root account (normal user account will be able to
+# use sudo).
+#d-i passwd/root-login boolean false
+# Alternatively, to skip creation of a normal user account.
+#d-i passwd/make-user boolean false
+
+# Root password, either in clear text
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# or encrypted using a crypt(3)  hash.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# To create a normal user account.
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Normal user's password, either in clear text
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# or encrypted using a crypt(3) hash.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Create the first user with the specified UID instead of the default.
+#d-i passwd/user-uid string 1010
+
+# The user account will be added to some standard initial groups. To
+# override that, use this.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Biến <code class="classname">passwd/root-password-crypted</code> và <code class="classname">passwd/user-password-crypted</code> cũng có thể được chèn trước bằng <span class="quote">“<span class="quote">!</span>”</span> là giá trị. Trong trường hợp đó, tài khoản tương ứng bị tắt. Trường hợp này có thể là tiện với tài khoản người chủ, miễn là phương pháp xen kẽ được thiết lập để cho phép hoạt động quản lý hay đăng nhập người chủ (thí dụ bằng cách dùng khả năng xác thức khoá SSH hay <span class="command"><strong>sudo</strong></span>). </p>
+<p>The following command (available from the <code class="classname">whois</code> package) can be used to generate a SHA-512 based crypt(3) hash for a password: </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Thiết lập đồng hồ và múi giờ</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Điều khiển nếu đồng hồ phần cứng được đặt thành UTC không.
+d-i clock-setup/utc boolean true
+
+# Bạn có thể đặt điều này thành bất cứ giá trị nào hợp lệ cho $TZ (múi giờ),
+# xem nội dung của « /usr/share/zoneinfo/ » để tìm giá trị hợp lệ.
+d-i time/zone string Asia/Saigon
+
+# Điều khiển có nên dùng giao thức thời gian NTP
+# để đặt đồng hồ trong khi cài đặt hay không.
+d-i clock-setup/ntp boolean true
+# Máy phục vụ NTP cần dùng. Giá trị mặc định gần lúc nào cũng đúng.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Phân vùng</h3></div></div></div>
+<p>Sử dụng chức năng chèn sẵn để phân vùng đĩa cứng vẫn bị hạn chế thành khả năng được hỗ trợ bởi <code class="classname">partman-auto</code>. Bạn có thể chọn phân vùng hoặc sức chứa trống trên đĩa, hoặc một đĩa hoàn toàn. Bố trí của đĩa có thể được quyết định bằng cách sử dụng một công thức xác định sẵn, một công thức riêng từ một tập tin công thức, hay một công thức nằm trong tập tin cấu hình sẵn. </p>
+<p>Khả năng chèn sẵn thiết lập phân vùng cấp cao dùng RAID, LVM và mật mã cũng được hỗ trợ, còn không phải với tính linh hoạt đầy đủ có thể làm khi phân vùng trong một tiến trình cài đặt không chèn sẵn. </p>
+<p>Những ví dụ dưới đây chỉ cung cấp thông tin cơ bản về cách sử dụng công thức. Để tìm thông tin chi tiết, xem hai tập tin <code class="filename">partman-auto-recipe.txt</code> và <code class="filename">partman-auto-raid-recipe.txt</code> trong gói <code class="classname">debian-installer</code>. Cả hai tập tin này cũng có sẵn từ the <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top">kho nguồn <code class="classname">debian-installer</code></a>. Ghi chú rằng chức năng được hỗ trợ vẫn có thể thay đổi giữa hai lần phát hành. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Việc nhận diện đĩa phụ thuộc vào thứ tự tải trình điều khiển chúng. Nếu có nhiều đĩa trong hệ thống, hãy chắc là đĩa đúng sẽ được chọn, trước khi dùng khả năng chèn sẵn. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Mẫu phân vùng</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># If the system has free space you can choose to only partition that space.
+# This is only honoured if partman-auto/method (below) is not set.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Alternatively, you may specify a disk to partition. If the system has only
+# one disk the installer will default to using that, but otherwise the device
+# name must be given in traditional, non-devfs format (so e.g. /dev/sda
+# and not e.g. /dev/discs/disc0/disc).
+# For example, to use the first SCSI/SATA hard disk:
+#d-i partman-auto/disk string /dev/sda
+# In addition, you'll need to specify the method to use.
+# The presently available methods are:
+# - regular: use the usual partition types for your architecture
+# - lvm:     use LVM to partition the disk
+# - crypto:  use LVM within an encrypted partition
+d-i partman-auto/method string lvm
+
+# You can define the amount of space that will be used for the LVM volume
+# group. It can either be a size with its unit (eg. 20 GB), a percentage of
+# free space or the 'max' keyword.
+d-i partman-auto-lvm/guided_size string max
+
+# If one of the disks that are going to be automatically partitioned
+# contains an old LVM configuration, the user will normally receive a
+# warning. This can be preseeded away...
+d-i partman-lvm/device_remove_lvm boolean true
+# The same applies to pre-existing software RAID array:
+d-i partman-md/device_remove_md boolean true
+# And the same goes for the confirmation to write the lvm partitions.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# You can choose one of the predefined partitioning recipes:
+# - atomic: all files in one partition
+# - home:   separate /home partition
+# - multi:  separate /home, /var, and /tmp partitions
+# - server: separate /var and /srv partitions; swap limitted to 1G
+# - small_disk: scheme dedicated to small harddrives (under 10GB)
+d-i partman-auto/choose_recipe select atomic
+
+# Or provide a recipe of your own...
+# If you have a way to get a recipe file into the d-i environment, you can
+# just point at it.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# If not, you can put an entire recipe into the preconfiguration file in one
+# (logical) line. This example creates a small /boot partition, suitable
+# swap, and uses the rest of the space for the root partition:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# The full recipe format is documented in the file partman-auto-recipe.txt
+# included in the 'debian-installer' package or available from D-I source
+# repository. This also documents how to specify settings such as file
+# system labels, volume group names and which physical devices to include
+# in a volume group.
+
+## Partitioning for EFI
+# If your system needs an EFI partition you could add something like
+# this to the recipe above, as the first element in the recipe:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# The fragment above is for the amd64 architecture; the details may be
+# different on other architectures. The 'partman-auto' package in the
+# D-I source repository may have an example you can follow.
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Force UEFI booting ('BIOS compatibility' will be lost). Default: false.
+#d-i partman-efi/non_efi_system boolean true
+# Ensure the partition table is GPT - this is required for EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# When disk encryption is enabled, skip wiping the partitions beforehand.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Phân vùng bằng RAID</h4></div></div></div>
+<p>Bạn cũng có thể sử dụng chức năng chèn sẵn để thiết lập phân vùng trên mảng RAID kiểu phần mềm. Có hỗ trợ RAID lớp 0, 1, 5, 6 và 10, thì tạo mảng bị suy biến và xác định thiết bị bổ sung. </p>
+<p>Sử dụng RAID 1 thì bạn có khả năng chèn sẵn bộ nạp khởi động grub để cài đặt vào mọi thiết bị được dùng trong mảng đó ; xem <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Cài đặt bộ nạp khởi động">Phần B.4.12, “Cài đặt bộ nạp khởi động”</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Loại chức năng tự động phân vùng này vẫn dễ làm sai. Nó cũng là chức năng hơi ít thử bởi nhà phát triển <code class="classname">debian-installer</code>. trách nhiệm về việc thử và kết hợp các công thức khác nhau (để hữu ích và không xung đột với nhau) được người dùng chịu. Xem <code class="filename">/var/log/syslog</code> nếu bạn gặp vấn đề. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Phương pháp nên được đặt thành « raid ».
+#d-i partman-auto/method string raid
+# Chỉ định những đĩa cần phân vùng.
+# Mọi đĩa đều sẽ có cùng một bố trí, do đó phương pháp này
+# chỉ có kết quả nếu mọi đĩa đều có cùng một kích cỡ.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Sau đó thì bạn cần phải chỉ định những phân vùng vật lý cần dùng.
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Cuối cùng bạn cần phải chỉ định những phân vùng đã xác định trước
+# sẽ được dùng trong thiết lập RAID như thế nào.
+# Nhớ để sử dụng những số thứ tự phân vùng đúng cho phân vùng hợp lý.
+# Hỗ trợ các lớp RAID 0, 1, 5, 6 và 10; các thiết bị định giới bằng dấu băm "#".
+# Các tham số :
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Để tìm thêm thông tin, xem tập tin « partman-auto-raid-recipe.txt »
+# được bao gồm trong gói « debian-installer » hoặc sẵn sàng từ
+# kho lưu mã nguồn trình cài đặt Debian (D-I).
+
+# Đoạn này làm cho partman tự động phân vùng mà không yêu cầu xác nhận.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Điều khiển cách gắn kết phân vùng</h4></div></div></div>
+<p>Bình thường, hệ thống tập tin được gắn kết dùng một mã nhận diện duy nhất (UUID) làm khoá; nó cho phép gắn kết hệ thống tập tin một cách đúng ngay cả khi tên thiết bị thay đổi. Mã UUID vẫn dài và khó đọc thì theo ý kiến của bạn, trình cài đặt cũng có thể gắn kết hệ thống tập tin dựa vào tên thiết bị truyền thống, hoặc dựa vào một nhãn được bạn gán. Nếu bạn yêu cầu trình cài đặt gắn kết theo nhãn thì hệ thống tập tin nào không có nhãn sẽ được gắn kết dùng một mã UUID. </p>
+<p>Thiết bị nào có tên ổn định, v.d. khối tin hợp lý LVM, thì cứ sử dụng tên truyền thống thay cho mã UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Tên thiết bị truyền thống cũng có thể thay đổi phụ thuộc vào thứ tự theo đó hạt nhân phát hiện các thiết bị trong khi khởi động. Trường hợp này có thể gây ra gấn kết hệ thống tập tin không đúng. Cũng như vậy, các nhãn có thể xung đột với nhau nếu bạn cằm vào một đĩa mới hay ổ đĩa USB: có xảy ra thì hệ thống sẽ khởi chạy một cách ngẫu nhiên. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Mặc định là gắn kết theo mã UUID, nhưng mà bạn cũng có thể chọn mục
+# "traditional" để sử dụng tên thiết bị truyền thống, hoặc "label"
+# để thử sử dụng nhãn hệ thống tập tin trước khi phục hồi mã UUID.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Cài đặt hệ thống cơ bản</h3></div></div></div>
+<p>Thật sự không thể chèn sẵn nhiều vào giai đoạn cài đặt này. Chỉ hỏi câu về cách cài đặt hạt nhân. </p>
+<div class="informalexample"><pre class="screen"># Cấu hình APT để không cài đặt các gói khuyến khích theo mặc định.
+# Sử dụng tuỳ chọn này cũng có thể gây ra một hệ thống không hoàn chỉnh
+# và chỉ người dùng có rất nhiều kinh nghiệm mới nên sử dụng nó.
+#d-i base-installer/install-recommends boolean false
+
+# (Siêu) gói ảnh hạt nhân cần cài đặt; có thể dùng « none »
+# nếu không cài đặt hạt nhân.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Thiết lập apt</h3></div></div></div>
+<p>Tiến trình thiết lập danh sách các nguồn của apt <code class="filename">/etc/apt/sources.list</code> và các tùy chọn cấu hình cơ bản được tự động hoá hoàn toàn, dựa vào phương pháp cài đặt và trả lời câu hỏi trước. Tùy chọn bạn có khả năng thêm kho phần mềm (cục bộ) khác. </p>
+<div class="informalexample"><pre class="screen"># Choose, if you want to scan additional installation media
+# (default: false).
+d-i apt-setup/cdrom/set-first boolean false
+# You can choose to install non-free firmware.
+#d-i apt-setup/non-free-firmware boolean true
+# You can choose to install non-free and contrib software.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Uncomment the following line, if you don't want to have the sources.list
+# entry for a DVD/BD installation image active in the installed system
+# (entries for netinst or CD images will be disabled anyway, regardless of
+# this setting).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Uncomment this if you don't want to use a network mirror.
+#d-i apt-setup/use_mirror boolean false
+# Select which update services to use; define the mirrors to be used.
+# Values shown below are the normal defaults.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Additional repositories, local[0-9] available
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Enable deb-src lines
+#d-i apt-setup/local0/source boolean true
+# URL to the public key of the local repository; you must provide a key or
+# apt will complain about the unauthenticated repository and so the
+# sources.list line will be left commented out.
+#d-i apt-setup/local0/key string http://local.server/key
+# or one can provide it in-line by base64 encoding the contents of the
+# key file (with `base64 -w0`) and specifying it thus:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# The content of the key file is checked to see if it appears to be ASCII-armoured.
+# If so it will be saved with an ".asc" extension, otherwise it gets a '.gpg' extension.
+# "keybox database" format is currently not supported. (see generators/60local in apt-setup's source)
+
+# By default the installer requires that repositories be authenticated
+# using a known gpg key. This setting can be used to disable that
+# authentication. Warning: Insecure, not recommended.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Uncomment this to add multiarch configuration for i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Chọn gói phần mềm</h3></div></div></div>
+<p>Bạn có khả năng chọn cài đặt bất cứ sự phối hợp công việc nào sẵn sàng. Vào lúc viết câu này, các công việc sẵn sàng gồm: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (standard tools) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (graphical desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (Gnome desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (XFCE desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (KDE Plasma desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Cinnamon desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (MATE desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (LXDE desktop) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (web server) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH server) </p></li>
+</ul></div>
+<p>Bạn cũng có khả năng chọn không cài đặt công việc nào, ép buộc cài đặt một bộ gói bằng cách khác. Khuyên bạn luôn luôn gồm ít nhất công việc <strong class="userinput"><code>chuẩn</code></strong>. </p>
+<p>Or if you don't want the tasksel dialog to be shown at all, preseed <code class="classname">pkgsel/run_tasksel</code> (no packages are installed via tasksel in that case). </p>
+<p>Nếu bạn muốn cài đặt một số gói riêng, thêm vào những gói được cài đặt trong các công việc, bạn có khả năng sử dụng tham số <code class="classname">pkgsel/include</code>. Giá trị của tham số này có thể là danh sách các gói được định giới bằng hoặc dấu phẩy hoặc dấu cách, cũng dễ dàng dùng trên dòng lệnh. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Or choose to not get the tasksel dialog displayed at all (and don't install
+# any packages):
+#d-i pkgsel/run_tasksel boolean false
+
+# Individual additional packages to install
+#d-i pkgsel/include string openssh-server build-essential
+# Whether to upgrade packages after debootstrap.
+# Allowed values: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# You can choose, if your system will report back on what software you have
+# installed, and what software you use. The default is not to report back,
+# but sending reports helps the project determine what software is most
+# popular and should be included on the first DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Cài đặt bộ nạp khởi động</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub is the boot loader (for x86).</span>
+
+# This is fairly safe to set, it makes grub install automatically to the UEFI
+# partition/boot record if no other operating system is detected on the machine.
+d-i grub-installer/only_debian boolean true
+
+# This one makes grub-installer install to the UEFI partition/boot record, if
+# it also finds some other OS, which is less safe as it might not be able to
+# boot that other OS.
+d-i grub-installer/with_other_os boolean true
+
+# Due notably to potential USB sticks, the location of the primary drive can
+# not be determined safely in general, so this needs to be specified:
+#d-i grub-installer/bootdev  string /dev/sda
+# To install to the primary device (assuming it is not a USB stick):
+#d-i grub-installer/bootdev  string default
+
+# Alternatively, if you want to install to a location other than the UEFI
+# parition/boot record, uncomment and edit these lines:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# To install grub to multiple disks:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Optional password for grub, either in clear text
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# or encrypted using an MD5 hash, see grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Use the following option to add additional boot parameters for the
+# installed system (if supported by the bootloader installer).
+# Note: options passed to the installer will be added automatically.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>Một mẫu duy nhất MD5 cho <code class="classname">grub</code> có thể được tạo dùng <span class="command"><strong>grub-md5-crypt</strong></span>, hoặc dùng câu lệnh từ mẫu thí dụ trong <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Thiết lập tài khoản">Phần B.4.6, “Thiết lập tài khoản”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Làm xong tiến trình cài đặt</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># During installations from serial console, the regular virtual consoles
+# (VT1-VT6) are normally disabled in /etc/inittab. Uncomment the next
+# line to prevent this.
+#d-i finish-install/keep-consoles boolean true
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+
+# This will prevent the installer from ejecting the disc during the reboot,
+# which is useful in some situations.
+#d-i cdrom-detect/eject boolean false
+
+# This is how to make the installer shutdown when finished, but not
+# reboot into the installed system.
+#d-i debian-installer/exit/halt boolean true
+# This will power off the machine instead of just halting it.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Chèn trước gói khác</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Phụ thuộc vào phần mềm nào bạn chọn cài đặt, hoặc nếu tiến trình
+# cài đặt bị lỗi, câu thêm có thể được hỏi. Bạn cũng có khả năng
+# chèn sẵn chúng. Để xem danh sách mọi câu có thể được hỏi
+# trong tiến trình cài đặt, hãy cài đặt xong, rồi chạy hai lệnh này:
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4837" class="footnote"><p><a href="#id4837" class="para"><sup class="para">[20] </sup></a>Chèn sẵn <code class="literal">locale</code> thành <strong class="userinput"><code>en_NL</code></strong>, chẳng hạn, có kết quả là <code class="literal">en_US.UTF-8</code> làm miền địa phương mặc định cho hệ thống được cài đặt. Nếu (v.d.) người dùng thực sự muốn sử dụng <code class="literal">en_GB.UTF-8</code> thì phải chèn sẵn từng giá trị.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Tạo tập tin định cấu hình sẵn </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Tùy chọn cấp cao</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

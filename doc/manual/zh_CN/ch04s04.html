@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. 为从硬盘引导准备文件</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch04.html" title="第 4 章 获取系统安装介质">
+<link rel="prev" href="ch04s03.html" title="4.3. 为从 U 盘引导准备文件">
+<link rel="next" href="ch04s05.html" title="4.5. 为使用 TFTP 网络引导准备文件">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. 为从硬盘引导准备文件</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 4 章 获取系统安装介质</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. 为从硬盘引导准备文件</h2></div></div></div>
+<p>安装程序可以从硬盘分区上面用引导文件引导。它们可以在其它操作系统下面启动，或者直接使用 BIOS 提供的引导装载程序直接启动。在现代的 UEFI 系统上，内核可以直接从 UEFI 分区引导，而无需引导程序。 </p>
+<p>采用这个技术可以实现完全的<span class="quote">“<span class="quote">纯网络</span>”</span>的安装方式。这样可以避免一些使用可移动介质带来的的缺点，比如寻找和刻录 CD/DVD 映像。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. 硬盘安装程序从 Linux 引导使用 <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>这一节将解释如何增加或者甚至替换现有的 linux 安装，通过<span class="command"><strong>GRUB</strong></span>。 </p>
+<p>在启动时，<span class="command"><strong>GRUB</strong></span> 支持将内核和磁盘映像加载到内存中。这个内存虚拟磁盘可以被用做内核的根文件系统。 </p>
+<p>将以下文件从 Debian 存档中复制到硬盘中比较方便的地方，比如 <code class="filename">/boot/newinstall/</code>。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code>(内核二进制文件) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (内存虚拟磁盘映像) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>如果您只愿意使用硬盘引导，然后从网络下载其他文件，需要下载 <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> 文件及其对应的内核 <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a>。这将允许您重新分区用于引导的硬盘，需要小心操作。 </p>
+<p>另一种方法，可以在安装时保持原硬盘的分区不变，您需要下载 <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> 文件以及对应的内核 <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a>，还需要将安装文件复制到硬盘上（确认文件名是以 <code class="literal">.iso</code> 结尾的）。这样安装程序就可以从硬盘引导，并从安装映像上安装，而无需使用网络。 </p>
+<p>最后，要配置 bootloader，请进入 <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. 从 Linux 使用 GRUB 来引导">第 5.1.3 节 “从 Linux 使用 <span class="command"><strong>GRUB</strong></span> 来引导”</a>。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. 为从 U 盘引导准备文件 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. 为使用 TFTP 网络引导准备文件</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

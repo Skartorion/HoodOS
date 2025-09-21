@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Завантаження втраченої прошивки</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Розділ 6. Використання інсталятора Debian">
+<link rel="prev" href="ch06s03.html" title="6.3. Використання окремих компонентів">
+<link rel="next" href="ch06s05.html" title="6.5. Кастомізація">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Завантаження втраченої прошивки</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Розділ 6. Використання інсталятора Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Завантаження втраченої прошивки</h2></div></div></div>
+<p>Як описано у розділі <a class="xref" href="ch02s02.html" title="2.2. Пристрої, що потребують прошивки">Розділ 2.2, «Пристрої, що потребують прошивки»</a>, деякі пристрої потребують завантаження мікропрограми. У більшості випадків пристрій взагалі не працюватиме, якщо прошивка відсутня; іноді базова функціональність не порушується, якщо вона відсутня, а прошивка потрібна лише для того, щоб увімкнути додаткові функції. </p>
+<p>Починаючи з Debian GNU/Linux 12.0, відповідно до <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Загальної резолюції про невільне програмне забезпечення від 2012 року</a>, офіційні інсталяційні образи (наприклад, netinst) можуть містити пакунки з невільним програмним забезпеченням. Навіть за наявності цих пакунків прошивок деякі файли прошивок можуть бути відсутніми. Або ви можете використовувати файли netboot, які не містять пакунків прошивки. </p>
+<p>Якщо драйвер пристрою запитує прошивку, яка відсутня, <code class="classname">debian-installer</code> покаже діалогове вікно з пропозицією завантажити відсутню прошивку. Якщо цей параметр вибрано, <code class="classname">debian-installer</code> скануватиме доступні пристрої на наявність вільних файлів прошивок або пакунків із прошивками. Якщо прошивку буде знайдено, її буде скопійовано у правильне місце (<code class="filename">/lib/firmware</code>), а модуль драйвера буде перезавантажено. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Які пристрої скануються і які файлові системи підтримуються, залежить від архітектури, способу інсталяції та етапу інсталяції. Особливо на ранніх стадіях встановлення, завантаження прошивки, найімовірніше, буде успішним з USB-накопичувача, відформатованого у форматі FAT. <span class="phrase">На i386 і amd64 прошивку також можна завантажити з MMC або SD-карти.</span> </p></td></tr>
+</table></div>
+<p>Зауважте, що ви можете пропустити завантаження прошивки, якщо знаєте, що пристрій працюватиме і без неї, або якщо пристрій не потрібен під час інсталяції. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3476"></a>6.4.1. Підготовка середовища</h3></div></div></div>
+<p>Найпоширеніший спосіб завантаження такої прошивки - зі знімного носія, наприклад, флешки. Щоб підготувати USB-накопичувач (або інший носій, наприклад, розділ жорсткого диска), файли або пакунки з прошивкою потрібно розмістити у кореневому каталозі або каталозі з назвою <code class="filename">/firmware</code> файлової системи на носії. Рекомендованою файловою системою для використання є FAT, оскільки вона з великою ймовірністю підтримується на ранніх етапах встановлення. </p>
+<p>Tar-архіви та zip-файли, що містять поточні пакунки для найпоширеніших прошивок, а також пов'язані з ними метадані для забезпечення правильного виявлення програмою встановлення (каталог <code class="filename">dep11</code>), можна завантажити за адресою: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Просто завантажте tar-архів або zip-файл потрібного релізу і розпакуйте його у файлову систему на носії. </p>
+<p>Також можна скопіювати окремі файли прошивки на носій. Вільну прошивку можна отримати, наприклад, з уже встановленої системи або від постачальника обладнання. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3487"></a>6.4.2. Прошивка та встановлена система</h3></div></div></div>
+<p>Будь-яка прошивка, завантажена під час встановлення, буде автоматично скопійована до встановленої системи. У більшості випадків це гарантує, що пристрій, який потребує прошивки, також працюватиме коректно після перезавантаження системи у встановлену систему. Однак, якщо встановлена система має іншу версію ядра, ніж програма встановлення, існує невелика ймовірність того, що прошивку не вдасться завантажити через невідповідність версій. </p>
+<p>Якщо прошивку було завантажено з пакунка прошивок, <code class="classname">debian-installer</code> також встановить цей пакунок для встановленої системи і автоматично додасть розділ невільних прошивок до архіву пакунків у <code class="filename">sources.list</code> APT. Перевага цього методу полягає в тому, що прошивка автоматично оновлюється, якщо з'являється нова версія. </p>
+<p>Якщо завантаження прошивки було пропущено під час інсталяції, відповідний пристрій, ймовірно, не працюватиме з інстальованою системою, доки прошивку (пакунок) не буде інстальовано вручну. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Якщо мікропрограму було завантажено з вільних файлів мікропрограми, мікропрограму, скопійовану до встановленої системи, <span class="emphasis"><em>не буде</em></span> автоматично оновлено, якщо після завершення встановлення не буде встановлено відповідний пакунок мікропрограми (за наявності). </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Завершення встановленої системи</h3></div></div></div>
+<p>Залежно від того, як було виконано інсталяцію, може статися так, що потреба в певній прошивці не була виявлена під час інсталяції, що відповідна прошивка була недоступна або що користувач вирішив не встановлювати певну прошивку на той момент. У деяких випадках, успішне встановлення може закінчитися чорним екраном або спотвореним відображенням при перезавантаженні у встановлену систему. Якщо це сталося, можна спробувати наступні обхідні шляхи: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Передайте параметр <code class="code">nomodeset</code> у командному рядку ядра. Це може допомогти завантажитися у <span class="quote">«<span class="quote">резервний графічний режим</span>»</span>.</p></li>
+<li class="listitem"><p>Використовуйте комбінацію клавіш <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> для переходу до VT2, яка може запропонувати функціональний запит на вхід.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Використання окремих компонентів </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Кастомізація</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

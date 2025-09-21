@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Penyiapan Perangkat Keras dan Sistem Operasi Pra Instalasi</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch03.html" title="Bab 3. Sebelum Memasang Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Pra-Pemartisian untuk Sistem Multi-Boot">
+<link rel="next" href="ch04.html" title="Bab 4. Mendapatkan Media Instalasi Sistem">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Penyiapan Perangkat Keras dan Sistem Operasi Pra Instalasi</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 3. Sebelum Memasang Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Penyiapan Perangkat Keras dan Sistem Operasi Pra Instalasi</h2></div></div></div>
+<p>Bagian ini akan memandu Anda melalui penyiapan perangkat keras pra-instalasi, jika ada, yang perlu Anda lakukan sebelum memasang Debian. Umumnya, ini melibatkan pemeriksaan dan mungkin mengubah pengaturan firmware BIOS/UEFI/sistem untuk sistem Anda. <span class="quote">“<span class="quote">BIOS/UEFI</span>”</span> atau <span class="quote">“<span class="quote">firmware sistem</span>”</span> adalah perangkat lunak inti yang digunakan oleh perangkat keras; ini paling kritis dipanggil selama proses bootstrap (setelah daya dihidupkan). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Memanggil Menu Penyiapan BIOS/UEFI</h3></div></div></div>
+<p>BIOS/UEFI menyediakan fungsi dasar yang diperlukan untuk mem-boot mesin Anda dan untuk memungkinkan sistem operasi Anda mengakses perangkat keras Anda. Sistem Anda menyediakan menu penyiapan BIOS/UEFI, yang digunakan untuk mengonfigurasi BIOS/UEFI. Untuk masuk ke menu penyiapan BIOS/UEFI, Anda harus menekan sebuah tombol atau kombinasi tombol setelah menyalakan komputer. Sering kali itu adalah tombol <span class="keycap"><strong>Delete</strong></span> atau <span class="keycap"><strong>F2</strong></span>, tetapi beberapa produsen menggunakan tombol lain. Biasanya saat memulai komputer akan ada pesan yang menyatakan tombol mana yang harus ditekan untuk masuk ke layar penyiapan. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Pemilihan Perangkat Boot</h3></div></div></div>
+<p>Dalam menu penyiapan BIOS/UEFI, Anda dapat memilih perangkat mana yang akan diperiksa dalam urutan apa untuk sistem operasi yang dapat di-boot. Pilihan yang mungkin biasanya termasuk hard disk internal, drive CD/DVD-ROM, dan perangkat penyimpanan massal USB seperti flash disk USB atau hard disk USB eksternal. Pada sistem modern juga sering ada kemungkinan untuk mengaktifkan boot jaringan melalui PXE. </p>
+<p>Tergantung pada media instalasi (CD/DVD ROM, flash disk USB, boot jaringan) yang telah Anda pilih, Anda harus mengaktifkan perangkat boot yang sesuai jika belum diaktifkan. </p>
+<p>Sebagian besar versi BIOS/UEFI memungkinkan Anda untuk memanggil menu boot pada awal mula sistem di mana Anda memilih dari perangkat mana komputer harus memulai untuk sesi saat ini. Jika opsi ini tersedia, BIOS/UEFI biasanya menampilkan pesan singkat seperti <span class="quote">“<span class="quote">tekan <span class="keycap"><strong>F12</strong></span> untuk menu boot</span>”</span> pada awal mula sistem. Kunci sebenarnya yang digunakan untuk memilih menu ini bervariasi dari satu sistem ke sistem lainnya; kunci yang umum digunakan adalah <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span>, dan <span class="keycap"><strong>F8</strong></span>. Memilih perangkat dari menu ini tidak mengubah urutan boot baku BIOS/UEFI, yaitu Anda dapat memulai sekali dari flash disk USB sambil mengonfigurasi hard disk internal sebagai perangkat boot utama normal. </p>
+<p>Jika BIOS/UEFI Anda tidak memberi Anda menu boot untuk melakukan pilihan ad-hoc dari perangkat boot saat ini, Anda harus mengubah pengaturan BIOS/UEFI Anda agar membuat perangkat dari mana <code class="classname">debian-installer</code> mesti di-boot sebagai perangkat boot utama. </p>
+<p>Sayangnya beberapa komputer mungkin berisi versi BIOS/UEFI yang bermasalah. Boot <code class="classname">debian-installer</code> dari flash disk USB mungkin tidak berfungsi meskipun ada opsi yang sesuai di menu penyiapan BIOS/UEFI dan flash disk dipilih sebagai perangkat boot utama. Pada beberapa sistem ini menggunakan flash disk USB sebagai media boot tidak mungkin; yang lain dapat ditipu untuk boot dari flash disk dengan mengubah jenis perangkat di pengaturan BIOS/UEFI dari baku <span class="quote">“<span class="quote">hard disk USB</span>”</span> atau <span class="quote">“<span class="quote">flash disk USB</span>”</span> ke <span class="quote">“<span class="quote">USB ZIP</span>”</span> atau <span class="quote">“<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> Khususnya jika Anda menggunakan image instalasi isohybrid pada flash disk USB (lihat <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Mempersiapkan flash disk USB menggunakan image CD/DVD hibrida">Bagian 4.3.1, “Mempersiapkan flash disk USB menggunakan image CD/DVD hibrida”</a>), mengubah jenis perangkat ke <span class="quote">“<span class="quote">USB CDROM</span>”</span> membantu pada beberapa BIOS yang tidak akan boot dari flash disk USB dalam mode hard disk USB.</span> Anda mungkin perlu mengonfigurasi BIOS/UEFI Anda untuk mengaktifkan <span class="quote">“<span class="quote">dukungan legacy USB</span>”</span>. </p>
+<p>Jika Anda tidak dapat memanipulasi BIOS/UEFI untuk boot langsung dari flash disk USB, Anda masih memiliki opsi untuk menggunakan ISO yang disalin ke flash disk. Boot <code class="classname">debian-installer</code> menggunakan <a class="xref" href="ch04s04.html" title="4.4. Mempersiapkan Berkas untuk Boot Hard Disk">Bagian 4.4, “Mempersiapkan Berkas untuk Boot Hard Disk”</a> dan, setelah memindai hard drive untuk image ISO pemasang, pilih perangkat USB dan pilih image instalasi. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Sistem dengan firmware UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">“<span class="quote">Unified Extensible Firmware Interface</span>”</span>) adalah jenis firmware sistem baru yang digunakan pada banyak sistem modern dan - di antara kegunaan lain - dimaksudkan untuk menggantikan BIOS PC klasik. </p>
+<p>Saat ini sebagian besar sistem PC yang menggunakan UEFI juga memiliki apa yang disebut <span class="quote">“<span class="quote">Compatibility Support Module</span>”</span> (CSM) di firmware, yang menyediakan antarmuka yang persis sama dengan sistem operasi sebagai BIOS PC klasik, sehingga perangkat lunak yang ditulis untuk BIOS PC klasik dapat digunakan tanpa diubah. Meskipun demikian UEFI dimaksudkan untuk suatu hari nanti sepenuhnya menggantikan BIOS PC lama tanpa sepenuhnya kompatibel ke belakang dan sudah ada banyak sistem dengan UEFI tetapi tanpa CSM. </p>
+<p>Pada sistem dengan UEFI ada beberapa hal yang perlu dipertimbangkan saat memasang sistem operasi. Cara firmware memuat sistem operasi pada dasarnya berbeda antara BIOS klasik (atau UEFI dalam mode CSM) dan UEFI native. Satu perbedaan utama adalah cara partisi hard disk direkam pada hard disk. Sementara BIOS klasik dan UEFI dalam mode CSM menggunakan tabel partisi DOS, UEFI native menggunakan skema partisi yang berbeda yang disebut <span class="quote">“<span class="quote">GUID Partition Table</span>”</span> (GPT). Pada satu disk, untuk semua tujuan praktis hanya satu dari keduanya yang dapat digunakan dan dalam kasus pengaturan multi-boot dengan sistem operasi yang berbeda pada satu disk, semuanya harus menggunakan jenis tabel partisi yang sama. Boot dari disk dengan GPT hanya dimungkinkan dalam mode UEFI native, tetapi menggunakan GPT menjadi semakin umum seiring bertambahnya ukuran hard disk, karena tabel partisi DOS klasik tidak dapat mengatasi disk yang lebih besar dari sekitar 2 Terabyte sementara GPT memungkinkan disk yang jauh lebih besar. Perbedaan utama lainnya antara BIOS (atau UEFI dalam mode CSM) dan UEFI native adalah lokasi di mana kode boot disimpan dan mesti dalam format apa. Ini berarti bahwa boot loader yang berbeda diperlukan untuk setiap sistem. </p>
+<p>Yang terakhir menjadi penting saat boot <code class="classname">debian-installer</code> pada sistem UEFI dengan CSM karena <code class="classname">debian-installer</code> memeriksa apakah itu dimulai pada BIOS atau pada sistem UEFI native dan memasang boot loader yang sesuai. Biasanya ini berfungsi begitu saja tetapi mungkin ada masalah di lingkungan multi-boot. Pada beberapa sistem UEFI dengan CSM, mode boot baku untuk perangkat lepasan bisa berbeda dari apa yang sebenarnya digunakan saat boot dari hard disk, jadi ketika mem-boot pemasang dari flash disk USB dalam mode yang berbeda dari apa yang digunakan saat mem-boot sistem operasi lain yang sudah terpasang dari hard disk, mungkin dipasang boot loader yang salah dan sistem mungkin tidak dapat di-boot setelah menyelesaikan instalasi. Saat memilih perangkat boot dari menu boot firmware, beberapa sistem menawarkan dua pilihan terpisah untuk setiap perangkat, sehingga pengguna dapat memilih apakah boot akan terjadi dalam CSM atau dalam mode UEFI native. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Boot aman</h3></div></div></div>
+<p>Topik terkait UEFI lainnya adalah apa yang disebut mekanisme <span class="quote">“<span class="quote">boot aman</span>”</span> (secure boot). Boot aman berarti fungsi implementasi UEFI yang memungkinkan firmware hanya memuat dan mengeksekusi kode yang ditandatangani secara kriptografis dengan kunci tertentu dan dengan demikian memblokir kode boot (berpotensi berbahaya) yang tidak ditandatangani atau ditandatangani dengan kunci yang tidak diketahui. Dalam praktiknya satu-satunya kunci yang diterima secara baku pada sebagian besar sistem UEFI dengan boot aman adalah kunci dari Microsoft yang digunakan untuk menandatangani boot loader Windows. Debian menyertakan boot loader <span class="quote">“<span class="quote">shim</span>”</span> yang ditandatangani oleh Microsoft, jadi harus bekerja dengan benar pada sistem dengan boot aman diaktifkan. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Menonaktifkan fitur <span class="quote">“<span class="quote">boot cepat</span>”</span>/<span class="quote">“<span class="quote">startup cepat</span>”</span> Windows</h3></div></div></div>
+<p>Windows menawarkan fitur (disebut <span class="quote">“<span class="quote">boot cepat</span>”</span> di Windows 8, <span class="quote">“<span class="quote">startup cepat</span>”</span> di Windows 10) untuk mengurangi waktu memulai sistem. Secara teknis, ketika fitur ini diaktifkan, Windows tidak melakukan shutdown nyata dan cold boot nyata setelahnya ketika diperintahkan untuk mematikan, tetapi sebaliknya melakukan sesuatu yang menyerupai suspensi sebagian ke disk untuk mengurangi waktu <span class="quote">“<span class="quote">boot</span>”</span>. Selama Windows adalah satu-satunya sistem operasi pada mesin, ini tidak bermasalah, tetapi dapat mengakibatkan masalah dan kehilangan data, ketika Anda memiliki pengaturan dual boot, di mana sistem operasi lain mengakses sistem berkas yang sama seperti Windows. Dalam hal ini keadaan sebenarnya dari sistem berkas dapat berbeda dari apa yang Windows yakini setelah <span class="quote">“<span class="quote">boot</span>”</span> dan ini dapat menyebabkan kerusakan sistem berkas setelah akses tulis lebih lanjut ke sistem berkas. Oleh karena itu dalam pengaturan dual boot, untuk menghindari kerusakan sistem berkas, fitur <span class="quote">“<span class="quote">fast boot</span>”</span>/<span class="quote">“<span class="quote">fast startup</span>”</span> harus dinonaktifkan di dalam Windows. </p>
+<p>Selain itu, mekanisme Pembaruan Windows (kadang-kadang) diketahui secara otomatis mengaktifkan kembali fitur ini, setelah sebelumnya dinonaktifkan oleh pengguna. Disarankan untuk memeriksa kembali pengaturan ini secara berkala. </p>
+<p>Mungkin juga perlu untuk menonaktifkan <span class="quote">“<span class="quote">boot cepat</span>”</span> bahkan agar memungkinkan akses ke pengaturan UEFI untuk memilih mem-boot sistem operasi lain atau <code class="classname">debian-installer</code>. Pada beberapa sistem UEFI, firmware akan mengurangi waktu <span class="quote">“<span class="quote">boot</span>”</span> dengan tidak menginisialisasi pengontrol papan ketik atau perangkat keras USB; dalam kasus ini, perlu untuk boot ke Windows dan menonaktifkan fitur ini untuk memungkinkan perubahan urutan boot. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Masalah Perangkat Keras yang Harus Diwaspadai</h3></div></div></div>
+<p><b>Dukungan BIOS USB dan papan ketik. </b>Jika Anda tidak memiliki papan ketik gaya PS/2, tetapi hanya model USB, pada beberapa PC yang sangat lama Anda mungkin perlu mengaktifkan emulasi papan ketik lama di pengaturan BIOS Anda untuk dapat menggunakan papan ketik Anda di menu boot loader, tetapi ini bukan masalah untuk sistem modern. Jika papan ketik Anda tidak berfungsi di menu boot loader, lihat manual mainboard Anda dan lihat di BIOS untuk <span class="quote">“<span class="quote">Emulasi papan ketik lama</span>”</span> (Legacy keyboard emulation) atau opsi <span class="quote">“<span class="quote">Dukungan papan ketik USB</span>”</span> (USB keyboard support). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Pra-Pemartisian untuk Sistem Multi-Boot </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> Bab 4. Mendapatkan Media Instalasi Sistem</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

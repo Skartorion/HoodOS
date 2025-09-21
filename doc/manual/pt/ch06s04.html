@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Carregar Firmware em Falta</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Capítulo 6. Utilizar o Instalador Debian">
+<link rel="prev" href="ch06s03.html" title="6.3. Utilizar Componentes Individuais">
+<link rel="next" href="ch06s05.html" title="6.5. Personalização">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Carregar Firmware em Falta</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 6. Utilizar o Instalador Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Carregar Firmware em Falta</h2></div></div></div>
+<p>Conforme é descrito na <a class="xref" href="ch02s02.html" title="2.2. Dispositivos que Necessitam de Firmware">Secção 2.2, “Dispositivos que Necessitam de Firmware”</a>, alguns dispositivos necessitam que seja carregado firmware. Na maioria dos casos o dispositivo não irá funcionar se o firmware não estiver disponível; Por vezes as funcionalidades básicas não serão limitadas se o firmware estiver em falta e for apenas necessário para habilitar funcionalidades adicionais. </p>
+<p>A partir de Debian GNU/Linux 12.0, e seguindo a <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Resolução Geral de 2022 acerca de firmware não-livre</a>, as imagens de instalação oficiais (tal como a netinst) podem incluir pacotes de firmware não-livre. Mas mesmo com esses pacotes de firmware disponíveis, podem faltar alguns ficheiros de firmware. Ou poderá utilizar os ficheiros netboot, que não incluem pacotes de firmware. </p>
+<p>Se o controlador de um dispositivo necessitar de firmware que não esteja disponível, o <code class="classname">debian-installer</code> irá mostrar uma caixa de diálogo a oferecer-se para carregar o firmware em falta. Se esta opção for selecionada, o <code class="classname">debian-installer</code> irá procurar nos dispositivos disponíveis por ficheiros soltos de firmware ou pacotes contendo firmware. Se for encontrado, o firmware será copiado para a localização correta (<code class="filename">/lib/firmware</code>) e o controlador será novamente carregado. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Os dispositivos que são pesquisados e quais os sistemas de ficheiros que são suportados dependem da arquitetura, do método de instalação e da etapa da instalação. Especialmente durante as etapas iniciais da instalação, o carregamento de firmware é mais provável que tenha sucesso a partir de uma pen USB formatada com FAT. <span class="phrase">Em i386 e em amd64 o firmware também pode ser carregado a partir de um cartão SD ou MMC.</span> </p></td></tr>
+</table></div>
+<p>Note que é possível saltar o carregamento de firmware se souber que o dispositivo também irá funcionar sem ele, ou se o dispositivo não for necessário durante a instalação. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3975"></a>6.4.1. Preparar um meio</h3></div></div></div>
+<p>O método mais comum para carregar o firmware é a partir de um meio removível, tal como por exemplo uma pen USB. Para preparar uma pen USB (ou outro suporte, como uma partição de um disco rígido), os ficheiros ou pacotes de firmware têm de ser colocados ou no diretório raiz ou num diretório com o nome <code class="filename">/firmware</code> do sistema de ficheiros do meio de armazenamento. O sistema de ficheiros recomendado para utilizar é o FAT, já que é o mais provável de ser suportado durante as etapas iniciais da instalação. </p>
+<p>Estão disponíveis ficheiros tarball e zip contendo os atuais pacotes para o firmware mais comum e os metadados associados para assegurar uma deteção adequada a partir do instalador (diretório <code class="filename">dep11</code>) estão disponíveis a partir de: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Descarregue apenas o ficheiro tarball ou zip para o lançamento correto e descompacte-o para o sistema de ficheiros no meio de armazenamento. </p>
+<p>Também é possível copiar ficheiros individuais de firmware para o suporte. Ficheiros soltos de firmware podem ser obtidos por exemplo a partir de sistemas já instalados ou a partir de um fabricante de hardware. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3986"></a>6.4.2. Firmware e o Sistema Instalado</h3></div></div></div>
+<p>Qualquer firmware carregado durante a instalação será copiado automaticamente para o sistema instalado. Na maioria dos casos isto irá assegurar que o dispositivo que necessita do firmware também irá funcionar corretamente após o sistema ser reiniciado para para o sistema instalado. No entanto se o sistema instalado correr uma versão diferente do kernel da do instalador existe uma ligeira possibilidade que o firmware não possa ser carregado devido à diferença de versão. </p>
+<p>Se o firmware foi carregado a partir de um pacote de firmware, o <code class="classname">debian-installer</code> irá também instalar este pacote no sistema instalado e irá acrescentar automaticamente a seção non-free-firmware do arquivo de pacotes ao <code class="filename">sources.list</code> do APT. Isto tem a vantagem do firmware ser atualizado automaticamente se estiver disponível uma nova versão. </p>
+<p>Se for saltado o carregamento de firmware durante a instalação, o dispositivo relevante irá provavelmente não funcionar no sistema instalado até o (pacote de) firmware ser instalado manualmente. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Se o firmware foi carregado a partir de ficheiros de firmware soltos, o firmware copiado para o sistema instalado <span class="emphasis"><em>não</em></span> irá ser automaticamente atualizado a menos que o pacote correspondente de firmware (se estiver disponível) seja instalado após a instalação estar completada. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Completar o Sistema Instalado</h3></div></div></div>
+<p>Dependendo de como foi feita a instalação, pode ser que algum do firmware necessário não tenha sido detetado durante a instalação, ou que o firmware relevante não estivesse disponível, ou que tenha escolhido não instalar algum do firmware nessa altura. Em alguns casos, uma instalação com sucesso pode mesmo assim acabar com um ecrã em branco ou com a imagem imperceptível quando reiniciar para o sistema instalado. Quando isso acontecer, pode tentar ultrapassar assim: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Passar a opção <code class="code">nomodeset</code> na linha de comandos do kernel. Isto pode ajudar arrancar num modo de <span class="quote">“<span class="quote">fallback graphics</span>”</span>.</p></li>
+<li class="listitem"><p>Utilizar a combinação de teclas <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> para mudar para o VT2, o qual poderá oferecer login numa linha de comandos funcional.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Utilizar Componentes Individuais </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Personalização</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

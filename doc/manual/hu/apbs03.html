@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Elő-beállító fájl létrehozása</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apb.html" title="B. függelék - Automata telepítés előírással">
+<link rel="prev" href="apbs02.html" title="B.2. Előírás használata">
+<link rel="next" href="apbs04.html" title="B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Elő-beállító fájl létrehozása</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">B. függelék - Automata telepítés előírással</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Elő-beállító fájl létrehozása</h2></div></div></div>
+<p>Az előbeállító fájl a <span class="command"><strong>debconf-set-selections</strong></span> által használt formájú. Egy sor általános formája: </p>
+<div class="informalexample"><pre class="screen">&lt;tulajdonos&gt; &lt;a kérdés neve&gt; &lt;a kérdés típusa&gt; &lt;érték&gt;
+</pre></div>
+<p>
+
+</p>
+<p>A fájlnak a <code class="literal">#_preseed_V1</code> sorral kell kezdődnie </p>
+<p>Van pár fontos szabály az előbeállító fájlok írásakor. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Csak 1 szóközt vagy tab karaktert rakj a típus és érték közé: továbbiak az érték részeként kerülnek értelmezésre. </p></li>
+<li class="listitem"><p>Egy sort több sorba is szét lehet bontani úgy, hogy a sor végére egy visszaperjelet (<span class="quote">„<span class="quote"><code class="literal">\</code></span>”</span>) teszel, ami a sorfolytatás jele. Jó választás a sor törésére a kérdés neve után; rossz viszont, ha a típus és az érték közé esik. A szétbontott sorokat a rendszer egyetlen sorrá fűzi össze, miközben az elején és végén található szóközöket egyetlen szóközre szűkíti. </p></li>
+<li class="listitem"><p>Azoknál a debconf változóknál (sablonoknál), amelyeket csak magában a telepítőben használnak, a tulajdonost <span class="quote">„<span class="quote">d-i</span>”</span>-re kell állítani; az előtelepítéshez használt változók esetében, amelyek a telepített rendszerben lesznek, annak a csomagnak a nevét kell használni, amely tartalmazza a megfelelő debconf sablont. Csak azok a változók lesznek átvezetve a telepített rendszer debconf adatbázisába, amelyeknek a tulajdonosa nem <span class="quote">„<span class="quote">d-i</span>”</span>-re van állítva. </p></li>
+<li class="listitem"><p>A legtöbb elő-válaszolandó kérdés az angolul megadott értékeket várja, nem a lefordított értékeket. De van pár kérdés (például a <code class="classname">partman</code> részben), ahol a lefordított értékeket kell használni. </p></li>
+<li class="listitem"><p>Pár kérdés egy kódot vár értékként a telepítés alatt megjelenített angol szöveg helyett. </p></li>
+<li class="listitem"><p>Kezdd a <code class="literal">#_preseed_V1</code> sorral </p></li>
+<li class="listitem"><p>Egy megjegyzés olyan sorból áll, amely <span class="emphasis"><em>kettőskereszt</em></span> karakterrel (<span class="quote">„<span class="quote"><code class="literal">#</code></span>”</span>) kezdődik, és a sor végéig tart. </p></li>
+</ul></div>
+<p>Elő-beállító fájl létrehozásának legkönnyebb módja a <a class="xref" href="apbs04.html" title="B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)">B.4. szakasz - Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)</a> részben hivatkozott példa fájl használata alapként és az innen való munka. </p>
+<p>Egy másik mód a kézi telepítés és az újraindítás után a <span class="command"><strong>debconf-get-selections</strong></span> használata a <code class="classname">debconf-utils</code> csomagból, ez a debconf és a telepítő cdebconf adatbázist egy fájlba teszi: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>fájl</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>fájl</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>fájl</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Jó tudni, hogy az így előállított fájl pár előírhatatlan elemet is tartalmaz, a példa fájl jobb kezdés a legtöbb felhasználónak. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>E mód azon alapul, hogy a telepítés végén a cdebconf adatbázis a telepített rendszer <code class="filename">/var/log/installer/cdebconf</code> könyvtárába kerül. E fájlok érzékeny adatai miatt, alapban őket csak a root olvashatja. </p>
+<p>A <code class="filename">/var/log/installer</code> fájlok megsemmisülnek az <code class="classname">installation-report</code> csomag törlésekor. </p>
+</td></tr>
+</table></div>
+<p>A kérdések lehetséges válaszai ellenőrzéséhez, használhatod a <span class="command"><strong>nano</strong></span> parancsot a <code class="filename">/var/lib/cdebconf</code> fájlok vizsgálatához a telepítés alatt. A <code class="filename">templates.dat</code> a nyers sablonokat, a <code class="filename">questions.dat</code> a mostani értékeket és a változókhoz rendelt értékeket adja. </p>
+<p>Az előbeállító fájl formája érvényességének ellenőrzéséhez egy telepítés előtt, használd a <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span> parancsot. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Előírás használata </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

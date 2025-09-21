@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Opties voor gevorderden</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apb.html" title="Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen">
+<link rel="prev" href="apbs04.html" title="B.4. Inhoud van het antwoordbestand (voor trixie)">
+<link rel="next" href="apc.html" title="Bijlage C. Schijven indelen voor Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Opties voor gevorderden</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Opties voor gevorderden</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Aangepaste commando's uitvoeren tijdens de installatie</h3></div></div></div>
+<p>Een erg krachtige en flexibele optie die geboden wordt door de preconfiguratiegereedschappen is de mogelijkheid om op bepaalde punten in de installatie commando's of scripts uit te voeren. </p>
+<p>Als het bestandssysteem van het doelsysteem aangekoppeld is, is het beschikbaar in <code class="filename">/target</code>. Wanneer een installatie-CD/DVD gebruikt wordt, is die beschikbaar in <code class="filename">/cdrom</code> als die aangekoppeld is. </p>
+<div class="informalexample"><pre class="screen"># Het toepassen van preconfiguratie met d-i is inherent onveilig.
+# Het installatiesysteem bevat geen enkele controle op eventuele pogingen
+# om via een buffer overflow of op een andere manier de waarden uit een
+# antwoordbestand, zoals dit hier, te compromitteren. Gebruik enkel
+# antwoordbestanden die afkomstig zijn van locaties die u vertrouwt!
+# Om dit te beklemtonen en omdat het ook een algemeen nut heeft,
+# tonen we u hier een manier om elk gewenst shell-commando automatisch
+# uit te voeren binnen het installatiesysteem.
+
+# Dit eerste commando wordt zo vroeg mogelijk uitgevoerd,
+# net nadat de preconfiguratie ingelezen werd.
+#d-i preseed/early_command string anna-install some-udeb
+# Dit commando wordt uitgevoerd vlak voordat de schijfindeling begint.
+# Het kan nuttig zijn om voor het schijfindelingsprogramma een dynamische
+# preconfiguratie te gebruiken die rekening houdt met de toestand van de
+# schijven (die mogelijk niet bekend is op het ogenblik dat de commando's van
+# preseed/early_command uitgevoerd worden).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Dit commando wordt uitgevoerd vlak voor de installatie beëindigd wordt, maar
+# de map /target nog gebruikt kan worden. U kunt chrooten naar /target
+# en het rechtstreeks gebruiken of de commando's apt-install en in-target
+# gebruiken om op een eenvoudige manier pakketten te installeren en
+# commando's uit te voeren op het doelsysteem.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Gebruik maken van preconfiguratie om standaardwaarden aan te passen</h3></div></div></div>
+<p>Het is mogelijk om preconfiguratie te gebruiken om het standaardantwoord op een vraag aan te passen, terwijl de vraag nog steeds gesteld wordt. Om dit te doen moet de <em class="firstterm">seen</em>-vlag (de gezien-vlag) teruggezet worden op <span class="quote">“<span class="quote">false</span>”</span> nadat de waarde voor een antwoord ingesteld werd. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string waarde
+d-i foo/bar seen false
+</pre></div>
+<p> Hetzelfde effect kunt u bereiken voor <span class="emphasis"><em>alle</em></span> vragen door aan de opstartprompt de parameter <code class="classname">preseed/interactive=true</code> in te stellen. Dit kan ook nuttig zijn om uw antwoordbestand te testen of te debuggen. </p>
+<p>Merk op dat u <span class="quote">“<span class="quote">d-i</span>”</span> als eigenaar enkel mag gebruiken voor variabelen die in het installatiesysteem zelf gebruikt worden. Voor variabelen die behoren tot pakketten die op het doelsysteem geïnstalleerd worden, moet u de naam van dat pakket gebruiken als eigenaar. Zie de voetnoot bij <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Met opstartparameters vooraf installatievragen beantwoorden">Paragraaf B.2.2, “Met opstartparameters vooraf installatievragen beantwoorden”</a>. </p>
+<p>Indien u vooraf configureert met behulp van opstartparameters, kunt u het installatiesysteem de betreffende vraag laten stellen door de operator <span class="quote">“<span class="quote">?=</span>”</span> te gebruiken, d.w.z. <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>waarde</code></em></code></strong> (of <strong class="userinput"><code><em class="replaceable"><code>eigenaar</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>waarde</code></em></code></strong>). Dit zal natuurlijk enkel effect hebben voor parameters die betrekking hebben op vragen die werkelijk gesteld worden tijdens een installatie en niet voor <span class="quote">“<span class="quote">interne</span>”</span> parameters. </p>
+<p>Om meer debug-informatie te krijgen, moet u de opstartparameter <code class="classname">DEBCONF_DEBUG=5</code> gebruiken. Daardoor zal <code class="classname">debconf</code> veel meer gedetailleerde informatie geven over de huidige instellingen van elke variabele en over zijn voortgang in de installatiescripts van elk pakket. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Een aaneenschakeling van antwoordbestanden laden</h3></div></div></div>
+<p>Het is mogelijk om in een antwoordbestand andere antwoordbestanden te laten opnemen. Alle instellingen uit deze bestanden zullen eerder gemaakte instellingen uit eerder geladen bestanden vervangen. Dit maakt het mogelijk om bijvoorbeeld de voor uw locatie algemeen geldende netwerkinstellingen in een bestand te plaatsen en meer specifieke instellingen voor bepaalde configuraties in andere bestanden. </p>
+<div class="informalexample"><pre class="screen"># Meer dan één bestand kan vermeld worden, onderling gescheiden door een spatie;
+# ze zullen allemaal opgenomen worden. De opgenomen bestanden kunnen op hun
+# beurt ook zelf opdrachten van het type preseed/include bevatten.
+# Merk op dat als de bestanden een relatieve naam hebben, die bestanden
+# uit dezelfde map geladen worden als het antwoordbestand dat ze opneemt.
+#d-i preseed/include string x.cfg
+
+# Het installatiesysteem kan eventueel checksums van antwoordbestanden
+# controleren vooraleer deze te gebruiken. Momenteel worden enkel md5sums
+# ondersteund. Vermeld de md5sums in dezelfde volgorde als die welke
+# gehanteerd wordt voor de lijst van de op te nemen bestanden.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Deze meer flexibele methode voert een shell-commando uit en als de uitvoer
+# ervan de namen geeft van antwoordbestanden, worden deze bestanden opgenomen. 
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Deze meest flexibele methode van allemaal downloadt een programma en voert
+# het uit. Het programma kan commando's gebruiken zoals debconf-set om de
+# debconf-databank te bewerken. Meerdere scripts kunnen vermeld worden,
+# onderling gescheiden door spaties. Merk op dat als de bestanden een relatieve
+# naam hebben, die bestanden uit dezelfde map geladen worden als het
+# antwoordbestand dat ze uitvoert.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Het is eveneens mogelijk om vanuit de initrd-preconfiguratiefase of vanuit de preconfiguratiefase die met een antwoordbestand werkt, de koppeling te maken naar de fase van preconfiguratie die via het netwerk verloopt, door in de eerdere bestanden preseed/url in te stellen. Hierdoor zal het preconfigureren via het netwerk uitgevoerd worden bij de activatie van het netwerk. Als u dit toepast moet u dit met zorg doen, vermits er tweemaal een preconfiguratiefase zal zijn. Dit betekent bijvoorbeeld dat u nog een kans heeft om het commando preseed/early uit te voeren. De tweede maal vindt dan plaats na de activatie van het netwerk. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Inhoud van het antwoordbestand (voor trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> Bijlage C. Schijven indelen voor Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Preparazione dei file per l'avvio da chiavetta USB</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Capitolo 4. Recupero dei supporti per l'installazione">
+<link rel="prev" href="ch04s02.html" title="4.2. Recupero dei file dai mirror Debian">
+<link rel="next" href="ch04s04.html" title="4.4. Preparazione dei file per l'avvio da disco fisso">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Preparazione dei file per l'avvio da chiavetta USB</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 4. Recupero dei supporti per l'installazione</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Preparazione dei file per l'avvio da chiavetta USB</h2></div></div></div>
+<p>Per preparare la chiavetta USB, si raccomanda di utilizzare un sistema GNU/Linux con supporto USB già funzionante. Con gli attuali sistemi GNU/Linux la chiavetta USB dovrebbe essere riconosciuta non appena inserita. Se questo non accade, controllare che sia stato caricato il modulo del kernel usb-storage. All'inserimento, la chiavetta USB viene mappata su un device con nome <code class="filename">/dev/sdX</code>, dove <span class="quote">«<span class="quote">X</span>»</span> è una lettera nell'intervallo a-z. È possibile vedere su quale device è stata mappata la chiavetta USB eseguendo il comando <span class="command"><strong>lsblk</strong></span> prima e dopo averla inserita; un'altra possibilità è consultare l'output di <span class="command"><strong>dmesg</strong></span> (da root). Per scrivere sulla chiavetta potrebbe essere necessario disattivare la protezione dalla scrittura. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avvertimento]" src="images/warning.png"></td>
+<th align="left">Avvertimento</th>
+</tr>
+<tr><td align="left" valign="top"><p>La procedura descritta in questa sezione distrugge qualunque cosa sia presente sul device, fare attenzione a usare il nome corretto per il device della chiavetta USB. Se si usa il device sbagliato, potrebbe accadere, per esempio, di perdere tutte le informazioni su un disco fisso. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Preparazione di una chiavetta USB con un'immagine CD/DVD ibrida</h3></div></div></div>
+<p>Le immagini per l'installazione Debian per questa architettura sono create con la tecnologia <span class="command"><strong>isohybrid</strong></span>, ciò vuol dire che possono essere scritte direttamente sulla chiavetta USB, questo è un metodo estremamente semplice per creare un supporto per l'installazione. È sufficiente scegliere un'immagine (netinst oppure DVD-1) di dimensione adatta alla capacità della chiavetta USB. Si veda <a class="xref" href="ch04s01.html" title="4.1. Immagini per l'installazione Debian GNU/Linux ufficiali">Sezione 4.1, «Immagini per l'installazione Debian GNU/Linux ufficiali»</a> per procurarsi l'immagine di un CD o DVD. </p>
+<p>È possibile scrivere l'immagine per l'installazione direttamente sulla chiavetta USB sovrascrivendone il contenuto attuale. Per esempio, con un sistema GNU/Linux, è possibile scrivere il file con l'immagine sulla chiavetta USB eseguendo, dopo essersi assicurati che la chiavetta non è montata: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> La semplice scrittura dell'immagine per l'installazione sulla USB dovrebbe funzionare correttamente per la maggior parte degli utenti. Chi ha particolari necessità può consultare l'apposita <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">pagina wiki</a>. </p>
+<p>È possibile trovare informazioni su come fare questa operazione con altri sistemi operativi nelle <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">FAQ di Debian CD</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Importante]" src="images/important.png"></td>
+<th align="left">Importante</th>
+</tr>
+<tr><td align="left" valign="top"><p>L'immagine deve essere scritta sul device del disco e non su una partizione, cioè su /dev/sdb e non su /dev/sdb1. Non usare strumenti come <span class="command"><strong>unetbootin</strong></span> poiché modificano l'immagine. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Recupero dei file dai mirror Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Preparazione dei file per l'avvio da disco fisso</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

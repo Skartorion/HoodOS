@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Memasang Debian GNU/Linux melalui Parallel Line IP (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Lampiran D. Bit Acak">
+<link rel="prev" href="apds03.html" title="D.3. Memasang Debian GNU/Linux dari suatu Sistem Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Memasang Debian GNU/Linux menggunakan PPP over Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Memasang Debian GNU/Linux melalui Parallel Line IP (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Lampiran D. Bit Acak</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Memasang Debian GNU/Linux melalui Parallel Line IP (PLIP)</h2></div></div></div>
+<p>Bagian ini menjelaskan cara memasang Debian GNU/Linux pada komputer tanpa kartu Ethernet, tetapi hanya dengan komputer gateway jarak jauh yang terpasang melalui kabel Null-Modem (juga disebut kabel Null-Printer). Komputer gateway harus terhubung ke jaringan yang memiliki cermin Debian di atasnya (misalnya ke Internet). </p>
+<p>Dalam contoh dalam lampiran ini kita akan mengatur koneksi PLIP menggunakan gateway yang terhubung ke Internet melalui koneksi dial-up (ppp0). Kami akan menggunakan alamat IP masing-masing 192.168.0.1 dan 192.168.0.2 untuk antarmuka PLIP pada sistem target dan sistem sumber (alamat ini harus tidak digunakan dalam ruang alamat jaringan Anda). </p>
+<p>Koneksi PLIP yang diatur selama instalasi juga akan tersedia setelah reboot ke sistem yang dipasang (lihat <a class="xref" href="ch07.html" title="Bab 7. Boot Ke Sistem Debian Baru Anda">Bab 7, <i>Boot Ke Sistem Debian Baru Anda</i></a>). </p>
+<p>Sebelum memulai, Anda perlu memeriksa konfigurasi BIOS (alamat dasar IO dan IRQ) untuk port paralel dari sistem sumber dan target. Nilai yang paling umum adalah <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5666"></a>D.4.1. Kebutuhan</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Komputer target, yang disebut <span class="emphasis"><em>target</em></span>, di mana Debian akan dipasang. </p></li>
+<li class="listitem"><p>Media instalasi sistem; lihat <a class="xref" href="ch02s04.html" title="2.4. Media Instalasi">Bagian 2.4, “Media Instalasi”</a>. </p></li>
+<li class="listitem"><p>Komputer lain yang terhubung ke Internet, yang disebut <span class="emphasis"><em>sumber</em></span>, yang akan berfungsi sebagai gateway. </p></li>
+<li class="listitem"><p>Kabel DB-25 Null-Modem. Lihat <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> untuk informasi lebih lanjut tentang kabel ini dan petunjuk cara membuatnya sendiri. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5681"></a>D.4.2. Menyiapkan sumber</h3></div></div></div>
+<p>Skrip shell berikut adalah contoh sederhana tentang cara mengonfigurasi komputer sumber sebagai gateway ke Internet menggunakan ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Kami menghapus modul yang berjalan dari kernel untuk menghindari konflik
+# dan untuk konfigurasi ulang secara manual.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Konfigurasikan antarmuka plip (plip0 untuk saya, lihat dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Konfigurasi gateway
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5691"></a>D.4.3. Memasang target</h3></div></div></div>
+<p>Boot media instalasi. Instalasi perlu dijalankan dalam mode pakar; masukkan <strong class="userinput"><code>expert</code></strong> pada prompt boot. Jika Anda perlu mengatur parameter untuk modul kernel, Anda juga perlu melakukan ini pada prompt boot. Misalnya, untuk mem-boot pemasang dan menetapkan nilai untuk opsi <span class="quote">“<span class="quote">io</span>”</span> dan <span class="quote">“<span class="quote">irq</span>”</span> bagi modul parport_pc, masukkan yang berikut ini pada prompt boot: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Di bawah ini adalah jawaban yang harus diberikan selama berbagai tahap instalasi. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Memuat komponen pemasang dari media instalasi</span>
+
+</p>
+<p>Pilih opsi <strong class="userinput"><code>plip-modules</code></strong> dari daftar; ini akan membuat driver PLIP tersedia bagi sistem instalasi. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Mendeteksi perangkat keras jaringan</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Jika target <span class="emphasis"><em>memang</em></span> memiliki kartu jaringan, daftar modul driver untuk kartu yang terdeteksi akan ditampilkan. Jika Anda ingin memaksa <code class="classname">debian-installer</code> untuk menggunakan PLIP sebagai gantinya, Anda harus membatalkan pilihan semua modul driver yang terdaftar. Jelas, jika target tidak memiliki kartu jaringan, pemasang tidak akan menampilkan daftar ini. </p></li>
+<li class="listitem"><p>Karena tidak ada kartu jaringan yang terdeteksi/dipilih sebelumnya, pemasang akan meminta Anda untuk memilih modul driver jaringan dari daftar. Pilih modul <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Mengonfigurasi jaringan</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Konfigurasi otomatis jaringan dengan DHCP: Tidak </p></li>
+<li class="listitem"><p>Alamat IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Alamat point-to-point: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Alamat server nama: Anda dapat memasukkan alamat yang sama dengan yang digunakan pada sumber (lihat <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Memasang Debian GNU/Linux dari suatu Sistem Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Memasang Debian GNU/Linux menggunakan PPP over Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

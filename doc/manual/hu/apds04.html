@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. A Debian GNU/Linux telepítése Parallel Line IP (PLIP) felett</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apd.html" title="D. függelék - Vegyes tudnivalók">
+<link rel="prev" href="apds03.html" title="D.3. A Debian GNU/Linux telepítése egy Unix/Linux rendszerből">
+<link rel="next" href="apds05.html" title="D.5. A Debian GNU/Linux telepítése PPP over Ethernet (PPPoE) használatával">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. A Debian GNU/Linux telepítése Parallel Line IP (PLIP) felett</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">D. függelék - Vegyes tudnivalók</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. A Debian GNU/Linux telepítése Parallel Line IP (PLIP) felett</h2></div></div></div>
+<p>E szakasz bemutatja, hogy telepítsük a Debian GNU/Linux rendszert hálózati tükörrel egy Ethernet kártya nélküli gépen, csak egy Null-Modem kábel (Null-Printer kábel) által csatolt átjáró géppel. Az átjáró gép Debian tükröt elérő hálózaton van (például Interneten). </p>
+<p>E példában beállítunk egy Internetre kötött átjárót használó PLIP kapcsolatot be-tárcsázós kapcsolaton (ppp0). A 192.168.0.1 és 192.168.0.2 IP címeket használjuk a PLIP csatolókhoz a cél és forrás rendszeren (természetesen, ha ezeket használjuk, más ne használja a hálózaton). </p>
+<p>A telepítés alatt használt PLIP kapcsolat a telepített rendszer újraindítása után is elérhető (lásd: <a class="xref" href="ch07.html" title="7. fejezet - Az új Debian rendszer indítása">7. fejezet - <i>Az új Debian rendszer indítása</i></a>). </p>
+<p>Kezdés előtt ellenőrizd a párhuzamos kapuk BIOS beállításait (IO címek és IRQ) a forrás és cél rendszeren is. A legáltalánosabb értékek ezek: <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5117"></a>D.4.1. Követelmények</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>A gép, melyet most így hívunk: <span class="emphasis"><em>cél</em></span>, melyre a Debian rendszert most telepítjük. </p></li>
+<li class="listitem"><p>Rendszer telepítő média; lásd: <a class="xref" href="ch02s04.html" title="2.4. Telepítő média">2.4. szakasz - Telepítő média</a>. </p></li>
+<li class="listitem"><p>Egy másik gép, mely az Internetre van kötve, neve <span class="emphasis"><em>forrás</em></span>, mely az átjárót adja majd. </p></li>
+<li class="listitem"><p>Egy DB-25 Null-Modem kábel. Lásd a <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> leírást több adatért e kábelről és készítésének módjáról. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5132"></a>D.4.2. Forrás beállítása</h3></div></div></div>
+<p>Az alábbi héj parancs-fájl egy egyszerű példa a forrás gép átjárónak állítására az Internetre a ppp0 által. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Eltávolítjuk a futó modulokat a kernelből az ütközések elkerüléséért és
+# beállítjuk kézzel.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# A plip csatoló beállítása (nálam plip0, lásd: dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Átjáró beállítása
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5142"></a>D.4.3. A cél telepítése</h3></div></div></div>
+<p>Indítsd a telepítő médiát. Szakértő mód kell majd, írd be ezt: <strong class="userinput"><code>expert</code></strong> az indító jelnél. Ha paraméterek kellenek kernel modulokhoz, ezt is itt kell megtenni. Például a telepítő indításához és a parport_pc modul <span class="quote">„<span class="quote">io</span>”</span> és <span class="quote">„<span class="quote">irq</span>”</span> értékek beállításához add meg az alábbit az indító jelnél: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Alább a telepítés egyes részeinél adandó válaszok. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Telepítő összetevők betöltése a telepítő médiáról</span>
+
+</p>
+<p>Válaszd a <strong class="userinput"><code>plip-modules</code></strong> opciót a listából; így a PLIP meghajtók elérhetőek lesznek a telepítő rendszer számára. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Hálózati hardver érzékelése</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ha a cél gépen <span class="emphasis"><em>van</em></span> hálózati kártya, megjelenik egy meghajtó modul lista az érzékelt kártya számára. Ha azt akarod, hogy a <code class="classname">debian-installer</code> plip modult használjon, töröld mindegyik kijelölést. Ha a cél gépen nincs hálózati kártya, a telepítő nem adja e listát. </p></li>
+<li class="listitem"><p>Mivel nem volt hálózati kártya felismerés/választás, a telepítő kér egy hálózati meghajtó modul választására. Válaszd a <strong class="userinput"><code>plip</code></strong> modult. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Hálózat beállítása</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Hálózat automata-beállítása DHCP segítségével: Nem </p></li>
+<li class="listitem"><p>IP cím: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Pont-pont cím: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Név kiszolgáló címek: a forráson is használt címek használhatók (lásd a <code class="filename">/etc/resolv.conf</code> fájlt) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. A Debian GNU/Linux telepítése egy Unix/Linux rendszerből </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> D.5. A Debian GNU/Linux telepítése PPP over Ethernet (PPPoE) használatával</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

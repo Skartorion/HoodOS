@@ -1,0 +1,239 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. A telepítési folyamat hibakeresése</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch05.html" title="5. fejezet - Az telepítési rendszer indítása">
+<link rel="prev" href="ch05s03.html" title="5.3. Indítási paraméterek">
+<link rel="next" href="ch06.html" title="6. fejezet - A Debian Telepítő használata">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. A telepítési folyamat hibakeresése</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">5. fejezet - Az telepítési rendszer indítása</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. A telepítési folyamat hibakeresése</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Optikai adathordozók megbízhatósága</h3></div></div></div>
+<p>Néha, különösen régebbi meghajtóknál, előfordulhat, hogy a telepítő nem tud optikai lemezről indítani. A telepítő esetleg — még ha sikeresen is indult a lemezről — nem tudja felismerni a lemezt vagy hibákat ad vissza, miközben olvas róla a telepítés során. </p>
+<p>Számos különböző oka lehet ezeknek a problémáknak. Itt csak néhány gyakori problémát sorolunk fel, és általános javaslatokat adunk a kezelésükre. A többi rajtad múlik. </p>
+<p>Van két nagyon egyszerű dolog, amit először érdemes kipróbálnod. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ha a lemez nem indul el, ellenőrizd, hogy helyesen lett-e behelyezve, és hogy nem piszkos-e. </p></li>
+<li class="listitem"><p>Ha a telepítő nem ismeri fel a lemezt, próbáld meg egyszerűen újra futtatni a <span class="guimenuitem">Telepítési adathordozó felismerése és csatlakoztatása</span> opciót. Bizonyos, nagyon régi CD-ROM meghajtókkal kapcsolatos DMA problémák így megoldhatók. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Ha ez nem működik, próbáld ki az alábbi alfejezetekben található javaslatokat. A legtöbb, de nem minden ott tárgyalt javaslat érvényes CD-ROM és DVD esetén. </p>
+<p>Ha nem sikerül az optikai lemezről telepíteni, próbálj ki egy másik elérhető telepítési módszert. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2247"></a>5.4.1.1. Gyakori problémák</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Néhány régebbi CD-ROM meghajtó nem támogatja azoknak a lemezeknek az olvasását, amelyeket modern CD-íróval nagy sebességgel írtak. </p></li>
+<li class="listitem"><p>Néhány nagyon régi CD-ROM meghajtó nem működik megfelelően, ha a <span class="quote">„<span class="quote">közvetlen memóriahozzáférés</span>”</span> (DMA) engedélyezve van számukra. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2255"></a>5.4.1.2. Hogyan vizsgáld meg és esetleg oldd meg a problémákat</h4></div></div></div>
+<p>Ha az optikai lemez nem indul el, próbáld ki az alábbi javaslatokat. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ellenőrizd, hogy a BIOS/UEFI ténylegesen támogatja-e az optikai lemezről való indítást (ez csak nagyon régi rendszereknél okozhat problémát), és hogy az ilyen média indítása engedélyezve van-e a BIOS/UEFI-ben. </p></li>
+<li class="listitem">
+<p>Ha letöltöttél egy ISO képfájlt, ellenőrizd, hogy annak md5sum értéke megegyezik-e azzal, ami a <code class="filename">MD5SUMS</code> fájlban szerepel, amelynek ugyanott kell lennie, ahonnan a képfájlt letöltötted. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Ezután ellenőrizd, hogy az írott lemez md5sum értéke is megegyezik-e. A következő parancs működni fog. A képfájl méretét használja, hogy a megfelelő számú bájtot olvassa be a lemezről. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 rekord beolvasva
+262668+0 rekord kiírva
+134486016 bájt (134 MB) másolva, 97.474 másodperc, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Ha a telepítő sikeresen elindult, de a lemez nem kerül felismerésre, néha egyszerűen újrapróbálkozás megoldhatja a problémát. Ha több optikai meghajtód van, próbáld meg áthelyezni a lemezt a másik meghajtóba. Ha ez sem működik, vagy ha a lemez felismerésre kerül, de olvasási hibák jelentkeznek, próbáld ki az alábbi javaslatokat. Ehhez némi alapvető Linux ismeret szükséges. Bármelyik parancs végrehajtásához először válts át a második virtuális konzolra (VT2), és ott aktiváld a parancssort. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Válts a VT4-re, vagy nézd meg a <code class="filename">/var/log/syslog</code> tartalmát (használd a <span class="command"><strong>nano</strong></span> szerkesztőt), hogy ellenőrizd az esetleges hibaüzeneteket. Ezután nézd meg a <span class="command"><strong>dmesg</strong></span> kimenetét is. </p></li>
+<li class="listitem">
+<p>Ellenőrizd a <span class="command"><strong>dmesg</strong></span> kimenetében, hogy az optikai meghajtód felismerésre került-e. Valami ilyesmit kellene látnod (a sorok nem feltétlenül egymás után következnek): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Ha nem látsz valami hasonlót, akkor valószínű, hogy a vezérlő, amelyhez a meghajtó csatlakozik, nem került felismerésre, vagy egyáltalán nem támogatott. Ha tudod, hogy milyen illesztőprogram szükséges a vezérlőhöz, megpróbálhatod manuálisan betölteni a <span class="command"><strong>modprobe</strong></span> segítségével. </p>
+</li>
+<li class="listitem"><p>Ellenőrizd, hogy van-e eszközcsomópont az optikai meghajtódhoz a <code class="filename">/dev/</code> alatt. A fenti példában ez a <code class="filename">/dev/sr0</code> lenne. Kell lennie továbbá egy <code class="filename">/dev/cdrom</code> is. </p></li>
+<li class="listitem">
+<p>Használd a <span class="command"><strong>mount</strong></span> parancsot annak ellenőrzésére, hogy az optikai lemez már csatlakoztatva van-e; ha nincs, próbáld meg kézzel csatlakoztatni: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Ellenőrizd, hogy vannak-e hibaüzenetek a parancs után. </p>
+</li>
+<li class="listitem">
+<p>Ellenőrizd, hogy a DMA jelenleg engedélyezve van-e: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Az első oszlopban lévő <span class="quote">„<span class="quote">1</span>”</span> a <code class="literal">using_dma</code> után azt jelenti, hogy engedélyezve van. Ha igen, próbáld meg letiltani: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Győződj meg róla, hogy abban a könyvtárban vagy, amely az optikai meghajtódnak megfelelő eszközhöz tartozik. </p>
+</li>
+<li class="listitem"><p>Ha bármilyen probléma merül fel a telepítés során, próbáld meg ellenőrizni a telepítési adathordozó épségét a telepítő főmenüjének alján található opció segítségével. Ezt az opciót általános tesztként is használhatod, hogy megbizonyosodj arról, hogy a lemez megbízhatóan olvasható-e. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2307"></a>5.4.2. Indítási konfiguráció</h3></div></div></div>
+<p>Ha problémáid vannak, és a rendszerindítás során a kernel lefagy, nem ismeri fel a ténylegesen meglévő perifériákat vagy a meghajtókat nem ismeri fel megfelelően, az első dolog, amit ellenőrizned kell, az a rendszerindítási paraméterek, ahogy azt a <a class="xref" href="ch05s03.html" title="5.3. Indítási paraméterek">5.3. szakasz - Indítási paraméterek</a> részben tárgyaljuk. </p>
+<p>Bizonyos esetekben a hibás működést okozhatja a hiányzó eszköz firmware (lásd: <a class="xref" href="ch02s02.html" title="2.2. Firmware-t igénylő eszközök">2.2. szakasz - Firmware-t igénylő eszközök</a> és <a class="xref" href="ch06s04.html" title="6.4. Hiányzó firmware betöltése">6.4. szakasz - Hiányzó firmware betöltése</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2314"></a>5.4.3. Szoftveres beszédszintézis</h3></div></div></div>
+<p>Ha a szoftveres beszédszintézis nem működik, valószínűleg probléma van a hangkártyáddal. Ez általában azért van, mert a meghajtója nincs benne a telepítőben vagy mert szokatlan keverőszint nevekkel rendelkezik, amelyek alapértelmezés szerint némítva vannak. Ilyen esetben érdemes hibajelentést benyújtanod, amely tartalmazza a következő parancsok kimenetét, amelyeket ugyanazon a gépen kell futtatni egy olyan Linux rendszerről, amelyről ismert, hogy a hang működik (például egy live CD-ről). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Gyakori <span class="phrase">64-bit PC</span> telepítési problémák</h3></div></div></div>
+<p>Vannak olyan gyakori telepítési problémák, amelyeket meg lehet oldani vagy el lehet kerülni azzal, hogy bizonyos rendszerindítási paramétereket adsz át a telepítőnek. </p>
+<p>Ha a képernyőd furcsa képet kezd mutatni, miközben a kernel betöltődik, például teljesen fehér, fekete vagy színes pixelzaj jelenik meg, akkor a rendszered egy problémás videokártyát tartalmazhat, amely nem vált át megfelelően a framebuffer módra. Ilyen esetben használhatod a <strong class="userinput"><code>vga=normal nomodeset</code></strong> rendszerindítási paramétert a framebuffer konzol letiltásához. Azonban a telepítés során csak egy korlátozott nyelvkészlet lesz elérhető a konzol funkcióinak korlátozottsága miatt. Részletekért lásd: <a class="xref" href="ch05s03.html" title="5.3. Indítási paraméterek">5.3. szakasz - Indítási paraméterek</a>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2337"></a>5.4.4.1. Rendszerfagyás a PCMCIA konfigurációs fázis során</h4></div></div></div>
+<p>Néhány nagyon régi Dell laptopmodellről ismert, hogy összeomlik, amikor a PCMCIA eszközérzékelés megpróbál hozzáférni bizonyos hardvercímekhez. Más laptopoknál is jelentkezhetnek hasonló problémák. Ha ilyen problémát tapasztalsz és nincs szükséged PCMCIA támogatásra a telepítés során, letilthatod a PCMCIA-t a <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> rendszerindítási paraméter használatával. A telepítés befejezése után konfigurálhatod a PCMCIA-t, és kizárhatod azt az erőforrástartományt, ami a problémákat okozza. </p>
+<p>Alternatív megoldásként indíthatod a telepítőt szakértői módban. Ekkor megkérnek majd, hogy add meg a hardvered számára szükséges erőforrástartomány beállításokat. Például, ha a fent említett Dell laptopok egyikével rendelkezel, itt megadhatod a <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> értéket. A PCMCIA HOWTO <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">rendszer erőforrás beállítások szakaszában</a> is találsz néhány gyakori erőforrástartomány opciót. Ne feledd, hogy a telepítőben megadott értéknél ki kell hagyni az esetleges vesszőket. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. A kernel indítási üzeneteinek értelmezése</h3></div></div></div>
+<p>A rendszerindítás során sok üzenetet láthatsz, például <code class="computeroutput">nem található <em class="replaceable"><code>valami</code></em></code>, <code class="computeroutput"><em class="replaceable"><code>valami</code></em> nincs jelen</code>, <code class="computeroutput">nem tudja inicializálni <em class="replaceable"><code>valamit</code></em></code>,vagy akár <code class="computeroutput">ez a meghajtóverzió függ a <em class="replaceable"><code>valamitől</code></em></code>. Ezek közül a legtöbb üzenet ártalmatlan. Ezeket azért látod, mert a telepítőrendszer kerneltje úgy van felépítve, hogy sokféle perifériás eszközzel rendelkező számítógépen fusson. Nyilvánvaló, hogy egyetlen számítógép sem rendelkezik az összes lehetséges perifériás eszközzel, így az operációs rendszer néhány hibajelzést adhat ki, miközben olyan perifériákat keres, amelyekkel nem rendelkezel. Előfordulhat, hogy a rendszer egy ideig szünetel. Ez akkor történik, amikor egy eszköz válaszára vár, és az az eszköz nincs jelen a rendszeredben. Ha úgy találod, hogy a rendszer indítási ideje elfogadhatatlanul hosszú, később készíthetsz egy egyedi kernelt <span class="phrase">(lásd <a class="xref" href="ch08s05.html" title="8.5. Új rendszermag (kernel) fordítása">8.5. szakasz - Új rendszermag (kernel) fordítása</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Telepítési problémák jelentése</h3></div></div></div>
+<p>Ha sikerül túljutnod a kezdeti indítási fázison, de nem tudod befejezni a telepítést, a <span class="guimenuitem">Hibakeresési naplók mentése</span> menüpont hasznos lehet. Ez lehetővé teszi, hogy a telepítő rendszerhibáit és konfigurációs információit tárold egy adathordozón vagy letöltsd őket egy webböngésző segítségével. Ez az információ segíthet kideríteni, mi ment félre és hogyan lehet kijavítani. Ha hibajelentést küldesz, érdemes csatolni ezt az információt a jelentéshez. </p>
+<p>További releváns telepítési üzeneteket találhatsz a(z) <code class="filename">/var/log/</code> alatt a telepítés során, valamint a(z) <code class="filename">/var/log/installer/</code> mappában, miután a számítógépet elindítottad a telepített rendszerrel. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Telepítési jelentések beküldése</h3></div></div></div>
+<p>Ha még mindig problémáid vannak, küldj be egy telepítési jelentést (lehetőleg angol nyelven). Ösztönzünk arra is, hogy akkor is küldj telepítési jelentést, ha a telepítés sikeres volt, hogy minél több információt gyűjtsünk a lehető legtöbb hardverkonfigurációról. </p>
+<p>Ne feledd, hogy a telepítési jelentésed közzé lesz téve a Debian hibakövető rendszerében (BTS), és továbbítva lesz egy nyilvános levelezőlistára. Győződj meg róla, hogy olyan e-mail címet használsz, amelyet nem bánsz, ha nyilvánosságra kerül. </p>
+<p>Ha van egy működő Debian rendszered, a legegyszerűbb módja a telepítési jelentés elküldésének, ha telepíted az <code class="classname">installation-report</code> és <code class="classname">reportbug</code> csomagokat (<span class="command"><strong>apt install installation-report reportbug</strong></span>), beállítod a <code class="classname">reportbug</code>-ot a(z) <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Email küldése kifelé">8.4.2. szakasz - Email küldése kifelé</a> részben leírtak szerint, majd futtatod a <span class="command"><strong>reportbug installation-reports</strong></span> parancsot. </p>
+<p>Alternatív megoldásként használhatod ezt a sablont a telepítési jelentés kitöltéséhez, és beküldheted hibajelentésként a a(z) <code class="classname">installation-reports</code> álcsomaghoz, ha elküldöd a <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code> címre. (Az alábbi e-mail sablont angol nyelven várják:)
+
+</p>
+<div class="informalexample"><pre class="screen">  
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;  
+Image version: &lt;Full URL to image you downloaded is best&gt;  
+Date: &lt;Date and time of the install&gt;  
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;  
+Processor:  
+Memory:  
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;  
+
+Output of lspci -knn (or lspci -nn):  
+
+Base System Installation Checklist:  
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it  
+
+Initial boot:           [ ]  
+Detect network card:    [ ]  
+Configure network:      [ ]  
+Detect media:           [ ]  
+Load installer modules: [ ]  
+Detect hard drives:     [ ]  
+Partition hard drives:  [ ]  
+Install base system:    [ ]  
+Clock/timezone setup:   [ ]  
+User/password setup:    [ ]  
+Install tasks:          [ ]  
+Install boot loader:    [ ]  
+Overall install:        [ ]  
+
+Comments/Problems:  
+
+&lt;Description of the install, in prose, and any thoughts, comments  
+      and ideas you had during the initial install.&gt;  
+
+Please make sure that any installation logs that you think would  
+be useful are attached to this report. (You can find them in the installer  
+system in /var/log/ and later on the installed system under  
+/var/log/installer.) Please compress large files using gzip.  
+</pre></div>
+<p>
+
+A hibajelentésben írd le, mi volt a probléma – ha a kernel lefagyott, akkor a legutolsó látható kernelüzeneteket is. Írd le részletesen, milyen lépések vezettek a hibaállapothoz. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Indítási paraméterek </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 6. fejezet - A Debian Telepítő használata</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

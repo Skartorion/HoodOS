@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Erweiterte Optionen</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apb.html" title="Anhang B. Automatisieren der Installation mittels Voreinstellung">
+<link rel="prev" href="apbs04.html" title="B.4. Inhalt der Voreinstellungsdatei (für Trixie)">
+<link rel="next" href="apc.html" title="Anhang C. Partitionieren für eine Debian-Installation">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Erweiterte Optionen</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang B. Automatisieren der Installation mittels Voreinstellung</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Erweiterte Optionen</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Während der Installation eigene Kommandos ausführen</h3></div></div></div>
+<p>Eine sehr kraftvolle und flexible Funktion, die das Voreinstellungswerkzeug bietet, ist die Möglichkeit, Kommandos oder Skripte an bestimmten Stellen während der Installation auszuführen. </p>
+<p>Wenn das Dateisystem des Zielsystems eingebunden ist, ist es unter <code class="filename">/target</code> verfügbar. Falls eine Installations-DVD benutzt wird und diese eingebunden ist, finden Sie sie unter <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Den d-i voreinzustellen, ist von Natur aus nicht sicher! Nichts im
+# Installer prüft auf Versuche eines Pufferüberlaufs oder anderweitiger
+# Ausnutzung der Werte einer Voreinstellungsdatei wie dieser. Benutzen Sie
+# nur Voreinstellungsdateien aus vertrauenswürdigen Quellen! Um diese
+# Aussage zu untermauern und weil es auch generell nützlich ist, zeigen wir
+# hier eine Möglichkeit, jegliche Shell-Befehle, die Sie gerne im Installer
+# hätten, automatisch auszuführen.
+
+# Dieser erste Befehl wird so früh wie möglich ausgeführt, direkt nachdem
+# das Lesen der Voreinstellungsdatei abgeschlossen ist:
+#d-i preseed/early_command string anna-install some-udeb
+# Der folgende Befehl wird ausgeführt direkt bevor das Partitionierungsprogramm
+# startet. Er kann nützlich sein, um dynamische Voreinstellungen für die 
+# Partitionierung festzulegen, die vom Zustand der Festplatten abhängig sind
+# (die möglicherweise noch nicht sichtbar sind, wenn preseed/early_command
+# ausgeführt wird):
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Dieses Kommando wird ausgeführt, kurz bevor die Installation beendet ist,
+# wenn aber noch ein nutzbares /target-Verzeichnis verfügbar ist.
+# Sie können nach /target »chroot«-en und es direkt benutzen, oder benutzen
+# Sie apt-install und in-target-Kommandos, um einfach Pakete zu
+# installieren oder Kommandos im Zielsystem auszuführen:
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Voreinstellung nutzen, um Standardantworten auf Fragen zu ändern</h3></div></div></div>
+<p>Es ist ebenfalls möglich, die Standardantwort für eine Frage zu ändern, die Frage aber trotzdem stellen zu lassen. Dabei muss das <em class="firstterm">seen</em>-Flag auf <span class="quote">„<span class="quote">false</span>“</span> zurückgesetzt werden, nachdem die gewünschte Einstellung für den Wert gesetzt wurde: </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Der gleiche Effekt kann erreicht werden, indem Sie am Boot-Prompt den Parameter <code class="classname">preseed/interactive=true</code> setzen. Dies kann auch zum Testen oder zur Fehlersuche in Ihrer Voreinstellungsdatei nützlich sein. </p>
+<p>Beachten Sie, dass der Eigentümer <span class="quote">„<span class="quote">d-i</span>“</span> nur für Variablen verwendet werden sollte, die im Installer selbst genutzt werden. Für Variablen, welche zu Paketen gehören, die auf dem Zielsystem installiert werden, sollten Sie stattdessen den Namen des Pakets als Eigentümer verwenden. Siehe auch die Fußnote zum <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Boot-Parameter nutzen, um Fragen automatisiert zu beantworten">Abschnitt B.2.2, „Boot-Parameter nutzen, um Fragen automatisiert zu beantworten“</a>. </p>
+<p>Wenn Sie Voreinstellung mittels Boot-Parametern nutzen, können Sie den Installer anweisen, eine bestimmte Frage zu stellen, indem Sie den Operator <span class="quote">„<span class="quote">?=</span>“</span> verwenden, z.B. <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong> (oder <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>). Dies wird natürlich nur Auswirkungen auf Parameter haben, die zu Fragen gehören, die während der Installation auch wirklich gestellt/angezeigt werden, und nicht auf <span class="quote">„<span class="quote">interne</span>“</span> Parameter. </p>
+<p>Benötigen Sie mehr Debugging-Informationen, z.B. zur Fehlersuche, so verwenden Sie den Boot-Parameter <code class="classname">DEBCONF_DEBUG=5</code>. Dies veranlaßt <code class="classname">debconf</code>, erheblich mehr Details über die aktuelle Einstellung jeglicher Variablen auszugeben sowie über die Bearbeitung der Installationsskripte jedes einzelnen Pakets. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Mehrere Voreinstellungsdateien nacheinander laden</h3></div></div></div>
+<p>Wenn Sie mögen, können Sie hier weitere Voreinstellungsdateien in diese Datei integrieren. Jegliche Einstellungen in den integrierten Dateien werden die Werte aus dieser Datei überschreiben. Dies ermöglicht es z.B., allgemeine Netzwerkeinstellungen in einer Datei festzulegen und speziellere Einstellungen für andere Zwecke/Netze/Orte in anderen Dateien. </p>
+<div class="informalexample"><pre class="screen"># Es kann mehr als eine Datei angegeben werden, getrennt durch Leerzeichen;
+# alle werden geladen. Die integrierten Dateien können ebenfalls
+# wieder "preseed/include"-Regeln enthalten.
+# Bedenken Sie: wenn Sie relative Dateipfade angeben, gehen diese von dem
+# gleichen Verzeichnis aus, das auch die Voreinstellungsdatei enthält, in
+# der sie integriert sind.
+#d-i preseed/include string x.cfg
+
+# Der Installer kann optional die Prüfsummen von Voreinstellungsdateien
+# kontrollieren, bevor er diese benutzt. Derzeit werden nur
+# md5sum-Prüfsummen unterstützt. Geben Sie die md5sum-Prüfsummen in der
+# gleichen Reihenfolge an wie die Dateien, die integriert werden sollen:
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Der flexiblere Weg: dies startet ein Shell-Kommando und wenn dies die
+# Namen von Voreinstellungsdateien zurückgibt, werden diese integriert:
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Flexibler als alles andere: ein Programm wird heruntergeladen und
+# gestartet. Das Programm kann Kommandos wie debconf-set nutzen, um die
+# debconf-Datenbank zu manipulieren. Es können auch mehrere Skripte
+# angegeben werden, getrennt durch Leerzeichen. Beachten Sie: falls die
+# Dateinamen relativ sind, gehen sie vom gleichen Verzeichnis aus wie
+# die Voreinstellungsdatei, von der sie gestartet werden.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Es ist auch möglich, mehrere Voreinstellungsdateien hintereinander zu laden und dabei mit initrd- oder file-Voreinstellung zu beginnnen, danach jedoch mit network-Voreinstellung fortzufahren, indem Sie in den früh geladenen Dateien preseed/url verwenden. Dies führt dazu, dass network-Voreinstellung durchgeführt wird, wenn das Netzwerk aktiv wird. Sie müssen damit vorsichtig sein, da dabei zwei separate Voreinstellungsläufe durchgeführt werden, das bedeutet z.B., es gibt eine weitere Möglichkeit, den Befehl preseed/early zu nutzen (diese zweite Ausführung findet statt, nachdem das Netzwerk aktiviert wurde). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Inhalt der Voreinstellungsdatei (für Trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> Anhang C. Partitionieren für eine Debian-Installation</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

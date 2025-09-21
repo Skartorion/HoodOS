@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Montering av krypterade volymer</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch07.html" title="Kapitel 7. Starta upp ditt nya Debian-system">
+<link rel="prev" href="ch07s01.html" title="7.1. Sanningens minut">
+<link rel="next" href="ch07s03.html" title="7.3. Logga in">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Montering av krypterade volymer</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 7. Starta upp ditt nya Debian-system</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Montering av krypterade volymer</h2></div></div></div>
+<p>Om du skapade krypterade volymer under installationen och tilldelade monteringspunkter till dem, kommer du att bli efterfrågad vid uppstart om att ange lösenfrasen för varje av dessa volymer. </p>
+<p>För partitioner som är krypterade med dm-crypt kommer följande prompt att visas under uppstarten: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>del</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> På första raden av prompten är <em class="replaceable"><code>del</code></em> namnet på underliggande partition, t.ex. sda2 eller md0. Du undrar kanske nu <span class="emphasis"><em>för vilken volym</em></span> du faktiskt anger lösenfrasen. Relaterar det till <code class="filename">/home</code>? Eller till <code class="filename">/var</code>? Om du bara skapade en krypterad volym är detta enkelt och du behöver bara ange lösenfrasen som du angav för den volymen. Om du har skapat fler än en krypterad volym under installationen kan anteckningarna du skrev ner i sista steget i <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Konfigurera krypterade volymer">Avsnitt 6.3.4.6, ”Konfigurera krypterade volymer”</a> komma till hands. Om du inte antecknade relationerna mellan <code class="filename">crypt<em class="replaceable"><code>X</code></em></code> och monteringspunkterna kan du fortfarande hitta dem i <code class="filename">/etc/crypttab</code> och <code class="filename">/etc/fstab</code> på ditt nya system. </p>
+<p>Prompten kan se annorlunda ut när ett krypterat rotfilsystem monteras. Detta beror på vilken initramfs-generator som användes för att generera den initrd som används för att starta upp systemet. Exemplet nedan är för en initrd som genererats med <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Inga tecken (inte ens stjärnor) kommer att visas när lösenfrasen matas in. Om du matar in fel lösenfras har du ytterligare två försök till att mata in den korrekta lösenfrasen. Efter det tredje försöket kommer uppstartsprocessen att hoppa över denna volym och fortsätta montera nästa filsystem. Se <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Felsökning">Avsnitt 7.2.1, ”Felsökning”</a> för ytterligare information. </p>
+<p>Efter att alla lösenfraser har matats in ska uppstarten fortsätta som normalt. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Felsökning</h3></div></div></div>
+<p>Om någon av de krypterade volymerna inte kunde monteras på grund av att en felaktig lösenfras matades in, kan du montera dem manuellt efter uppstart. Det finns ett flertal olika situationer. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Det första fallet gäller rotpartitionen. När den inte har monterats korrekt kommer uppstartsprocessen att stanna och du måste då starta om datorn och försöka igen. </p></li>
+<li class="listitem">
+<p>Det enklaste fallet är för krypterade volymer som innehåller data som <code class="filename">/home</code> eller <code class="filename">/srv</code>. Du kan helt enkelt montera dem manuellt efter uppstarten. </p>
+<p>För dm-crypt är detta lite svårare. Först behöver du registrera volymerna med <span class="application">device mapper</span> genom att köra: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Detta kommer att söka av alla volymer som angivits i <code class="filename">/etc/crypttab</code> och skapa lämpliga enheter under katalogen <code class="filename">/dev</code> efter att de korrekta lösenfraserna har angivits. (Redan registrerade volymer kommer att hoppas över så att du kan upprepa detta kommando flera gånger utan att vara orolig.) Efter en lyckad registrering kan du helt enkelt montera volymerna på vanligt sätt: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/monteringspunkt</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Om någon volym som innehåller ickekritiska systemfiler inte kan monteras (<code class="filename">/usr</code> eller <code class="filename">/var</code>), ska systemet fortfarande kunna starta upp och du bör kunna montera volymerna manuellt precis som i föregående situation. Dock behöver du även starta (om) de tjänster som normalt kör i din standardkörnivå på grund av att det är mycket sannolikt att de inte startades. Det enklaste sättet är att bara starta om datorn. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Sanningens minut </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Logga in</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Programes per fer particions de Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Apèndix C. Fer particions per a Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Noms dels dispositius a Linux">
+<link rel="next" href="apd.html" title="Apèndix D. Informació variada">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Programes per fer particions de Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix C. Fer particions per a Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Programes per fer particions de Debian</h2></div></div></div>
+<p>Els desenvolupadors de Debian han adaptat nombroses varietats de programes per fer particions a fi que funcionen en diversos tipus de discs durs i arquitectures d'ordinador. Tot seguit hi ha una llista dels programes adients per a la vostra arquitectura. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>És l'eina de Debian recomanada per fer particions. Aquesta navalla suïssa també pot redimensionar particions, generar sistemes de fitxers <span class="phrase"> (<span class="quote">«<span class="quote">formatar</span>»</span> en terminologia de Windows)</span> i associar-los a punts de muntatge. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>És el partidor de discs original del Linux, adequat per als experts. </p>
+<p>Aneu amb compte si teniu particions de FreeBSD. Els nuclis d'instal·lació permeten l'ús d'aquestes particions, però la manera com l'<span class="command"><strong>fdisk</strong></span> els representa (o no) pot fer que els noms de dispositiu diferisquen. Vegeu el <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">COM ES FA Linux+FreeBSD</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>És un partidor de discs d'ús senzill, apte per a tothom. </p>
+<p>Tingueu en compte que el <span class="command"><strong>cfdisk</strong></span> no reconeix particions FreeBSD en absolut i que, novament, els noms de dispositiu poden diferir. </p>
+</dd>
+</dl></div>
+<p>Un d'aquests programes s'executarà de manera predeterminada quan seleccioneu <span class="guimenuitem">Parteix els dics</span> (o paregut). Es podria utilitzar una eina de fer particions des de la línia d'ordres al VT2, malgrat que no es recomana. </p>
+<p>Recordeu que heu de marcar la partició d'arrencada com a <span class="quote">«<span class="quote">Arrencable</span>»</span>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4669"></a>C.5.1. Fer particions per a <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Si esteu utilitzant un disc dur nou (o voleu esborrar tota la taula de particions del vostre disc), cal crear una taula de particions nova. El <span class="quote">«<span class="quote">Particionat Guiat</span>»</span> ho fa automàticament, però quan es particiona manualment, moveu la selecció a l'entrada de nivell superior del disc i premeu <span class="keycap"><strong>Intro</strong></span>. Això crearà una taula de particions nova en aquest disc. En mode expert, se us demanarà el tipus de la taula de particions. El valor per defecte per als sistemes basats en UEFI és <span class="quote">«<span class="quote">gpt</span>»</span>, mentre que per al món BIOS més antic el valor per defecte és <span class="quote">«<span class="quote">msdos</span>»</span>. En una instal·lació de prioritat estàndard, aquests valors predeterminats s'usaran automàticament. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Quan s'ha seleccionat una taula de particions de tipus <span class="quote">«<span class="quote">gpt</span>»</span> (per defecte en els sistemes UEFI), es crearà automàticament un espai lliure d'1 MB al començament del disc. Això està pensat i requerit per incrustar el gestor d'arrencada GRUB2. </p></td></tr>
+</table></div>
+<p>Si teniu instal·lat un altre sistema operatiu com ara el Windows i el voleu conservar, potser hàgeu de redimensionar-ne la partició a fi d'alliberar espai per a la instal·lació de Debian. L'instal·lador pot redimensionar tant els sistemes de fitxers FAT com els NTFS; quan arribeu al moment de particionar, escolliu l'opció <span class="guimenuitem">Manual</span>, seleccioneu una partició existent i li canvieu la mida. </p>
+<p>Mentre que els sistemes UEFI moderns no tenen les limitacions com es mostren més avall, normalment la BIOS del PC posa restriccions al fer particions al disc. El nombre de particions <span class="quote">«<span class="quote">primàries</span>»</span> i <span class="quote">«<span class="quote">lògiques</span>»</span> que pot contenir una unitat és limitat. </p>
+<p>En un antic PC amb BIOS, les particions <span class="quote">«<span class="quote">primàries</span>»</span> constitueixen l'esquema original de fer particions dels discs de PC. Tanmateix, només n'hi pot haver quatre. Per evitar això, es van inventar les particions <span class="quote">«<span class="quote">estesa</span>»</span> i <span class="quote">«<span class="quote">lògiques</span>»</span>. Si configureu una partició primària com a estesa, podeu subdividir-ne l'espai en particions lògiques. Es poden crear fins a 60 particions lògiques per partició estesa; amb tot, només podeu tenir una partició estesa per cada unitat física. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Noms dels dispositius a Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> Apèndix D. Informació variada</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

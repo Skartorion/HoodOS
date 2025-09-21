@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apd.html" title="付録D 雑多な事柄">
+<link rel="prev" href="apds04.html" title="D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール">
+<link rel="next" href="ape.html" title="付録E 付記">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録D 雑多な事柄</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール</h2></div></div></div>
+<p>いくつかの国でインターネットサービスプロバイダに接続するのに、ブロードバンド接続 (ADSL やケーブル TV) の一般的なプロトコルは、PPP over Ethernet (PPPoE) です。インストーラでは、PPPoE を用いたネットワーク接続のセットアップをサポートしていませんが、非常に簡単に設定できます。この節ではその方法を説明します。 </p>
+<p>また、インストール中に PPPoE 接続をセットアップすると、インストールしたシステムを再起動した後でも有効になります (<a class="xref" href="ch07.html" title="第7章 新しい Debian システムを起動してみる">7章<i>新しい Debian システムを起動してみる</i></a> 参照)。 </p>
+<p>インストール中に PPPoE をセットアップし使用するには、CD-ROM/DVD イメージを使用する必要があります。その他のインストール方法 (例: netboot) では、サポートしていません。 </p>
+<p>PPPoE でのインストールは、他のインストール方法とほとんど同じです。以下で説明するステップが異なるだけです。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>ブートパラメータに <strong class="userinput"><code>modules=ppp-udeb</code></strong><a href="#ftn.id5181" class="footnote" name="id5181"><sup class="footnote">[22]</sup></a> を指定してインストーラを起動してください。これにより、PPPoE のセットアップに使用するコンポーネント (<code class="classname">ppp-udeb</code>) を確実に読み込み、自動的に起動します。 </p></li>
+<li class="listitem"><p>通常のインストール初期化手順 (言語、国、キーボードの選択、追加インストーラコンポーネント<a href="#ftn.id5187" class="footnote" name="id5187"><sup class="footnote">[23]</sup></a>の読み込み) を行います。 </p></li>
+<li class="listitem"><p>次のステップでは、システムにあるイーサネットカードを特定するのに、ネットワークハードウェアを検出します。 </p></li>
+<li class="listitem">
+<p>この後、実際の PPPoE のセットアップが始まります。インストーラは、PPPoE コンセントレータ (PPPoE 接続を扱う一種のサーバ) を見つけるのに、検出したすべてのイーサネットインターフェースを調べます。 </p>
+<p>最初の試行では、コンセントレータが見つからない可能性があります。これはネットワークが遅い・負荷が高い場合や、サーバ側のエラーで起こる可能性があります。ほとんどの場合、2 回目の試行でコンセントレータの検出に成功します。再試行するには、インストーラのメニューにある <span class="guimenuitem">Configure and start a PPPoE connection</span> を選択してください。 </p>
+</li>
+<li class="listitem"><p>コンセントレータを検出した後、ログイン情報 (PPPoE のユーザ名とパスワード) を入力してください。 </p></li>
+<li class="listitem"><p>インストーラは、先ほど入力した情報を用いて PPPoE 接続を確立します。正しい情報を入力していれば PPPoE 接続の設定を行い、インストーラはその接続を用いてインターネットに接続し、(必要なら) パッケージを取得できます。ログイン情報が正しくない場合や、何かエラーが発生した場合、インストーラは停止しますが、メニューの <span class="guimenuitem">Configure and start a PPPoE connection</span> を選択して、設定を再度行えます。 </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5181" class="footnote"><p><a href="#id5181" class="para"><sup class="para">[22] </sup></a>ブートパラメータの追加方法は <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. ブート画面">「ブート画面」</a> をご覧ください。</p></div>
+<div id="ftn.id5187" class="footnote"><p><a href="#id5187" class="para"><sup class="para">[23] </sup></a><code class="classname">ppp-udeb</code> コンポーネントは、このステップの追加コンポーネントの 1 つとして読み込まれます。優先度を「中」「低」でインストールする場合 (エキスパートモード)、ブートプロンプトの <span class="quote">「<span class="quote">modules</span>」</span> パラメータに入力する代わりに、<code class="classname">ppp-udeb</code> を選択することもできます。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 付録E 付記</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

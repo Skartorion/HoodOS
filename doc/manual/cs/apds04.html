@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Jak nainstalovat Debian GNU/Linux přes paralelní port (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apd.html" title="Příloha D. Co se jinam nevešlo">
+<link rel="prev" href="apds03.html" title="D.3. Jak nainstalovat Debian GNU/Linux ze stávajícího unixového/linuxového systému">
+<link rel="next" href="apds05.html" title="D.5. Jak nainstalovat Debian GNU/Linux pomocí PPP přes Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Jak nainstalovat Debian GNU/Linux přes paralelní port (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha D. Co se jinam nevešlo</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Jak nainstalovat Debian GNU/Linux přes paralelní port (PLIP)</h2></div></div></div>
+<p>Tato část vysvětluje instalaci Debianu na počítači bez ethernetové karty, ale na kterém funguje paralelní port, přes který je připojen druhý počítač (brána) pomocí nullmodemového kabelu. Počítač sloužící jako brána by měl být připojen do sítě, která obsahuje zrcadlo Debianu (např. Internet). </p>
+<p>In the example in this appendix we will set up a PLIP connection using a gateway connected to the Internet over a dial-up connection (ppp0). We will use IP addresses 192.168.0.1 and 192.168.0.2 for the PLIP interfaces on the target system and the source system respectively (these addresses should be unused within your network address space). </p>
+<p>PLIP připojení, které během instalace vytvoříme, bude dostupné i po restartu do nainstalovaného systému (viz <a class="xref" href="ch07.html" title="Kapitola 7. Zavedení vašeho nového systému">7 – „<i>Zavedení vašeho nového systému</i>“</a>). </p>
+<p>Před začátkem instalace byste měli zkontrolovat nastavení BIOSu a poznamenat si přerušení (IRQ) a bázovou VV adresu (IO base address) paralelních portů na obou spojovaných systémech. Nejběžnější hodnoty jsou <code class="literal">io=0x378</code> a <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5170"></a>D.4.1. Požadavky</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Cílový počítač <span class="emphasis"><em>nahepc</em></span>, na který budeme instalovat. </p></li>
+<li class="listitem"><p>Instalační média, viz <a class="xref" href="ch02s04.html" title="2.4. Instalační média">2.4 – „Instalační média“</a>. </p></li>
+<li class="listitem"><p>Pomocný počítač <span class="emphasis"><em>earthsimulator</em></span> připojený k Internetu, který bude sloužit jako brána. </p></li>
+<li class="listitem"><p>Nullmodemový kabel DB-25. Podrobnosti o kabelu naleznete v <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> společně s návodem, jak si můžete tento kabel vyrobit vlastními silami. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5185"></a>D.4.2. Nastavení stroje earthsimulator</h3></div></div></div>
+<p>Následujíc skript ukazuje možné nastavení earthsimulatoru jako brány do Internetu pomocí ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Odstraníme z jádra následující moduly, abychom se vyhnuli
+# konfliktům a abychom je mohli nastavit ručně.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Nastavení rozhraní plip (zde je to plip0, viz dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Nastavení brány
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5195"></a>D.4.3. Instalace na nahepc</h3></div></div></div>
+<p>Boot the installation media. The installation needs to be run in expert mode; enter <strong class="userinput"><code>expert</code></strong> at the boot prompt. If you need to set parameters for kernel modules, you also need to do this at the boot prompt. For example, to boot the installer and set values for the <span class="quote">„<span class="quote">io</span>“</span> and <span class="quote">„<span class="quote">irq</span>“</span> options for the parport_pc module, enter the following at the boot prompt: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Below are the answers that should be given during various stages of the installation. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Load installer components from installation media</span>
+
+</p>
+<p>Ze seznamu vyberte možnost <strong class="userinput"><code>plip-modules</code></strong>; tím se instalačnímu systému zpřístupní ovladače pro PLIP. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Rozpoznat síťový hardware</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Pokud nahepc <span class="emphasis"><em>obsahuje</em></span> síťové karty, zobrazí se seznam modulů pro všechny rozpoznané karty. Trváte-li na použití PLIP, musíte všechny vybrané moduly odznačit. Samozřejmě že pokud nejsou rozpoznány žádné karty, seznam se nezobrazí. </p></li>
+<li class="listitem"><p>Protože nebyly nalezeny/vybrány žádné síťové karty, instalační systém vás požádá o výběr vhodného modulu s ovladačem. Vyberte modul <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Nastavit síť</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Automaticky nastavit síť přes DHCP: Ne </p></li>
+<li class="listitem"><p>IP adresa: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Point-to-point adresa: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Adresy jmenných serverů: můžete zadat stejnou hodnotu, jako máte na earthsimulatoru (viz soubor <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Jak nainstalovat Debian GNU/Linux ze stávajícího unixového/linuxového systému </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Jak nainstalovat Debian GNU/Linux pomocí PPP přes Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

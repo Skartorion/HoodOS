@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. Orientándote sobre Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="ch08.html" title="Capítulo 8. Siguientes pasos y dónde continuar">
+<link rel="prev" href="ch08s01.html" title="8.1. Apagando el sistema">
+<link rel="next" href="ch08s03.html" title="8.3. Lectura e información adicional">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. Orientándote sobre Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 8. Siguientes pasos y dónde continuar</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. Orientándote sobre Debian</h2></div></div></div>
+<p>Debian es un poco diferente a otras distribuciones. Incluso si estás familiarizado con otras distribuciones de Linux, hay cosas que debes conocer sobre Debian para ayudarte a mantener tu sistema en buen estado. Este capítulo contiene material que te ayudará a orientarte; no tiene la intención de ser un tutorial sobre el uso de Debian, pero sí un breve resumen sobre el sistema para aquellos con prisa. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3592"></a>8.2.1. Debian y su sistema de paquetes</h3></div></div></div>
+<p>El concepto más importante a entender es el sistema de paquetes Debian. Esencialmente, podría considerarse que gran parte de tu sistema está bajo el control del sistema de paquetes. Esto incluye: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (excluyendo <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (puedes crear <code class="filename">/var/local</code> sin riesgos) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> Por ejemplo, si sustituyes <code class="filename">/usr/bin/perl</code>, éste funcionará, pero si luego actualizas tu paquete <code class="classname">perl</code>, se sustituirá el fichero que pusiste en su lugar. Los usuarios avanzados pueden evitar esto poniendo los paquetes en estado <span class="quote">“<span class="quote">hold</span>”</span> (<span class="quote">“<span class="quote">retenido</span>”</span>), en <span class="command"><strong>aptitude</strong></span>. </p>
+<p>Uno de los mejores métodos de instalación es apt. Puede utilizar la versión de línea de comandos de <span class="command"><strong>apt</strong></span> así como herramientas como <span class="application">aptitude</span> o <span class="application">synaptic</span> (que no son más que interfaces gráficas para <span class="command"><strong>apt</strong></span>). Tenga en cuenta que apt también le permitirá fusionar main, contrib, non-free y non-free-firmware para que pueda tener paquetes restringidos (estrictamente hablando no pertenecientes a Debian) así como paquetes de Debian GNU/Linux al mismo tiempo. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3623"></a>8.2.2. Software adicional disponible para Debian</h3></div></div></div>
+<p>Hay repositorios de software oficiales y no oficiales que no se activan durante la instalación predeterminada de Debian. Contienen software que muchos consideran importante y esperan tener. Se puede encontrar información sobre estos repositorios adicionales la wiki de Debian litulada <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">The Software Available for Debian's Stable Release</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3627"></a>8.2.3. Gestión de versión de aplicaciones</h3></div></div></div>
+<p>Las versiones alternativas de la aplicaciones se manejan con update-alternatives. Si mantienes múltiples versiones de tus aplicaciones, lee la página de manual de update-alternatives. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3630"></a>8.2.4. Gestión de tareas de cron</h3></div></div></div>
+<p>Cualquier tarea bajo supervisión del administrador del sistema debe estar en <code class="filename">/etc</code>, ya que éstos son ficheros de configuración. Si tienes una tarea cron de root que se ejecuta diaria, semanal o mensualmente, colócala en <code class="filename">/etc/cron.{daily,weekly,monthly}</code>. Estos programas se llaman desde <code class="filename">/etc/crontab</code> y se ejecutarán en orden alfabético, con lo que se serializan. </p>
+<p>Por otro lado, si tienes una tarea cron que (a) necesita ejecutarse como un usuario específico, o (b) necesita ejecutarse en un momento o frecuencia específica, puedes usar tanto <code class="filename">/etc/crontab</code> como <code class="filename">/etc/cron.d/whatever</code>. Estos ficheros específicos también tienen un campo adicional que te permite definir la cuenta de usuario bajo la que se ejecuta la tarea. </p>
+<p>En cualquier caso, simplemente edita los ficheros y cron se dará cuenta automáticamente. No hay necesidad de ejecutar una orden especial. Para más información consulta cron(8), crontab(5) y <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Apagando el sistema </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Lectura e información adicional</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

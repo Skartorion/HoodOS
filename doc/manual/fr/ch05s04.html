@@ -1,0 +1,249 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Dysfonctionnements pendant la procédure d'installation</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Chapitre 5. Démarrer le système d'installation">
+<link rel="prev" href="ch05s03.html" title="5.3. Paramètres d'amorçage">
+<link rel="next" href="ch06.html" title="Chapitre 6. Comment utiliser l'installateur Debian ?">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Dysfonctionnements pendant la procédure d'installation</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 5. Démarrer le système d'installation</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Dysfonctionnements pendant la procédure d'installation</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Fiabilité des disques optiques</h3></div></div></div>
+<p>Parfois, particulièrement avec d'anciens lecteurs, l'installateur ne peut s'amorcer à partir d'un disque optique. Il arrive aussi, même après un amorçage réussi, que l'installateur ne reconnaisse pas le disque ou bien signale des erreurs de lecture pendant l'installation. </p>
+<p>Plusieurs causes sont possibles. Voici une liste de problèmes connus, accompagnés de suggestions sur la manière de les traiter. </p>
+<p>On peut tout d'abord essayer deux choses très simples : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Si le disque ne s'amorce pas, il faut vérifier qu'il est correctement inséré et qu'il n'est pas sale. </p></li>
+<li class="listitem"><p>Si l'installateur ne reconnaît pas le disque, on peut lancer une deuxième fois l'option <span class="guimenuitem">Détecter et monter un support d'installation</span>. Certains problèmes de DMA avec les très anciens lecteurs sont résolus de cette façon. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Si rien ne fonctionne, essayez les suggestions qui suivent. La plupart, mais pas toutes, concernent les CD et les DVD. </p>
+<p>Si vous ne pouvez faire l'installation à partir d'un disque optique, vous pouvez essayer l'une des autres méthodes disponibles. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2264"></a>5.4.1.1. Problèmes communs</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Certains lecteurs anciens ne peuvent lire des disques gravés à grande vitesse sur les lecteurs modernes. </p></li>
+<li class="listitem"><p>Certains lecteurs très anciens ne fonctionnent pas correctement si le DMA (<span class="emphasis"><em>direct memory access</em></span>) est activé. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2272"></a>5.4.1.2. Comment résoudre ces problèmes ?</h4></div></div></div>
+<p>Si le disque optique ne peut amorcer l'installateur, voici une liste de suggestions : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Vérifiez que le BIOS ou l'UEFI est réellement capable de gérer l'amorçage à partir d'un disque optique, certains très anciens systèmes ne le permettent pas, et que le lecteur est bien le périphérique d'amorçage. </p></li>
+<li class="listitem">
+<p>Si vous avez téléchargé une image ISO, vérifiez que la somme MD5 de cette image correspond à celle associée dans le fichier <code class="filename">MD5SUMS</code>. Ce fichier se trouve normalement là où vous avez téléchargé l'image. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Vérifiez ensuite que la somme MD5 du disque gravé correspond aussi. La commande suivante devrait fonctionner. Elle utilise la taille de l'image pour lire le nombre d'octets sur le disque. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Quand le disque optique n'est pas reconnu même après un amorçage réussi, il suffit souvent de recommencer pour résoudre le problème. Si vous possédez plusieurs lecteurs, mettez le disque dans l'autre lecteur. Si rien ne fonctionne ou si des erreurs de lecture sont signalées, essayez les suggestions listées ci-dessous. Une connaissance élémentaire de Linux est nécessaire. Pour exécuter ces commandes, il faut passer sur la deuxième console virtuelle (VT2) et lancer un interpréteur de commandes. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Passez sur VT4 et consultez le fichier <code class="filename">/var/log/syslog</code> (avec l'éditeur <span class="command"><strong>nano</strong></span>) en recherchant des messages d'erreur spécifiques. Vérifiez ensuite la sortie de <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Si votre lecteur a été reconnu, vérifiez la sortie de <span class="command"><strong>dmesg</strong></span>. Vous devriez voir des lignes de ce type (elles ne se suivent pas nécessairement) : </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Si vous ne voyez rien de tel, il est probable que le contrôleur du lecteur n'a pas été reconnu ou qu'il n'est pas du tout géré. Si vous connaissez le pilote nécessaire à ce contrôleur, vous pouvez le charger vous-même avec <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Vérifiez que le lecteur est bien listé dans le répertoire <code class="filename">/dev/</code>. Pour l'exemple ci-dessus, ce serait <code class="filename">/dev/sr0</code>. Il doit exister aussi un fichier <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Vérifiez avec la commande <span class="command"><strong>mount</strong></span> que le disque optique est déjà monté. Si non, montez-le vous-même : </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Vérifiez si cette commande a provoqué des messages d'erreur. </p>
+</li>
+<li class="listitem">
+<p>Vérifiez si le DMA est activé : </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Un <span class="quote">« <span class="quote">1</span> »</span> dans la première colonne après <code class="literal">using_dma</code> signifie qu'il est activé. Dans ce cas, désactivez-le : </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Assurez-vous que vous êtes bien dans le répertoire du périphérique qui correspond au lecteur optique. </p>
+</li>
+<li class="listitem"><p>Si vous rencontrez des problèmes pendant l'installation, vérifiez l'intégrité du support d'installation avec l'option qui se trouve en fin du menu principal de l'installateur. Cette option peut aussi servir de test quand le disque est lu correctement. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2324"></a>5.4.2. Configuration d'amorçage</h3></div></div></div>
+<p>Si le noyau se bloque pendant la phase d'amorçage, s'il ne reconnaît pas vos périphériques ou bien si les disques ne sont pas identifiés correctement, la première chose à faire est de vérifier les paramètres d'amorçage, ainsi qu'il a été discuté dans la <a class="xref" href="ch05s03.html" title="5.3. Paramètres d'amorçage">Section 5.3, « Paramètres d'amorçage »</a>. </p>
+<p>Parfois, les dysfonctionnements proviennent de microprogrammes manquants, voyez la <a class="xref" href="ch02s02.html" title="2.2. Périphériques demandant des microprogrammes (firmware)">Section 2.2, « Périphériques demandant des microprogrammes (<span class="emphasis"><em>firmware</em></span>) »</a> et la <a class="xref" href="ch06s04.html" title="6.4. Télécharger des microprogrammes (firmware) manquants">Section 6.4, « Télécharger des microprogrammes (<span class="emphasis"><em>firmware</em></span>) manquants »</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2331"></a>5.4.3. Synthèse vocale logicielle</h3></div></div></div>
+<p>Quand la synthèse vocale logicielle ne fonctionne pas, le problème vient souvent de la carte son. Soit le pilote de cette carte n'est pas connu de l'installateur, soit il utilise des canaux de mixage inhabituels qui sont muets (<span class="emphasis"><em>muted</em></span>) par défaut. Vous pouvez envoyer un rapport de bogue qui comprenne la sortie des commandes suivantes, exécutées sur la même machine, à partir d'un système Linux sur lequel le son fonctionne correctement, par exemple un CD live. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Problèmes communs sur <span class="phrase">PC 64 bits</span>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </h3></div></div></div>
+<p>Certains problèmes d'installation peuvent être résolus ou évités en passant des paramètres d'amorçage à l'installateur. </p>
+<p>Si votre écran commence à afficher une image bizarre lors des démarrages du noyau, par exemple, un écran entièrement blanc, noir ou un écran contenant un mélange de couleurs, alors très certainement la carte vidéo du système ne parvient pas à passer en mode <span class="emphasis"><em>framebuffer</em></span> correctement. Dans ce cas, essayez de passer le paramètre d'amorçage <strong class="userinput"><code>vga=normal nomodeset</code></strong> pour désactiver la console <span class="emphasis"><em>framebuffer</em></span>. Seules quelques langues seront utilisables pour l'installation, à cause des caractéristiques limitées de la console. Référez-vous à la <a class="xref" href="ch05s03.html" title="5.3. Paramètres d'amorçage">Section 5.3, « Paramètres d'amorçage »</a> pour plus de précisions. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2357"></a>5.4.4.1. Le système bloque lors de la configuration des services PCMCIA</h4></div></div></div>
+<p>Quelques très anciens ordinateurs portables fabriqués par Dell s'arrêtent fréquemment de fonctionner lorsque la détection des périphériques essaie d'accéder à certaines adresses matérielles. D'autres portables connaissent aussi des problèmes semblables. Si vous rencontrez un tel problème et si vous n'avez pas besoin de services PCMCIA pendant l'installation, vous pouvez désactiver cette option avec le paramètre <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Vous pourrez configurer les services PCMCIA après l'installation et éviter le problème des adresses des ressources. </p>
+<p>Vous pouvez aussi démarrer l'installateur en mode expert. Vous pourrez ainsi indiquer les options pour les adresses des ressources de votre matériel. Par exemple, si votre ordinateur est un des portables Dell mentionnés plus haut, vous pouvez indiquer <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>. Il existe une liste de ces options communes dans la section sur les ressources système du <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">HOWTO PCMCIA</a>. Notez qu'il faut supprimer les virgules quand vous passez ces valeurs à l'installateur. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Comprendre les messages du noyau au démarrage</h3></div></div></div>
+<p>Durant la séquence de démarrage, vous pouvez voir beaucoup de messages du genre <code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code>, ou <code class="computeroutput"><em class="replaceable"><code>something</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>something</code></em></code> ou même <code class="computeroutput">this driver release depends on <em class="replaceable"><code>something</code></em> </code>. La plupart de ces messages sont sans conséquence. Vous les voyez parce que le noyau du système d'installation est conçu pour tourner sur des ordinateurs avec des périphériques très différents. Évidemment, aucun ordinateur ne possède tous les périphériques possibles, et le système d'exploitation recherche un périphérique que vous ne possédez pas. Vous pourriez également voir le système s'arrêter pendant un moment. Cela arrive quand il attend la réponse d'un périphérique qui n'est pas présent sur votre système. Si vous trouvez le temps de démarrage du système exagérément long, vous pouvez créer un noyau personnalisé <span class="phrase">(voyez la <a class="xref" href="ch08s05.html" title="8.5. Compiler un nouveau noyau">Section 8.5, « Compiler un nouveau noyau »</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Signaler les problèmes</h3></div></div></div>
+<p>Si vous parvenez à la fin de la phase d'amorçage mais que vous ne parveniez pas à terminer l'installation, le choix <span class="guimenuitem">Sauvegarder les journaux de débogage</span> du menu peut vous aider. Vous pouvez copier sur un support externe, les journaux contenant les erreurs système et des informations sur la configuration ou vous pouvez les consulter avec un navigateur web. Toutes ces informations peuvent donner des indications sur ce qui s'est mal passé et sur la manière de le corriger. Si vous envoyez un rapport de bogue, vous pouvez attacher cette information au rapport. </p>
+<p>Pendant l'installation, d'autres messages intéressants se trouvent dans le fichier <code class="filename">/target/var/log/debian-installer/</code>, et, quand l'ordinateur a démarré le nouveau système installé, ces messages se trouvent dans le fichier <code class="filename">/var/log/installer/</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Faire un rapport de bogue</h3></div></div></div>
+<p>Si vous avez toujours des ennuis, faites un rapport de bogue (en anglais de préférence). Nous vous demandons aussi d'envoyer des rapports sur les installations réussies, car nous cherchons des informations sur toutes les configurations matérielles possibles. </p>
+<p>Notez que votre rapport d'installation sera publié dans le système de suivi des bogues, <span class="emphasis"><em>Bug Tracking System (BTS)</em></span>, de Debian et envoyé sur une liste de diffusion publique. Votre adresse de courrier sera aussi rendue publique. </p>
+<p>Si vous utilisez déjà un système Debian, vous pouvez installer les paquets <code class="classname">installation-report</code> et <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>). Configurez <code class="classname">reportbug</code> en suivant les explications données dans la <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Envoyer des courriels vers l'extérieur">Section 8.4.2, « Envoyer des courriels vers l'extérieur »</a>, puis exécutez la commande <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Vous pouvez aussi utiliser le modèle suivant. Envoyez-le comme un rapport de bogue pour le paquet <code class="classname">installation-reports</code>, à l'adresse <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;Comment avez-vous amorcé l'installateur ? CD ou DVD ? clé USB ? réseau ?&gt;
+Image version: &lt;URL complète de l'image téléchargée&gt;
+Date: &lt;Date et heure de l'installation&gt;
+
+Machine: &lt;Description de la machine (p. ex. IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl ; mais nous préférons la table des partitions&gt;
+
+Résultat de lspci -knn (ou lspci -nn) :
+
+Installation du système de base :
+[O] = OK, [E] = Error (développez plus bas s'il vous plait), [ ] = non essayé
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Décrivez l'installation, les pensées, commentaires ou idées de propositions
+que vous avez eus pendant cette installation.&gt;
+
+Assurez-vous que tous les journaux d'installation utiles sont joints
+à ce rapport. (Vous les trouverez dans /var/log du système de l'installateur,
+ou ensuite dans /var/log/installer du système installé)
+Veuillez compresser les gros fichiers avec gzip.
+
+</pre></div>
+<p> Dans le rapport de bogue, décrivez le problème en incluant les derniers messages visibles du noyau dans le cas d'un plantage du noyau. Décrivez les étapes que vous avez effectuées pour arriver là. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Paramètres d'amorçage </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> Chapitre 6. Comment utiliser l'installateur Debian ?</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. Installing Debian GNU/Linux using PPP over Ethernet (PPPoE)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="apd.html" title="Appendix D. Random Bits">
+<link rel="prev" href="apds04.html" title="D.4. Installing Debian GNU/Linux over Parallel Line IP (PLIP)">
+<link rel="next" href="ape.html" title="Appendix E. Administrivia">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. Installing Debian GNU/Linux using PPP over Ethernet (PPPoE)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Appendix D. Random Bits</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. Installing Debian GNU/Linux using PPP over Ethernet (PPPoE)</h2></div></div></div>
+<p>
+
+In some countries PPP over Ethernet (PPPoE) is a common protocol for
+broadband (ADSL or cable) connections to an Internet Service Provider.
+Setting up a network connection using PPPoE is not supported by default
+in the installer, but can be made to work very simply. This section
+explains how.
+
+</p>
+<p>
+
+The PPPoE connection set up during the installation will also be available
+after the reboot into the installed system (see <a class="xref" href="ch07.html" title="Chapter 7. Booting Into Your New Debian System">Chapter 7, <i>Booting Into Your New Debian System</i></a>).
+
+</p>
+<p>
+
+To have the option of setting up and using PPPoE during the installation,
+you will need to install using one of the CD-ROM/DVD images that are
+available. It is not supported for other installation methods (e.g.
+netboot).
+
+</p>
+<p>
+
+Installing over PPPoE is mostly the same as any other installation. The
+following steps explain the differences.
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+Boot the installer with the boot parameter
+<strong class="userinput"><code>modules=ppp-udeb</code></strong><a href="#ftn.id5747" class="footnote" name="id5747"><sup class="footnote">[22]</sup></a>.
+This will ensure the component responsible for the setup of PPPoE
+(<code class="classname">ppp-udeb</code>) will be loaded and run automatically.
+
+</p></li>
+<li class="listitem"><p>
+
+Follow the regular initial steps of the installation (language,
+country and keyboard selection; the loading of additional installer
+components<a href="#ftn.id5753" class="footnote" name="id5753"><sup class="footnote">[23]</sup></a>).
+
+</p></li>
+<li class="listitem"><p>
+
+The next step is the detection of network hardware, in order to identify
+any Ethernet cards present in the system.
+
+</p></li>
+<li class="listitem">
+<p>
+
+After this the actual setup of PPPoE is started. The installer will probe
+all the detected Ethernet interfaces in an attempt to find a PPPoE
+concentrator (a type of server which handles PPPoE connections).
+
+</p>
+<p>
+
+It is possible that the concentrator will not to be found at the first
+attempt. This can happen occasionally on slow or loaded networks or with
+faulty servers. In most cases a second attempt to detect the concentrator
+will be successful; to retry, select <span class="guimenuitem">Configure and start a
+PPPoE connection</span> from the main menu of the installer.
+
+</p>
+</li>
+<li class="listitem"><p>
+
+After a concentrator is found, the user will be prompted to type the login
+information (the PPPoE username and password).
+
+</p></li>
+<li class="listitem"><p>
+
+At this point the installer will use the provided information to establish
+the PPPoE connection. If the correct information was provided, the PPPoE
+connection should be configured and the installer should be able to use it
+to connect to the Internet and retrieve packages over it (if needed). If
+the login information is not correct or some error appears, the installer
+will stop, but the configuration can be attempted again by selecting the
+menu entry <span class="guimenuitem">Configure and start a PPPoE connection</span>.
+
+</p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5747" class="footnote"><p><a href="#id5747" class="para"><sup class="para">[22] </sup></a>
+See <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. The Boot Screen">Section 5.1.5, “The Boot Screen”</a> for information on
+how to add a boot parameter.
+</p></div>
+<div id="ftn.id5753" class="footnote"><p><a href="#id5753" class="para"><sup class="para">[23] </sup></a>
+
+The <code class="classname">ppp-udeb</code> component is loaded as one of
+the additional components in this step. If you want to install at
+medium or low priority (expert mode), you can also manually select
+the <code class="classname">ppp-udeb</code> instead of entering the
+<span class="quote">“<span class="quote">modules</span>”</span> parameter at the boot prompt.
+
+</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. Installing Debian GNU/Linux over Parallel Line IP (PLIP) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> Appendix E. Administrivia</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

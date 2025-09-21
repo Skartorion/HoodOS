@@ -1,0 +1,239 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Resolució de problemes del procés d'instal·lació</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Capítol 5. Arrencada del sistema d'instal·lació">
+<link rel="prev" href="ch05s03.html" title="5.3. Paràmetres d'arrencada">
+<link rel="next" href="ch06.html" title="Capítol 6. Utilització de l'instal·lador de Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Resolució de problemes del procés d'instal·lació</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 5. Arrencada del sistema d'instal·lació</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Resolució de problemes del procés d'instal·lació</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Fiabilitat dels medis òptics</h3></div></div></div>
+<p>De vegades, especialment amb unitats velles, l'instal·lador podria no arrencar des d'un disc òptic. L'instal·lador podria — inclús després d'arrencar correctament des d'aquest disc — fallar en el reconeixement del disc o donar errors mentre l'està llegint durant la instal·lació. </p>
+<p>Aquests problemes són deguts a diferents causes. Tan sols podem llistar alguns dels problemes coneguts i donar suggeriments de com podeu tractar-los. La resta és cosa vostra. </p>
+<p>Hi ha dues coses molt senzilles que podeu provar. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Si el disc no arrenca, comproveu que s'ha inserit correctament i que no està brut. </p></li>
+<li class="listitem"><p>Si l'instal·lador no reconeix el disc, proveu d'executar l'opció <span class="guimenuitem">Detecta i munta el mitjà d'instal·lació</span> altra vegada. Alguns problemes de DMA associats a algunes unitats de CD-ROM velles es resolen d'aquesta manera. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Si no funciona, aleshores proveu els suggeriments que teniu a la subsecció de baix. Quasi tots, però no tots, els suggeriments discutits són vàlids per CD-ROM i DVD. </p>
+<p>Si no podeu aconseguir que la instal·lació funcione des del disc òptic, proveu un dels altres mètodes d'instal·lació que hi ha. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2227"></a>5.4.1.1. Problemes usuals</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Algunes unitats de CD-ROM velles no suporten la lectura de discs que es van gravar a altes velocitats utilitzant una gravadora de CD moderna. </p></li>
+<li class="listitem"><p>Algunes unitats de CD-ROM velles no funcionen correctament si està activat l'<span class="quote">«<span class="quote">accés directe a memòria</span>»</span> (DMA). </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2235"></a>5.4.1.2. Com investigar i potser resoldre alguns problemes</h4></div></div></div>
+<p>Si el disc òptic falla a l'arrencar, proveu els següents suggeriments. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Comproveu que la vostra BIOS/UEFI suporta l'arrencada des de disc òptic (només és un problema en sistemes molt antics) i que arrencar des d'aquest mitjà està activat a la BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>Si heu descarregat una imatge iso, comproveu que l'md5sum d'aquesta imatge coincideix amb el que estigui al fitxer <code class="filename">MD5SUMS</code> de la imatge, que hauria d'estar al mateix lloc d'on vàreu descarregar la imatge. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> A continuació, comproveu que l'md5sum del disc que heu gravat també coincideix. L'ordre següent hauria de funcionar. Utilitza la mida de la imatge per llegir el nombre correcte de bytes del disc. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Si després d'arrencar l'instal·lador correctament, el disc no és detectat, tornar a provar podria resoldre el problema. Si teniu més d'una unitat òptica, proveu de canviar el disc a una altra unitat. Si no funciona o si el disc es reconeix però dona errors quan està llegint-lo, proveu els suggeriments que teniu a continuació. Es necessita algun coneixement bàsic de Linux per fer-ho. Per executar qualsevol de les ordres, primer hauríeu de canviar a la segona consola virtual (VT2) i activar l'intèrpret d'ordres. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Canvieu al VT4 o mireu els continguts del fitxer <code class="filename">/var/log/syslog</code> (utilitzeu el <span class="command"><strong>nano</strong></span> com a editor) per comprovar qualsevol missatge d'error específic. Després, comproveu la sortida del l'ordre <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Mireu en la sortida de <span class="command"><strong>dmesg</strong></span> si s'ha reconegut la vostra unitat òptica. Hauríeu de veure alguna cosa semblant (les línies no han de estar obligatòriament de forma consecutiva): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Si no veieu res de semblant, les opcions són que no es reconega o no estiga suportada la controladora a la que està connectat la vostra unitat. Si sabeu quin controlador fa falta per a la controladora, podríeu provar de carregar-lo manualment amb l'ordre <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Comproveu que hi ha un node de dispositiu per a la vostra unitat òptica a <code class="filename">/dev/</code>. En els exemples de baix, açò seria el <code class="filename">/dev/sr0</code>. Hauria d'estar també el <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Utilitzeu l'ordre <span class="command"><strong>mount</strong></span> per comprovar si el disc òptic ja està muntat; si no ho està, proveu de muntar-lo manualment: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Mireu si s'ha produït algun missatge d'error després d'executar l'ordre. </p>
+</li>
+<li class="listitem">
+<p>Comproveu si el DMA està activat: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Un <span class="quote">«<span class="quote">1</span>»</span> a la primera columna després de <code class="literal">using_dma</code> vol dir que està activat. Si ho està, proveu de desactivar-lo: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Comproveu que esteu en el directori del dispositiu que es correspon a la vostra unitat òptica. </p>
+</li>
+<li class="listitem"><p>Si hi ha algun problema a la instal·lació, proveu de comprovar la integritat dels mitjans d'instal·lació fent ús de l'opció que hi ha quasi al final del menú principal de l'instal·lador. Aquesta opció es pot utilitzar com una comprovació general de si el disc es pot llegir amb confiança. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2287"></a>5.4.2. Configuració de l'arrencada</h3></div></div></div>
+<p>Si teniu problemes i el nucli es penja durant l'arrencada, no reconeix els perifèrics o les unitats no es reconeixen com cal, primer de tot comprovau els paràmetres d'arrencada, tal com s'indica a <a class="xref" href="ch05s03.html" title="5.3. Paràmetres d'arrencada">Secció 5.3, «Paràmetres d'arrencada»</a>. </p>
+<p>En molts casos, el funcionament incorrecte por ésser causat per què el dispositiu no disposa de microprogramari («firmware») (llegiu <a class="xref" href="ch02s02.html" title="2.2. Dispositius que requereixen microprogramari">Secció 2.2, «Dispositius que requereixen microprogramari»</a> i <a class="xref" href="ch06s04.html" title="6.4. Carregar microprogramari no inclòs a l'instal·lador">Secció 6.4, «Carregar microprogramari no inclòs a l'instal·lador»</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2294"></a>5.4.3. Síntesi de veu per maquinari</h3></div></div></div>
+<p>Si el programari de síntesi de veu no funciona, probablement és una errada de la targeta de so, habitualment degut a que el gestor de la targeta no està inclòs en l'instal·lador o bé perquè té uns noms de nivells del mesclador poc habituals que s'estableixen a «silenciat» per defecte. En aquest cas, enviau un informe d'error incloent la sortida de les ordres següents executats en la mateixa màquina des d'un sistema Linux que se sap que te el sistema de so funcional (p. ex. amb un CD en viu). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Problemes d'instal·lació usuals en <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Hi ha alguns problemes usuals en la instal·lació que es poden solucionar o evitar indicant certs paràmetres d'arrencada a l'instal·lador. </p>
+<p>Si la pantalla comença a comportar-se de manera estranya mentre s'arrenca el nucli, per exemple es posa blanca, negra, o mostra un batibull de píxels colorejats, potser la targeta de vídeo és problemàtica i no fa com cal la commutació al «framebuffer». Podeu emprar el paràmetre d'arrencada <strong class="userinput"><code>vga=normal nomodeset</code></strong> per a deshabilitar la consola del «framebuffer». A causa de les limitacions de la funcionalitat de la consola, únicament hi haurà a l'abast un nombre reduït d'idiomes per a la instal·lació. Consulteu <a class="xref" href="ch05s03.html" title="5.3. Paràmetres d'arrencada">Secció 5.3, «Paràmetres d'arrencada»</a> per als detalls. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2317"></a>5.4.4.1. Bloqueig del sistema durant la configuració del PCMCIA</h4></div></div></div>
+<p>Alguns models de portàtil de Dell peten quan la detecció de dispositius PCMCIA tracta d'accedir a algunes adreces de maquinari. Altres portàtils tenen problemes semblants. Si teniu un problema com aquest i no us cal la funcionalitat PCMCIA durant la instal·lació, podeu deshabilitar-la amb el paràmetre d'arrencada <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Podeu configurar-la després de la instal·lació i excloure el rang de recursos que causa problemes. </p>
+<p>També podeu arrencar l'instal·lador en mode expert. Haureu d'introduir les opcions del rang de recursos que calen per al maquinari. Per exemple, si teniu un portàtil Dell dels esmentats abans, heu d'introduir <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>. Hi ha una llista d'opcions usuals del rang de recursos a la secció <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">Configuració dels recursos del sistema del COM ES FA el PCMCIA (en anglès)</a>. Tingueu en compte que s'han d'ometre les comes quan introduïu aquest valor a l'instal·lador. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Com interpretar els missatges del nucli durant l'arrencada</h3></div></div></div>
+<p>Durant la seqüència d'arrencada, podeu veure nombrosos missatges del tipus <code class="computeroutput">can't find <em class="replaceable"><code>quelcom</code></em></code>, o <code class="computeroutput"><em class="replaceable"><code>quelcom</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>quelcom</code></em></code>, o fins i tot <code class="computeroutput">this driver release depends on <em class="replaceable"><code>quelcom</code></em></code>. No us heu de preocupar per la majoria d'aquests missatges. Els veieu perquè el nucli del sistema d'instal·lació s'ha fet perquè funcione a ordinadors amb molts dispositius perifèrics diferents. Òbviament, cap ordinador té tots els dispositius possibles, per tant el sistema operatiu potser es queixarà en cercar perifèrics que no hi ha. Potser veureu també que el sistema fa una pausa momentània. Això ocorre quan s'espera la resposta d'un dispositiu i aquest no hi és. Si trobeu que hi triga massa, podeu fer-vos després un nucli a mida<span class="phrase"> (vegeu <a class="xref" href="ch08s05.html" title="8.5. Compilar un nou nucli">Secció 8.5, «Compilar un nou nucli»</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Informar d'errors d'instal·lació</h3></div></div></div>
+<p>Si aconseguiu completar la fase inicial d'arrencada però no podeu completar la instal·lació, l'opció <span class="guimenuitem">Desa els registres de depuració</span> podria ser d'utilitat. Us permet desar els registres d'error del sistema i informació sobre la configuració de l'instal·lador en un mitjà d'emmagatzemament, o bé descarregar-los utilitzant un navegador web. Aquesta informació pot proporcionar-vos pistes sobre què ha anat malament i com arreglar-ho. Si aneu a enviar un informe d'error, podeu afegir-hi aquesta informació. </p>
+<p>Podeu trobar altres missatges d'instal·lació pertinents a <code class="filename">/var/log/</code> durant la instal·lació, i a <code class="filename">/var/log/installer/</code> després que l'ordinador s'haja arrencat en el sistema ja instal·lat. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Emissió d'informes d'error</h3></div></div></div>
+<p>Si encara teniu problemes, podeu enviar un informe d'instal·lació (en anglès, si us plau, sempre que sigui possible). Us animem a enviar també informes en cas que la instal·lació haja reeixit, per poder disposar de la major quantitat d'informació possible sobre el major nombre de configuracions de maquinari. </p>
+<p>Fixeu-vos que el vostre informe d'instal·lació es publicarà al Sistema de seguiment d'errors de Debian (BTS) i s'enviarà a una llista de correu pública. Assegureu-vos d'utilitzar una adreça de correu que no us importe fer pública. </p>
+<p>Si teniu un sistema Debian en funcionament, la manera més fàcil d'emetre un informe d'instal·lació és instal·lar els paquets <code class="classname">installation-report</code> i <code class="classname">reportbug</code> (<span class="command"><strong>apt-get install installation-report reportbug</strong></span>) i configurar <code class="classname">reportbug</code> tal com s'explica a 
+<a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Enviar correus fora del sistema">Secció 8.4.2, «Enviar correus fora del sistema»</a>, executant l'ordre <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>De forma alternativa, podeu utilitzar aquesta plantilla per als informes d'instal·lació i enviar-lo com un informe d'error al pseudopaquet <code class="classname">installation-reports</code>, enviant-lo a <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code> (en anglès): </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt; Aquí descriviu (en anglés) la instal·lació, amb totes les vostres impressions, comentaris
+     i idees que heu tengut durant el procés d'instal·lació.&gt;
+
+Si us plau, assegureu-vos que els registres d'instal·lació que considereu
+útils s'adjuntin amb aquest informe. (Els podeu trobar al sistema de
+l'instal·lador a /var/log/ i més tard al sistema instal·lat a
+/var/log/installer.)
+Si us plau, comprimiu els fitxers grans usant gzip.
+
+</pre></div>
+<p> En l'informe d'error, descriviu quin és el problema, incloent els darrers missatges visibles del nucli en el cas que el nucli s'hagi penjat. Descriviu cada una de les passes que heu fet fins arribar a la situació problemàtica. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Paràmetres d'arrencada </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> Capítol 6. Utilització de l'instal·lador de Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

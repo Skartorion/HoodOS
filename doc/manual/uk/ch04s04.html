@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. Підготовка файлів для завантаження з жорсткого диска</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Розділ 4. Отримання інсталяційних даних">
+<link rel="prev" href="ch04s03.html" title="4.3. Підготовка файлів для завантаження з USB-диска">
+<link rel="next" href="ch04s05.html" title="4.5. Підготовка файлів для завантаження з TFTP">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. Підготовка файлів для завантаження з жорсткого диска</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Розділ 4. Отримання інсталяційних даних</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. Підготовка файлів для завантаження з жорсткого диска</h2></div></div></div>
+<p>Інсталятор може бути завантажений за допомогою файлів завантаження, розміщених на наявному розділі жорсткого диска, або запущених з іншої операційної системи, або шляхом виклику завантажувача безпосередньо з BIOS. У сучасних системах з UEFI ядро можна завантажувати безпосередньо з розділу UEFI без окремого завантажувача. </p>
+<p>За допомогою цієї техніки можна досягти повної <span class="quote">«<span class="quote">чистої мережі</span>»</span>. Це дозволяє уникнути всіх проблем зі знімними носіями, включно з пошуком та записом образів CD/DVD. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. Інсталятор жорсткого диска завантажується з Linux за допомогою <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>У цьому розділі пояснюється, як додати або навіть замінити наявну інсталяцію Linux за допомогою <span class="command"><strong>GRUB</strong></span>. </p>
+<p>Під час завантаження <span class="command"><strong>GRUB</strong></span> підтримує завантаження у пам'ять не лише ядра, а й образу диска. Цей RAM-диск може використовуватися ядром як коренева файлова система. </p>
+<p>Скопіюйте ці файли з архівів Debian у зручне місце на жорсткому диску, наприклад у <code class="filename">/boot/newinstall/</code>. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code> (образ ядра) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (образ ramdisk) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Якщо Ви збираєтеся використовувати жорсткий диск лише для завантаження, а потім все інше завантажувати через мережу, Вам потрібно звантажити файл <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> та відповідне йому ядро <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a>. Це дозволить перерозподілити жорсткий диск, з якого Ви завантажуєте інсталятор, хоча робіть це обережно. </p>
+<p>Крім того, якщо Ви маєте намір під час встановлення залишити наявний розділ на жорсткому диску незмінним, Ви можете звантажити файл <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> та його ядро <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a>, а також скопіювати інсталяційний образ на жорсткий диск (переконайтеся, що ім'я файлу закінчується на <code class="literal">.iso</code>). Таким чином інсталятор зможе завантажитися з жорсткого диска та почати установку з інсталяційного образу без використання мережі. </p>
+<p>Нарешті, для налаштування завантажувач, перейдіть до <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. Завантаження з Linux за допомогою GRUB">Розділ 5.1.3, «Завантаження з Linux за допомогою <span class="command"><strong>GRUB</strong></span>»</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. Підготовка файлів для завантаження з USB-диска </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. Підготовка файлів для завантаження з TFTP</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

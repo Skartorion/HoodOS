@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.1. 安装程序如何工作</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch06.html" title="第 6 章 使用 Debian 安装程序">
+<link rel="prev" href="ch06.html" title="第 6 章 使用 Debian 安装程序">
+<link rel="next" href="ch06s02.html" title="6.2. 组件介绍">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.1. 安装程序如何工作</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 6 章 使用 Debian 安装程序</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2363"></a>6.1. 安装程序如何工作</h2></div></div></div>
+<p>本架构的 <code class="classname">debian-installer</code> 支持两种用户界面：图形界面和文本界面。除非您在引导菜单里面选择 <span class="quote">“<span class="quote">Install</span>”</span> 选项，否则默认将使用图形界面。关于启动图形安装程序的更多信息，请参阅 <a class="xref" href="ch05s01.html#graphical" title="5.1.6. 图形安装程序">第 5.1.6 节 “图形安装程序”</a>。 </p>
+<p>Debian 安装程序由一些特定功能的组件组成，它们完成各自的安装任务。每一组件执行任务时，会询问一些任务相关的问题。每个任务又有各自的优先级，在安装程序开始时可以设置优先级以决定哪些问题会被询问。 </p>
+<p>执行默认安装时，只会问到必要的(高优先级)问题。这使得安装过程高度自动化，几乎不需用户干预。组件自动按次序执行；至于哪些组件会执行，取决于使用的安装方法，以及您的硬件。对于没有问到的问题，安装程序将采用默认值。 </p>
+<p>假如出现问题，用户将看到错误信息画面，并且安装程序会显示菜单以进行其它替代操作。如果没有问题，用户将不会碰到菜单，只需依此回答每个组件的提问。严重错误警示的优先级是 <span class="quote">“<span class="quote">critical</span>”</span>，因此用户一定能看到。 </p>
+<p>在 <code class="classname">debian-installer</code> 启动的时候，加上一些引导参数，它将会影响安装程序使用的默认值。例如，您希望指定静态网络连接配置(默认会使用已有的 IPv6 自动配置和 DHCP)，可以加上引导参数 <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong>。参阅 <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian 安装程序的参数">第 5.3.2 节 “Debian 安装程序的参数”</a> 了解可用的选项。 </p>
+<p>高级用户可能更愿意采用菜单驱动的界面，安装中的每一步都可以被用户控制，而不是让安装程序自动执行。要使用菜单驱动的手动安装方式，需要添加引导参数 <strong class="userinput"><code>priority=medium</code></strong>。 </p>
+<p>假如您的硬件需要指定内核模块选项才能安装，就要使用 <span class="quote">“<span class="quote">expert</span>”</span> 模式启动安装程序。可以通过 <span class="command"><strong>expert</strong></span> 命令或者添加 <strong class="userinput"><code>priority=low</code></strong> 引导参数。专家(export)模式让您可以完全控制 <code class="classname">debian-installer</code>。 </p>
+<p>鼠标在基于文本的环境下无法使用。以下是对话框中您可以操作的键。在按钮和选项之间可以用 <span class="keycap"><strong>Tab</strong></span> 或 <span class="keycap"><strong>右</strong></span> 箭头键 <span class="quote">“<span class="quote">前进</span>”</span>，<span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>Tab</strong></span> 或 <span class="keycap"><strong>左</strong></span> 箭头键 <span class="quote">“<span class="quote">后退</span>”</span>。<span class="keycap"><strong>上</strong></span> 和 <span class="keycap"><strong>下</strong></span> 箭头键选择列表里面的选项，并可以滚动列表。另外，在长列表里面，您可以按下某个字母直接跳到对应字母开头的选项，按下 <span class="keycap"><strong>Pg-Up</strong></span> 和 <span class="keycap"><strong>Pg-Down</strong></span> 可以快速滚动列表。<span class="keycap"><strong>空格键</strong></span> 可以选择选项，例如复选框。<span class="keycap"><strong>Enter</strong></span> 执行选择。 </p>
+<p>一些对话框可能会提供额外的帮助信息。如果有帮助信息，它们将在屏幕的最下面一行提示，可以通过 <span class="keycap"><strong>F1</strong></span> 键访问这些帮助信息。 </p>
+<p>错误信息和日志被重定向到第四个控制台。您可以通过按下 <span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> (按住左 <span class="keycap"><strong>Alt</strong></span> 键同时按下 <span class="keycap"><strong>F4</strong></span> 功能键)访问该控制台；返回主安装进程使用 <span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>。 </p>
+<p>这些信息还可以在 <code class="filename">/var/log/syslog</code> 里找到。完成安装之后，该记录会被复制到您新系统中的 <code class="filename">/var/log/debian-installer/syslog</code>。其它的安装信息安装时可以在 <code class="filename">/var/log/</code> 找到。在系统重新启动后记录的地方是 <code class="filename">/var/log/installer/</code>。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="gtk-using"></a>6.1.1. 使用图形安装程序</h3></div></div></div>
+<p>图形安装程序基本上与文本安装程序相同地工作，这样，本手册的其它部分可以用于引导您走过安装过程。 </p>
+<p>如果您倾向于使用键盘而不是鼠标，那么需要知道两件事。为了将折叠的列表展开（例如在洲中选择国家），可以使用 <span class="keycap"><strong>+</strong></span> 和 <span class="keycap"><strong>-</strong></span> 按键。对于可以选择多个项目的问题（例如任务选择），您需要在做完选择之后首先用 tab 键定位到“继续”按钮；直接按 enter 键会切换是否选择一个选项，而不是执行“继续”。 </p>
+<p>如果对话提供额外的帮助信息，那么会显示 <span class="guibutton">帮助</span> 按钮。可以通过点击按钮或按 <span class="keycap"><strong>F1</strong></span> 按键，来访问这些帮助信息。 </p>
+<p>要切换到另一个工作台，还需要使用 <span class="keycap"><strong>Ctrl</strong></span> 按键，就像使用 X Window 系统一样。例如，为了转换到 VT2 （第一个调试 shell）需要使用：<span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F2</strong></span>。图形安装程序自身运行在 VT5 上，所以可以使用 <span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F5</strong></span> 来切换回去。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第 6 章 使用 Debian 安装程序 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 6.2. 组件介绍</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

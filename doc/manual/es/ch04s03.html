@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Preparación de ficheros para el arranque desde un dispositivo de memoria USB</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="ch04.html" title="Capítulo 4. Obtener el soporte de instalación del sistema">
+<link rel="prev" href="ch04s02.html" title="4.2. Descarga de ficheros desde réplicas de Debian">
+<link rel="next" href="ch04s04.html" title="4.4. Preparación de los ficheros para arranque desde el disco duro">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Preparación de ficheros para el arranque desde un dispositivo de memoria USB</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 4. Obtener el soporte de instalación del sistema</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Preparación de ficheros para el arranque desde un dispositivo de memoria USB</h2></div></div></div>
+<p>Para preparar la memoria USB, recomiendamos utilizar un sistema en el que ya se esté ejecutando GNU/Linux y con soporte USB. Con los sistemas GNU/Linux actuales, debería reconocer automáticamente la memoria USB al insertarla. Si no es así, debes comprobar que el módulo del kernel usb-storage está cargado. Cuando se inserta la memoria USB, se asigna a un dispositivo llamado <code class="filename">/dev/sdX</code>, donde <span class="quote">“<span class="quote">X</span>”</span> es una letra en el rango a-z. Deberías poder ver a qué dispositivo se ha asignado la memoria USB ejecutando el comando <span class="command"><strong>lsblk</strong></span> antes y después de insertarla. (La salida de <span class="command"><strong>dmesg</strong></span> (como root) es otro método posible para ello). Para escribir en tu pendrive, puede que tengas que desactivar su interruptor de protección contra escritura. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Aviso]" src="images/warning.png"></td>
+<th align="left">Aviso</th>
+</tr>
+<tr><td align="left" valign="top"><p>¡Los procedimientos descritos en esta sección destruirán todo el contenido del dispositivo! Asegúrate de elegir correctamente el nombre del dispositivo para tu memoria USB. Si usas el dispositivo incorrecto podrías terminar perdiendo toda la información de, por ejemplo, un disco duro. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Preparación de una memoria USB utilizando una imagen híbrida de CD/DVD</h3></div></div></div>
+<p>Las imágenes de instalación de Debian para esta arquitectura se crean usando la tecnología <span class="command"><strong>isohybrid</strong></span>; eso significa que pueden escribirse directamente en una memoria USB, lo que es una forma muy fácil de hacer un medio de instalación. Simplemente elija una imagen (como la netinst o DVD-1) que quepa en su memoria USB. Consulte <a class="xref" href="ch04s01.html" title="4.1. Imágenes oficiales de Debian GNU/Linux de instalación">Sección 4.1, “Imágenes oficiales de Debian GNU/Linux de instalación”</a> para obtener una imagen de instalación. </p>
+<p>Debe escribir la imagen de instalación seleccionada directamente en la memoria USB, reemplazando la totalidad de su contenido actual. Por ejemplo, si utiliza un sistema GNU/Linux, puede escribir el archivo de la imagen en la memoria USB de la siguiente manera, después de comprobar que se ha desmontado el dispositivo USB: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Simplemente escribiendo la imagen de instalación en un USB como este debería funcionar bien para la mayoría de los usuarios. Para necesidades especiales existe esto <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">página wiki</a>. </p>
+<p>Puede encontrar más información de cómo hacer esta operación en otros sistemas operativos en las <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">PUF Debian CD</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Importante]" src="images/important.png"></td>
+<th align="left">Importante</th>
+</tr>
+<tr><td align="left" valign="top"><p>La imagen debe escribirse en el dispositivo del disco completo y no en una partición, p. ej. /dev/sdb y no /dev/sdb1. No utilice herramientas como <span class="command"><strong>unetbootin</strong></span> que alteran la imagen. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Descarga de ficheros desde réplicas de Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Preparación de los ficheros para arranque desde el disco duro</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

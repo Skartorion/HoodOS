@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. Orientându-vă către Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch08.html" title="Cap. 8. Pașii următori și unde să mergeți de aici">
+<link rel="prev" href="ch08s01.html" title="8.1. Oprirea sistemului">
+<link rel="next" href="ch08s03.html" title="8.3. Lectură și informații suplimentare">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. Orientându-vă către Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 8. Pașii următori și unde să mergeți de aici</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. Orientându-vă către Debian</h2></div></div></div>
+<p>Debian este puțin diferit de alte distribuții. Chiar dacă sunteți familiarizat cu Linux din alte distribuții, există lucruri pe care ar trebui să le știți despre Debian pentru a vă ajuta să vă mențineți sistemul într-o stare bună, curată. Acest capitol conține materiale care să vă ajute să vă orientați; nu intenționează să fie un tutorial despre cum să utilizați Debian, ci doar o scurtă privire asupra sistemului pentru cei foarte grăbiți. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4168"></a>8.2.1. Sistemul de împachetare Debian</h3></div></div></div>
+<p>Cel mai important concept de înțeles este sistemul de împachetare Debian. În esență, părți mari ale sistemului dvs. ar trebui să fie considerate sub controlul sistemului de împachetare. Acestea includ: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (excluzând <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (puteți crea <code class="filename">/var/local</code> în deplină siguranță acolo) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> De exemplu, dacă înlocuiți <code class="filename">/usr/bin/perl</code>, asta va funcționa, dar apoi dacă vă actualizați pachetul <code class="classname">perl</code>, fișierul pe care l-ați pus acolo va fi înlocuit. Experții pot ocoli acest lucru punând pachetele în <span class="quote">„<span class="quote">hold</span>”</span> (păstrare) în <span class="command"><strong>aptitude</strong></span>. </p>
+<p>Una dintre cele mai bune metode de instalare este «apt». Puteți folosi versiunea de linie de comandă a <span class="command"><strong>apt</strong></span>, precum și instrumente precum <span class="application">aptitude</span> sau <span class="application">synaptic</span> (care sunt doar interfețe grafice pentru <span class="command"><strong>apt</strong></span>). Rețineți că «apt» vă va permite, de asemenea, să fuzionați secțiunile „main”, „contrib”, „non-free” și „non-free-firmware” ale arhivei Debian, astfel încât să puteți avea pachete restricționate (strict vorbind care nu aparțin lui Debian), precum și pachete din Debian GNU/Linux în același timp. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4198"></a>8.2.2. Software suplimentar disponibil pentru Debian</h3></div></div></div>
+<p>Există depozite de software oficiale și neoficiale care nu sunt activate în instalarea implicită Debian. Acestea conțin software pe care mulți îl consideră important și se așteaptă să îl aibă. Informații despre aceste depozite suplimentare pot fi găsite pe pagina Wiki Debian intitulată <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">Software-ul disponibil pentru versiunea stabilă a Debian</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4202"></a>8.2.3. Gestionarea versiunilor aplicațiilor</h3></div></div></div>
+<p>Versiunile alternative ale aplicațiilor sunt gestionate de „update-alternatives”. Dacă mențineți mai multe versiuni ale aplicațiilor, citiți pagina de manual a „update-alternatives”. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4205"></a>8.2.4. Gestionarea sarcinilor cu «cron»</h3></div></div></div>
+<p>Toate sarcinile aflate în competența administratorului de sistem ar trebui să fie în <code class="filename">/etc</code>, deoarece sunt fișiere de configurare. Dacă aveți o sarcină cron ca root pentru rulări zilnice, săptămânale sau lunare, puneți-o în <code class="filename">/etc/cron.{daily,weekly,monthly}</code>. Acestea sunt invocate din <code class="filename">/etc/crontab</code> și vor rula în ordine alfabetică, care le serializează (vor fi efectuate una după alta, în ordine alfabetică). </p>
+<p>Pe de altă parte, dacă aveți o sarcină cron care (a) trebuie să ruleze ca utilizator special sau (b) trebuie să ruleze la o anume oră sau cu o anumită frecvență, puteți utiliza fie <code class="filename">/etc/crontab</code> sau, și mai bine, <code class="filename">/etc/cron.d/whatever</code>. Aceste fișiere speciale au și un câmp suplimentar care vă permite să specificați contul de utilizator sub care rulează sarcina cron. </p>
+<p>În ambele cazuri, doar editați fișierele și «cron» le va remarca automat. Nu este nevoie să rulați o comandă specială. Pentru mai multe informații, consultați cron(8), crontab(5) și <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Oprirea sistemului </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Lectură și informații suplimentare</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

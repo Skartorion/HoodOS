@@ -1,0 +1,237 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Rezolvarea problemelor din procesul de instalare</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch05.html" title="Cap. 5. Pornirea sistemului de instalare">
+<link rel="prev" href="ch05s03.html" title="5.3. Parametrii de pornire">
+<link rel="next" href="ch06.html" title="Cap. 6. Utilizarea programului de instalare Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Rezolvarea problemelor din procesul de instalare</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 5. Pornirea sistemului de instalare</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Rezolvarea problemelor din procesul de instalare</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Fiabilitatea mediilor optice</h3></div></div></div>
+<p>Uneori, mai ales în cazul unităților mai vechi, programul de instalare poate eșua să pornească de pe un disc optic. Programul de instalare poate, de asemenea, — chiar și după pornirea cu succes de pe un astfel de disc — să nu recunoască discul sau să returneze erori în timp ce citește de pe acesta în timpul instalării. </p>
+<p>Există multe cauze posibile diferite pentru aceste probleme. Putem enumera doar câteva probleme comune și să oferim sugestii generale despre cum să le rezolvați. Restul depinde de dumneavoastră. </p>
+<p>Există două lucruri foarte simple pe care ar trebui să le încercați mai întâi. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Dacă discul nu pornește, verificați dacă a fost introdus corect și că nu este murdar. </p></li>
+<li class="listitem"><p>Dacă programul de instalare nu reușește să recunoască discul, încercați să rulați opțiunea <span class="guimenuitem">Detectați și montați mediul de instalare</span> a doua oară. Se știe că unele probleme legate de DMA cu unitățile CD-ROM foarte vechi sunt rezolvate în acest fel. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Dacă aceste lucruri nu funcționează, atunci încercați sugestiile din subsecțiunile de mai jos. Cele mai multe, dar nu toate, sugestiile discutate acolo sunt valabile pentru CD-ROM și DVD. </p>
+<p>Dacă nu puteți face instalarea să funcționeze de pe un disc optic, încercați una dintre celelalte metode de instalare disponibile. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2799"></a>5.4.1.1. Probleme obișnuite</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Unele unități CD-ROM mai vechi nu acceptă citirea de pe discuri care au fost inscripționate la viteze mari folosind un inscriptor de CD-uri modern. </p></li>
+<li class="listitem"><p>Unele unități CD-ROM foarte vechi nu funcționează corect dacă <span class="quote">„<span class="quote">accesul direct la memorie</span>”</span> (DMA) este activat pentru ele. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2807"></a>5.4.1.2. Cum să investigați și, eventual, să rezolvați problemele</h4></div></div></div>
+<p>Dacă discul optic nu reușește să pornească, încercați sugestiile enumerate mai jos. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Verificați dacă BIOS-ul/UEFI acceptă de fapt pornirea de pe disc optic (doar o problemă pentru sistemele foarte vechi) și că pornirea de pe astfel de suporturi este activată în BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>Dacă ați descărcat o imagine ISO, verificați dacă suma md5 a acelei imagini se potrivește cu cea listată pentru imaginea din fișierul <code class="filename">MD5SUMS</code> care ar trebui să fie prezent în aceeași locație ca ș imaginea ce ați descărcat-o. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92 <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Apoi, verificați dacă suma md5 a discului inscripționat se potrivește. Următoarea comandă ar trebui să funcționeze. Utilizează dimensiunea imaginii pentru a citi numărul corect de octeți de pe disc. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Dacă, după ce programul de instalare a fost pornit cu succes, discul nu este detectat, uneori, simpla încercare din nou poate rezolva problema. Dacă aveți mai multe unități optice, încercați să schimbați discul cu cealaltă unitate. Dacă acest lucru nu funcționează sau dacă discul este recunoscut, dar există erori la citirea de pe el, încercați sugestiile enumerate mai jos. Câteva cunoștințe de bază despre Linux este necesar pentru aceasta. Pentru a executa oricare dintre comenzi, trebuie mai întâi să comutați la a doua consolă virtuală (VT2) și să activați shell-ul acolo. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Treceți la VT4 sau vizualizați conținutul <code class="filename">/var/log/syslog</code> (utilizați <span class="command"><strong>nano</strong></span> ca editor) pentru a verifica dacă există mesaje de eroare specifice. După aceea, verificați și rezultatul comenzii <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Verificați în rezultatul <span class="command"><strong>dmesg</strong></span> dacă unitatea dvs. optică a fost recunoscută. Ar trebui să vedeți ceva de genul ăsta (liniile nu trebuie neapărat să fie consecutive): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Dacă nu vedeți așa ceva, este posibil ca interfața de control a dispozitivelor (IDE) la care este conectată unitatea dvs. să nu fie recunoscută sau să nu fie deloc compatibilă. Dacă știți ce controlor este necesar pentru această interfață, puteți încerca să îl încărcați manual folosind comanda <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Verificați dacă există un nod de dispozitiv pentru unitatea dvs. optică sub <code class="filename">/dev/</code>. În exemplul de mai sus, acesta ar fi <code class="filename">/dev/sr0</code>. Ar trebui să existe și un <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Utilizați comanda <span class="command"><strong>mount</strong></span> pentru a verifica dacă discul optic este deja montat; dacă nu, încercați să-l montați manual: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Verificați dacă există mesaje de eroare la rularea acestei comenzi.. </p>
+</li>
+<li class="listitem">
+<p>Verificați dacă DMA este activat în prezent: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> O valoare <span class="quote">„<span class="quote">1</span>”</span> în prima coloană după<code class="literal">using_dma</code> înseamnă că DMA este activat. Dacă este, încercați să-l dezactivați: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Asigurați-vă că vă aflați în directorul dispozitivului care corespunde unității dvs. optice. </p>
+</li>
+<li class="listitem"><p>Dacă există probleme în timpul instalării, încercați să verificați integritatea suportului de instalare folosind opțiunea din partea de jos a meniului principal al programului de instalare. Această opțiune poate fi folosită și ca un test general dacă discul poate fi citit în mod fiabil. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2859"></a>5.4.2. Configurarea pornirii</h3></div></div></div>
+<p>Dacă aveți probleme și nucleul se blochează în timpul procesului de pornire, nu recunoaște perifericele pe care le aveți de fapt sau unitățile nu sunt recunoscute corect, primul lucru pe care trebuie să-l verificați sunt parametrii de pornire, așa cum se discută în <a class="xref" href="ch05s03.html" title="5.3. Parametrii de pornire">Secțiune 5.3, „Parametrii de pornire”</a>. </p>
+<p>În unele cazuri, defecțiunile pot fi cauzate de lipsa firmware-ului dispozitivului (consultați <a class="xref" href="ch02s02.html" title="2.2. Dispozitive care necesită firmware">Secțiune 2.2, „Dispozitive care necesită firmware”</a> și <a class="xref" href="ch06s04.html" title="6.4. Încărcarea firmware-ului lipsă">Secțiune 6.4, „Încărcarea firmware-ului lipsă”</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2866"></a>5.4.3. Software de sinteză vocală</h3></div></div></div>
+<p>Dacă software-ul de sinteză vocală nu funcționează, cel mai probabil există o problemă cu placa de sunet, de obicei pentru că fie controrul pentru aceasta nu este inclus în programul de instalare, fie pentru că are nume neobișnuite de nivel de mixer care sunt configurate implicit la „fără sunet”. Prin urmare, ar trebui să trimiteți un raport de eroare care să includă ieșirea următoarelor comenzi, rulate pe aceeași mașină de pe un sistem Linux despre care se știe că funcționează sunetul (de exemplu, un CD live). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Probleme comune la instalarea pe <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Există câteva probleme obișnuite de instalare care pot fi rezolvate sau evitate prin transmiterea anumitor parametri de pornire către programul de instalare. </p>
+<p>Dacă ecranul începe să arate o imagine ciudată în timp ce nucleul pornește, de exemplu alb pur, negru pur sau un nor în formă de roi de pixeli colorați, sistemul dvs. poate conține o placă video problematică care nu trece corect la modul framebuffer. În acest caz puteți utiliza parametrul de pornire <strong class="userinput"><code>vga=normal nomodeset</code></strong> pentru a dezactiva consola framebuffer. Doar un set redus de limbi va fi disponibil în timpul instalării datorită caracteristicilor limitate ale consolei. Consultați <a class="xref" href="ch05s03.html" title="5.3. Parametrii de pornire">Secțiune 5.3, „Parametrii de pornire”</a> pentru detalii. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2889"></a>5.4.4.1. Înghețarea sistemului în timpul fazei de configurare PCMCIA</h4></div></div></div>
+<p>Se știe că unele modele de laptopuri foarte vechi produse de Dell se blochează atunci când detectarea dispozitivului PCMCIA încearcă să acceseze anumite adrese de dispozitive. Alte laptop-uri pot afișa probleme similare. Dacă întâmpinați o astfel de problemă și nu aveți nevoie de suport PCMCIA în timpul instalării, puteți dezactiva PCMCIA utilizând parametrul de pornire <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Puteți configura apoi PCMCIA după finalizarea instalării și să excludeți intervalul de resurse care cauzează problemele. </p>
+<p>Alternativ, puteți porni programul de instalare în modul expert. Apoi vi se va cere să introduceți opțiunile pentru intervalul de resurse de care aveți nevoie pentru dispozitivul respectiv. De exemplu, dacă aveți unul dintre laptopurile Dell menționate mai sus, ar trebui să introduceți <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> aici. Există, de asemenea, o listă cu câteva opțiuni comune ale intervalului de resurse în <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a> (Configurările de resurse de sistem secțiunea PCMCIA HOWTO). Rețineți că trebuie să omiteți virgulele, dacă există, atunci când introduceți această valoare în programul de instalare. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Interpretarea mesajelor de pornire a nucleului</h3></div></div></div>
+<p>În timpul secvenței de pornire, este posibil să vedeți multe mesaje sub forma <code class="computeroutput">can't find <em class="replaceable"><code>ceva</code></em></code> sau <code class="computeroutput"><em class="replaceable"><code>ceva</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>ceva</code></em></code> sau chiar <code class="computeroutput">this driver release depends on <em class="replaceable"><code>ceva</code></em></code>. Majoritatea acestor mesaje sunt inofensive. Le vedeți deoarece nucleul pentru sistemul de instalare este construit pentru a rula pe computere cu multe dispozitive și periferice diferite. Evident, niciun calculator nu va avea toate dispozitivele periferice posibile, așa că sistemul de operare poate emite câteva reclamații în timp ce caută periferice pe care nu le dețineți. De asemenea, este posibil să vedeți că sistemul se întrerupe pentru un timp. Acest lucru se întâmplă atunci când așteaptă să răspundă un dispozitiv și acel dispozitiv nu este prezent pe sistemul dvs. Dacă considerați că timpul necesar pentru pornirea sistemului este inacceptabil de lung, puteți crea un nucleu personalizat mai târziu <span class="phrase">(consultați <a class="xref" href="ch08s05.html" title="8.5. Compilarea unui nou nucleu">Secțiune 8.5, „Compilarea unui nou nucleu”</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Raportarea problemelor de instalare</h3></div></div></div>
+<p>Dacă treceți prin faza inițială de pornire, dar nu puteți finaliza instalarea, opțiunea de meniu <span class="guimenuitem">Salvare jurnalele de depanare</span> poate fi de ajutor. Vă permite să stocați jurnalele de erori de sistem și informațiile de configurare din programul de instalare pe un mediu de stocare sau să le descărcați folosind un navigator web. Aceste informații pot oferi indicii cu privire la ce lucru a mers prost și cum să-l remediați. Dacă trimiteți un raport de eroare, poate doriți să atașați aceste informații la raportul de eroare. </p>
+<p>Alte mesaje de instalare pertinente pot fi găsite în <code class="filename">/var/log/</code> în timpul instalării și <code class="filename">/var/log/installer/</code> după ce calculatorul a fost pornit în sistemul instalat. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Trimiterea rapoartelor de instalare</h3></div></div></div>
+<p>Dacă mai aveți probleme, vă rugăm să trimiteți un raport de instalare (în engleză, ori de câte ori este posibil). De asemenea, încurajăm să fie trimise rapoarte de instalare chiar dacă instalarea este reușită, astfel încât să putem obține cât mai multe informații despre un cât mai mare număr de configurații de echipamente posibil. </p>
+<p>Rețineți că raportul dvs. de instalare va fi publicat în sistemul Debian de urmărire a erorilor („Debian Bug Tracking System”: BTS) și trimis către o listă publică de corespondență. Asigurați-vă că utilizați o adresă de e-mail care nu vă deranjează să fie făcută publică. </p>
+<p>Dacă aveți un sistem Debian funcțional, cel mai simplu mod de a trimite un raport de instalare este să instalați pachetele <code class="classname">installation-report</code> și <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug </strong></span>), configurați <code class="classname">reportbug</code> așa cum este explicat în <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Trimiterea de corespondență în afara sistemului">Secțiune 8.4.2, „Trimiterea de corespondență în afara sistemului”</a> și rulați comanda <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Alternativ, puteți utiliza acest șablon atunci când completați rapoartele de instalare și puteți înregistra raportul ca raport de eroare pentru pseudopachetul <code class="classname">installation-reports</code>, trimițându-l la adresa <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;Cum ați pornit programul de instalare? CD/DVD? stick USB? Reţea?&gt;
+Image version: &lt;Cel mai bine este treceți adresa URL completă a imaginii pe care ați descărcat-o&gt;
+Date: &lt;Data și ora instalării&gt;
+
+Machine: &lt;Descrierea mașinii (de ex. IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;ieșirea comenzii «df -Tl»; se preferă tabelul de partiții nemodificat&gt;
+
+Ieșirea comenzii «lspci -knn» (sau «lspci -nn»):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Eroare (detaliați mai jos), [ ] = nu ați încercat această etapă
+
+Initial boot:           [ ] &lt;A funcționat pornirea inițială?&gt;
+Detect network card:    [ ] &lt;S-au detectat plăcile de rețea?&gt;
+Configure network:      [ ] &lt;S-a configurat rețeaua?&gt;
+Detect media:           [ ] &lt;S-a detectat mediul de instalare?&gt;
+Load installer modules: [ ] &lt;S-au încărcat modulele programului de instalare?&gt;
+Detect hard drives:     [ ] &lt;S-au detectat discurile dure/solide?&gt;
+Partition hard drives:  [ ] &lt;S-au partiționat discurile dure/solide?&gt;
+Install base system:    [ ] &lt;S-a instalat sistemul de bază?&gt;
+Clock/timezone setup:   [ ] &lt;S-a configurat ora/fusul orar?&gt;
+User/password setup:    [ ] &lt;S-a configurat utilizatorul/parola?&gt;
+Install tasks:          [ ] &lt;S-au instalat sarcinile preconfigurate?&gt;
+Install boot loader:    [ ] &lt;S-a instalat încărcătorul de pornire?&gt;
+Overall install:        [ ] &lt;Instalarea în ansamblu, a reușit?&gt;
+
+Comments/Problems:
+
+&lt;Descrierea instalării, în proză, și orice gânduri, comentarii
+      și idei pe care le-ați avut în timpul instalării inițiale.&gt;
+
+Asigurați-vă că toate jurnalele de instalare pe care le considerați utile sunt
+atașate la acest raport (le puteți găsi în sistemul de instalare în „/var/log/”
+și mai târziu în sistemul instalat sub „/var/log/installer”). Vă rugăm să
+comprimați fișierele mari folosind «gzip».
+
+</pre></div>
+<p> În raportul de eroare, descrieți care este problema, inclusiv ultimele mesaje vizibile ale nucleului în cazul unei blocări a nucleului. Descrieți pașii pe care i-ați făcut și care au adus sistemul în starea de problemă. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Parametrii de pornire </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> Cap. 6. Utilizarea programului de instalare Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

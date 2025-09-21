@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. Förbereda filer för uppstart med hårddisk</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch04.html" title="Kapitel 4. Få tag på installationsmedia">
+<link rel="prev" href="ch04s03.html" title="4.3. Förbereda filer för uppstart med USB-minne">
+<link rel="next" href="ch04s05.html" title="4.5. Förbered filerna för nätverksuppstart via TFTP">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. Förbereda filer för uppstart med hårddisk</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 4. Få tag på installationsmedia</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. Förbereda filer för uppstart med hårddisk</h2></div></div></div>
+<p>Installationsprogrammet kan startas upp med uppstartsfiler placerade på en befintlig hårddiskpartition, antingen startade från ett annat operativsystem eller genom att kalla upp en starthanterare direkt från BIOS. På moderna UEFI-system kan kärnan startas direkt från UEFI-partitionen utan behov av en startladdare. </p>
+<p>En full installation, <span class="quote">”<span class="quote">helt över nätverket</span>”</span> kan göras med den här tekniken. Det här förhindrar problem med flyttbar media, hitta och bränna CD/DVD-avbildningar. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. Starta upp hårddiskinstalleraren från Linux med <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>Det här avsnittet förklarar hur man lägger till eller ersätter en befintlig Linux-installation med <span class="command"><strong>GRUB</strong></span>. </p>
+<p>Vid uppstart har <span class="command"><strong>GRUB</strong></span> stöd för att läsa in en kärna och även en diskavbildning i minnet. Den här RAM-disken kan användas som rotfilsystem av kärnan. </p>
+<p>Kopiera följande filer från Debian-arkiven till en lämplig plats på din hårddisk exempelvis till <code class="filename">/boot/newinstall/</code>. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code> (kärnbinär) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (ramdiskavbildning) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Om du tänkte använda hårddisken bara för att starta upp och sedan hämta allt över nätverket, bör du hämta filen <a class="ulink" href="http://ftp.se.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> och dess motsvarande kärna, <a class="ulink" href="http://ftp.se.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a>. Den låter dig partionera om hårddisken från vilken du startar upp installationsprogrammet, dock bör du göra med försiktighet. </p>
+<p>Alternativt, om du tänker behålla en befintlig partition på hårddisken oförändrad under installationen, kan du ladda ner <a class="ulink" href="http://ftp.se.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> filen och dess kärna <a class="ulink" href="http://ftp.se.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a>, samt kopiera en installationsavbildning till hårddisken (se till att filen heter något som slutar på <code class="literal">.iso</code>). Installationsprogrammet kan sedan starta från hårddisken och installera från installationsavbildningen, utan att behöva nätverket. </p>
+<p>Till slut, för att konfigurera starthanteraren kan du fortsätta till <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. Uppstart från Linux med GRUB">Avsnitt 5.1.3, ”Uppstart från Linux med <span class="command"><strong>GRUB</strong></span>”</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. Förbereda filer för uppstart med USB-minne </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. Förbered filerna för nätverksuppstart via TFTP</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

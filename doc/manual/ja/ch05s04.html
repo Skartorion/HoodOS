@@ -1,0 +1,233 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. インストールプロセスのトラブルシューティング</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch05.html" title="第5章 インストールシステムの起動">
+<link rel="prev" href="ch05s03.html" title="5.3. 起動パラメータ">
+<link rel="next" href="ch06.html" title="第6章 Debian インストーラーの使用法">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. インストールプロセスのトラブルシューティング</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第5章 インストールシステムの起動</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. インストールプロセスのトラブルシューティング</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. 光学メディアの信頼性</h3></div></div></div>
+<p>時々、特に古いドライブの場合、光学ディスクからのインストーラーの起動に失敗するかもしれません。また、インストーラーは (そのディスクから起動しても) そのディスクを認識しなかったり、インストール中、ディスクの読み込みでエラーを返す可能性もあります。 </p>
+<p>この問題の原因は様々なことが考えられます。一般的な問題を挙げて、一般的な対処法を提供することしかできません。後はあなた次第です。 </p>
+<p>まずはじめに試すのは、以下の 2 点です。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>ディスクが起動しない場合、正しく挿入されているか、汚れていないかを確認してください。 </p></li>
+<li class="listitem"><p>インストーラーがディスクを認識しない場合、次に<span class="guimenuitem">インストールメディアの検出とマウント</span>を試してください。非常に古い CD-ROM ドライブの、DMA に関する問題は、この方法で解決することが知られています。 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>これでも動作しない場合、以下の節にあることを試してみてください。ほとんどの (でもすべてではない) 提案は CD-ROM と DVD で有効です。 </p>
+<p>光学ディスクからインストールができなければ、 他のインストール方法も試してみてください。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2230"></a>5.4.1.1. 共通の問題</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>古い CD-ROM ドライブの中には、昨今の CD ライタで使用するような、高速で焼いたディスクからの読み込みをサポートしていない物があります。 </p></li>
+<li class="listitem"><p>非常に古い CD-ROM ドライブの中には、<span class="quote">「<span class="quote">ダイレクトメモリアクセス</span>」</span> (DMA) が有効だと、正しく動作しない物があります。 </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2238"></a>5.4.1.2. 調査および問題解決の方法</h4></div></div></div>
+<p>光学ディスクが起動に失敗したら、以下のことを試してください。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>BIOS/UEFI が光学ディスクからの起動をきちんとサポートしているか (非常に古いシステムでのみ問題あり)、BIOS/UEFI でそのようなメディアからの起動を有効にしているかをチェックしてください。 </p></li>
+<li class="listitem">
+<p>ISO イメージをダウンロードした場合、イメージをダウンロードしたのと同じ場所にある <code class="filename">MD5SUMS</code> に記載されている md5sum と同じかどうかチェックしてください。</p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> 次に、焼いたディスクの md5sum と一致するかどうかチェックしてください。以下のコマンドで行います。ディスクから正しいバイト数を読み込むのにイメージのサイズを利用します。 </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>インストーラーの起動が成功した後で、ディスクを検出しない場合、単純にリトライするだけで解決することもあります。光学ドライブが複数ある場合、他のドライブに変えてみてください。それでも動作しなかったり、ディスクを認識しても読み込みエラーが発生する場合は、以下のことを試してみてください。Linux の基礎知識が少し必要です。コマンドを実行するには、まず第 2 仮想コンソール (VT2) に切り替えて、シェルを有効にしてください。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>エラーメッセージをチェックするのに VT4 に切り替えたり、<code class="filename">/var/log/syslog</code> の内容を (エディタの <span class="command"><strong>nano</strong></span> を使用して) 表示してください。その後、<span class="command"><strong>dmesg</strong></span> の出力でもチェックできます。 </p></li>
+<li class="listitem">
+<p>光学ドライブを認識したかを <span class="command"><strong>dmesg</strong></span> の出力でチェックしてください。以下のように見えます。(行は連続している必要はありません) </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> 以上のように見えなければ、ドライブを接続したコントローラを認識できないか、おそらくまったくサポートされていません。コントローラに必要なドライバが分かっていれば、<span class="command"><strong>modprobe</strong></span> を用い、手で読み込むのを試せます。 </p>
+</li>
+<li class="listitem"><p><code class="filename">/dev/</code> にある光学ドライブのデバイスノードをチェックしてください。上の例では、<code class="filename">/dev/sr0</code> になっています。<code class="filename">/dev/cdrom</code> にもあるかもしれません。 </p></li>
+<li class="listitem">
+<p>光学ディスクがすでにマウントされていないか、<span class="command"><strong>mount</strong></span> コマンドでチェックしてください。マウントされていなければ、手でマウントしてください。</p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> 上記のコマンド後に、エラーメッセージがでるかチェックしてください。 </p>
+</li>
+<li class="listitem">
+<p>DMA が有効か、以下のようにチェックしてください。</p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> <code class="literal">using_dma</code> の後、初めの列にある <span class="quote">「<span class="quote">1</span>」</span> は、有効という意味です。その場合以下のように無効にしてください。 </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> 確実に、光学ドライブに一致するデバイスのディレクトリで操作してください。 </p>
+</li>
+<li class="listitem"><p>インストール中に何か問題があれば、インストーラーメインメニューの下の方にある、インストールメディアの整合性チェックを行ってください。ディスクが確実に読める場合、このオプションを一般的なテストとして使用できます。 </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2290"></a>5.4.2. 起動設定</h3></div></div></div>
+<p>ブートプロセスの最中にカーネルがハングしたり、搭載されている周辺機器やドライブが正確に認識されないなどの問題が起こったら、まず <a class="xref" href="ch05s03.html" title="5.3. 起動パラメータ">「起動パラメータ」</a> の説明に従って起動パラメータを確認してください。 </p>
+<p>場合によっては、デバイスのファームウェアがないために動作しないことがあります (<a class="xref" href="ch02s02.html" title="2.2. ファームウェアが必要なデバイス">「ファームウェアが必要なデバイス」</a> や <a class="xref" href="ch06s04.html" title="6.4. 見つからないファームウェアの読み込み">「見つからないファームウェアの読み込み」</a> を参照)。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2297"></a>5.4.3. ソフトウェア音声合成</h3></div></div></div>
+<p>ソフトウェア音声合成が動作しない場合、ほとんどの場合、サウンドカードに問題があります。通常はインストーラーにドライバが含まれていないか、ミキサーレベル名が異常値になっていて、デフォルトでミュートされています。その場合、以下のコマンドを、同じハードウェアでサウンドが動作することがわかっている Linux システム (Live CD など) で実行し、その結果をバグ報告してください。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. <span class="phrase">64-bit PC</span> へのインストールに共通の問題</h3></div></div></div>
+<p>インストールの際の共通の問題がいくつかあり、これはインストーラーに渡すブートパラメータで解決したり、確実にバイパスして回避したりできます。 </p>
+<p>カーネルの起動時に画面が不思議な絵 (例: 真っ白、真っ黒、色付きピクセル屑) を表示し始める場合、あなたのシステムは、フレームバッファモードに適切に変わらない問題のあるビデオカードがついているかもしれません。その場合、フレームバッファコンソールを無効にするため、起動パラメータに <strong class="userinput"><code>vga=normal nomodeset</code></strong> を使用できます。コンソールの機能が制限されているため、インストール中には特定の言語しか使えません。詳細は <a class="xref" href="ch05s03.html" title="5.3. 起動パラメータ">「起動パラメータ」</a> をご覧ください。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2320"></a>5.4.4.1. PCMCIA 設定中のシステムフリーズ</h4></div></div></div>
+<p>DELL の非常に古いラップトップモデルのいくつかは、PCMCIA デバイス検出でいくつかハードウェアアドレスをアクセスしようとすると、クラッシュすることが知られています。他のラップトップコンピュータでも、同様の問題が起きるかもしれません。そのような問題に遭遇し、インストール中に PCMCIA サポートが不要な場合、<strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> という起動パラメータで、PCMCIA を無効にできます。インストールが完了した後で PCMCIA を設定し、問題が起きるリソース範囲を除外できます。 </p>
+<p>その他に、インストーラーをエキスパートモードで起動することができます。その後、ハードウェアが必要とするリソース範囲オプションを、入力するように促されます。例えば、上記の Dell のラップトップコンピュータを持っていれば、ここで <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> と入力するといいです。さらにいくつかの共通のリソース範囲オプションのリストが <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">PCMCIA HOWTO のシステムリソースの設定</a> にあります。インストーラーにこの値を入力する場合、もしあればカンマを省略しなければならないことに注意してください。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. カーネルの起動時メッセージの意味</h3></div></div></div>
+<p>ブートシーケンスの途中で、<code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code> (〜が見つからない), <code class="computeroutput"><em class="replaceable"><code>something</code></em> not present</code> (〜が存在しない), <code class="computeroutput">can't initialize <em class="replaceable"><code>something</code></em></code> (〜を初期化できない), <code class="computeroutput">this driver release depends on <em class="replaceable"><code>something</code></em></code> (このドライバには〜が必要だ) などのメッセージがたくさん出力されることがあります。これらのメッセージのほとんどは無害です。これらが出力される理由は、インストールシステムのカーネルが、いろいろな周辺デバイスのできるだけ多くに対応しようとしているからです。そのため、OS が実際には存在しない周辺機器を探すことになるので、文句を吐くわけです。システムがしばらく止まったように見えることもあります。これはデバイスが反応するのを待っているために起こるものです (実際にはそのデバイスは存在しないので、止まってみえるわけです)。システムの起動に要する時間が堪えがたいほど長い場合は、後で自前のカーネルを作ることもできます <span class="phrase">(<a class="xref" href="ch08s05.html" title="8.5. 新しいカーネルのコンパイル">「新しいカーネルのコンパイル」</a> 参照)</span>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. インストールで発生した問題の報告</h3></div></div></div>
+<p>最初の起動段階は通過したのに、インストールが完了できなかった場合は、メニューから <span class="guimenuitem">デバッグログを保存</span> を選択するといいかもしれません。インストーラーからのシステムのエラーログや設定情報をストレージメディアに格納したり、web ブラウザでダウンロードしたりできるようになります。この情報は、何が間違っていてどのように修正するか、といった手がかりを示しているかもしれません。バグ報告を送る際に、バグ報告にこの情報を付けることができます。 </p>
+<p>その他のインストールメッセージは、インストール中では <code class="filename">/var/log/</code> で、インストールしたシステムが起動した後では <code class="filename">/var/log/installer/</code> にあるはずです。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. インストールレポートの送信</h3></div></div></div>
+<p>まだ問題がある場合には、インストールレポートをお送りください (可能な限り英語でお願いします) 。また、インストールが成功したときのインストールレポートもお送りください。そうすると、たくさんのハードウェア設定情報を手に入れることができます。 </p>
+<p>あなたのインストールレポートは、Debian バグ追跡システム (BTS) で公開され、公開メーリングリストに転送されることに留意してください。必ず、公開されても問題ない e-mail アドレスを使用してください。 </p>
+<p>動作する Debian システムがある場合、インストールレポートを送る最も簡単な方法は以下のようになります。<code class="classname">installation-report</code> と <code class="classname">reportbug</code> パッケージをインストール (<span class="command"><strong>apt install installation-report reportbug</strong></span>) し、<a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. システムの外に電子メールを送る">「システムの外に電子メールを送る」</a> で説明しているように <code class="classname">reportbug</code> を設定して、<span class="command"><strong>reportbug installation-reports</strong></span> を実行してください。 </p>
+<p>代わりに、インストールレポートを記入する際には、以下のテンプレートも使用できます。テンプレートの空欄を埋めた上で、<code class="classname">installation-reports</code> 疑似パッケージのバグ報告として、<code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code> 宛にお送りください。</p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;インストーラーの起動方法は? CD?/DVD? USB メモリ? ネットワーク?&gt;
+Image version: &lt;イメージをダウンロードした URL 全体がベストです&gt;
+Date: &lt;インストールした日時&gt;
+
+Machine: &lt;マシンの説明 (例 IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl の結果; 生のパーティションテーブルが望ましいです&gt;
+
+lspci -nn および lspci -vnn の出力:
+
+Base システムのインストールチェックリスト:
+[O] = OK, [E] = エラー (以下に詳しく記述ください), [ ] = 試していない
+
+初回起動:                           [ ]
+ネットワークカードの認識:           [ ]
+ネットワーク設定:                   [ ]
+メディアの認識:                     [ ]
+インストーラーのモジュール読み込み: [ ]
+ディスクの認識:                     [ ]
+ディスクのパーティション作成:       [ ]
+base システムのインストール:        [ ]
+時刻とタイムゾーン設定:             [ ]
+ユーザーとパスワード設定:           [ ]
+インストール作業:                   [ ]
+ブートローダーのインストール:       [ ]
+全体のインストール:                 [ ]
+
+コメント/問題など:
+
+&lt;インストールに関すること。初期インストール時に抱いた感想、コメント、アイデアなどがあればそれらもお書きください&gt;
+
+有用だと思われるインストールログがこのレポートに添付されているのを確認してください
+(インストーラーシステム中の /var/log/ とインストール済みのシステムの /var/log/installer 以下にあります)
+大きなファイルは gzip を使って圧縮してください。
+</pre></div>
+<p> バグ報告の際には、カーネルがハングした直前に表示されたカーネルメッセージを添えて、何が問題なのかを説明してください。また、問題が起きるまでにシステムに対して行ったことも記述してください。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. 起動パラメータ </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 第6章 Debian インストーラーの使用法</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Pregătirea fișierelor pentru pornirea unui stick de memorie USB</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch04.html" title="Cap. 4. Obținerea unui mediu de instalare a sistemului">
+<link rel="prev" href="ch04s02.html" title="4.2. Descărcarea fișierelor din oglinzile Debian">
+<link rel="next" href="ch04s04.html" title="4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Pregătirea fișierelor pentru pornirea unui stick de memorie USB</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 4. Obținerea unui mediu de instalare a sistemului</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Pregătirea fișierelor pentru pornirea unui stick de memorie USB</h2></div></div></div>
+<p>Pentru a pregăti stick-ul USB, vă recomandăm să utilizați un sistem în care GNU/Linux rulează deja și care are suport pentru USB. Cu sistemele actuale GNU/Linux, stick-ul USB ar trebui să fie recunoscut automat când îl introduceți. Dacă nu este, ar trebui să verificați dacă modulul nucleului de „stocare USB” este încărcat. Când stick-ul USB este introdus, acesta va fi asociat unui dispozitiv numit <code class="filename">/dev/sdX</code>, unde <span class="quote">„<span class="quote">X</span>”</span> este o literă în intervalul a-z. Ar trebui să puteți vedea dispozitivul cu care a fost asociat stick-ul USB rulând comanda <span class="command"><strong>lsblk</strong></span> înainte și după introducerea acestuia; (ieșirea comenzii <span class="command"><strong>dmesg</strong></span> (rulată ca superutilizator) este o altă metodă posibilă pentru aceasta). Pentru a scrie pe stick-ul dvs., poate fi necesar să dezactivați comutatorul de protecție la scriere. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Procedurile descrise în această secțiune vor distruge tot ce se află deja pe dispozitiv! Asigurați-vă că utilizați numele corect al dispozitivului pentru stick-ul USB. Dacă utilizați dispozitivul greșit, rezultatul ar putea fi ca toate informațiile de pe, de exemplu, un disc dur/solid să fie pierdute. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Pregătirea unui stick USB utilizând o imagine hibrid CD/DVD</h3></div></div></div>
+<p>Imaginile de instalare Debian pentru această arhitectură sunt create folosind tehnologia <span class="command"><strong>isohybrid</strong></span>; asta înseamnă că pot fi scrise direct pe un stick USB, ceea ce este o modalitate foarte ușoară de a crea un suport de instalare. Pur și simplu alegeți o imagine (cum ar fi „netinst” sau DVD-1) care să încapă pe stick-ul dvs. USB. Consultați <a class="xref" href="ch04s01.html" title="4.1. Imagini oficiale de instalare pentru Debian GNU/Linux">Secțiune 4.1, „Imagini oficiale de instalare pentru Debian GNU/Linux”</a> pentru a obține o imagine de instalare. </p>
+<p>Imaginea de instalare pe care o alegeți ar trebui să fie scrisă direct pe stick-ul USB, suprascriind conținutul actual. De exemplu, atunci când utilizați un sistem GNU/Linux existent, fișierul imagine poate fi scris pe un stick USB după cum urmează, după ce v-ați asigurat că stick-ul este demontat: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Simpla scriere a imaginii de instalare pe USB ar trebui să funcționeze bine pentru majoritatea utilizatorilor. Pentru nevoi speciale există această <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">pagină wiki</a>. </p>
+<p>Informații despre cum să faceți acest lucru pe alte sisteme de operare pot fi găsite în <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Răspunsuri la întrebările frecvente despre CD-ul Debian</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top"><p>Imaginea trebuie să fie scrisă pe întregul dispozitiv de disc și nu pe o partiție, de exemplu: „/dev/sdb” și nu „/dev/sdb1”. Nu utilizați instrumente precum <span class="command"><strong>unetbootin</strong></span> care modifică imaginea. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Descărcarea fișierelor din oglinzile Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

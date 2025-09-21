@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Монтирование шифрованных томов</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Глава 7. Загрузка только что установленной системы Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Момент истины">
+<link rel="next" href="ch07s03.html" title="7.3. Вход в систему">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Монтирование шифрованных томов</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 7. Загрузка только что установленной системы Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Монтирование шифрованных томов</h2></div></div></div>
+<p>Если вы создали шифрованные тома во время установки и назначили им точки монтирования, то во время загрузки машины вас попросят ввести ключевую фразу на каждый том. </p>
+<p>Для разделов, зашифрованных dm-crypt, во время загрузки вы увидите следующее сообщение: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> В первой строке приглашения, вместо <em class="replaceable"><code>part</code></em> будет указано название используемого раздела, например sda2 или md0. Вы, вероятно, задумаетесь: <span class="emphasis"><em>для какого тома</em></span> нужно вводить ключевую фразу? Для <code class="filename">/home</code>? Или для <code class="filename">/var</code>? Естественно, если у вас только один шифрованный том, это легко и вы можете просто ввести ключевую фразу, которую задали при настройке тома. Если же у вас несколько шифрованных томов, то пригодятся заметки, которые вы сделали на последнем этапе <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Настройка шифрованных томов">Раздел 6.3.4.6, «Настройка шифрованных томов»</a>. Если вы ранее не записали соответствие между <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> и точкой монтирования, то можете выяснить это в файлах <code class="filename">/etc/crypttab</code> и <code class="filename">/etc/fstab</code> на новой системе. </p>
+<p>При монтировании зашифрованного корневого раздела приглашение может выглядеть несколько иначе. Это зависит от генератора initramfs, который использовался при создании initrd для загрузки системы. Пример для initrd, созданного с помощью <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Во время ввода ключевой фразы символы не отображаются (даже звёздочками). Если вы введёте неверную ключевую фразу, то у вас ещё есть две попытки. После третьей попытки процесс загрузки пропустит этот том и начнётся монтирование следующей файловой системы. Подробней смотрите в <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Устранение неполадок">Раздел 7.2.1, «Устранение неполадок»</a>. </p>
+<p>После ввода всех ключевых фраз загрузка продолжится как обычно. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Устранение неполадок</h3></div></div></div>
+<p>Если некоторые шифрованные тома не были смонтированы из-за ввода неправильной ключевой фразы, их можно смонтировать вручную после загрузки. Но есть несколько случаев. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Первый случай касается корневого раздела. Если он не смонтирован, то процесс загрузки остановится, а вам придётся перезагрузить компьютер, чтобы попробовать ещё раз. </p></li>
+<li class="listitem">
+<p>Самый простой случай — шифрованные тома с данными <code class="filename">/home</code> или <code class="filename">/srv</code>. Вы можете просто смонтировать их вручную после загрузки машины. </p>
+<p>Для dm-crypt немного сложнее. Во-первых, вам нужно зарегистрировать тома с помощью <span class="application">device mapper</span>выполнив: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Эта операция просканирует все тома, указанные в <code class="filename">/etc/crypttab</code>, и создаст соответствующие устройства в каталоге <code class="filename">/dev</code> после ввода правильных ключевых фраз (тома, зарегистрированные ранее, будут пропущены, поэтому вы можете спокойно запускать эту команду несколько раз). После успешной регистрации вы можете смонтировать тома как обычно: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/точка_монтирования</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Если на любых несмонтированных томах содержатся некритичные системные файлы (<code class="filename">/usr</code> или <code class="filename">/var</code>), система должна загрузиться и вы сможете смонтировать тома вручную как в предыдущем случае. Однако, может потребоваться (пере)запуск каждой службы, которая обычно запускается на уровне выполнения по умолчанию, так как, скорее всего, они не смогли запуститься. Самый простой способ сделать это — просто перезагрузить компьютер. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Момент истины </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Вход в систему</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Parametrii de pornire</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch05.html" title="Cap. 5. Pornirea sistemului de instalare">
+<link rel="prev" href="ch05s02.html" title="5.2. Accesibilitate">
+<link rel="next" href="ch05s04.html" title="5.4. Rezolvarea problemelor din procesul de instalare">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Parametrii de pornire</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 5. Pornirea sistemului de instalare</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Parametrii de pornire</h2></div></div></div>
+<p>Parametrii de pornire sunt parametrii nucleului Linux care sunt în general utilizați pentru a vă asigura că perifericele sunt tratate corect. În cea mai mare parte, nucleul poate detecta automat informații despre perifericele dvs. Cu toate acestea, în unele cazuri va trebui să ajutați puțin nucleul :). </p>
+<p>Dacă este prima dată când porniți sistemul, încercați parametrii de pornire impliciți (adică nu încercați să definiți parametrii) și vedeți dacă funcționează corect. Probabil că așa va fi. Dacă nu, puteți reporni mai târziu și să căutați orice parametri speciali care informează sistemul despre dispozitivele dumneavoastră. </p>
+<p>Informații despre mulți parametri de pornire pot fi găsite în pagina <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, inclusiv sfaturi pentru dispozitive mai puțin comune Această secțiune conține doar o schiță a parametrilor cei mai importanți. Câteva probleme comune sunt incluse mai jos în <a class="xref" href="ch05s04.html" title="5.4. Rezolvarea problemelor din procesul de instalare">Secțiune 5.4, „Rezolvarea problemelor din procesul de instalare”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Pornirea consolei seriale</h3></div></div></div>
+<p>Dacă porniți cu o consolă serială, în general, nucleul va detecta acest lucru automat. Dacă aveți o placă video (framebuffer) și o tastatură atașate la calculatorul pe care doriți să-l porniți prin consola serială, poate fi necesar să transmiteți argumentul <strong class="userinput"><code>console=<em class="replaceable"><code>dispozitiv</code></em></code></strong>. nucleului, unde <em class="replaceable"><code>dispozitiv</code></em> este un dispozitiv serial al țintei, care este de obicei ceva de tipul <code class="filename">ttyS0</code>. </p>
+<p>Poate fi necesar să specificați parametrii pentru portul serial, cum ar fi viteza și paritatea, de exemplu <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; alte viteze tipice pot fi 57600 sau 115200. Asigurați-vă că specificați această opțiune după <span class="quote">„<span class="quote">---</span>”</span>, astfel încât să fie copiată în configurația încărcătorului de pornire pentru sistemul instalat (dacă este acceptată de programul de instalare pentru încărcătorul de pornire) . </p>
+<p>Pentru a vă asigura că tipul de terminal folosit de programul de instalare se potrivește cu emulatorul dvs. de terminal, poate fi adăugat parametrul <strong class="userinput"><code>TERM=<em class="replaceable"><code>tipul_de_terminal</code></em></code></strong>. Rețineți că programul de instalare acceptă numai următoarele tipuri de terminale: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> și <code class="literal">dumb</code>. Valoarea implicită pentru consola serială în <code class="classname">debian-installer</code> este <strong class="userinput"><code>vt102</code></strong>. Dacă utilizați o consolă IPMI sau un instrument de virtualizare care nu oferă în sine conversie în astfel de tipuri de terminale, de exemplu QEMU/KVM, îl puteți porni într-o sesiune <span class="command"><strong>ecran</strong></span>. Aceasta va efectua într-adevăr conversia în tipul de terminal <code class="literal">screen</code>, care este foarte apropiat de <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parametrii programului de instalare Debian</h3></div></div></div>
+<p>Sistemul de instalare recunoaște câțiva parametri de pornire suplimentari<a href="#ftn.id2561" class="footnote" name="id2561"><sup class="footnote">[3]</sup></a> care poate fi util. </p>
+<p>O serie de parametri au o <span class="quote">„<span class="quote">formă scurtă</span>”</span> care ajută la evitarea limitărilor opțiunilor din linia de comandă a nucleului și facilitează introducerea parametrilor. Dacă un parametru are o formă scurtă, acesta va fi listat între paranteze în spatele formei lungi (normale). Exemplele din acest manual vor folosi în mod normal și forma scurtă. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Acest parametru este folosit pentru a declara nivelul de prioritate de la care sunt afișate mesajele. </p>
+<p>Instalarea implicită folosește <strong class="userinput"><code>priority=high</code></strong>. Aceasta înseamnă că sunt afișate atât mesajele cu prioritate ridicată, cât și cele cu prioritate critică, dar mesajele cu prioritate medie și scăzută sunt omise. Dacă se întâlnesc probleme, programul de instalare ajustează prioritatea după cum este necesar. </p>
+<p>Dacă adăugați <strong class="userinput"><code>priority=medium</code></strong> ca parametru de pornire, vi se va afișa meniul de instalare și veți obține mai mult control asupra instalării. Când se utilizează <strong class="userinput"><code>priority=low</code></strong>, toate mesajele sunt afișate (aceasta este echivalentă cu metoda de pornire <span class="emphasis"><em>expert</em></span>). Cu <strong class="userinput"><code>priority=critical</code></strong>, sistemul de instalare va afișa numai mesaje critice și va încerca să facă ceea ce trebuie fără „gălăgie”. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Acest parametru de pornire controlează tipul de interfață de utilizator utilizată pentru programul de instalare. Setările curente posibile ale parametrilor sunt: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> Interfața implicită este <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> poate fi de preferat pentru instalările în consolă serială. Unele tipuri specializate de medii de instalare pot oferi doar o selecție limitată de interfețe, dar interfețele <strong class="userinput"><code>newt</code></strong> și <strong class="userinput"><code>text</code></strong> sunt disponibile pe majoritatea mediilor de instalare implicite. Pe arhitecturile care îl acceptă, programul de instalare cu interfață grafică folosește interfața <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Stabilirea acestui parametru de pornire la 2 va face ca procesul de pornire al programului de instalare să fie înregistrat în jurnal. Setarea lui la 3 face ca shell-urile de depanare să fie disponibile în punctele strategice ale procesului de pornire (ieșiți din shell pentru a continua procesul de pornire). </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Aceasta este valoarea implicită.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Mai detaliat decât de obicei.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>O mulțime de informații de depanare.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Shell-urile sunt rulate în diferite puncte ale procesului de pornire pentru a permite depanarea detaliată. Ieșiți din shell pentru a continua încărcarea. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Determină ca programul de instalare să trimită mesaje de jurnal către un jurnal de sistem la distanță pe gazda și portul specificate, precum și către un fișier local. Dacă nu este specificat, portul este implicit la portul syslog standard 514. </p></dd>
+<dt><span class="term">lowmem - «memorie redusă»</span></dt>
+<dd><p>Poate fi folosit pentru a forța programul de instalare la un nivel de memorie scăzut (lowmem) mai mare decât cel pe care îl stabilește implicit programul de instalare, pe baza memoriei disponibile. Valorile posibile sunt 1 și 2. Consultați și <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Verificarea memoriei disponibile / modul cantitate redusă de memorie">Secțiune 6.3.1.1, „Verificarea memoriei disponibile / modul cantitate redusă de memorie”</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Împiedică programul de instalare să ofere shell-uri interactive pe tty2 și tty3. Util pentru instalațiile nesupravegheate unde securitatea fizică este limitată. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Unele arhitecturi folosesc framebuffer-ul nucleului pentru a oferi instalarea într-o serie de limbi. Dacă framebuffer provoacă o problemă în sistemul dumneavoastră, puteți dezactiva caracteristica utilizând parametrul <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Simptomele problemei sunt mesaje de eroare despre bterm sau bogl, un ecran gol sau o blocare în câteva minute după pornirea instalării. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>O temă determină modul în care arată interfața de utilizator a programului de instalare (culori, pictograme etc.). Temele disponibile pot diferi în funcție de interfața folosită. În prezent, ambele interfețe newt și gtk au (în afară de aspectul implicit) o singură temă suplimentară numită tema <span class="quote">„<span class="quote">dark</span>”</span> (întunecată), care a fost concepută pentru utilizatorii cu deficiențe de vedere. Stabiliți această temă pornind cu <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (există și comanda rapidă de la tastatură <strong class="userinput"><code>d</code></strong> pentru aceasta în meniul de pornire). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>În mod implicit, <code class="classname">debian-installer</code> testează automat configurarea rețelei prin autoconfigurare IPv6 și DHCP. Dacă testarea reușește, nu veți avea șansa să revizuiți și să modificați configurările obținute. Puteți ajunge la configurarea manuală a rețelei numai în cazul în care configurarea automată eșuează. </p>
+<p>Dacă aveți un router IPv6 sau un server DHCP în rețeaua locală, dar doriți să le evitați deoarece, de exemplu dau răspunsuri greșite, puteți folosi parametrul <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> pentru a preveni orice configurare automată a rețelei (nici v4, nici v6) și pentru a introduce informațiile manual. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Stabiliți la <strong class="userinput"><code>false</code></strong> pentru a preveni pornirea serviciilor PCMCIA, dacă acest lucru cauzează probleme. Unele laptop-uri sunt bine cunoscute pentru acest comportament greșit. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Specificați adresa URL a unui fișier de preconfigurare pentru descărcare și utilizare pentru automatizarea instalării. Consultați <a class="xref" href="ch04s06.html" title="4.6. Instalare automată">Secțiune 4.6, „Instalare automată”</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Specificați calea către un fișier de preconfigurare de încărcat pentru automatizarea instalării. Consultați <a class="xref" href="ch04s06.html" title="4.6. Instalare automată">Secțiune 4.6, „Instalare automată”</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Stabiliți la <strong class="userinput"><code>true</code></strong> pentru a afișa întrebări chiar dacă au fost preconfigurate. Poate fi util pentru testarea sau depanarea unui fișier de preconfigurare. Rețineți că acest lucru nu va avea niciun efect asupra parametrilor care sunt trecuți ca parametri de pornire, dar pentru aceștia se poate folosi o sintaxă specială. Consultați <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Utilizarea preconfigurării pentru a modifica valorile implicite">Secțiune B.5.2, „Utilizarea preconfigurării pentru a modifica valorile implicite”</a> pentru detalii. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Întârzie întrebările care sunt puse în mod normal înainte de preconfigurare până după ce rețeaua este configurată. Consultați <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modul auto">Secțiune B.2.3, „Modul auto”</a> pentru detalii despre utilizarea acestuia pentru a automatiza instalările. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>În timpul instalărilor de la consola serială sau de administrare, consolele virtuale obișnuite (de la VT1 la VT6) sunt dezactivate în mod normal în <code class="filename">/etc/inittab</code>. Stabiliți la <strong class="userinput"><code>true</code></strong> pentru a preveni acest lucru. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>În mod implicit, înainte de repornire, <code class="classname">debian-installer</code> ejectează automat suportul optic utilizat în timpul instalării. Acest lucru poate fi inutil dacă sistemul nu pornește automat de pe astfel de suporturi. În unele cazuri, poate fi chiar nedorit, de exemplu dacă unitatea optică nu poate reintroduce suportul de stocare și utilizatorul nu este acolo pentru a face acest lucru manual. Multe unități de tipul: „slot loading”, „slim-line” și „caddy style” nu pot reîncărca automat suportul media. </p>
+<p>Stabiliți la <strong class="userinput"><code>false</code></strong> pentru a dezactiva ejectarea automată și rețineți că poate fi necesar să vă asigurați că sistemul nu pornește automat de pe unitatea optică după instalarea inițială. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Stabilind această opțiune la <strong class="userinput"><code>false</code></strong>, sistemul de gestionare a pachetelor va fi configurat să nu instaleze automat pachetele recomandate<span class="quote">„<span class="quote">Recommends</span>”</span>, atât în timpul instalării, cât și pentru sistemul instalat. Consultați și <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Instalarea sistemului de bază">Secțiune 6.3.5, „Instalarea sistemului de bază”</a>. </p>
+<p>Rețineți că această opțiune vă permite să aveți un sistem mai „ușor” (ocupă ceva mai puțin spațiu), dar poate duce, de asemenea, la lipsa unor funcții la care v-ați putea aștepta în mod normal să fie disponibile. Poate fi necesar să instalați manual unele dintre pachetele recomandate pentru a obține funcționalitatea completă dorită. Prin urmare, această opțiune ar trebui să fie utilizată numai de utilizatorii foarte experimentați. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>În mod implicit, programul de instalare necesită ca depozitele arhivelor să fie autentificate folosind o cheie gpg cunoscută. Stabiliți la <strong class="userinput"><code>true</code></strong> pentru a dezactiva acea autentificare. <span class="bold"><strong>Avertisment: nesigur, nerecomandat.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Stabiliți la <strong class="userinput"><code>true</code></strong> pentru a intra în modul de recuperare în loc să efectuați o instalare normală. Consultați <a class="xref" href="ch08s06.html" title="8.6. Recuperarea unui sistem deteriorat">Secțiune 8.6, „Recuperarea unui sistem deteriorat”</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Utilizarea parametrilor de pornire pentru a răspunde la întrebări</h3></div></div></div>
+<p>Cu unele excepții, o valoare poate fi definită în promptul de pornire pentru orice întrebare adresată în timpul instalării, deși acest lucru este cu adevărat util doar în cazuri specifice. Instrucțiuni generale despre cum să faceți acest lucru pot fi găsite în <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Utilizarea parametrilor de pornire pentru a preconfigura întrebări">Secțiune B.2.2, „Utilizarea parametrilor de pornire pentru a preconfigura întrebări”</a>. Câteva exemple specifice sunt enumerate mai jos. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Există două moduri de a specifica limba, țara și codificarea caracterelor de utilizat pentru instalare și sistemul instalat. </p>
+<p>Prima și cea mai simplă este să plasați doar parametrul <code class="literal">locale</code>. Limba și țara vor fi apoi derivate din valoarea acesteia. De exemplu, puteți utiliza <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> pentru a selecta germană ca limbă și Elveția ca țară (<code class="literal">de_CH.UTF-8</code> va fi stabilită ca valoarea implicită a parametrilor regionali pentru sistemul instalat). Limitarea este că nu toate combinațiile posibile de limbă, țară și codificarea caracterelor pot fi realizate în acest fel. </p>
+<p>A doua opțiune, mai flexibilă, este să specificați separat <code class="literal">language</code> (limba) și <code class="literal">country</code> (țara). În acest caz, <code class="literal">locale</code> (configurarea regională în ansamblu) poate fi adăugată opțional pentru a specifica o anumită configurare regională implicită pentru sistemul instalat. Exemplu: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Poate fi folosit pentru a încărca automat componentele de instalare care nu sunt încărcate implicit. Exemple de componente opționale care pot fi utile sunt <code class="classname">openssh-client-udeb</code> (pentru a putea utiliza <span class="command"><strong>scp</strong></span> în timpul instalării)<span class="phrase"> și <code class="classname">ppp-udeb</code> (a se vedea <a class="xref" href="apds05.html" title="D.5. Instalarea Debian GNU/Linux folosind PPP peste Ethernet (PPPoE)">Secțiune D.5, „Instalarea Debian GNU/Linux folosind PPP peste Ethernet (PPPoE)”</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Stabiliți la <strong class="userinput"><code>true</code></strong> dacă doriți să dezactivați configurarea automată IPv6 și DHCP și, în schimb, să forțați configurarea statică a rețelei. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>În mod implicit, programul de instalare va folosi protocolul http pentru a descărca fișiere din oglinzile Debian și schimbarea acestuia în ftp nu este posibilă în timpul instalărilor cu prioritate normală. Stabilind acest parametru la <strong class="userinput"><code>ftp</code></strong>, puteți forța instalatorul să folosească protocolul respectiv. Rețineți că nu puteți selecta o oglindă ftp dintr-o listă, trebuie să introduceți manual numele gazdei. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Poate fi folosit pentru a selecta sarcini care nu sunt disponibile în lista de sarcini interactive, cum ar fi sarcina <code class="literal">kde-desktop</code>. Consultați <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Selectarea și instalarea software-ului">Secțiune 6.3.6.2, „Selectarea și instalarea software-ului”</a> pentru informații suplimentare. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Transmiterea de parametri către modulele nucleului</h3></div></div></div>
+<p>Dacă controlorii sunt compilați în nucleu, le puteți transmite parametri așa cum este descris în documentația nucleului. Cu toate acestea, dacă controlorii sunt compilați ca module și deoarece modulele nucleului sunt încărcate puțin diferit în timpul unei instalări decât atunci când porniți un sistem instalat, nu este posibil să transmiteți parametri modulelor așa cum ați proceda în mod normal. În schimb, trebuie să utilizați o sintaxă specială recunoscută de programul de instalare, care apoi se va asigura că parametrii sunt salvați în fișierele de configurare adecvate și vor fi astfel utilizați atunci când modulele sunt încărcate efectiv. Parametrii vor fi, de asemenea, propagați automat în configurația pentru sistemul instalat. </p>
+<p>Rețineți că în prezent, este destul de rar ca parametrii să fie transmiși modulelor. În cele mai multe cazuri, nucleul va fi capabil să verifice componentele și dispozitivele prezente într-un sistem și să stabilească valori implicite bune în acest fel. Cu toate acestea, în unele situații poate fi totuși necesară stabilirea manuală a parametrilor. </p>
+<p>Sintaxa de utilizat pentru a stabilii parametrii pentru module este: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>nume_modul</code></em>.<em class="replaceable"><code>nume_parametru</code></em>=<em class="replaceable"><code>valoare</code></em>
+</pre></div>
+<p> Dacă trebuie să transmiteți mai mulți parametri acelorași module sau către module diferite, repetați acest lucru. De exemplu, pentru a configura o placă de interfață de rețea 3Com veche să utilizeze conectorul BNC (coaxial) și IRQ 10, veți trece: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Punerea modulelor nucleului în lista neagră</h3></div></div></div>
+<p>Uneori poate fi necesar să puneți pe lista neagră un modul pentru a preveni încărcarea lui automată de către nucleu și «udev». Un motiv ar putea fi că un anumit modul cauzează probleme cu dispozitivele dumneavoastră. De asemenea, nucleul listează uneori doi controlori diferiți pentru același dispozitiv. Acest lucru poate face ca dispozitivul să nu funcționeze corect dacă controlorii sunt în conflict sau dacă controlorul greșit este încărcat mai întâi. </p>
+<p>Puteți pune pe lista neagră un modul folosind următoarea sintaxă: <strong class="userinput"><code><em class="replaceable"><code>nume_modul</code></em>.blacklist=yes</code></strong>. Acest lucru va face ca modulul să fie inclus pe lista neagră în <code class="filename">/etc/modprobe.d/blacklist.local</code> atât în timpul instalării, cât și pentru sistemul instalat. </p>
+<p>Rețineți că un modul poate fi încă încărcat de sistemul de instalare însuși. Puteți preveni acest lucru rulând instalarea în modul expert și deselectând modulul din lista de module afișată în fazele de detectare a dispozitivelor. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2561" class="footnote"><p><a href="#id2561" class="para"><sup class="para">[3] </sup></a> Cu nucleele actuale (2.6.9 sau mai noi) puteți utiliza 32 de opțiuni de linie de comandă și 32 de opțiuni de mediu. Dacă aceste valori sunt depășite, nucleul va intra în panică. De asemenea, există o limită de 255 de caractere pentru întreaga linie de comandă a nucleului, totul peste această limită poate fi trunchiat în tăcere. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Accesibilitate </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Rezolvarea problemelor din procesul de instalare</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

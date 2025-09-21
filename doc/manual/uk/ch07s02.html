@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Монтування зашифрованих томів</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Розділ 7. Завантаження у Вашу нову систему Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Момент істини">
+<link rel="next" href="ch07s03.html" title="7.3. Вхід">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Монтування зашифрованих томів</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Розділ 7. Завантаження у Вашу нову систему Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Монтування зашифрованих томів</h2></div></div></div>
+<p>Якщо під час встановлення Ви створили зашифровані розділи та призначили їм точки приєднання, система запитуватиме пароль під час завантаження для кожного такого розділу. </p>
+<p>Під час завантаження для зашифрованих з dm-crypt розділів буде таке запрошення: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> У першому рядку запрошення, <em class="replaceable"><code>part</code></em> — назва основного розділу, напр. sda2 або md0. Ви, мабуть, дещо невпевнені <span class="emphasis"><em>для якого тому</em></span> Ви набираєте пароль. Чи це стосується Вашого <code class="filename">/home</code>? Чи <code class="filename">/var</code>? Дійсно, якщо у Вас лише один зашифрований том, це легко і Ви можете просто написати пароль, використаний під час створення цього тому. Але якщо під час інсталяції Ви створили декілька зашифрованих томів, Вам допоможуть нотатки, записані Вами на останньому кроці у <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Налаштування зашифрованих томів">Розділ 6.3.4.6, «Налаштування зашифрованих томів»</a>. Якщо у Вас немає нотаток щодо відповідності <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> до точок приєднання, Ви все ще можете знайти цю інформацію у <code class="filename">/etc/crypttab</code> та <code class="filename">/etc/fstab</code> Вашої системи. </p>
+<p>Коли зашифрована коренева файлова система приєднана, запрошення може дещо відрізнятися. Це залежить від генератора initramfs, з яким був створений initrd для завантаження системи. Приклад, наведений нижче, відповідає <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Під час написання пароля не буде жодного символу (навіть зірочки). Якщо Ви введете хибний пароль, Вам буде надано дві додаткові спроби. Після третьої спроби процедура завантаження пропустить цей том і продовжить приєднувати інші файлові системи. Для додаткової інформації ознайомтеся, будь ласка, з <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Усунення несправностей">Розділ 7.2.1, «Усунення несправностей»</a>. </p>
+<p>Після введення всіх паролів завантаження повинно продовжитися як зазвичай. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Усунення несправностей</h3></div></div></div>
+<p>Якщо деякі з зашифрованих томів не вийде приєднати через хибні паролі, Вам буде потрібно приєднати їх після завантаження системи вручну. Тут декілька випадків. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Перший випадок стосується кореневого розділу. Якщо він не приєднаний, процес завантаження зупиняється і тоді потрібно перезавантажити комп'ютер. </p></li>
+<li class="listitem">
+<p>Найлегший випадок — це зашифровані томи на кшталт <code class="filename">/home</code> або <code class="filename">/srv</code>. Їх можна приєднати вручну після завантаження. </p>
+<p>Проте з dm-crypt трішки складніше. Вам буде потрібно зареєструвати томи з <span class="application">device mapper</span>: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Це просканує усі томи, згадані у <code class="filename">/etc/crypttab</code> та після введення правильних паролів створить відповідні пристрої у директорії <code class="filename">/dev</code>. (Вже приєднані томи будуть пропущені, тож Ви можете повторювати цю команду стільки, скільки це буде потрібно) Після успішної реєстрації можете просто приєднати томи у звичайний спосіб: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/точка_приєднання</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Якщо будь-який том з некритичними системними файлами не можна приєднати (<code class="filename">/usr</code> або <code class="filename">/var</code>), система все ще може завантажитися та Ви можете вручну приєднати томи, як описано у попередньому випадку. Хоча, Вам також буде потрібно (пере)запустити вручну сервіси, які зазвичай працюють у Вашому оточенні, тому що найімовірніше вони не будуть запущені. Найлегший шлях — просто перезавантажитися. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Момент істини </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Вхід</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Configuration matérielle et système avant l'installation</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch03.html" title="Chapitre 3. Avant d'installer Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Partitionnement préalable d'une machine multisystème">
+<link rel="next" href="ch04.html" title="Chapitre 4. Comment obtenir les supports du système d'installation ?">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Configuration matérielle et système avant l'installation</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 3. Avant d'installer Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Configuration matérielle et système avant l'installation</h2></div></div></div>
+<p>Cette section passe en revue les réglages matériels que vous devrez peut-être effectuer avant d'installer Debian. En général, cela implique de vérifier, et parfois de modifier, les réglages du microprogramme système (BIOS,UEFI, etc.) sur votre machine. Le <span class="quote">« <span class="quote">BIOS</span> »</span>, <span class="quote">« <span class="quote">UEFI</span> »</span> ou <span class="quote">« <span class="quote">microprogramme système</span> »</span> est le logiciel de base utilisé par le matériel ; il est plus spécifiquement exécuté pendant le processus d'amorçage (après la mise sous tension). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Le menu de configuration du BIOS ou de l'UEFI</h3></div></div></div>
+<p>Le BIOS, comme l'UEFI, fournit les fonctions de base nécessaires à l'amorçage de votre machine pour permettre au système d'exploitation d'accéder au matériel. Le système fournit un menu destiné à la configuration du BIOS ou de l'UEFI. Vous pouvez accéder à ce menu en appuyant sur une touche ou sur une combinaison de touches. Il s'agit souvent de la touche <span class="keycap"><strong>Suppr</strong></span> ou de la touche <span class="keycap"><strong>F2</strong></span>. Certains constructeurs utilisent d'autres touches. Au démarrage de l'ordinateur, un message indique généralement la touche à utiliser. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Sélection du périphérique d'amorçage</h3></div></div></div>
+<p>À l'intérieur du menu de configuration du BIOS ou de l'UEFI vous pouvez choisir les périphériques utilisables pour l'amorçage du système et leur ordre. Peuvent être sélectionnés des disques durs internes, un lecteur de CD/DVD ou des périphériques de stockage USB comme des clés ou des disques externes. Sur des systèmes modernes, il existe aussi la possibilité d'amorcer par le réseau (PXE). </p>
+<p>Selon le support d'installation choisi (CD/DVD, clé USB, amorçage par le réseau), vous devez activer, s'il ne l'est pas déjà, le périphérique d'amorçage approprié. </p>
+<p>La plupart des BIOS et des UEFI permettent d'appeler un menu au démarrage du système dans lequel vous sélectionnez le périphérique d'amorçage pour la session actuelle. Si cette option est disponible, le BIOS ou l'UEFI affiche un court message, « press <span class="keycap"><strong>F12</strong></span> for boot menu » par exemple. La touche peut être différente selon les systèmes, <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> ou <span class="keycap"><strong>F8</strong></span>. Choisir un périphérique dans ce menu ne change pas l'ordre d'amorçage par défaut du BIOS ou de l'UEFI. Ainsi, vous pouvez amorcer à partir d'une clé USB alors que le disque dur interne reste le périphérique d'amorçage prioritaire. </p>
+<p>Si le BIOS ni l'UEFI ne vous donne cette possibilité, vous devez modifier sa configuration et indiquer comme prioritaire le périphérique qui contient l'<code class="classname">installateur Debian</code> </p>
+<p>Quelques ordinateurs contiennent malheureusement des versions du BIOS ou de l'UEFI défectueuses. Il est parfois impossible d'amorcer l'<code class="classname">installateur Debian</code> à partir d'une clé USB même si l'option appropriée existe dans le menu de configuration et la clé est choisie comme périphérique d'amorçage prioritaire. Sur certains systèmes, on peut forcer l'amorçage en changeant le type de périphérique, de <span class="quote">« <span class="quote">USB harddisk</span> »</span> ou <span class="quote">« <span class="quote">USB stick</span> »</span> à <span class="quote">« <span class="quote">USB ZIP</span> »</span> ou <span class="quote">« <span class="quote">USB CDROM</span> »</span>.<span class="phrase"> En particulier, si vous utilisez une image d'installation hybride (<span class="quote">« <span class="quote">isohybrid</span> »</span>) sur une clé USB (voyez la <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Préparation d'une clé USB utilisant une image hybride de CD ou DVD">Section 4.3.1, « Préparation d'une clé USB utilisant une image hybride de CD ou DVD »</a>), modifier le type de périphérique en <span class="quote">« <span class="quote">USB CDROM</span> »</span> peut servir pour les BIOS ou les UEFI qui ne permettent pas l'amorçage sur une clé en mode <span class="quote">« <span class="quote">USB harddisk</span> »</span>. </span> Vous devrez peut-être configurer votre BIOS ou UEFI pour activer le <span class="quote">« <span class="quote">USB legacy support</span> »</span> (prise en charge de l'USB traditionnel). </p>
+<p>Si vous ne pouvez pas régler le BIOS ou l'UEFI pour permettre l'amorçage à partir d'une clé USB, vous pouvez toujours copier une image ISO sur la clé. Amorcez l'<code class="classname">installateur Debian</code> (consultez la <a class="xref" href="ch04s04.html" title="4.4. Préparer les fichiers pour amorcer depuis un disque dur">Section 4.4, « Préparer les fichiers pour amorcer depuis un disque dur »</a>) et, lors de la recherche d'une image ISO sur les disques, choisissez la clé USB et l'image d'installation. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Systèmes avec un microprogramme UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">« <span class="quote">Interface micrologicielle extensible unifiée</span> »</span> ou <span class="quote">« <span class="quote">Unified Extensible Firmware Interface</span> »</span>) est un nouveau type de microprogramme utilisé sur de nombreux systèmes récents et est prévu, entre autre, pour remplacer le BIOS classique des PC. </p>
+<p>Actuellement, la majorité des systèmes PC qui utilisent l'UEFI intègrent aussi un module de compatibilité (<span class="quote">« <span class="quote">Compatibility Support Module</span> »</span> (CSM)) dans le microprogramme, qui procure les mêmes interfaces que le BIOS au système d'exploitation. Ainsi, les logiciels écrits pour le BIOS classique peuvent être utilisés sans changement. Malgré cela, l'UEFI est prévu pour remplacer complètement les anciens BIOS sans être totalement rétrocompatible, et il existe déjà certains systèmes avec UEFI mais sans CSM. </p>
+<p>Sur les systèmes avec UEFI, il y a certains détails à prendre en compte lorsqu'on installe un système d'exploitation. La façon dont le microprogramme charge le système d'exploitation est très différente entre le BIOS classique (ou l'UEFI avec CSM) et l'UEFI natif. Une des principales différences est la façon d'enregistrer les partitions sur le disque dur. Alors que le BIOS et l'UEFI avec CSM utilisent une table de partitionnement DOS, l'UEFI utilise un schéma de partition différent appelé <span class="quote">« <span class="quote">GUID Partition Table</span> »</span> (GPT). Sur un seul disque, une seule façon peut être utilisée, et dans le cas d'une installation multi-boot avec différents systèmes d'exploitation sur le même disque, tous doivent utiliser le même type de table de partitions. Amorcer depuis un disque avec GPT n'est possible qu'en mode UEFI natif, mais utiliser GPT devient de plus en plus commun à mesure que les disques grossissent, car la table de partitionnement DOS classique ne peut pas adresser des disques de plus de 2 Téraoctets alors que GPT le permet. L'autre principale différence entre le BIOS (ou l'UEFI avec CSM) et l'UEFI natif réside dans la localisation et le format du code d'amorçage. Ainsi, des chargeurs d'amorçage (<span class="quote">« <span class="quote">bootloaders</span> »</span>) différents sont utilisés pour chaque système. </p>
+<p>Ce dernier point devient important au démarrage de l'<code class="classname">installateur Debian</code> sur un système UEFI avec CSM parce que l'installateur vérifie s'il a été démarré sur un système BIOS ou UEFI natif, et installe le chargeur d'amorçage correspondant. Habituellement, cela fonctionne sans problème, mais peut en poser dans les environnements multi-boot. Sur certains systèmes UEFI avec CSM, le mode d'amorçage par défaut des périphériques amovibles peut être différent de celui utilisé à l'amorçage depuis le disque dur. Ainsi, à l'amorçage de l'<code class="classname">installateur Debian</code> depuis une clé USB dans un mode différent de celui utilisé lors de l'amorçage du système d'exploitation déjà installé sur le disque dur, le mauvais chargeur d'amorçage peut être installé et le système devient impossible à démarrer après l'installation. Au moment de choisir le périphérique d'amorçage depuis le menu du microprogramme, certains systèmes offrent deux choix pour chaque périphérique, ainsi l'utilisateur peut choisir si l'amorçage doit se faire avec CSM ou en mode UEFI natif. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Démarrage sécurisé</h3></div></div></div>
+<p>Un autre sujet relatif à l'UEFI est le mécanisme appelé <span class="quote">« <span class="quote">secure boot</span> »</span> (démarrage sécurisé). Le démarrage sécurisé correspond à une fonction de l'UEFI qui autorise le microprogramme à charger et exécuter uniquement du code signé par cryptographie avec certaines clés et ainsi bloquer tout code d'amorçage (potentiellement dangereux) signé avec une clé inconnue ou pas signé du tout. En pratique, la seule clé acceptée par défaut sur la plupart des systèmes UEFI avec démarrage sécurisé est une clé de Microsoft utilisée pour signer le chargeur d'amorçage de Windows. Debian contient un chargeur d'amorçage d'adaptation (<span class="quote">« <span class="quote">shim</span> »</span>) signé par Microsoft, ce qui devrait fonctionner correctement sur les systèmes où le démarrage sécurisé est activé. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Désactiver le démarrage rapide de Windows (<span class="quote">« <span class="quote">fast boot</span> »</span> ou <span class="quote">« <span class="quote">fast startup</span> »</span>)</h3></div></div></div>
+<p>Windows offre une fonctionnalité appelée démarrage rapide (<span class="quote">« <span class="quote">fast boot</span> »</span> dans Windows 8, <span class="quote">« <span class="quote">fast startup</span> »</span> dans Windows 10) pour réduire le temps de démarrage. Techniquement, lorsque cette fonction est activée, Windows ne s'arrête pas vraiment pour redémarrer <span class="quote">« <span class="quote">à froid</span> »</span>, mais effectue quelque chose qui ressemble plutôt à une hibernation partielle pour réduire le temps de « démarrage ». Tant que Windows est le seul système d'exploitation sur la machine, cela ne pose pas de problème, mais peut conduire à des pertes de données et d'autres inconvénients lorsque vous avez une configuration en <span class="quote">« <span class="quote">dual boot</span> »</span> dans laquelle un autre système d'exploitation accède au même système de fichiers que Windows. Dans ce cas, le système de fichiers peut être dans un état différent de ce qu'attend Windows après le « démarrage », et peut provoquer une corruption du système de fichiers lors des nouveaux accès en écriture sur ce même système de fichiers. Pour cela, dans une configuration en <span class="quote">« <span class="quote">dual boot</span> »</span>, pour éviter la corruption du système de fichiers, la fonctionnalité <span class="quote">« <span class="quote">fast boot</span> »</span> ou <span class="quote">« <span class="quote">fast startup</span> »</span> doit être désactivée depuis Windows. </p>
+<p>De plus, le mécanisme de Windows Update peut (parfois) réactiver cette fonctionnalité après avoir été précédemment désactivée. Il est suggéré de vérifier régulièrement ce paramètre. </p>
+<p>Il peut aussi être nécessaire de désactiver la fonction <span class="quote">« <span class="quote">fast boot</span> »</span> pour permettre l'accès à la configuration UEFI et choisir d'amorcer un autre système d'exploitation ou l'<code class="classname">installateur Debian</code>. Sur certains systèmes UEFI, le microcode peut réduire la durée du <span class="quote">« <span class="quote">boot</span> »</span> en n'initialisant pas le contrôleur de clavier ou le matériel USB. Dans ce cas, il est nécessaire de démarrer Windows pour désactiver cette fonctionnalité et autoriser un changement de l'ordre d'amorçage. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Problèmes matériels à surveiller</h3></div></div></div>
+<p><b>BIOS et claviers USB. </b>Si vous n'avez pas de clavier de type PS/2, mais seulement un modèle USB, vous devrez peut-être activer, sur quelques vieux systèmes, l'émulation clavier dans la configuration du BIOS pour pouvoir utiliser votre clavier dans le menu du programme d'amorçage. Sur les systèmes modernes, il n'y a pas de problème. Si votre clavier ne répond pas dans le menu du programme d'amorçage, consultez le manuel de votre carte mère et cherchez dans le BIOS une option « Legacy keyboard emulation » ou « USB keyboard support ». </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Partitionnement préalable d'une machine multisystème </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> Chapitre 4. Comment obtenir les supports du système d'installation ?</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

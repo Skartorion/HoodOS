@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Příprava souborů pro zavedení ze sítě pomocí TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="ch04.html" title="Kapitola 4. Získání instalačních médií">
+<link rel="prev" href="ch04s04.html" title="4.4. Příprava souborů pro zavedení z pevného disku">
+<link rel="next" href="ch04s06.html" title="4.6. Automatická Instalace">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Příprava souborů pro zavedení ze sítě pomocí TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Kapitola 4. Získání instalačních médií</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Příprava souborů pro zavedení ze sítě pomocí TFTP</h2></div></div></div>
+<p>Pokud je váš počítač připojen do lokální sítě, můžete jej zavést ze sítě pomocí TFTP. Jestliže chcete pomocí TFTP zavést instalační systém, musíte na vzdáleném počítači nakopírovat zaváděcí soubory do specifických adresářů a povolit zavádění vaší stanice. </p>
+<p>Musíte nastavit TFTP server a často i DHCP server  <span class="phrase"> nebo BOOTP </span> server. </p>
+<p> <span class="phrase"> BOOTP je IP protokol, který informuje počítač o jeho IP adrese a prozradí mu, odkud si má stáhnout zaváděcí obraz. </span> DHCP (Dynamic Host Configuration Protocol) je flexibilnější, zpětně kompatibilní rozšíření protokolu BOOTP. Některé systémy mohou být nastaveny pouze pomocí DHCP. </p>
+<p>Pro přenos zaváděcího obrazu ke klientovi se používá protokol TFTP (Trivial File Transfer Protocol). Teoreticky můžete použít server na libovolné platformě, která jej implementuje. Ukázky v této kapitole se vztahují k operačním systémům SunOS 4.x, SunOS 5.x (neboli Solaris) a GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Pokud na serveru běží Debian, doporučujeme použít TFTP server <code class="classname">tftp-hpa</code> od stejného autora jako zavaděč <code class="classname">syslinux</code>, protože by mezi nimi mělo nastat nejméně problémů. Vhodnou alternativou je i <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Nastavení DHCP serveru</h3></div></div></div>
+<p>Jedním ze svobodných DHCP serverů je ISC <span class="command"><strong>dhcpd</strong></span>. Debian GNU/Linux jej obsahuje jako balík <code class="classname">isc-dhcp-server</code>. Následuje ukázka jednoduchého konfiguračního souboru (obvykle <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "priklad.cz";
+option domain-name-servers ns1.priklad.cz;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "karel";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "karel";
+  next-server dalsiserver.priklad.cz;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>V tomto příkladu máme jeden server jménem <em class="replaceable"><code>karel</code></em>, který obstarává práci DHCP a TFTP serveru a také slouží jako brána do sítě. Ve svém nastavení si musíte změnit alespoň doménové jméno, jméno serveru a hardwarovou adresu klienta. Položka <em class="replaceable"><code>filename</code></em> by měla obsahovat název souboru, který si klient stáhne přes TFTP. </p>
+<p>Po úpravách konfiguračního souboru musíte restartovat <span class="command"><strong>dhcpd</strong></span> příkazem <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1630"></a>4.5.1.1. Povolení PXE zavádění</h4></div></div></div>
+<p>Další příklad souboru <code class="filename">dhcp.conf</code> tentokrát využívá metodu PXE (Pre-boot Execution Environment) protokolu TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "priklad.cz";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# Následující odstavec si musíte upravit dle skutečnosti
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# adresa brány
+# (například pro přístup k internetu)
+  option routers 192.168.1.1;
+# dns server, který chcete použít
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+    # hardwarová adresa tftp klienta
+    hardware ethernet  00:10:DC:27:6C:15;
+    filename "pxelinux.0";
+  }
+}
+</pre></div>
+<p> Při PXE zavádění není soubor <code class="filename">pxelinux.0</code> obraz jádra, ale zavaděč (viz <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Přesun TFTP obrazů na místo">4.5.4 – „Přesun TFTP obrazů na místo“</a> dále v textu). </p>
+<p>If your machine uses UEFI to boot, you will have to specify a boot loader appropriate for UEFI machines, for example </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Nastavení BOOTP serveru</h3></div></div></div>
+<p>V GNU/Linuxu můžete použít v zásadě dva BOOTP servery. Jednak je to CMU <span class="command"><strong>bootpd</strong></span> a druhý je vlastně DHCP server — ISC <span class="command"><strong>dhcpd</strong></span>. V distribuci Debian GNU/Linux jsou k dispozici v balících <code class="classname">bootp</code> a <code class="classname">isc-dhcp-server</code>. </p>
+<p>To use CMU <span class="command"><strong>bootpd</strong></span>, you must first uncomment (or add) the relevant line in <code class="filename">/etc/inetd.conf</code>. On Debian GNU/Linux, you can run <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, then <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> to do so. Just in case your BOOTP server does not run Debian, the line in question should look like: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Now, you must create an <code class="filename">/etc/bootptab</code> file. This has the same sort of familiar and cryptic format as the good old BSD <code class="filename">printcap</code>, <code class="filename">termcap</code>, and <code class="filename">disktab</code> files. See the <code class="filename">bootptab</code> manual page for more information. For CMU <span class="command"><strong>bootpd</strong></span>, you will need to know the hardware (MAC) address of the client. Here is an example <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> You will need to change at least the <span class="quote">„<span class="quote">ha</span>“</span> option, which specifies the hardware address of the client. The <span class="quote">„<span class="quote">bf</span>“</span> option specifies the file a client should retrieve via TFTP; see <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Přesun TFTP obrazů na místo">4.5.4 – „Přesun TFTP obrazů na místo“</a> for more details. </p>
+<p>V kontrastu s předchozím je nastaveni BOOTP pomocí ISC <span class="command"><strong>dhcpd</strong></span> velmi jednoduché, protože dhcpd považuje BOOTP klienty za speciální případ DHCP klientů. Některé architektury však vyžadují pro zavádění klientů pomocí BOOTP komplikované nastavení. Je-li to váš případ, přečtěte si <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Nastavení DHCP serveru">4.5.1 – „Nastavení DHCP serveru“</a>. V opačném případě stačí v konfiguračním souboru <code class="filename">/etc/dhcp/dhcpd.conf</code> vložit do bloku podsítě, ve které se nachází klient, direktivu <strong class="userinput"><code>allow bootp</code></strong>. Potom restartujte <span class="command"><strong>dhcpd</strong></span> server příkazem <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Povolení TFTP serveru</h3></div></div></div>
+<p>Aby vám TFTP server fungoval, měli byste nejprve zkontrolovat, zda je <span class="command"><strong>tftpd</strong></span> povolen. </p>
+<p>V případě balíku <code class="classname">tftpd-hpa</code> existují dva způsoby, jak službu provozovat. Jednak se může <code class="classname">tftpd-hpa</code> spouštět jako samostatný daemon při startu systému, nebo může jeho spuštění zajišťovat systémový daemon <code class="classname">inetd</code> v okamžik, kdy je ho potřeba. Způsob, který zrovna používáte, můžete zvolit při instalaci balíku, respektive ho můžete kdykoliv změnit rekonfigurací balíku. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>TFTP servery historicky používaly pro uložení nabízených obrazů adresář <code class="filename">/tftpboot</code>. Aby byl Debian v souladu se standardem <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">FHS</a>, mohou debianí balíky používat jiná umístění. Například <code class="classname">tftpd-hpa</code> implicitně používá adresář <code class="filename">/srv/tftp</code>. Je proto možné, že budete muset cesty uváděné v této kapitole upravit pro konkrétní situaci. </p></td></tr>
+</table></div>
+<p>Všechny alternativní <span class="command"><strong>in.tftpd</strong></span> v Debianu by měly automaticky zaznamenávat všechny požadavky, které jim byly zaslány, do systémových logů. To se hodí zejména v situaci, kdy zavádění neprobíhá tak, jak má. Některé TFTP servery umí zvýšit svou upovídanost parametrem <strong class="userinput"><code>-v</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Přesun TFTP obrazů na místo</h3></div></div></div>
+<p>Dále je potřeba umístit příslušný TFTP obraz (viz <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Where to Find Installation Files">4.2.1 – „Where to Find Installation Files“</a>) do adresáře, kde má <span class="command"><strong>tftpd</strong></span> uloženy obrazy. Bohužel TFTP klient očekává jméno souboru v určitém tvaru, pro který neexistují žádné závazné standardy. Proto ještě musíte na příslušný obraz vytvořit odkaz, který <span class="command"><strong>tftpd</strong></span> použije pro zavedení konkrétního klienta. </p>
+<p>For PXE booting, everything you should need is set up in the <code class="filename">netboot/netboot.tar.gz</code> tarball. Simply extract this tarball into the <span class="command"><strong>tftpd</strong></span> boot image directory. Make sure your dhcp server is configured to pass <code class="filename">pxelinux.0</code> to <span class="command"><strong>tftpd</strong></span> as the filename to boot. For UEFI machines, you will need to pass an appropriate EFI boot image name (such as <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Příprava souborů pro zavedení z pevného disku </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Automatická Instalace</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. 하드 디스크 부팅에 필요한 파일 준비하기</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch04.html" title="4장. 시스템 설치 미디어 구하기">
+<link rel="prev" href="ch04s03.html" title="4.3. USB 메모리 부팅에 필요한 파일 준비하기">
+<link rel="next" href="ch04s05.html" title="4.5. TFTP 네트워크 부팅에 필요한 파일 준비하기">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. 하드 디스크 부팅에 필요한 파일 준비하기</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">4장. 시스템 설치 미디어 구하기</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. 하드 디스크 부팅에 필요한 파일 준비하기</h2></div></div></div>
+<p>설치 프로그램은 기존 하드 드라이브 파티션에 들어 있는 부팅 파일을 이용해서 부팅할 수 있습니다. 다른 운영체제를 통해서 실행할 수도 있고, 아니면 BIOS에서 직접 부트로더를 실행할 수도 있습니다. 현대적인 UEFI 시스템에서는, 부트로더 없이도 UEFI 파티션에서 직접 커널이 부팅할 수 있습니다. </p>
+<p><span class="quote">“<span class="quote">네트워크만</span>”</span> 사용해 완전히 설치하려면 이 방법을 사용하면 됩니다. 네트워크 설치를 사용하면 CD 이미지를 찾아서 구우는 번거로운 일이 없습니다. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. <span class="command"><strong>GRUB</strong></span>을 사용해 리눅스에서 하드 디스크 설치 프로그램 부팅</h3></div></div></div>
+<p>여기서는 <span class="command"><strong>GRUB</strong></span>을 이용해 기존에 설치한 리눅스에 새로 추가하거나 아니면 기존 리눅스를 덮어 쓰는 방법을 설명합니다. </p>
+<p>부팅할 때 <span class="command"><strong>GRUB</strong></span>은 커널은 물론이고, 디스크 이미지도 메모리에 올리는 기능을 지원합니다. 이 램디스크는 커널에서 루트 파일시스템으로도 쓸 수 있습니다. </p>
+<p>데비안 아카이브의 다음 파일을 하드 디스크의 적당한 위치에 복사하십시오. 예를 들어 <code class="filename">/boot/newinstall/</code> 등입니다. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code> (커널 바이너리) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (램디스크 이미지) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>하드 드라이브를 부팅용으로만 사용하고 나머지는 모두 네트워크에서 받으려고 한다면, <a class="ulink" href="http://ftp.kr.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> 파일 및 해당 커널 <a class="ulink" href="http://ftp.kr.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a>를 받아야 합니다. 설치 프로그램을 부팅한 다음에 하드 디스크를 다시 파티션할 수 있습니다. 단 주의를 기울여야 합니다. </p>
+<p>다른 방법으로 하드 드라이브의 현재 파티션을 바꾸지 않고 유지하려면, <a class="ulink" href="http://ftp.kr.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> 파일과 그  <a class="ulink" href="http://ftp.kr.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a> 커널을 받으시고, 설치 이미지 파일도 하드 드라이브에 복사해 놓으십시오(파일 이름이 <code class="literal">.iso</code>로 끝나도록 하십시오). 그러면 설치 프로그램이 하드 드라이브에서 부팅한 다음 네트워크 없이 그 설치 이미지에서 설치할 수 있습니다. </p>
+<p>마지막으로 부트로더를 설정하려면 <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. GRUB을 사용해 리눅스 부팅하기">5.1.3절. “<span class="command"><strong>GRUB</strong></span>을 사용해 리눅스 부팅하기”</a> 부분으로 진행하십시오. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. USB 메모리 부팅에 필요한 파일 준비하기 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. TFTP 네트워크 부팅에 필요한 파일 준비하기</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

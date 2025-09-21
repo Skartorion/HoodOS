@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Montare volumi cifrati</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Capitolo 7. Avvio del nuovo sistema Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Il momento della verità">
+<link rel="next" href="ch07s03.html" title="7.3. Accesso">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Montare volumi cifrati</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 7. Avvio del nuovo sistema Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Montare volumi cifrati</h2></div></div></div>
+<p>Se durante l'installazione si creano dei volumi cifrati e si assegnano a dei punti di mount allora, durante l'avvio, viene richiesto l'inserimento della passphrase per ognuno di questi volumi. </p>
+<p>Le partizioni cifrate con dm-crypt sono mostrate durante l'avvio con un prompt simile a questo: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> Nella prima riga la <em class="replaceable"><code>part</code></em> è il nome della partizione sottostante, per esempio sda2 o md0. Probabilmente adesso si vorrebbe conosce <span class="emphasis"><em>per quale volume</em></span> si sta inserendo la passphrase. Si tratta di <code class="filename">/home</code>? Oppure di <code class="filename">/var</code>? Certamente se nel sistema esiste un solo volume cifrato la risposta è semplice, si deve inserire la stessa passphrase usata durante la configurazione. Invece, se durante l'installazione sono stati preparati più volumi cifrati, gli appunti presi durante l'ultimo passo descritto in <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Configurazione di volumi cifrati">Sezione 6.3.4.6, «Configurazione di volumi cifrati»</a> risultano molto utili. Se non si hanno appunti su come sono mappati i diversi <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> sui vari punti di mount allora si possono trovare nei file <code class="filename">/etc/crypttab</code> e <code class="filename">/etc/fstab</code> del nuovo sistema. </p>
+<p>Il prompt potrebbe essere leggermente diverso quando viene montato il file system di root. Dipende da quale strumento è stato usato per la creazione dell'initramfs per l'avvio del sistema. Il prossimo esempio si riferisce a un initrd creato con <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Durante l'inserimento della passphrase non sono mostrati dei caratteri, nemmeno degli asterischi. Se la passphrase inserita è sbagliata si hanno a disposizione altri due tentativi, dopo il terzo tentativo il processo di avvio salta il montaggio del volume e prosegue con il filesystem successivo. Si veda <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Risoluzione dei problemi">Sezione 7.2.1, «Risoluzione dei problemi»</a> per maggiori informazioni. </p>
+<p>L'avvio prosegue normalmente dopo l'inserimento di tutte le passphrase. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Risoluzione dei problemi</h3></div></div></div>
+<p>Se alcuni dei volumi cifrati non sono stati montati perché è stata inserita una passphrase sbagliata, è comunque possibile montarli manualmente al termine dell'avvio. Si possono verificare diversi casi: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Il primo caso riguarda la partizione root. Quando non è correttamente montata il processo di avvio si arresta ed è necessario riavviare la macchina per fare un nuovo tentativo. </p></li>
+<li class="listitem">
+<p>Il caso più semplice riguarda i volumi che contengono dati, come <code class="filename">/home</code> o <code class="filename">/srv</code>. Si possono montare manualmente al termine dell'avvio. </p>
+<p>Purtroppo con dm-crypt è leggermente più complesso. Prima si devono registrare i volumi con <span class="application">device mapper</span> eseguendo: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Questo esegue la scansione di tutti i volumi elencati in <code class="filename">/etc/crypttab</code> e dopo aver richiesto la passphrase crea i rispettivi file di device nella directory <code class="filename">/dev</code>. I volumi già registrati sono saltati, quindi è possibile ripetere più volte questo comando senza preoccupazioni. Se la registrazione avviene con successo è possibile montare i volumi nel modo consueto: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Se alcuni dei volumi che contengono file non critici per il sistema non possono essere montati (<code class="filename">/usr</code> o <code class="filename">/var</code>) l'avvio dovrebbe continuare e dovrebbe essere possibile montare i volumi manualmente con la stessa procedura descritta al punto precedente. Inoltre è necessario anche (ri)avviare tutti i servizi che sono normalmente in esecuzione nel runlevel predefinito dato che, molto probabilmente, non sono partiti. Il modo più semplice per fare questa operazione è riavviare il computer. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Il momento della verità </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Accesso</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

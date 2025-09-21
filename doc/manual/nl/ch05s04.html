@@ -1,0 +1,254 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Probleemanalyse bij het installatieproces</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch05.html" title="Hoofdstuk 5. Het installatiesysteem starten">
+<link rel="prev" href="ch05s03.html" title="5.3. Opstartparameters">
+<link rel="next" href="ch06.html" title="Hoofdstuk 6. Het Debian installatiesysteem gebruiken">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Probleemanalyse bij het installatieproces</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 5. Het installatiesysteem starten</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Probleemanalyse bij het installatieproces</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Betrouwbaarheid van optische media</h3></div></div></div>
+<p>Soms kan het gebeuren, vooral bij oudere stations, dat het installatiesysteem er niet in slaagt op te starten vanaf een optische schijf. Het is ook mogelijk — zelfs nadat met succes opgestart werd vanaf een dergelijke schijf — dat het installatiesysteem er niet in slaagt de schijf te herkennen of foutmeldingen produceert bij het lezen van de schijf tijdens de installatie. </p>
+<p>Er kunnen veel verschillende mogelijke oorzaken zijn voor deze problemen. We kunnen enkel enige courante problemen vermelden en algemene suggesties geven over hoe ermee om te gaan. De rest laten we aan u over. </p>
+<p>Eerst zou u twee heel eenvoudige dingen moeten proberen. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Indien er niet opgestart wordt vanaf de schijf, moet u nagaan of die wel correct in het station geplaatst werd en of zij niet vuil is. </p></li>
+<li class="listitem"><p>Indien het installatiesysteem er niet in slaagt de schijf te herkennen, moet u gewoon nog een tweede keer de optie <span class="guimenuitem">Installatiemedia detecteren en aankoppelen</span> uitproberen. Het is bekend dat sommige DMA-gerelateerde problemen bij erg oude CD-stations op die manier opgelost raken. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Indien dit niet helpt, kunt u de suggesties uit de onderstaande paragrafen uitproberen. De meeste, hoewel niet alle, hierna behandelde suggesties gelden zowel voor CD als voor DVD. </p>
+<p>Indien u er niet in slaagt de installatie vanaf een optische schijf op gang te krijgen, moet u het met een van de andere mogelijke installatiemethodes proberen. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2231"></a>5.4.1.1. Gebruikelijke problemen</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Sommige oudere CD-stations slagen er niet in om schijven te lezen die aan een hoge snelheid gebrand werden door een moderne CD-writer. </p></li>
+<li class="listitem"><p>Sommige zeer oude CD-stations werken niet correct als voor hen <span class="quote">“<span class="quote">direct memory access</span>”</span> (DMA) gebruikt wordt. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2239"></a>5.4.1.2. Problemen onderzoeken en ze eventueel oplossen</h4></div></div></div>
+<p>Indien het niet lukt om met de optische schijf op te starten, probeer dan de hierna vermelde suggesties. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ga na of uw BIOS/UEFI effectief het opstarten vanaf een optische schijf ondersteunt (kan enkel een probleem zijn op zeer oude systemen) en dat het opstarten vanaf dergelijke media in het BIOS/UEFI geactiveerd is. </p></li>
+<li class="listitem">
+<p>Indien u een ISO-image downloadde, controleer dan of de md5sum van dat image overeenkomt met dat wat voor dat image in het bestand <code class="filename">MD5SUMS</code> vermeld staat. Dat bestand zou te vinden moeten zijn op dezelfde plaats waar u het image downloadde. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Ga vervolgens na of ook de md5sum van de gebrande schijf ermee overeenkomt. Het volgende commando zou moeten werken. Het maakt gebruik van de grootte van het image om het correct aantal bytes van de schijf te lezen. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Als, nadat het installatiesysteem met succes opgestart werd, de schijf niet herkend wordt, kan het probleem soms eenvoudig opgelost worden door nog eens te proberen. Indien u meer dan één optisch station heeft, probeer de schijf dan eens in het andere station te plaatsen. Indien dat niet helpt, of indien de schijf herkend wordt maar er bij het lezen ervan foutmeldingen komen, moet u de hieronder vermelde suggesties proberen. Daarvoor is enige basiskennis van Linux nodig. Om deze commando's uit te voeren, moet u eerst naar de tweede virtuele console (VT2) gaan en daar de shell activeren. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ga naar VT4 of bekijk de inhoud van <code class="filename">/var/log/syslog</code> (gebruik de editor <span class="command"><strong>nano</strong></span>) om eventuele specifieke foutmeldingen op te sporen. Kijk nadien ook de uitvoer na van <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Ga in de uitvoer van <span class="command"><strong>dmesg</strong></span> na of uw optisch station herkend werd. U zou iets moeten vinden in de zin van (de regels moeten niet noodzakelijk na elkaar komen): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Indien u niets dergelijks vindt, is het mogelijk dat de controller waarmee uw station verbonden is, niet herkend werd of zelfs helemaal niet ondersteund wordt. Indien u weet welk stuurprogramma er nodig is voor de controller, kunt u het handmatig proberen laden met <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Ga na of er voor uw optisch station onder <code class="filename">/dev/</code> een 'device node' (apparaatbestand) bestaat. In het bovenstaande voorbeeld is dit <code class="filename">/dev/sr0</code>. Er zou ook een <code class="filename">/dev/cdrom</code> moeten bestaan. </p></li>
+<li class="listitem">
+<p>Gebruik het commando <span class="command"><strong>mount</strong></span> om na te gaan of de optische schijf reeds aangekoppeld is. Indien dit niet het geval is, moet u proberen deze handmatig aan te koppelen: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Ga na of dit commando eventueel aanleiding geeft tot foutmeldingen. </p>
+</li>
+<li class="listitem">
+<p>Ga na of DMA momenteel geactiveerd is: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Een <span class="quote">“<span class="quote">1</span>”</span> in de eerste kolom na <code class="literal">using_dma</code> wijst erop dat het geactiveerd is. Indien dit het geval is moet u proberen het te deactiveren: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Zorg ervoor dat u zich bevindt in de map van het apparaat dat met uw optisch station overeenkomt. </p>
+</li>
+<li class="listitem"><p>Indien er zich tijdens de installatie problemen voordoen, moet u de integriteit van de installatiemedia proberen na te gaan met behulp van de optie die u vindt ergens onderaan in het hoofdmenu van het installatiesysteem. Deze optie kan ook gebruikt worden als algemene test om na te gaan of de schijf op een betrouwbare wijze gelezen kan worden. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2291"></a>5.4.2. De configuratie van het opstartproces</h3></div></div></div>
+<p>Indien u problemen ervaart en de kernel gaat hangen tijdens het opstartproces, of bepaalde randapparaten die u wel degelijk heeft, niet herkent, of stations niet correct aanspreekt, is het eerste wat u moet doen, de opstartparameters controleren, zoals besproken wordt in <a class="xref" href="ch05s03.html" title="5.3. Opstartparameters">Paragraaf 5.3, “Opstartparameters”</a>. </p>
+<p>In sommige gevallen kan het slecht functioneren te wijten zijn aan het feit dat er firmware ontbreekt voor het apparaat (zie <a class="xref" href="ch02s02.html" title="2.2. Apparaten waarvoor firmware vereist is">Paragraaf 2.2, “Apparaten waarvoor firmware vereist is”</a> en <a class="xref" href="ch06s04.html" title="6.4. Ontbrekende firmware laden">Paragraaf 6.4, “Ontbrekende firmware laden”</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2298"></a>5.4.3. Softwarematige spraaksynthese</h3></div></div></div>
+<p>Indien de softwarematige spraaksynthese niet werkt, is de kans het grootst dat er een probleem is met uw geluidskaart. Gewoonlijk is dat dan ofwel een stuurprogramma dat niet aanwezig is in het installatiesysteem, ofwel een stuurprogramma dat ongebruikelijke namen gebruikt om het geluidsniveau voor de mixer aan te geven en die worden standaard op stil gezet. In een dergelijk geval zou u dus een bugrapport moeten opsturen met daarin de uitvoer van de volgende commando's. Dit moet op dezelfde machine gebeuren en vanuit een Linux-systeem met werkend geluid (bijv. een live-CD). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Gebruikelijke installatieproblemen bij <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Sommige gebruikelijke installatieproblemen kunnen opgelost of vermeden worden door bepaalde opstartparameters door te geven aan het installatiesysteem. </p>
+<p>Indien uw systeem bij het opstarten van de kernel een vreemd beeld begint te vertonen, bijv. een volledig wit of volledig zwart scherm of een rommelige boel kleurrijke pixels, dan is het mogelijk dat er een problematische videokaart insteekt die niet correct naar framebuffermodus overschakelt. U kunt dan de opstartparameter <strong class="userinput"><code>vga=normal nomodeset</code></strong> gebruiken om de framebufferconsole uit te zetten. Tijdens de installatie zullen dan slechts een bepekt aantal talen ter beschikking staan wegens de beperkte consolefunctionaliteit. Zie <a class="xref" href="ch05s03.html" title="5.3. Opstartparameters">Paragraaf 5.3, “Opstartparameters”</a> voor details. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2321"></a>5.4.4.1. Het vastlopen van het systeem in de fase van de PCMCIA-configuratie</h4></div></div></div>
+<p>Van sommige erg oude laptopmodellen die door Dell gefabriceerd werden, is geweten dat ze crashen op het moment dat de detectie van PCMCIA-apparaten sommige hardware-adressen probeert aan te spreken. Andere laptops kunnen gelijkaardige problemen vertonen. Indien u een dergelijk probleem ervaart en u tijdens de installatie geen behoefte heeft aan ondersteuning voor PCMCIA, kunt u dat uitzetten met de opstartparameter <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. U kunt dan na het beëindigen van de installatie de configuratie van PCMCIA uitvoeren en het systeembronnenbereik dat verantwoordelijk is voor de problemen, uitsluiten. </p>
+<p>In het andere geval kunt u het installatiesysteem opstarten in expertmodus. Er zal u dan gevraagd worden om de opties voor systeembronnenbereik, waaraan uw systeem behoefte heeft, op te geven. Indien u bijvoorbeeld een van de hierboven vermelde Dell-laptops heeft, zou u hier <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> moeten opgeven. U kunt ook een lijst van gebruikelijke opties voor systeembronnenbereik vinden in het hoofdstuk <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings</a> van de PCMCIA HOWTO. Merk op dat u eventuele komma's moet weglaten wanneer u deze waarde aan het installatiesysteem doorgeeft. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. De meldingen bij het opstarten van de kernel interpreteren</h3></div></div></div>
+<p>Tijdens de opstartsequentie kan het gebeuren dat u verschillende meldinden ziet in de zin van <code class="computeroutput">can't find <em class="replaceable"><code>iets</code></em></code>, of <code class="computeroutput"><em class="replaceable"><code>iets</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>iets</code></em></code>, of zelfs <code class="computeroutput">this driver release depends on <em class="replaceable"><code>iets</code></em></code>. De meeste van dit soort meldingen zijn onschadelijk. U krijgt ze te zien omdat de kernel voor het installatiesysteem gebouwd is om uitgevoerd te kunnen worden op computers met veel verschillende randapparaten. Vanzelfsprekend zal geen enkele computer met alle mogelijke randapparatuur uitgerust zijn en dus kan het besturingssysteem enkele klachten uiten omdat het randapparaten die u niet heeft, niet kan vinden. Het kan ook zijn dat u vaststelt dat het systeem even pauzeert. Dit gebeurt wanneer het wacht op een antwoord van een apparaat dat niet op uw systeem aanwezig is. Indien u de tijd die het systeem nodig heeft, als onaanvaardbaar lang ervaart, kunt u later een aangepaste kernel maken <span class="phrase">(zie <a class="xref" href="ch08s05.html" title="8.5. Een nieuwe kernel compileren">Paragraaf 8.5, “Een nieuwe kernel compileren”</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Installatieproblemen rapporteren</h3></div></div></div>
+<p>Indien u door de initiële opstartfase heen geraakt, maar de installatie niet kunt voltooien, kan de menuoptie <span class="guimenuitem">Save debug logs</span> (debug-logs opslaan) nuttig zijn. Het laat u toe om logs over systeemfouten en configuratie-informatie uit het installatiesysteem op een opslagmedium op te slaan of ze met een webbrowser te downloaden. Deze informatie kan aanwijzingen bevatten over wat er fout liep en hoe het gerepareerd kan worden. Indien u een bugrapport instuurt, kunt u deze informatie toevoegen aan het bugrapport. </p>
+<p>Andere pertinente installatiemeldingen kunt u vinden in <code class="filename">/var/log/</code> tijdens de installatie en in <code class="filename">/var/log/installer/</code> nadat de computer opgestart werd met het geïnstalleerde systeem. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Installatierapporten insturen</h3></div></div></div>
+<p>Indien u problemen blijft ervaren, hebben we graag dat u een installatierapport instuurt (graag in het Engels waar mogelijk). We moedigen het insturen van installatierapporten zelfs aan als de installatie succesvol was. Op die manier kunnen we zoveel mogelijk informatie verzamelen over een zo groot mogelijk aantal hardwareconfiguraties. </p>
+<p>Merk op dat uw installatierapport gepubliceerd zal worden in het Debian Bug Tracking System (BTS), het bug-opvolgingssysteem van Debian, en doorgestuurd wordt maar een publieke mailinglijst. Zorg ervoor dat u een e-mailadres gebruikt waarvan u het niet erg vindt dat het openbaar gemaakt wordt. </p>
+<p>Indien u over een werkend Debian systeem beschikt, loopt de gemakkelijkste manier om een installatierapport in te sturen via het installeren van de pakketten <code class="classname">installation-report</code> en <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>). Configureer <code class="classname">reportbug</code> zoals uitgelegd wordt in <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. E-mails versturen buiten het systeem">Paragraaf 8.4.2, “E-mails versturen buiten het systeem”</a> en voer het commando <span class="command"><strong>reportbug installation-reports</strong></span> uit. </p>
+<p>Een andere mogelijkheid is om dit model te gebruiken bij het opstellen van het installatierapport en het verslag als een bugrapport over het pseudo-pakket<code class="classname">installation-reports</code> in te sturen naar <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>.
+Noot van het Nederlandse vertaalteam van Debian: aangezien Debian een wereldwijd project is, wordt in de interne communicatie hoofdzakelijk de Engelse taal gehanteerd. Mocht u dit als een drempel ervaren, dan kunt u daarbij misschien hulp vragen op de mailinglijst van de Nederlandstalige gebruikersgemeenschap van debian: <code class="email">&lt;<a class="email" href="mailto:debian-user-dutch@lists.debian.org">debian-user-dutch@lists.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+(Pakket: installation-reports)
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+(Opstartmethode: &lt;Hoe startte u het installatiesysteem? CD/DVD? USB-stick? Netwerk?&gt;)
+Image version: &lt;Full URL to image you downloaded is best&gt;
+(Image-versie: &lt;Bij voorkeur de volledige URL van het gedownloade image&gt;)
+Date: &lt;Date and time of the install&gt;
+(Datum: &lt;Datum en tijd van de installatie&gt;)
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+(Computer:&lt;Beschrijving van de machine (bijv. IBM Thinkpad R32)&gt;)
+Processor:
+(Processor:)
+Memory:
+(Geheugen:)
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+(Partities: &lt;df -Tl is bruikbaar; de ruwe partitietabel geniet de voorkeur&gt;)
+
+Output of lspci -knn (or lspci -nn):
+(Uitvoer van lspci -knn (of lspci -nn):)
+
+Base System Installation Checklist:
+(Checklist bij de installatie van het basissysteem:)
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+([O] = OK, [E] = Fout (geef hieronder wat toelichting), [ ] = niet geprobeerd)
+
+Initial boot (aanvankelijke opstart):                 [ ]
+Detect network card (herkennen netwerkkaart           [ ]
+Configure network (netwerkconfiguratie):              [ ]
+Detect media (media herkennen):                       [ ]
+Load installer modules (installatiemodules laden):    [ ]
+Detect hard drives (herkennen harde schijven):        [ ]
+Partition hard drives (indelen harde schijven):       [ ]
+Install base system (basissysteem installeren):       [ ]
+Clock/timezone setup (instellen klok/tijdzone):       [ ]
+User/password setup (gebruiker/wachtwoord instellen): [ ]
+Install tasks (taken installeren):                    [ ]
+Install boot loader (bootloader installeren):         [ ]
+Overall install (de globale installatie):             [ ]
+
+Comments/Problems (commentaar/problemen):
+
+&lt;Description of the install, in prose, and any thoughts, comments
+      and ideas you had during the initial install.&gt;
+(&lt;Beschrijf de installatie in gewone woorden en vermeld bedenkingen
+   , commentaar en ideeën die u tijdens de installatie had.&gt;)
+
+Please make sure that any installation logs that you think would
+be useful are attached to this report. (You can find them in the installer
+system in /var/log/ and later on the installed system under
+/var/log/installer.) Please compress large files using gzip.
+(Zorg ervoor om alle installatielogboeken die u nuttig acht
+bij dit rapport te voegen. (U kunt ze vinden in het
+ installatiesysteem in /var/log/ en later op het geïnstalleerde
+ systeem onder /var/log/installer.) Comprimeer grote bestanden met gzip.
+</pre></div>
+<p> Beschrijf in het bugrapport wat het probleem is, vermeld ook de laatste zichtbare meldingen van de kernel als het een vastlopen van de kernel betreft. Beschrijf de verschillende stappen die u ondernam en die tot het probleem op het systeem geleid hebben. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Opstartparameters </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> Hoofdstuk 6. Het Debian installatiesysteem gebruiken</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. Установка Debian GNU/Linux с использованием PPP через Ethernet (PPPoE)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Приложение D. Разное">
+<link rel="prev" href="apds04.html" title="D.4. Установка Debian GNU/Linux через Parallel Line IP (PLIP)">
+<link rel="next" href="ape.html" title="Приложение E. Общие сведения">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. Установка Debian GNU/Linux с использованием PPP через Ethernet (PPPoE)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Приложение D. Разное</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. Установка Debian GNU/Linux с использованием PPP через Ethernet (PPPoE)</h2></div></div></div>
+<p>В некоторых странах PPP через Ethernet (PPPoE) является широко распространённым протоколом для широкополосных подключений (ADSL или кабельных) к провайдеру сервиса Интернет. По умолчанию программа установки не поддерживает настройку сети с использованием PPPoE, но этого можно легко добиться. В этом разделе будет описано как это сделать. </p>
+<p>PPPoE соединение, настроенное в время установки, будет также работать и после перезагрузки в установленную систему (смотрите <a class="xref" href="ch07.html" title="Глава 7. Загрузка только что установленной системы Debian">Глава 7, <i>Загрузка только что установленной системы Debian</i></a>). </p>
+<p>To have the option of setting up and using PPPoE during the installation, you will need to install using one of the CD-ROM/DVD images that are available. It is not supported for other installation methods (e.g. netboot). </p>
+<p>Процесс установки через PPPoE практически не отличается от любого другого способа установки. Далее будут описаны различия. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Загрузите программу установки с параметром загрузки <strong class="userinput"><code>modules=ppp-udeb</code></strong><a href="#ftn.id5241" class="footnote" name="id5241"><sup class="footnote">[22]</sup></a>. Это гарантирует, что компонента PPPoE (<code class="classname">ppp-udeb</code>) будет загружена и и запущена автоматически. </p></li>
+<li class="listitem"><p>Далее выполните обычные начальные шаги установки (выбор языка, страны и клавиатуры; загрузка дополнительных компонент программы установки<a href="#ftn.id5247" class="footnote" name="id5247"><sup class="footnote">[23]</sup></a>). </p></li>
+<li class="listitem"><p>На следующем этапе происходит определение сетевого аппаратного обеспечения с целью распознавания имеющихся в системе карт Ethernet. </p></li>
+<li class="listitem">
+<p>После этого запускается настройка PPPoE. Программа установки попытается найти концентратор PPPoE (специальный сервер обработки подключений PPPoE) через все найденные интерфейсы Ethernet. </p>
+<p>Может случиться так, что концентратор не будет найден с первой попытки. Это может происходить из-за медленной или перегруженной сети или серверов. В большинстве случаев вторая попытка обнаружения концентратора будет успешной; чтобы попытаться ещё раз, выберите <span class="guimenuitem">Настройка и установление PPPoE-соединения</span> из главного меню программы установки. </p>
+</li>
+<li class="listitem"><p>После того как концентратор найден, будет предложено ввести регистрационную информацию (имя пользователя и пароль для PPPoE). </p></li>
+<li class="listitem"><p>С этого момента программа установки будет использовать полученную информацию для установления соединения PPPoE. Если всё правильно, соединение PPPoE должно настроиться и программа установки сможет использовать его для подключения к Интернет и получения пакетов (если потребуется). Если регистрационная информация неверна или возникли какие-то ошибки, то программа установки остановится, но настройку можно попытаться повторить ещё раз выбрав в меню <span class="guimenuitem">Настройка и установление PPPoE-соединения</span>. </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5241" class="footnote"><p><a href="#id5241" class="para"><sup class="para">[22] </sup></a> О том, как добавлять загрузочные параметры, см. <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Экран запуска">Раздел 5.1.5, «Экран запуска»</a> </p></div>
+<div id="ftn.id5247" class="footnote"><p><a href="#id5247" class="para"><sup class="para">[23] </sup></a> Компонента <code class="classname">ppp-udeb</code> загружается на этом этапе как одна из дополнительных компонент. При выполнении установки со средним или низким приоритетом (экспертный режим), можно вручную выбрать <code class="classname">ppp-udeb</code>, а не вводить параметр <span class="quote">«<span class="quote">modules</span>»</span> в строке приглашения к загрузке. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. Установка Debian GNU/Linux через Parallel Line IP (PLIP) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> Приложение E. Общие сведения</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

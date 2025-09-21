@@ -1,0 +1,105 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Configurar tu sistema para utilizar el correo electrónico</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="ch08.html" title="Capítulo 8. Siguientes pasos y dónde continuar">
+<link rel="prev" href="ch08s03.html" title="8.3. Lectura e información adicional">
+<link rel="next" href="ch08s05.html" title="8.5. Compilar un nuevo núcleo">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Configurar tu sistema para utilizar el correo electrónico</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 8. Siguientes pasos y dónde continuar</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Configurar tu sistema para utilizar el correo electrónico</h2></div></div></div>
+<p>Actualmente, el correo electrónico es una parte muy importante de la vida de muchas personas. Dado que hay muchas opciones para configurarlo y que para algunas herramientas de Debian es importante tener el sistema de correo configurado, intentamos cubrir lo básico en esta sección. </p>
+<p>Hay tres elementos principales que forman parte de los sistemas de correo electrónico. En primer lugar está el <em class="firstterm">Agente de usuario de correo</em> (MUA) que es el programa que el usuario utiliza para escribir y leer el correo. Después está el <em class="firstterm">Agente de transporte de correo</em> (MTA), que se encarga de transferir los mensajes de un sistema a otro. Y por último está el <em class="firstterm">Agente de entrega de correo</em> (MDA) que se encarga de transferir el correo entrante al buzón del usuario. </p>
+<p>Estas tres funciones las pueden realizar programas distintos, pero también pueden combinarse en uno o dos programas. También es posible tener distintos programas que gestionen estas funciones para diferentes tipos de correo. </p>
+<p>En el caso de Linux y sistemas Unix <span class="command"><strong>mutt</strong></span> ha sido siempre históricamente un MUA muy popular. Como la mayoría de los programas tradicionales en Linux, es un programa en modo texto. Muchas veces se utiliza conjuntamente con <span class="command"><strong>exim</strong></span> o <span class="command"><strong>sendmail</strong></span> como MTA y con <span class="command"><strong>procmail</strong></span> como MDA. </p>
+<p>Al hacerse cada vez más populares los entornos de escritorio gráficos también se han hecho populares los programas gráficos para el correo electrónico como <span class="command"><strong>evolution</strong></span> de GNOME, <span class="command"><strong>kmail</strong></span> de KDE o <span class="command"><strong>thunderbird</strong></span> de Mozilla. Estos programas combinan la función MUA, MTA y MDA, pero pueden — y a veces — se combina con las herramientas de Linux tradicionales. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Configuración de correo electrónico por defecto</h3></div></div></div>
+<p>Incluso si planeas usar un programa de correo gráfico, sería útil tener un MTA/MDA tradicional instalado y configurado correctamente en tu sistema Debian GNU/Linux. La razón principal es que algunas herramientas que se ejecutan en el sistema<a href="#ftn.id3687" class="footnote" name="id3687"><sup class="footnote">[16]</sup></a> pueden tener que enviar información mediante el correo electrónico para informar al administrador del sistema de problemas (potenciales) o de cambios que se han producido. </p>
+<p>Para esto puedes instalar los paquetes <code class="classname">exim4</code> y <code class="classname">mutt</code> con <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> es una combinación de MTA/MDA que es relativamente pequeño y muy flexible. La configuración por omisión hará que trate solamente el correo local al sistema y envíe los correos dirigidos al administrador del sistema (usuario root) a la cuenta de usuario creada durante la instalación<a href="#ftn.id3698" class="footnote" name="id3698"><sup class="footnote">[17]</sup></a>. </p>
+<p>Cuando se envían correos del sistema se guardan en el fichero <code class="filename">/var/mail/<em class="replaceable"><code>nombre_de_la_cuenta</code></em></code>. Estos correos electrónicos se pueden leer con <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Enviar correo electrónico fuera del sistema</h3></div></div></div>
+<p>Como ya se ha mencionado, al instalar un sistema Debian sólo está configurado para gestionar el correo electrónico de forma local en el sistema, no para enviar correo ni recibir correos de otros. </p>
+<p>Si deseas que <code class="classname">exim4</code> gestione correo externo deberás seguir las indicaciones que se describen en la siguiente sección que describen las opciones de configuración básicas. Asegúrate de probar que se puede enviar y recibir el correo correctamente. </p>
+<p>Si vas a utilizar un programa de correo gráfico y vas a utilizar el servidor de correo de tu proveedor de servicios a Internet ( ISP), o el servidor de correo de tu compañía, no necesitas configurar <code class="classname">exim4</code> para gestionar el correo externo. Sólo debes configurar tu programa de correo electrónico favorito para que use los servidores apropiados para enviar y recibir correo (describir cómo hacerlo se sale del ámbito de este manual). </p>
+<p>En este caso, sin embargo, posiblemente tengas que configurar herramientas individuales para enviar correctamente correos electrónicos. Una de estas utilidades es <span class="command"><strong>reportbug</strong></span>, un programa que facilita el envío de informes de error de paquetes Debian. Este programa, por omisión, espera poder utilizar <code class="classname">exim4</code> para realizar el envío de los informes de error. </p>
+<p>Para configurar correctamente <span class="command"><strong>reportbug</strong></span> para que use un servidor de correo externo, ejecuta la orden <span class="command"><strong>reportbug --configure</strong></span> y responde <span class="quote">“<span class="quote">no</span>”</span> cuando pregunte si hay un MTA disponible. A continuación te preguntará qué servidor SMTP se debe utilizar para enviar informes de error. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Configurar el agente de transporte de correo Exim4</h3></div></div></div>
+<p>Si quieres que tu sistema gestione correo electrónico externo, deberás reconfigurar el paquete <code class="classname">exim4</code> <a href="#ftn.id3723" class="footnote" name="id3723"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Después de ejecutar esta orden (como root), te preguntará si quieres o no separar la configuración en múltiples ficheros pequeños. Selecciona la opción por omisión si no estás seguro. </p>
+<p>A continuación, te presentará distintos escenarios habituales. Elige aquél que se aproxime más a tus necesidades: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">sitio en Internet</span></dt>
+<dd><p>Tu equipo está conectado a una red y envía y recibe correo directamente a través de SMTP. En las siguientes pantallas te hará preguntas básicas incluyendo el nombre de correo de tu equipo, o la lista de dominios para los que aceptas o reenvías correos. </p></dd>
+<dt><span class="term">se envía el correo a través de una pasarela</span></dt>
+<dd>
+<p>En este escenario tu correo saliente se reenvía a través de otro equipo llamado <span class="quote">“<span class="quote">pasarela</span>”</span> que se encarga de gestionar tu correo. La pasarela generalmente también almacenará el correo entrante dirigido a tu equipo, así no es necesario que estés permanentemente conectado. Eso quiere decir que tendrás que descargar tu correo de la pasarela con un programa como fetchmail. </p>
+<p>En muchos casos la pasarela será tu servidor de correo ISP, lo que hace que esta opción sea la más apropiada para los usuarios que utilicen acceso remoto a redes. También puede ser un servidor de correo de empresa o incluso otro sistema en tu misma red. </p>
+</dd>
+<dt><span class="term">correo enviado a través de smarhost; no hay correo local</span></dt>
+<dd><p>Esta opción es básicamente igual que la anterior excepto que el sistema no se configurará para utilizar correo de un dominio local de correo electrónico. Se seguirá gestionando el correo del propio sistema (como por ejemplo, el del administrador del sistema). </p></dd>
+<dt><span class="term">solamente entrega local</span></dt>
+<dd><p>Esta es la opción que se configura por omisión en tu sistema. </p></dd>
+<dt><span class="term">sin configuración de momento</span></dt>
+<dd><p>Elige esta opción si estás absolutamente seguro de lo que estás haciendo. Esto dejará sin configurar tu sistema — hasta que lo hagas. Esto implica que el sistema no podrá enviar o recibir correo y puede que no recibas algún aviso importante enviado por correo de las herramientas del sistema. </p></dd>
+</dl></div>
+<p>Si ninguno de estos escenarios se ajusta a tus necesidades, o si necesitas una configuración más detallada, tendrás que editar los archivos de configuración en el directorio <code class="filename">/etc/exim4</code> una vez completada la instalación. Puedes encontrar más información sobre <code class="classname">exim4</code> en <code class="filename">/usr/share/doc/exim4</code>; el archivo
+<code class="filename">README.Debian.gz</code> tiene más detalles sobre la configuración de <code class="classname">exim4</code> y explica donde encontrar documentación adicional. </p>
+<p>Ten en cuenta que el envío de correos directamente a Internet sin tener un nombre de dominio oficial, puede hacer que rechacen tu correo por las medidas anti-spam implementadas en los servidores que lo reciben. Lo preferible es utilizar el servidor de correo de tu ISP. En el caso de que sí desees enviar correos directamente, deberías usar un nombre de dirección de correo distinta de la que se genera por omisión. Si usas <code class="classname">exim4</code> como tu MTA , eso es posible añadiendo una entrada en <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3687" class="footnote"><p><a href="#id3687" class="para"><sup class="para">[16] </sup></a> ejemplos: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3698" class="footnote"><p><a href="#id3698" class="para"><sup class="para">[17] </sup></a> El reenvío del correo root a una cuenta normal de usuario se configura en <code class="filename">/etc/aliases</code>. Si no hay ninguna cuenta de usuario el correo se enviará a la propia cuenta del usuario «root». </p></div>
+<div id="ftn.id3723" class="footnote"><p><a href="#id3723" class="para"><sup class="para">[18] </sup></a> Puedes, por supuesto, eliminar <code class="classname">exim4</code> y reemplazarlo por un MTA/MDA alternativo. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Lectura e información adicional </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Compilar un nuevo núcleo</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

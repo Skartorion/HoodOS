@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Skapa en förkonfigurationsfil</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="apb.html" title="Appendix B. Automatiserad installation med förinställningar">
+<link rel="prev" href="apbs02.html" title="B.2. Användning av förinställningar">
+<link rel="next" href="apbs04.html" title="B.4. Innehållet av en förkonfigurationsfil (för trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Skapa en förkonfigurationsfil</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Appendix B. Automatiserad installation med förinställningar</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Skapa en förkonfigurationsfil</h2></div></div></div>
+<p>Förkonfigurationsfilen är i samma format som används av kommandot <span class="command"><strong>debconf-set-selections</strong></span>. Det allmänna formatet för en rad i en förkonfigurationsfil är: </p>
+<div class="informalexample"><pre class="screen">&lt;ägare&gt; &lt;frågans namn&gt; &lt;frågetyp&gt; &lt;värde&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Denna fil ska börja med <code class="literal">#_preseed_V1</code> </p>
+<p>Det finns ett par regler att ha i åtanke när man skriver en förkonfigurationsfil. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Lägg endast till ett enda blanksteg eller tabulatortecken mellan typ och värde: eventuella tomrum kommer att tolkas som om de tillhör värdet. </p></li>
+<li class="listitem"><p>En rad kan vara uppdelad i flera rader genom att lägga till ett omvänt snedstreck på slutet (<span class="quote">”<span class="quote"><code class="literal">\</code></span>”</span>) som ett radfortsättningstecken. En bra plats att dela en rad är efter frågenamnet; en dålig plats är mellan typ och värde. Delade rader kommer att sammanfogas till en enda rad med alla inledande/avslutade tomrum ihopslagna till ett enda blanksteg. </p></li>
+<li class="listitem"><p>För debconf-variabler (mallar) som endast används i själva installationsprogrammet bör ägaren ställas in till <span class="quote">”<span class="quote">d-i</span>”</span>; för förinställningsvariabler som används i det installerade systemet bör namnet på paketet som innehåller motsvarade debconf-mall användas. Endast variabler som har sina ägare inställda till någonting annat än <span class="quote">”<span class="quote">d-i</span>”</span> kommer att propageras till debconf-databasen för det installerade systemet. </p></li>
+<li class="listitem"><p>De flesta frågor behöver förinställdas med giltiga värden på engelska och inte med översatta värden. Dock finns det några frågor (till exempel i <code class="classname">partman</code>) där översatta värden måste användas. </p></li>
+<li class="listitem"><p>Vissa frågor tar en kod som ett värde istället för den engelska texten som visas under installationen. </p></li>
+<li class="listitem"><p>Börja med <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>En kommentar består av en rad som <span class="emphasis"><em>börjar</em></span> med ett hashtecken (<span class="quote">”<span class="quote"><code class="literal">#</code></span>”</span>) och sträcker sig upp till längden på den raden. </p></li>
+</ul></div>
+<p>Det enklaste sättet att skapa en förkonfigurationsfil på är att använda exempelfilen som länkas i <a class="xref" href="apbs04.html" title="B.4. Innehållet av en förkonfigurationsfil (för trixie)">Avsnitt B.4, ”Innehållet av en förkonfigurationsfil (för trixie)”</a> som grund och arbeta vidare därifrån. </p>
+<p>En alternativ metod är att göra en manuell installation och sedan, efter omstart, använda <span class="command"><strong>debconf-get-selections</strong></span> från paketet <code class="classname">debconf-utils</code> för att dumpa både debconf-databasen och installationsprogrammets cdebconf-databas till en enda fil: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Dock, en fil som genereras på detta sätt kommer att ha några poster som inte bör förinställas, och exempelfilen är en bättre startpunkt för de flesta användare. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Denna metod förlitar sig på att vid slutet av installationen, sparas installationsprogrammets cdebconf-databas till det installerade systemet i <code class="filename">/var/log/installer/cdebconf</code>. Dock, på grund av att databasen kan innehålla känslig information, är filerna som standard endast läsbara av root. </p>
+<p>Katalogen <code class="filename">/var/log/installer</code> och alla filer i den kommer att tas bort från ditt system om du rensar ut paketet <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>För att kontrollera möjliga värden för frågor kan du använda <span class="command"><strong>nano</strong></span> för att undersöka filerna i <code class="filename">/var/lib/cdebconf</code> under tiden en installation pågår. Se <code class="filename">templates.dat</code> för de råa mallarna och <code class="filename">questions.dat</code> för de aktuella värdena och för de värden som tilldelas till variabler. </p>
+<p>För att kontrollera om formatet på din förkonfigurationsfil är giltigt före en installation genomförs, kan du använda kommandot <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Användning av förinställningar </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Innehållet av en förkonfigurationsfil (för trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

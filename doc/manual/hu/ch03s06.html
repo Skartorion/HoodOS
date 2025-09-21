@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Telepítés-előtti hardver és operációs rendszer beállítás</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch03.html" title="3. fejezet - A Debian GNU/Linux telepítése előtt">
+<link rel="prev" href="ch03s05.html" title="3.5. Több-rendszeres gép elő-particionálása">
+<link rel="next" href="ch04.html" title="4. fejezet - Rendszertelepítési adathordozó beszerzése">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Telepítés-előtti hardver és operációs rendszer beállítás</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">3. fejezet - A Debian GNU/Linux telepítése előtt</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Telepítés-előtti hardver és operációs rendszer beállítás</h2></div></div></div>
+<p>E szakasz végigvisz a telepítés-előtti hardver beállításon, ha van, ami szükséges a Debian telepítése előtt. Általában ellenőrizzük, és ha kell cseréljük a BIOS/UEFI/rendszer firmware beállításokat. A <span class="quote">„<span class="quote">BIOS/UEFI</span>”</span>, vagy <span class="quote">„<span class="quote">rendszer firmware</span>”</span> a hardverbe épített mag szoftver; általában az indítási folyamatban játszik szerepet (a bekapcsolás után). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. A BIOS/UEFI beállító menü behívása</h3></div></div></div>
+<p>A BIOS/UEFI a szükséges eszközöket adja a gép indításához, és lehetővé teszi az operációs rendszer számára, hogy hozzáférjen a hardverhez. A rendszereden van egy BIOS/UEFI beállító menü, mellyel a BIOS/UEFI konfigurálható. Ez gyakran a <span class="keycap"><strong>Delete</strong></span>, vagy az <span class="keycap"><strong>F2</strong></span> billentyű, de egyes gyártók más billentyűket vagy kombinációkat használhatnak. Általában a gép indításakor ki lesz írva, hogy melyik billentyű lenyomásával juthatsz a beállító képernyőre. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Indító eszköz választás</h3></div></div></div>
+<p>A BIOS/UEFI menün belül megadhatod, hogy milyen eszközöket és milyen sorrendben nézzen végig indítható operációs rendszert keresve. A lehetséges választások között általában megtalálható a beépített merevlemez, CD/DVD meghajtó, USB adathordozók, mint a pendrive és a külső merevlemezek. Modern rendszereken gyakran meg lehet adni hálózati indítást is PXE segítségével. </p>
+<p>A választott telepítő adathordozótól függően (CD/DVD, pendrive, hálózati indítás) engedélyezned kell a megfelelő indító eszközt, ha még nincs engedélyezve. </p>
+<p>A legtöbb BIOS/UEFI verzió lehetővé teszi az indító menü elérését a rendszer indulásakor, ahol kiválaszthatod melyik eszközről szeretnél épp indítani. Ha ez a lehetőség elérhető, a BIOS általában kiír egy rövid üzenetet, mint <span class="quote">„<span class="quote">nyomd le az <span class="keycap"><strong>F12</strong></span> billentyűt az indító menühöz</span>”</span>. A konkrét billentyű eltérhet rendszerről rendszerre; gyakran használatos az <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> és az <span class="keycap"><strong>F8</strong></span>. Egy eszköz kiválasztása nem módosítja az BIOS/UEFI alap indító sorrendjét, tehát indíthatsz pendrive-ról attól még, hogy a belső merevlemezt adtad meg az elsődleges indítónak. </p>
+<p>Ha a BIOS-od illetve UEFI-d nem ad indító menüt az esetenkénti indító eszköz meghatározására, meg kell változtatnod a BIOS/UEFI beállítást, hogy az legyen az elsődleges indító eszköz, amiről a <code class="classname">debian-installer</code>-t szeretnéd indítani. </p>
+<p>Sajnos néhány gép BIOS/UEFI verziójában előforduhatlnak hibák. A <code class="classname">debian-installer</code> pedrive-ról indítása meghiúsulhat akkor is, ha van ehhez megfelelő opció a BIOS/UEFI beállító menüben, és a pendrive elsődleges indító eszközként van megjelölve. Néhány ilyen rendszerről nem lehetséges pendrive-ról indítani, másokkal lehet úgy trükközni, hogy mégis elindítsa: a BIOS/UEFI beállítóban az alapértelmezett <span class="quote">„<span class="quote">USB harddisk</span>”</span> vagy <span class="quote">„<span class="quote">USB stick</span>”</span> helyett legyen <span class="quote">„<span class="quote">USB ZIP</span>”</span> vagy <span class="quote">„<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> Tehát ha isohybrid telepítő képet használsz pendrive-on (lásd <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. USB meghajtó előkészítése hibrid CD/DVD képfájl használatával">4.3.1. szakasz - USB meghajtó előkészítése hibrid CD/DVD képfájl használatával</a>), az eszköz típusát <span class="quote">„<span class="quote">USB CDROM</span>”</span>-ra változtatva megoldhatók azok az esetek, amikor a BIOS nem hajlandó pendrive-ról indítani USB merevlemez módban.</span> Előfordulhat, hogy BIOS/UEFI-ben külön engedélyezni kell az <span class="quote">„<span class="quote">USB legacy support</span>”</span> opciót. </p>
+<p>Ha nem tudsz úgy trükközni, hogy a BIOS/UEFI közvetlenül a pendrive-ról indítson, még mindig megteheted, hogy felhasználod a rajta levő ISO fájlt. A <code class="classname">debian-installer</code> -t indítsd <a class="xref" href="ch04s04.html" title="4.4. Fájlok előkészítése merevlemezről történő bootoláshoz">4.4. szakasz - Fájlok előkészítése merevlemezről történő bootoláshoz</a> használatával, majd miután végignézte a merevlemezeket telepítő ISO képért, válaszd ki az USB eszközt, és jelöld ki a telepítő képet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. UEFI firmware-ű rendszerek</h3></div></div></div>
+<p>Az UEFI (<span class="quote">„<span class="quote">Unified Extensible Firmware Interface</span>”</span>) egy új fajta rendszer-firmware, amelyet sok modern rendszer használ, és többek között a hagyományos PC BIOS leváltására szánják. </p>
+<p>Jelenleg a legtöbb UEFI-t használó PC rendszernek van egy úgynevezett <span class="quote">„<span class="quote">Compatibility Support Module</span>”</span> (CSM) modulja a firmware-ében, amely pontosan ugyanazt az interfészt bitosítja az operációs rendszerek számára, mint a hagyományos PC BIOS, hogy a hagyományos PC BIOS-ra írt szoftverek változtatás nélkül továbbra is használhatóak legyen. Ettől függetlenül az UEFI célja továbbra is az, hogy egyszer majd teljesen leváltsa a régi PC BIOS-t visszafele-kompatibilitás nélkül, és már most is sok olyan UEFI-s renszer van, aminek nincs CSM-je. </p>
+<p>UEFI-s rendszereken néhány dologra figyelni kell operációs rendszer telepítésekor. A hagyományos BIOS (vagy UEFI CSM-mel) alapvetően más módon tölti be az operációs rendszert, mint a natív UEFI. Az egyik fő különbség a merevlemez-partíciók feljegyzésének módja a merevlemezen. Míg a hagyományos BIOS és a CSM-módban működő UEFI DOS-partíciótáblát használ, a natív UEFI egy másik fajta partícionálási módszert használ, amelyet <span class="quote">„<span class="quote">GUID Partition Table</span>”</span>-nek (GPT) hívnak. Egy lemezen gyakorlatban egyszerre csak az egyik módszer használható, ezért ha több operációs rendszer van telepítve ugyanarra a lemezre, mindegyiknek ugyanolyan fajta partíciótáblát kell használnia. GPT-vel csak natív UEFI-módban lehetséges a rendszer-indítás, viszont a GPT használata egyre elterjedtebbé válik, mivel a hagyományos DOS-partíciótábla nem használható kb 2 terabájtnál nagyobb lemezek esetén, míg a GPT ennél sokkal nagyobb lemezekre is működik. A másik fontos különbség a BIOS (vagy UEFI CSM-mel) és a natív UEFI között a boot kód helye és formátuma. Ez azt jelenti, hogy a minden rendszerhez külünböző rendszer-betöltő szükséges. </p>
+<p>Ez utóbbi akkor válik fontossá, amikor a <code class="classname">debian-installer</code> -t egy CSM-et haszáló UEFI rendszeren akarjuk indítani, mert a <code class="classname">debian-installer</code> ellenőrzi, hogy BIOS-os vagy natív UEFI-s rendszren van-e elindítva, és ez alapján telepíti a megfeleló rendszer-betöltőt. Általában ez gond nélkül működik, de olyan környezetekben, ahol egyszerre több operációs rendszer van telepítve problámák adódhatnak. Bizonyos CSM-et használó UEFI-s rendszreken a merevlemez és a külső eszközök esetén használt alapértelmezett rendszerindítási mód különbözik. Tehát ha a telepítőt pendrive-ról futtatjuk, de más módban, mint ami a merevlemezre már korábban telepített operációs rendszerek indításához használatos, akkor véletlenül a rossz rendszerbetöltő települhet és telepítés után az egész rendszer használhatatlanná válhat. A firmware rendszerindítási menüjében bizonyos rendszerek esetén minden eszköznél két különböző opció közül lehet választani, hogy a felhasználó eldönthesse, a rendszerindítás CSM vagy natív UEFI módban történjen-e. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Secure boot („biztonságos rendszer-indítás”)</h3></div></div></div>
+<p>Egy másik UEFI-vel kapcsolatos téma az úgynevezett <span class="quote">„<span class="quote">secure boot</span>”</span> („biztonságos rendszer-indítás”) mechanizmus. A secure boot az UEFI implementációknak egyik funkciója, amely lehetővé teszi, hogy a firmware csak a megfelelő kulccsal kriptografikusan aláírt kódot töltsön be illetve hatson végre, ezáltal blokkolva minden (potenciálisan rosszindulatú) aláíratlan vagy nem megfelelő kulccsal aláírt rendszerindító kódot. Gyakorlatban a legtöbb UEFI-s rendszer alapértelmezetten csak a Windows rendszerbetöltőjéhez használt Microsoft-os kulcsokat foadja el secure boot-hoz. Debian tartalmaz egy Microsoft által aláírt <span class="quote">„<span class="quote">shim</span>”</span> („ál-”) rendszerbetöltőt, ami elvileg helyesen működik minden rendszeren, ahol a secure boot be van kapcsolva. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. A Windwos <span class="quote">„<span class="quote">gyors indítás</span>”</span> funciójának kikapcsolása</h3></div></div></div>
+<p>Widows-on elérhető egy <span class="quote">„<span class="quote">gyors indítás</span>”</span> nevű funkció, amely a rendszer-indítási idő lerövidítésére szolgál. Ha ez a funkció be van kapcsolva, akkor a Windows igazából nem áll le teljesen, amikor kikapcsolásra utasítjuk, illetve után igazából nem nulláról indul; hanem inkább csak részlegesen felfüggeszti magát a gyorsabb <span class="quote">„<span class="quote">boot</span>”</span> érdekében. Ez nem okoz gondot, amíg a Windows az egyetlen operációs rendszer a gépen. Viszont ha több operációs rendszer is van telepítve ugyanarra a gépre úgy, hogy mindegyiknek hozzáférése van ugyanahhoz a fájlrendszerhez, mint a Windows-nak, akkor problémák merülhetnek fel és akár adatvesztéshez is vezethet. Ilyen esetben a fájlrendszer valós állapota különböző lehet attól, mint amire a Windows számít <span class="quote">„<span class="quote">boot</span>”</span> után, és ez a fájlrendszer korrupciójához vezethet újabb a fájlrendszerbe történő írást követően. Ezért ilyen esetben a fájlrendszer korrupciójának elkerülése érdekében a <span class="quote">„<span class="quote">gyors indítás</span>”</span> opciót mindenképpen kapcsoljuk ki Windows-ban. </p>
+<p>Sőt mi több, a Windows frissítési mechanismusa (néha) autómatikusan újra bekapcsolja ezt a funkciót, miután a felahasználó korábban kiakpcsolta. Ajánlott időnként ellenőrizni, hogy tényleg ki van-e kapcsolva. </p>
+<p>Ahhoz is szükséges lehet kikapcsolni a <span class="quote">„<span class="quote">gyors indítás</span>”</span> -t, hogy egyáltalán hozzáférhessünk az UEFI menühöz, amikor egy másik operációs rendszert vagy a <code class="classname">debian-installer</code> -t akarjuk elindítani. Bizonyos UEFI-s rendszreken a firmware úgy csökkenti az <span class="quote">„<span class="quote">indítási</span>”</span> időt, hogy nem inicializálja a billentyűzet vagy az USB hardvert. Ilyen esetekben be kell lépni Windows-ba, hogy kikapcsolhassuk ezt a funkciót és így megváltoztathassuk a rendszerindítási sorrendet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Kivédendő hardver gondok</h3></div></div></div>
+<p><b>USB BIOS támogatás és billentyűzetek. </b>Ha nincs PS/2 stílusú billentyűzeted csak USB-s, néhány nagyon régi gépen lehet, hogy be kell kapcsolni a régi billentyűzet emulációt a BIOS beállításban, hogy tudd használni a billentyűzetedet a boot betöltő menünél. Modern rendszereken ez nem probléma. Ha a billentyűzeted nem működik a boot betöltő esetén, nézd meg az alaplap kézikönyvét és a BIOS-ban keresd a <span class="quote">„<span class="quote">Régi billentyűzet emuláció</span>”</span> vagy <span class="quote">„<span class="quote">USB billentyűzet támogatás</span>”</span> opciókat. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Több-rendszeres gép elő-particionálása </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 4. fejezet - Rendszertelepítési adathordozó beszerzése</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Das System zur E-Mail-Nutzung einrichten</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch08.html" title="Kapitel 8. Die nächsten Schritte und welche Seiten Sie noch besuchen sollten">
+<link rel="prev" href="ch08s03.html" title="8.3. Wo Sie weiter lesen sollten – zusätzliche Informationen">
+<link rel="next" href="ch08s05.html" title="8.5. Einen neuen Kernel kompilieren">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Das System zur E-Mail-Nutzung einrichten</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 8. Die nächsten Schritte und welche Seiten Sie noch besuchen sollten</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Das System zur E-Mail-Nutzung einrichten</h2></div></div></div>
+<p>Heutzutage ist E-Mail für viele Leute ein sehr wichtiger Teil des Lebens. Da es viele Optionen bei der Einrichtung gibt und es für viele Debian-Werkzeuge wichtig ist, dass das E-Mail-System korrekt konfiguriert ist, werden wir versuchen, in diesem Kapitel die Grundlagen zu behandeln. </p>
+<p>Das E-Mail-System besteht aus drei Hauptfunktionen. Als erstes gibt es den <em class="firstterm">Mail User Agent (MUA)</em>, das Programm, das man als Benutzer verwendet, um Mails zu verfassen und zu lesen. Dann gibt es den <em class="firstterm">Mail Transfer Agent (MTA)</em>, der sich um den Versand der Nachrichten von einem Rechner auf einen anderen kümmert. Und zu guter Letzt gibt es den <em class="firstterm">Mail Delivery Agent (MDA)</em>, der ankommende Mails in die Postfächer der Benutzer einsortiert. </p>
+<p>Diese drei Funktionen können von separaten Programmen erledigt werden, aber sie können auch in ein oder zwei Programmen kombiniert sein. Es ist ebenfalls möglich, dass diese Funktionen bei verschiedenen Mail-Typen von unterschiedlichen Programmen ausgeführt werden. </p>
+<p>Auf Linux- und Unix-Systemen war <span class="command"><strong>mutt</strong></span> immer ein sehr populärer MUA. Wie die meisten traditionellen Linux-Programme ist er textbasiert. Er wird oft in Kombination mit den MTAs <span class="command"><strong>exim</strong></span> oder <span class="command"><strong>sendmail</strong></span> und mit <span class="command"><strong>procmail</strong></span> als MDA verwendet. </p>
+<p>Mit zunehmender Popularität der grafischen Benutzeroberflächen werden auch die grafischen E-Mail-Programme wie GNOMEs <span class="command"><strong>evolution</strong></span>, KDEs <span class="command"><strong>kmail</strong></span> oder Mozillas <span class="command"><strong>thunderbird</strong></span> immer beliebter. Diese Programme kombinieren alle Funktionen von MUA, MTA und MDA, können aber auch in Kombination mit den traditionellen Debian GNU/Linux-Werkzeugen verwendet werden – und dies ist auch durchaus üblich. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Standard-E-Mail-Konfiguration</h3></div></div></div>
+<p>Auch wenn Sie vorhaben, ein grafisches Mail-Programm zu verwenden, wäre es nützlich, dass auch ein traditioneller MTA/MDA installiert und korrekt auf Ihrem Debian GNU/Linux-System eingerichtet ist. Der Grund hierfür ist, dass verschiedene Systemwerkzeuge<a href="#ftn.id3715" class="footnote" name="id3715"><sup class="footnote">[16]</sup></a>, die auf dem System laufen, Ihnen wichtige Informationen per E-Mail schicken könnten, um Ihnen von (potentiellen) Problemen oder Veränderungen zu berichten. </p>
+<p>Sie können dazu die Pakete <code class="classname">exim4</code> und <code class="classname">mutt</code> mittels <span class="command"><strong>apt install exim4 mutt</strong></span> installieren. <code class="classname">exim4</code> ist eine Kombination aus MTA und MDA; er ist relativ klein und sehr flexibel. Standardmäßig wird er so konfiguriert, dass nur E-Mails lokal auf dem System selbst verarbeitet werden und Mails an den Systemadministrator (root) werden an den regulären Benutzer weitergeleitet, der während der Installation erstellt wurde<a href="#ftn.id3726" class="footnote" name="id3726"><sup class="footnote">[17]</sup></a>. </p>
+<p>Mails, die innerhalb des Systems verschickt werden, werden zu einer Datei in <code class="filename">/var/mail/<em class="replaceable"><code>Name</code></em></code> hinzugefügt. Sie können mit <span class="command"><strong>mutt</strong></span> gelesen werden. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. E-Mails nach außerhalb verschicken</h3></div></div></div>
+<p>Wie vorher erwähnt, ist das Debian-System so konfiguriert, dass E-Mails nur lokal auf dem System verarbeitet werden, nicht zum Verschicken nach außerhalb oder zum Empfangen von außerhalb. </p>
+<p>Falls Sie möchten, dass <code class="classname">exim4</code> externe E-Mails verarbeitet, finden Sie im nächsten Abschnitt Infos über die grundlegenden verfügbaren Optionen. Testen Sie, ob Mails korrekt versendet oder empfangen werden können. </p>
+<p>Wenn Sie vorhaben, ein grafisches Mail-Programm zu benutzen und einen Mailserver Ihres Internet-Providers (ISP) oder Ihrer Firma verwenden, ist es nicht unbedingt nötig, <code class="classname">exim4</code> für die Handhabung von externen E-Mails zu konfigurieren. Sie müssen dann lediglich das grafische Mail-Programm Ihrer Wahl so einrichten, dass die richtigen Server für das Senden und Empfangen von Mails genutzt werden (wie das geht, ist nicht Thema dieses Handbuchs). </p>
+<p>Allerdings müssen Sie dann unter Umständen viele verschiedene Programme passend konfigurieren. Eines dieser Programme ist <span class="command"><strong>reportbug</strong></span>, ein Werkzeug, dass Ihnen hilft, Fehlerberichte gegen Debian-Pakete einzureichen. Standardmäßig erwartet <span class="command"><strong>reportbug</strong></span>, dass es <code class="classname">exim4</code> zum Verschicken von Fehlerberichten verwenden kann. </p>
+<p>Um <span class="command"><strong>reportbug</strong></span> für die Verwendung mit einem externen Mail-Server einzurichten, führen Sie bitte <span class="command"><strong>reportbug --configure</strong></span> aus und antworten Sie mit <span class="quote">„<span class="quote">No</span>“</span> auf die Frage, ob ein MTA verfügbar ist. Sie werden dann nach dem zu verwendenden SMTP-Server gefragt. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Den Mail-Transport-Agent Exim4 konfigurieren</h3></div></div></div>
+<p>Wenn Sie möchten, dass Ihr System auch externe E-Mails verarbeitet, müssen Sie das Paket <code class="classname">exim4</code> neu konfigurieren<a href="#ftn.id3752" class="footnote" name="id3752"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Nach der Eingabe des Kommandos (als root) werden Sie gefragt, ob Sie die Konfiguration in mehrere kleine Dateien aufsplitten möchten. Wenn Sie nicht sicher sind, wählen Sie die Standardeinstellung. </p>
+<p>Als nächstes werden mehrere allgemeine Mail-Szenarien angezeigt. Wählen Sie eines, das Ihren Bedürfnissen am ehesten entspricht. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Internet-Seite</span></dt>
+<dd><p>Ihr System ist mit einem Netzwerk verbunden und Ihre Mails werden direkt per SMTP verschickt und empfangen. Auf den folgenden Seiten werden Sie nach ein paar Basisinformationen gefragt, wie dem Mail-Namen Ihres Rechners oder einer Liste von Domains, für die Sie Mails akzeptieren oder weiterleiten möchten. </p></dd>
+<dt><span class="term">Mail-Versand über einen Smarthost</span></dt>
+<dd>
+<p>In diesem Szenario wird Ihre ausgehende Mail an einen anderen Rechner, <span class="quote">„<span class="quote">Smarthost</span>“</span> genannt, weitergeleitet, der sich darum kümmert, die Mails an ihr Ziel zu versenden. Der Smarthost speichert für gewöhnlich auch ankommende Mails, die für Ihren Rechner bestimmt sind, so dass Sie nicht ständig online sein müssen. Das bedeutet auch, dass Sie Ihre Mails mit Programmen wie fetchmail vom Smarthost abholen müssen. </p>
+<p>In vielen Fällen wird der Smarthost der Mail-Server Ihres Internet-Providers (ISP) sein. Deswegen ist diese Option genau passend für Nutzer, die sich per Modem-Einwahl o.ä. mit dem Internet verbinden). Der Smarthost kann auch der Mail-Server Ihrer Firma sein oder ein anderer Rechner in Ihrem eigenen Netzwerk. </p>
+</dd>
+<dt><span class="term">Mail-Versand über einen Smarthost; keine lokale Mail-Zustellung</span></dt>
+<dd><p>Diese Option ist grundsätzlich identisch mit der vorherigen mit der Ausnahme, dass hier das System nicht eingerichtet wird, Mails für eine lokale E-Mail-Domain zu verarbeiten. Mails innerhalb des lokalen Systems selbst (z.B. für den Systemadministrator) werden trotzdem verarbeitet. </p></dd>
+<dt><span class="term">Nur lokale Mail-Zustellung</span></dt>
+<dd><p>Dies ist die Standard-Mail-Konfiguration für Ihr System. </p></dd>
+<dt><span class="term">Keine Konfiguration zu diesem Zeitpunkt</span></dt>
+<dd><p>Wählen Sie dies nur, wenn Sie sich absolut sicher sind, was Sie tun. Sie haben anschließend ein unkonfiguriertes Mail-System – bis Sie es konfigurieren, sind Sie nicht in der Lage, Mails zu senden oder zu empfangen und könnten so wichtige Meldungen von den Systemprogrammen Ihres Rechners verpassen. </p></dd>
+</dl></div>
+<p>Wenn keines dieser Szenarien für Sie passend ist oder wenn Sie eine feinere Einstellung benötigen, müssen Sie die Konfigurationsdateien im Verzeichnis <code class="filename">/etc/exim4</code> manuell anpassen, nachdem die Installation beendet ist. Mehr Informationen über <span class="command"><strong>exim4</strong></span> finden Sie unter <code class="filename">/usr/share/doc/exim4</code>; die Datei <code class="filename">README.Debian.gz</code> enthält zusätzliche Details über die Konfiguration von <code class="classname">exim4</code> und beschreibt, wo Sie weitere Dokumentation finden. </p>
+<p>Bedenken Sie, dass Ihre Mails aufgrund von Anti-Spam-Maßnahmen auf empfangenden Servern verworfen (gelöscht) werden könnten, wenn Sie sie direkt über das Internet versenden und keinen offiziellen Domain-Namen haben. In diesem Fall wird empfohlen, den Mail-Server Ihres Internet-Providers (ISP) zu benutzen. Möchten Sie trotzdem Mails direkt versenden, sollten Sie vielleicht eine andere E-Mail-Adresse verwenden als die, die als Standard generiert wird. Für <code class="classname">exim4</code> als MTA ist dies möglich, indem Sie einen Eintrag in <code class="filename">/etc/email-addresses</code> hinzufügen. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3715" class="footnote"><p><a href="#id3715" class="para"><sup class="para">[16] </sup></a> Beispiele sind <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3726" class="footnote"><p><a href="#id3726" class="para"><sup class="para">[17] </sup></a> Die Weiterleitung der Mails für root an den regulären Benutzer wird in <code class="filename">/etc/aliases</code> konfiguriert. Falls kein regulärer Benutzerzugang erstellt wurde, werden die Mails natürlich direkt an root geschickt. </p></div>
+<div id="ftn.id3752" class="footnote"><p><a href="#id3752" class="para"><sup class="para">[18] </sup></a> Sie können natürlich <code class="classname">exim4</code> auch löschen und durch einen anderen MTA/MDA ersetzen. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Wo Sie weiter lesen sollten – zusätzliche Informationen </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Einen neuen Kernel kompilieren</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

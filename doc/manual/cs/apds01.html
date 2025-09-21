@@ -1,0 +1,168 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.1. Zařízení v Linuxu</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apd.html" title="Příloha D. Co se jinam nevešlo">
+<link rel="prev" href="apd.html" title="Příloha D. Co se jinam nevešlo">
+<link rel="next" href="apds02.html" title="D.2. Místo potřebné pro úlohy">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.1. Zařízení v Linuxu</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha D. Co se jinam nevešlo</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linuxdevices"></a>D.1. Zařízení v Linuxu</h2></div></div></div>
+<p>V Linuxu existuje v adresáři <code class="filename">/dev</code> spousta speciálních souborů nazývaných soubory zařízení. V unixovém světě se k hardwaru přistupuje právě přes tyto soubory, které se ovšem chovají jinak, než obyčejné soubory. Soubor zařízení je vlastně abstraktní rozhraní k systémovému ovladači, který komunikuje přímo s hardwarem. Nejběžnějšími typy souborů zařízení jsou bloková a znaková zařízení, méně rozšířené jsou pak pojmenované <em class="firstterm">roury</em>. V následujícím výpisu je uvedeno několik nejdůležitějších souborů. </p>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sda</code></td>
+<td>první pevný disk</td>
+</tr>
+<tr>
+<td><code class="filename">sdb</code></td>
+<td>druhý pevný disk</td>
+</tr>
+<tr>
+<td><code class="filename">sda1</code></td>
+<td>první oblast na prvním pevném disku</td>
+</tr>
+<tr>
+<td><code class="filename">sdb7</code></td>
+<td>sedmá oblast na druhém pevném disku</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sr0</code></td>
+<td>první CD-ROM</td>
+</tr>
+<tr>
+<td><code class="filename">sr1</code></td>
+<td>druhá CD-ROM</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">ttyS0</code></td>
+<td>Serial port 0, also referred to as COM1</td>
+</tr>
+<tr>
+<td><code class="filename">ttyS1</code></td>
+<td>Serial port 1, also referred to as COM2</td>
+</tr>
+<tr>
+<td><code class="filename">psaux</code></td>
+<td>rozhraní myši na portu PS/2</td>
+</tr>
+<tr>
+<td><code class="filename">gpmdata</code></td>
+<td>pseudozařízení - jenom opakuje data získaná z GPM (ovladač myši)</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">cdrom</code></td>
+<td>symbolický odkaz na CD-ROM mechaniku</td>
+</tr>
+<tr>
+<td><code class="filename">mouse</code></td>
+<td>symbolický odkaz na rozhraní myši</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">null</code></td>
+<td>cokoliv pošlete na toto zařízení, zmizí beze stopy</td>
+</tr>
+<tr>
+<td><code class="filename">zero</code></td>
+<td>z tohoto zařízení můžete až do nekonečna číst nuly</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="device-mouse"></a>D.1.1. Nastavení myši</h3></div></div></div>
+<p>Myš můžete používat jak na konzoli, tak v prostředí X Window.  Obvykle stačí nainstalovat balík <code class="filename">gpm</code> a příslušný X server. Oboje by mělo používat jako zařízení myši soubor <code class="filename">/dev/input/mice</code>. Správný komunikační protokol bývá v gpm <strong class="userinput"><code>exps2</code></strong>, v systému X Window <strong class="userinput"><code>ExplorerPS/2</code></strong>. Příslušné konfigurační soubory jsou <code class="filename">/etc/gpm.conf</code> a <code class="filename">/etc/X11/xorg.conf</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Příloha D. Co se jinam nevešlo </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> D.2. Místo potřebné pro úlohy</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

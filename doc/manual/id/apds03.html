@@ -1,0 +1,416 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Memasang Debian GNU/Linux dari suatu Sistem Unix/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Lampiran D. Bit Acak">
+<link rel="prev" href="apds02.html" title="D.2. Ruang Disk yang Dibutuhkan untuk Tugas">
+<link rel="next" href="apds04.html" title="D.4. Memasang Debian GNU/Linux melalui Parallel Line IP (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Memasang Debian GNU/Linux dari suatu Sistem Unix/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Lampiran D. Bit Acak</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Memasang Debian GNU/Linux dari suatu Sistem Unix/Linux</h2></div></div></div>
+<p>Bagian ini menjelaskan cara memasang Debian GNU/Linux dari sistem Unix atau Linux yang ada, tanpa menggunakan pemasang berbasis menu seperti yang dijelaskan di sisa manual. HOWTO <span class="quote">“<span class="quote">cross-install</span>”</span> ini telah diminta oleh pengguna yang beralih ke Debian GNU/Linux dari Red Hat, Mandriva, dan SUSE. Di bagian ini keakraban dengan memasukkan perintah *nix dan menavigasi sistem berkas diasumsikan. Di bagian ini, <code class="prompt">$</code> melambangkan perintah untuk dimasukkan dalam sistem pengguna saat ini, sementara <code class="prompt">#</code> mengacu pada perintah yang dimasukkan dalam chroot Debian. </p>
+<p>Setelah sistem Debian baru dikonfigurasi sesuai preferensi, Anda dapat memigrasikan data pengguna yang ada (jika ada) ke sana, dan terus bergulir. Oleh karena itu, ini adalah instalasi <span class="quote">“<span class="quote">tanpa down time</span>”</span> Debian GNU/Linux. Ini juga merupakan cara cerdas untuk menangani perangkat keras yang jika tidak ramah dengan berbagai media boot atau instalasi. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Karena ini adalah prosedur yang sebagian besar manual, Anda harus ingat bahwa Anda perlu melakukan banyak konfigurasi dasar sistem sendiri, yang juga akan membutuhkan lebih banyak pengetahuan tentang Debian dan Linux secara umum daripada melakukan instalasi biasa. Anda tidak dapat mengharapkan prosedur ini untuk menghasilkan sistem yang identik dengan sistem dari instalasi biasa. Anda juga harus ingat bahwa prosedur ini hanya memberikan langkah-langkah dasar untuk mengatur sistem. Langkah-langkah instalasi dan/atau konfigurasi tambahan mungkin diperlukan. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5430"></a>D.3.1. Memulai</h3></div></div></div>
+<p>Dengan alat partisi *nix Anda saat ini, partisi ulang hard drive sesuai kebutuhan, buat setidaknya satu sistem berkas plus swap. Anda membutuhkan sekitar 647 MB ruang yang tersedia untuk instalasi hanya konsol, atau sekitar 2635 MB jika Anda berencana untuk memasang X (lebih banyak lagi jika Anda bermaksud untuk memasang lingkungan desktop seperti GNOME atau KDE Plasma). </p>
+<p>Selanjutnya, buat sistem berkas pada partisi. Misalnya, untuk membuat sistem berkas ext3 pada partisi <code class="filename">/dev/sda6</code> (itu contoh partisi root kami): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Untuk membuat sistem berkas ext2 sebagai gantinya, hilangkan <strong class="userinput"><code>-j</code></strong>. </p>
+<p>Inisialisasi dan aktifkan swap (ganti nomor partisi untuk partisi swap Debian yang Anda inginkan): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Kait satu partisi sebagai<code class="filename">/mnt/debinst</code> (titik instalasi, akan menjadi sistem berkas root (<code class="filename">/</code>) pada sistem baru Anda). Nama titik kait benar-benar sebarang, dirujuk kemudian di bawah ini. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Jika Anda ingin memiliki bagian dari sistem berkas (misalnya /usr) yang dipasang pada partisi terpisah, Anda harus membuat dan mengait direktori ini secara manual sebelum melanjutkan dengan tahap berikutnya. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5451"></a>D.3.2. Pasang <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Utilitas yang digunakan oleh pemasang Debian, dan diakui sebagai cara resmi untuk memasang sistem dasar Debian, adalah <span class="command"><strong>debootstrap</strong></span>. Ini menggunakan <span class="command"><strong>wget</strong></span> dan <span class="command"><strong>ar</strong></span>, tetapi sebaliknya hanya bergantung pada <code class="classname">/bin/sh</code> dan alat Unix/Linux dasar<a href="#ftn.id5459" class="footnote" name="id5459"><sup class="footnote">[21]</sup></a>. Pasang <span class="command"><strong>wget</strong></span> dan <span class="command"><strong>ar</strong></span> jika belum ada di sistem Anda saat ini, lalu unduh dan pasang <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Atau, Anda dapat menggunakan prosedur berikut untuk memasangnya secara manual. Buat folder kerja untuk tempat mengekstrak .deb: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> Biner <span class="command"><strong>debootstrap</strong></span> terletak di arsip Debian (pastikan untuk memilih berkas yang tepat untuk arsitektur Anda). Unduh .deb <span class="command"><strong>debootstrap</strong></span> dari <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> pool</a>, salin paket ke folder kerja, dan ekstrak berkas darinya. Anda harus memiliki hak akses root untuk memasang berkas. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5476"></a>D.3.3. Jalankan <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span> dapat mengunduh berkas yang diperlukan langsung dari arsip saat Anda menjalankannya. Anda dapat menggantikan cermin arsip Debian untuk <strong class="userinput"><code>http.us.debian.org/debian</code></strong> dalam contoh perintah di bawah ini, lebih disukai cermin yang dekat dengan Anda dari segi jaringan. Cermin terdaftar di <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Jika Anda memiliki image instalasi trixie Debian GNU/Linux dikait di <code class="filename">/cdrom</code>, Anda dapat mengganti URL berkas alih-alih URL http: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Ganti salah satu dari berikut ini untuk <em class="replaceable"><code>ARCH</code></em> di perintah <span class="command"><strong>debootstrap</strong></span>: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> Jika arsitektur target berbeda dari host, Anda harus menambahkan opsi <strong class="userinput"><code>--foreign</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5498"></a>D.3.4. Konfigurasikan Sistem Dasar</h3></div></div></div>
+<p>Sekarang Anda memiliki sistem Debian yang nyata, meskipun agak ramping, pada disk. <span class="command"><strong>chroot</strong></span> ke dalamnya: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Jika arsitektur target berbeda dari host, Anda harus terlebih dahulu menyalin qemu-user-static ke host baru: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> Setelah chroot, Anda mungkin perlu mengatur definisi terminal agar kompatibel dengan sistem dasar Debian, misalnya: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Tergantung pada nilai TERM, Anda mungkin harus memasang paket <code class="classname">ncurses-term</code> untuk mendapatkan dukungan untuk itu. </p>
+<p>Jika arsitektur target berbeda dari host, Anda harus menyelesaikan boot strap multi-tahap: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5513"></a>D.3.4.1. Buat berkas perangkat</h4></div></div></div>
+<p>Pada titik ini <code class="filename">/dev/</code> hanya berisi berkas perangkat yang sangat dasar. Untuk langkah selanjutnya dari instalasi, berkas perangkat tambahan mungkin diperlukan. Ada berbagai cara untuk melakukan ini dan metode mana yang harus Anda gunakan tergantung pada sistem host yang Anda gunakan untuk instalasi, pada apakah Anda bermaksud menggunakan kernel modular atau tidak, dan apakah Anda berniat menggunakan berkas perangkat dinamis (misalnya menggunakan <code class="classname">udev</code>) atau statis untuk sistem baru. </p>
+<p>Beberapa opsi yang tersedia adalah: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>pasang paket makedev, dan buat satu set baku berkas perangkat statis menggunakan (setelah chroot) </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>membuat hanya berkas perangkat tertentu secara manual menggunakan <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>bind mount /dev dari sistem host Anda di atas /dev di sistem target; perhatikan bahwa skrip postinst dari beberapa paket dapat mencoba membuat berkas perangkat, jadi opsi ini hanya boleh digunakan dengan hati-hati </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5529"></a>D.3.4.2. Kait Partisi</h4></div></div></div>
+<p>Anda perlu membuat <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Berikut adalah contoh yang dapat Anda modifikasi agar sesuai: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: informasi sistem berkas statis.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Gunakan <strong class="userinput"><code>mount -a</code></strong> untuk mengait semua sistem berkas yang telah Anda tentukan di <code class="filename">/etc/fstab</code> Anda, atau, untuk mengait sistem berkas satu per satu, gunakan: </p>
+<div class="informalexample"><pre class="screen">
+# mount /path # misalnya: mount /usr
+</pre></div>
+<p> Sistem Debian saat ini memiliki titik kait untuk media lepasan di bawah <code class="filename">/media</code>, tetapi mempertahankan symlink kompatibilitas di <code class="filename">/</code>. Buat ini sesuai kebutuhan, misalnya: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> Anda dapat mengait sistem berkas proc beberapa kali dan ke lokasi sebarang, meskipun kebiasaan adalah <code class="filename">/proc</code>. Jika Anda tidak menggunakan <strong class="userinput"><code>mount -a</code></strong>, pastikan untuk memasang proc sebelum melanjutkan: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Perintah <strong class="userinput"><code>ls /proc</code></strong> sekarang harus menampilkan direktori yang tidak kosong. Jika ini gagal, Anda mungkin dapat memasang proc dari luar chroot: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5553"></a>D.3.4.3. Mengatur Zona Waktu</h4></div></div></div>
+<p>Mengatur baris ketiga berkas <code class="filename">/etc/adjtime</code> ke <span class="quote">“<span class="quote">UTC</span>”</span> atau <span class="quote">“<span class="quote">LOCAL</span>”</span> menentukan apakah sistem akan menafsirkan jam perangkat keras sebagai diatur ke UTC atau masing-masing waktu lokal. Perintah berikut memungkinkan Anda untuk mengaturnya. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Berikut adalah contoh: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Perintah berikut memungkinkan Anda untuk memilih zona waktu Anda. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5565"></a>D.3.4.4. Mengonfigurasi Jaringan</h4></div></div></div>
+<p>Untuk mengonfigurasi jaringan, edit <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code>, dan <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Berikut adalah beberapa contoh sederhana dari <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- berkas konfigurasi untuk ifup(8), ifdown(8)
+# Lihat halaman man interfaces(5) untuk informasi tentang opsi apa yang
+# tersedia.
+######################################################################
+
+# Antarmuka loopback tidak benar-benar diperlukan lagi, tetapi dapat digunakan
+# jika diperlukan.
+#
+# auto lo
+# iface lo inet loopback
+
+# Untuk menggunakan dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Contoh pengaturan IP statis: (jaringan, broadcast, dan gateway bersifat
+# opsional)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Masukkan direktif nameserver dan search Anda di <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Contoh sederhana <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Masukkan nama host sistem Anda (2 hingga 63 karakter): </p>
+<div class="informalexample"><pre class="screen">
+# echo NamaHostDebian &gt; /etc/hostname
+</pre></div>
+<p> Dan <code class="filename">/etc/hosts</code> dasar dengan dukungan IPv6: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 NamaHostDebian
+
+# Baris berikut diinginkan untuk host berkemampuan IPv6
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Jika Anda memiliki beberapa kartu jaringan, Anda harus mengatur nama modul driver dalam berkas <code class="filename">/etc/modules</code> ke dalam urutan yang diinginkan. Kemudian selama boot, setiap kartu akan dikaitkan dengan nama antarmuka (eth0, eth1, dll.) yang Anda harapkan. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5589"></a>D.3.4.5. Mengonfigurasi Apt</h4></div></div></div>
+<p>Debootstrap akan membuat <code class="filename">/etc/apt/sources.list</code> yang sangat mendasar yang akan memungkinkan memasang paket tambahan. Namun, Anda mungkin ingin menambahkan beberapa sumber, misalnya untuk paket sumber dan pembaruan keamanan: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Pastikan untuk menjalankan <strong class="userinput"><code>apt update</code></strong> setelah Anda membuat perubahan pada daftar sumber. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5596"></a>D.3.4.6. Mengonfigurasi Lokal dan Papan Ketik</h4></div></div></div>
+<p>Untuk mengonfigurasi pengaturan lokal Anda agar menggunakan bahasa selain bahasa Inggris, pasang paket dukungan <code class="classname">locales</code> dan konfigurasikan itu. Saat ini penggunaan lokal UTF-8 direkomendasikan. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Untuk mengonfigurasi papan ketik Anda (jika diperlukan): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Perhatikan bahwa papan ketik tidak dapat diatur saat berada di chroot, tetapi akan dikonfigurasi untuk reboot berikutnya. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5605"></a>D.3.5. Pasang Kernel</h3></div></div></div>
+<p>Jika Anda berniat untuk mem-boot sistem ini, Anda mungkin menginginkan kernel dan boot loader Linux. Identifikasi paket kernel yang tersedia dengan: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Kemudian pasang paket kernel pilihan Anda menggunakan nama paketnya. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5614"></a>D.3.6. Siapkan Boot Loader</h3></div></div></div>
+<p>Untuk membuat sistem Debian GNU/Linux Anda dapat di-boot, atur boot loader Anda untuk memuat kernel yang dipasang dengan partisi root baru Anda. Perhatikan bahwa <span class="command"><strong>debootstrap</strong></span> tidak memasang boot loader, tetapi Anda dapat menggunakan <span class="command"><strong>apt</strong></span> di dalam chroot Debian Anda untuk melakukannya. </p>
+<p>Periksa <strong class="userinput"><code>info grub</code></strong> untuk instruksi tentang pengaturan bootloader. Jika Anda menyimpan sistem yang Anda gunakan untuk memasang Debian, cukup tambahkan entri untuk instalasi Debian ke <code class="filename">grub.cfg</code> grub2 yang ada. </p>
+<p>Memasang dan menyiapkan <code class="classname">grub2</code> semudah: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> Perintah kedua akan memasang <span class="command"><strong>grub2</strong></span> (dalam hal ini dalam MBR <code class="literal">sda</code>). Perintah terakhir akan membuat <code class="filename">/boot/grub/grub.cfg</code> yang waras dan berfungsi. </p>
+<p>Perhatikan bahwa ini mengasumsikan bahwa berkas perangkat <code class="filename">/dev/sda</code> telah dibuat. Ada metode alternatif untuk memasang <span class="command"><strong>grub2</strong></span>, tapi itu di luar cakupan lampiran ini. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5633"></a>D.3.7. Akses jarak jauh: Memasang SSH dan menyiapkan akses</h3></div></div></div>
+<p>Jika Anda dapat masuk ke sistem melalui konsol, Anda dapat melewati bagian ini. Jika sistem harus dapat diakses melalui jaringan nanti, Anda perlu memasang SSH dan mengatur akses. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Login root dengan kata sandi dinonaktifkan secara baku, sehingga pengaturan akses dapat dilakukan dengan mengatur kata sandi dan mengaktifkan kembali login root dengan kata sandi: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> Ini adalah opsi yang akan diaktifkan: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> Akses juga dapat diatur dengan menambahkan kunci ssh ke akun root: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Terakhir, akses dapat diatur dengan menambahkan pengguna non-root dan mengatur kata sandi: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5646"></a>D.3.8. Sentuhan akhir</h3></div></div></div>
+<p>Seperti disebutkan sebelumnya, sistem yang dipasang akan sangat mendasar. Jika Anda ingin membuat sistem sedikit lebih matang, ada metode mudah untuk memasang semua paket dengan prioritas <span class="quote">“<span class="quote">standar</span>”</span>: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Tentu saja, Anda juga bisa menggunakan <span class="command"><strong>apt</strong></span> untuk memasang paket satu per satu. </p>
+<p>Setelah instalasi akan ada banyak paket yang diunduh di <code class="filename">/var/cache/apt/archives/</code>. Anda dapat mengosongkan sebagian ruang disk dengan menjalankan: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5459" class="footnote"><p><a href="#id5459" class="para"><sup class="para">[21] </sup></a> Ini termasuk utilitas inti GNU dan perintah seperti <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span>, dan <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Ruang Disk yang Dibutuhkan untuk Tugas </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Memasang Debian GNU/Linux melalui Parallel Line IP (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

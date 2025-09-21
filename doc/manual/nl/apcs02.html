@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. De mappenboom</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apc.html" title="Bijlage C. Schijven indelen voor Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Keuzes maken in verband met Debian partities en hun grootte">
+<link rel="next" href="apcs03.html" title="C.3. Aanbevolen schijfindelingsschema">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. De mappenboom</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage C. Schijven indelen voor Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. De mappenboom</h2></div></div></div>
+<p>Debian GNU/Linux volgt voor het benoemen van mappen en bestanden de <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> (de standaard die de hiërarchische opbouw van het bestandssysteem bepaalt). Deze standaard maakt het mogelijk voor gebruikers en softwareprogramma's om vooraf te weten op welke plaats bestanden en mappen te vinden zullen zijn. De map op het basisniveau wordt gewoon voorgesteld door een slash <code class="filename">/</code>. In deze basismap bevinden zich op alle Debian systemen de volgende mappen: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Map</th>
+<th>Inhoud</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>Essentiële commando's in binaire vorm</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>Statische bestanden van de bootloader</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>Apparaat-bestanden</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Computerspecifieke systeemconfiguratie</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>Persoonlijke mappen van gebruikers</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Essentiële gedeelde bibliotheken en kernelmodules</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>Bevat aankoppelpunten voor verwijderbare media</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Aankoppelpunt om tijdelijk een bestandssysteem op aan te koppelen</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Virtuele map voor systeeminformatie</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>Persoonlijke map van gebruiker root, de systeembeheerder</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Variabele gegevens van actieve programma's</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>Essentiële systeemprogramma's in binaire vorm</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Virtuele map voor systeeminformatie</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>Tijdelijke bestanden</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Secundaire hiërarchie</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Variabele data</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Data voor door het systeem verleende diensten</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Pakketten met supplementaire toepassingssoftware</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Hierna volgt een lijst met belangrijke overwegingen in verband met mappen en partities. Merk op dat het schijfgebruik erg verschillend kan zijn naargelang de systeemconfiguratie en de specifieke taken die de computer moet vervullen. De hierna gegeven aanbevelingen zijn algemene richtlijnen die een aanknopingspunt bieden voor de schijfindeling. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>De root-partitie <code class="filename">/</code> moet fysiek steeds de mappen <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> en <code class="filename">/usr</code> bevatten, anders zal de computer niet kunnen opstarten. Dit betekent dat u minstens 700–850MB schijfruimte moet voorzien voor de rootpartitie inclusief <code class="filename">/usr</code>, of 5–6GB voor een werkstation of een serverinstallatie. </p></li>
+<li class="listitem"><p><code class="filename">/var</code>: variabele data, zoals nieuwsartikels, e-mails, websites, databanken, de cache van het pakketbeheersysteem, enz., worden onder deze map geplaatst. De grootte van deze map is sterk afhankelijk van het gebruik dat van het systeem gemaakt wordt, maar bij de meeste mensen wordt ze vooral bepaald door wat het gereedschap voor pakketbeheer nodig heeft. Indien u in één enkele sessie een volledige installatie van zowat alles wat Debian te bieden heeft, gaat uitvoeren, zou 2 tot 3 GB schijfruimte voorzien voor <code class="filename">/var</code> moeten volstaan. Indien u zinnens bent de installatie in verschillende fases uit te voeren (dat wil zeggen, eerst diensten en hulpprogramma's installeren, nadien tekstgereedschappen, dan X, ...), kunt reeds genoeg hebben aan 300–500 MB. Indien harde schijfruimte een primaire bekommernis is, en u niet zinnens bent om grote systeemupdates te doen, kunt u zelfs volstaan met een uiterst beperkte 30 tot 40 MB. </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code>: tijdelijke data die door programma's gecreëerd worden, komen meestal in deze map terecht. 40–100MB zou normaal moeten volstaan. Sommige toepassingen — zoals gereedschap waarmee u archieven of CD's/DVD's kunt bewerken, en multimediasoftware — maken mogelijk gebruik van <code class="filename">/tmp</code> om tijdelijk image-bestanden op te slaan. Indien u plant om dergelijke toepassingen te gebruiken, moet u de ruime die u voorziet voor <code class="filename">/tmp</code> daaraan aanpassen. </p></li>
+<li class="listitem"><p><code class="filename">/home</code>: iedere gebruiker zal zijn persoonlijke documenten in een onderliggende map van deze map plaatsen. De grootte is dus afhankelijk van het aantal gebruikers op het systeem en van welk soort bestanden er in hun persoonlijke map terecht zullen komen. Afhankelijk van waarvoor u het systeem denkt te zullen gebruiken, moet u ongeveer 100MB per gebruiker voorzien. Maar pas deze waarde wel aan uw behoeften aan. Voorzie veel meer ruimte als u zinnens bent om veel multimediabestanden (foto's, MP3-muziekbestanden, films) op te slaan in uw persoonlijke map. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Keuzes maken in verband met Debian partities en hun grootte </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Aanbevolen schijfindelingsschema</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

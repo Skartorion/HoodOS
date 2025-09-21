@@ -1,0 +1,124 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Tùy chọn cấp cao</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn">
+<link rel="prev" href="apbs04.html" title="B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)">
+<link rel="next" href="apc.html" title="Phụ lục C. Phân vùng cho Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Tùy chọn cấp cao</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Tùy chọn cấp cao</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Chạy lệnh riêng trong khi cài đặt</h3></div></div></div>
+<p>Những công cụ chèn sẵn cũng cung cấp một tùy chọn rất mạnh và dẻo : khả năng chạy lệnh hay văn lệnh tại một số điểm thời riêng trong tiến trình cài đặt. </p>
+<p>When the filesystem of the target system is mounted, it is available in <code class="filename">/target</code>. If an installation CD/DVD is used, when it is mounted it is available in <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Tiến trình chèn sẵn trình cài đặt Debian không đảm bảo là an toàn.
+# Không có gì trong trình cài đặt mà kiểm tra bắt sự cố gắng tràn bộ đệm
+# hoặc cách khác lạm dụng giá trị nằm trong tập tin cấu hình sẵn
+# như điều này. Hãy dùng chỉ tập tin cấu hình sẵn có nguồn đáng tin !
+# Để chứng minh tình trạng không an toàn của tập tin cấu hình sẵn,
+# và vì nó có ích một cách chung, bên dưới có một phương pháp
+# tự động chạy bất cứ câu lệnh trình bao nào bên trong trình cài đặt.
+
+# Lệnh đầu tiên này được chạy càng sớm càng có thể, đúng sau khi
+# đọc thông tin chèn sẵn.
+#d-i preseed/early_command string anna-install some-udeb
+# Câu lệnh này được chạy ngay trước khi công cụ phân vùng khởi chạy.
+# Nó có thể hữu ích để áp dụng cấu hình chèn sẵn động
+# vào chức năng phân vùng mà phụ thuộc vào tình trạng của các đĩa
+# (mà có thể không hiện rõ khi preseed/early_command chạy).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+
+# Câu lệnh bên dưới được chạy đúng trước khi cài đặt xong, nhưng khi
+# vẫn còn có một thư mục « /target » có ích. Bạn có thể chroot (chuyển đổi
+# vị trí của thư mục gốc) sang « /target » và dùng nó một cách trực tiếp,
+# hoặc dùng các lệnh « apt-install » (cài đặt bằng apt) và « in-target »
+# (trong đích) để cài đặt dễ dàng các gói và chạy câu lệnh trên hệ thống đích.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Dùng khả năng chèn sẵn để thay đổi giá trị mặc định</h3></div></div></div>
+<p>Có thể dùng khả năng chèn sẵn để thay đổi trả lời mặc định đối với câu hỏi, còn vẫn nhắc người dùng với câu hỏi đó. Để làm như thế, cờ <em class="firstterm">seen</em> (đã xem) phải được đặt lại thành <span class="quote">“<span class="quote">false</span>”</span> (sai) sau khi đặt giá trị cho câu hỏi. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Có thể làm cùng kết quả cho <span class="emphasis"><em>tất cả các</em></span> câu hỏi bằng cách đặt tham số <code class="classname">preseed/interactive=true</code> tại dấu nhắc khởi động. Cũng có thể hữu ích để thử hay gỡ lỗi tập tin cấu hình sẵn. </p>
+<p>Ghi chú rằng chủ sở hữu <span class="quote">“<span class="quote">d-i</span>”</span> chỉ nên được dùng cho các biến được đặt cho trình cài đặt chính nó. Đối với biến thuộc về gói được cài đặt vào hệ thống đích, bạn nên sử dụng tên của gói để thay thế. Xem cước chú về <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Dùng tham số khởi động để chèn sẵn câu hỏi">Phần B.2.2, “Dùng tham số khởi động để chèn sẵn câu hỏi”</a>. </p>
+<p>Nếu bạn chèn sẵn dùng tham số khởi động, bạn cũng có thể làm cho tiến trình cài đặt hỏi câu tương ứng bằng cách dùng toán tử <span class="quote">“<span class="quote">?=</span>”</span>, tức là <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>giá_trị</code></em></code></strong> (hay <strong class="userinput"><code><em class="replaceable"><code>chủ_sở_hữu</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>giá_trị</code></em></code></strong>). Nó chỉ có tác động đối với tham số tương ứng với câu hỏi thật được hiển thị trong khi cài đặt, không phải đối với tham số <span class="quote">“<span class="quote">nội bộ</span>”</span>. </p>
+<p>Để có thêm thông tin gỡ lỗi, hãy dùng tham số khởi động <code class="classname">DEBCONF_DEBUG=5</code>. Việc này sẽ làm cho <code class="classname">debconf</code> in thêm rất nhiều chi tiết về các xác lập hiện tại của từng biến và về tiến trình của nó qua các văn lệnh cài đặt gói. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Tải dây chuyền tập tin định cấu hình sẵn</h3></div></div></div>
+<p>Có thể gồm một số tập tin cấu hình sẵn khác từ chỉ một tập tin định cấu hình sẵn có liệt kê chúng. Thiết lập nào nằm trong các tập tin cấu hình sẵn đó sẽ đè lên thiết lập tồn tại từ tập tin được tải trước. Tính năng này cho khả năng, lấy thí dụ, để thiết lập mạng chung cho chỗ bạn trong tập tin này, còn để thiết lập chi tiết hơn cho một số cấu hình riêng trong các tập tin khác. </p>
+<div class="informalexample"><pre class="screen"># Có thể liệt kê nhiều tập tin, định giới bằng dấu cách: tất cả các tập tin
+# trong danh sách này sẽ được nạp. Những tập tin được bao gồm
+# cũng có thể dùng chỉ thị chèn sẵn/bao gồm riêng.
+# Ghi chú rằng nếu tên tập tin là tương đối, nó được lấy từ
+# cùng một thư mục với tập tin cấu hình sẵn mà chứa tập tin đó.
+#d-i preseed/include string x.cfg
+
+# Trình cài đặt có khả năng (tùy chọn) thẩm tra tổng kiểm (checksum)
+# của tập tin cấu hình sẵn, trước khi dùng nó. HIện thời chỉ hỗ trợ
+# tổng kiểm kiểu md5sum; hãy liệt kê các tổng md5sum
+# theo cùng một thứ tự với danh sách các tập tin cần gồm.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Dẻo hơn, dòng bên dưới chạy lệnh trình bao : xuất tên của
+# tập tin cấu hình sẵn thì bao gồm các tập tin đó.
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Dẻo nhất, dòng này tải về chương trình rồi chạy nó. Chương trình
+# có khả năng dùng lệnh như « debconf-set » (debconf đặt) để thao tác
+# cơ sở dữ liệu cấu hình « debconf ». Có thể liệt kê danh sách các
+# văn lệnh, định giới bằng dấu cách.
+# Ghi chú rằng nếu tên tập tin là tương đối, nó được lấy từ
+# cùng một thư mục với tập tin cấu hình sẵn mà chứa tập tin đó.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Cũng có thể nạp dây chuyền từ giải đoạn chèn sẵn kiểu initrd hay tập tin, đến việc chèn sẵn qua mạng, bằng cách đặt <code class="literal">preseed/url</code> trong những tập tin sớm hơn. Sự chọn này sẽ gây ra việc chèn sẵn qua mạng được thực hiện khi mạng trở thành hoạt động. Hãy làm cẩn thận, vì có hai tiến trình chèn sẵn riêng: chẳng hạn, bạn có hai dịp chạy lệnh <code class="literal">preseed/url</code>, điều thứ hai được tạo một khi mạng trở thành hoạt động. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> Phụ lục C. Phân vùng cho Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

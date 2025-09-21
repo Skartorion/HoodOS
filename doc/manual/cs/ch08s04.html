@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Nastavení poštovního systému</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="ch08.html" title="Kapitola 8. Co dál?">
+<link rel="prev" href="ch08s03.html" title="8.3. Další dokumentace">
+<link rel="next" href="ch08s05.html" title="8.5. Kompilace nového jádra">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Nastavení poštovního systému</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Kapitola 8. Co dál?</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Nastavení poštovního systému</h2></div></div></div>
+<p>V dnešní době je elektronická pošta důležitou součástí našich životů. Protože existuje spousty způsobů, jak poštu nastavit, a protože na ni spoléhají některé nástroje, zkusíme zde pokrýt alespoň základy. </p>
+<p>Poštovní systém se skládá ze tří částí. Uživateli nejbližší je klientský program (MUA), jenž uživatel používá pro čtení a psaní pošty. Dále je zde poštovní server (MTA), který se stará o přenos pošty mezi různými počítači. A na závěr je zde doručovací agent (MDA), který se stará o doručení pošty do uživatelovy schránky. Tyto tři funkce mohou vykonávat samostatné programy, nebo mohou být sloučeny do dvou, případně jediného programu. </p>
+<p>These three functions can be performed by separate programs, but they can also be combined in one or two programs. It is also possible to have different programs handle these functions for different types of mail. </p>
+<p>On Linux and Unix systems <span class="command"><strong>mutt</strong></span> is historically a very popular MUA. Like most traditional Linux programs it is text based. It is often used in combination with <span class="command"><strong>exim</strong></span> or <span class="command"><strong>sendmail</strong></span> as MTA and <span class="command"><strong>procmail</strong></span> as MDA. </p>
+<p>S rostoucí popularitou grafických desktopových prostředí se začíná používat více grafických poštovních klientů jako <span class="command"><strong>evolution</strong></span> pro prostředí GNOME, <span class="command"><strong>kmail</strong></span> pro prostředí KDE, nebo multiplatformní <span class="command"><strong>thunderbird</strong></span>. Tyto programy kombinují funkce MUA, MTA a MDA dohromady, ale mohou být — a často jsou — používány v kombinaci s tradičními unixovými nástroji. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Výchozí nastavení pošty</h3></div></div></div>
+<p>Even if you are planning to use a graphical mail program, it would be useful, to have a traditional MTA/MDA installed and correctly set up on your Debian GNU/Linux system. Reason is that various utilities running on the system<a href="#ftn.id3740" class="footnote" name="id3740"><sup class="footnote">[15]</sup></a> can send important notices by e-mail to inform the system administrator of (potential) problems or changes. </p>
+<p>For this you can install <code class="classname">exim4</code> and <code class="classname">mutt</code> with <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> is a combination MTA/MDA that is relatively small but very flexible. By default it will be configured to only handle e-mail local to the system itself and e-mails addressed to the system administrator (root account) will be delivered to the regular user account created during the installation<a href="#ftn.id3751" class="footnote" name="id3751"><sup class="footnote">[16]</sup></a>. </p>
+<p>Pošta je při doručení přidána do souboru <code class="filename">/var/mail/<em class="replaceable"><code>jmeno_uctu</code></em></code>. Tuto poštu můžete číst například programem <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Odesílání pošty mimo systém</h3></div></div></div>
+<p>Jak bylo zmíněno dříve, po základní instalaci Debianu umí systém zpracovávat pouze poštu pocházející ze stejného počítače. Odesílání nebo přijímání pošty z jiných systémů není nastaveno. </p>
+<p>Chcete-li, aby <code class="classname">exim4</code> zpracovával i externí poštu, podívejte se na následující podkapitolu, kde naleznete základní možnosti. Nezapomeňte pak otestovat, zda odesílání a přijímání pošty funguje bez problému. </p>
+<p>Jestliže plánujete používat grafický poštovní program ve spojení s poštovním serverem vašeho poskytovatele Internetu nebo s poštovním serverem vaší firmy, není důvod, abyste nastavovali <code class="classname">exim4</code>. Stačí nastavit grafický poštovní klient, aby používal pro přijímání a odesílání správné poštovní servery (konkrétní nastavení spadá mimo rozsah této příručky). </p>
+<p>I při použití grafického poštovního klienta a externího poštovního serveru je někdy potřeba nastavit některé konkrétní programu pro posílání pošty mimo systém. Jedním z takových programů je nástroj <span class="command"><strong>reportbug</strong></span>, který zajišťuje odesílání hlášení o chybách v Debianích balících. Ve výchozím nastavení očekává, že bude pro odesílání chybových hlášení používat <code class="classname">exim4</code>. </p>
+<p>Abyste <span class="command"><strong>reportbug</strong></span> přemluvili, aby používal externí poštovní server, spusťte příkaz <span class="command"><strong>reportbug --configure</strong></span> a na otázku, zda je MTA dostupný, odpovězte <span class="quote">„<span class="quote">ne</span>“</span>. Poté budete dotázáni na SMTP server, který se má používat pro odesílání chybových hlášení. Sem vyplňte stejné jméno nebo IP adresu, jakou jste zadali v konfiguraci grafického poštovního klienta. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Nastavení poštovního serveru Exim4</h3></div></div></div>
+<p>V případě, že na svém systému chcete zpracovávat i externí poštu, musíte změnit nastavení balíku <code class="classname">exim4</code><a href="#ftn.id3776" class="footnote" name="id3776"><sup class="footnote">[17]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Po zadání příkazu budete nejprve dotázáni, zda chcete rozdělit konfiguraci do menších souborů. Pokud si nejste jisti, ponechte výchozí možnost. </p>
+<p>Další obrazovka vám nabídne několik typických scénářů použití. Vyberte z nich ten, který nejvíce odpovídá zamýšlenému použití: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">internetový počítač</span></dt>
+<dd><p>Váš systém je připojen k počítačové síti a pošta je odesílána/přijímána přímo protokolem SMTP. Na následujících obrazovkách budete dotázáni několik základních údajů, jako je poštovní jméno nebo seznam domén, pro které chcete přijímat nebo předávat poštu. </p></dd>
+<dt><span class="term">odesílání pošty přes chytrý počítač</span></dt>
+<dd>
+<p>Podle tohoto scénáře je veškerá odchozí pošta posílána <span class="quote">„<span class="quote">chytrému</span>“</span> počítači, který ji za vás rozešle. Chytrý počítač také často ukládá vaši příchozí poštu, tudíž nemusíte být neustále připojeni. To pak znamená, že poštu musíte číst na chytrém počítači, nebo ji z něj stahovat programem typu <span class="command"><strong>fetchmail</strong></span>. </p>
+<p>Chytrý počítač obvykle bývá poštovní server vašeho poskytovatele připojení, což je obzvláště vhodné pro uživatele s vytáčeným připojením. Jinak to může být třeba firemní poštovní server, nebo i jiný počítač na vaší síti. </p>
+</dd>
+<dt><span class="term">odesílání pošty přes chytrý počítač; žádná lokální pošta</span></dt>
+<dd><p>Tato volba je v podstatě shodná s předchozí, až na fakt, že systém nebude zpracovávat poštu pro lokální poštovní doménu. Zpracovávat se bude pouze pošta vzniklá na systému (např. pro systémového správce). </p></dd>
+<dt><span class="term">pouze lokální pošta</span></dt>
+<dd><p>This is the option your system is configured for by default. </p></dd>
+<dt><span class="term">no configuration at this time</span></dt>
+<dd><p>Tuto možnost vyberte jedině pokud přesně víte, co děláte, protože dokud poštovní systém nenastavíte, nebudete moci přijímat a odesílat žádnou poštu a můžete tak přijít o důležité zprávy od systémových programů. </p></dd>
+</dl></div>
+<p>If none of these scenarios suits your needs, or if you need a finer grained setup, you will need to edit configuration files under the <code class="filename">/etc/exim4</code> directory after the installation is complete. More information about <code class="classname">exim4</code> may be found under <code class="filename">/usr/share/doc/exim4</code>; the file <code class="filename">README.Debian.gz</code> has further details about configuring <code class="classname">exim4</code> and explains where to find additional documentation. </p>
+<p>Mějte však na paměti, že pokud nemáte oficiální doménové jméno, tak pošta odesílaná přímo do Internetu může být protistranou odmítnuta jako ochrana proti spammerům. Preferováno je posílání pošty přes poštovní server vašeho poskytovatele připojení. Chcete-li přesto odesílat poštu přímo, možná bude dobré použít jinou adresu, než tu, která byla vytvořena automaticky. S poštovním serverem Exim můžete přidat nový záznam do <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3740" class="footnote"><p><a href="#id3740" class="para"><sup class="para">[15] </sup></a> Examples are: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3751" class="footnote"><p><a href="#id3751" class="para"><sup class="para">[16] </sup></a> The forwarding of mail for root to the regular user account is configured in <code class="filename">/etc/aliases</code>. If no regular user account was created, the mail will of course be delivered to the root account itself. </p></div>
+<div id="ftn.id3776" class="footnote"><p><a href="#id3776" class="para"><sup class="para">[17] </sup></a> Samozřejmě vám nic nebrání <code class="classname">exim4</code> odstranit a nahradit alternativním MTA/MDA. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Další dokumentace </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Kompilace nového jádra</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

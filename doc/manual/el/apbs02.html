@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Χρησιμοποιώντας preseeding</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)">
+<link rel="prev" href="apbs01.html" title="B.1. Εισαγωγή">
+<link rel="next" href="apbs03.html" title="B.3. Δημιουργία ενός αρχείου προρυθμίσεων">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Χρησιμοποιώντας preseeding</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Χρησιμοποιώντας preseeding</h2></div></div></div>
+<p>Θα πρέπει πρώτα να δημιουργήσετε ένα αρχείο προρυθμίσεων και να το τοποθετήσετε στο σημείο από το οποίο θέλετε να το χρησιμοποιήσετε. Η δημιουργία αυτού του αρχείου καλύπτεται παρακάτω στο παρόν παράρτημα. Η τοποθέτηση του αρχείου στο σωστό σημείο είναι αρκετά προφανής για προρύθμιση με δίκτυο ή αν θέλετε να το διαβάσετε από ένα usb-stick. Αν θέλετε να συμπεριλάβετε το αρχείο σε μια εικόνα ISO θα πρέπει να ξαναδημιουργήσετε την εικόνα αυτή. Το πώς μπορείτε να συμπεριλάβετε το αρχείο σε έναν δίσκο μνήμης initrd είναι πέρα από τους σκοπούς του παρόντος κειμένου. Παρακαλούμε συμβουλευθείτε την τεκμηρίωση για τους προγραμματιστές του <code class="classname">debian-installer</code>. </p>
+<p>Ένα παράδειγμα αρχείου προρυθμίσεων που μπορείτε να χρησιμοποιήσετε σαν βάση για το αντίστοιχο δικό σας, είναι διαθέσιμο στο <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Το αρχείο αυτόβασίζεται στα τμήματα των ρυθμίσεων που περιλαμβάνονται σ' αυτό εδώ το παράρτημα. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Φόρτωση του αρχείου προρυθμίσεων</h3></div></div></div>
+<p>Αν χρησιμοποιείτε initrd preseeding, αρκεί μόνο να βεβαιωθείτε ότι το αρχείο με όνομα <code class="filename">preseed.cfg</code> περιλαμβάνεται στον ριζικό κατάλογο του δίσκου initrd. Ο εγκαταστάτης θα ελέγξει αυτόματα αν το αρχείο είναι παρόν και θα το φορτώσει. </p>
+<p>Για τις άλλες μεθόδους preseeding, θα χρειαστεί να πείτε στον εγκαταστάτη ποιο αρχείο θα χρησιμοποιήσετε κατά την εκκίνησή του. Αυτο γίνεται συνήθως δίνοντας μια παράμετρο εκκίνησης στον πυρήνα, είτε με το χέρι, κατά τη στιγμή της εκκίνησης, είτε με επεξεργασία του αρχείου ρύθμισης του φορτωτή εκκίνησης <span class="phrase">(πχ. το <code class="filename">syslinux.cfg</code>) και προσθέτοντας την παράμετρο στο τέλος της γραμμής(ών) προσθήκης για τον πυρήνα.</span> </p>
+<p>Αν όντως ορίσετε το αρχείο προρυθμίσεων στη διαμόρφωση του φορτωτή εκκίνησης, μπορείτε να αλλάξετε αυτή τη διαμόρφωση ώστε να μην χρειάζεται να πατήσετε enter για να ξεκινήσετε τον εγκαταστάτη. <span class="phrase">Για το syslinux αυτό σημαίνει τον ορισμό του χρόνου εξόδου (timeout) ίσο με <code class="literal">1</code> στο αρχείο <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Για να βεβαιωθείτε ότι ο εγκαταστάτης ανακτά το σωστό αρχείο, μπορείτε να προσδιορίσετε επιπλέον ένα checksum για το αρχείο. Προς το παρόν, αυτό θα πρέπει να είναι ένα md5sum και αν καθοριστεί θα πρέπει να ταιριάζει στο αρχείο προρύθμισης, διαφορετικά ο εγκαταστάτης θα αρνηθεί να το χρησιμοποιήσει. </p>
+<div class="informalexample"><pre class="screen">Boot parameters to specify:
+- Για εκκίνηση από το δίκτυο: netbooting:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- or
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- αν εκκινείτε από μια επεξεργασμένη εκ νέου εικόνα εγκατάστασης:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- αν κάνετε την εγκατάσταση από ένα μέσο USB (τοποθετήστε το αρχείο προρυθμίσεων στον
+  κορυφαίο κατάλογο του USB stick):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Σημειώστε ότι η παράμετρος <code class="filename">preseed/url</code> μπορεί να συντομευθεί απλά σε <code class="filename">url</code>, η παράμετρος <code class="filename">preseed/file</code> απλά σε  <code class="filename">file</code> και η παράμετρος <code class="filename">preseed/file/checksum</code> απλά σε <code class="filename">preseed-md5</code> όταν δωθούν ως παραμέτροι εκκίνησης. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Χρήση παραμέτρων εκκίνησης για την προρύθμιση ερωτήσεων</h3></div></div></div>
+<p>Αν ένα αρχείο προρύθμισης δεν μπορεί να χρησιμοποιηθεί για την προρύθμιση κάποιων βημάτων, η εγκατάσταση είναι δυνατόν να αυτοματοποιηθεί ακόμα πλήρως, αφού μπορείτε να περάσετε προκαθορισμένες τιμές στην ίδια την γραμμή εντολών κατά την εκκίνηση του εγκαταστάτη. </p>
+<p>Παράμετροι εκκίνησης μπορούν επίσης να χρησιμοποιηθούν αν δεν θέλετε πραγματικά να χρησιμοποιήσετε τη μέθοδο προρύθμισης αλλά απλά να δώσετε απάντηση σε μια συγκεκριμένη ερώτηση. Μερικά παραδείγματα όπου αυτό μπορεί να είναι χρήσιμο τεκμηριώνονται σε άλλο σημείο αυτού του εγχειριδίου. </p>
+<p>Για να ρυθμίσετε μια τιμή ώστε να χρησιμοποιηθεί μέσα στον <code class="classname">debian-installer</code> απλά περάστε τις τιμές <strong class="userinput"><code><em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong> για τις προρυθμισμένες παραμέτρους που αναφέρονται στα παραδείγματα αυτού του παραρτήματος. Αν μια τιμή πρόκειται να χρησιμοποιηθεί για την ρύθμιση πακέτων στο προς εγκατάσταση σύστημα, θα πρέπει να προτάξετε την παράμετρο <em class="firstterm">owner</em><a href="#ftn.id4037" class="footnote" name="id4037"><sup class="footnote">[19]</sup></a> της μεταβλητής όπως για παράδειγμα στο <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong>. Αν δεν προσδιορίσετε τον κάτοχο, η τιμή για την μεταβλητή δεν θα αντιγραφεί στην βάση δεδομένων του debconf στο προς εγκατάσταση σύστημα και συνεπώς δεν θα χρησιμοποιηθεί κατά την ρύθμιση του αντίστοιχου πακέτου. </p>
+<p>Συνήθως η προρύθμιση μιας ερώτησης μ' αυτόν τον τρόπο σημαίνει ότι η συγκεκριμένη ερώτηση δεν θα τεθεί. Για να καθορίσετε μια συγκεκριμένη προεπιλεγμένη απάντηση για μια ερώτηση, αλλά παρόλα αυτά η ερώτηση αυτή να γίνεται, χρησιμοποιήστε <span class="quote">«<span class="quote">?=</span>»</span> αντί για <span class="quote">«<span class="quote">=</span>»</span> σαν τελεστή. Δείτε επίσης την ενότητα <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Χρήση preseeding για την αλλαγή των προκαθορισμένων τιμών">Τμήμα B.5.2, «Χρήση preseeding για την αλλαγή των προκαθορισμένων τιμών»</a>. </p>
+<p>Σημειώστε ότι μερικές μεταβλητές που ορίζονται συχνά στο προτρεπτικό εκκίνησης έχουν ένα συντομότερο παρωνύμιο (alias). Αν ένα τέτοιο παρωνύμιο είναι διαθέσιμο, είναι αυτό που χρησιμοποιείται στα παραδείγματα αυτού του παραρτήματος αντί του πλήρους ονόματος της μεταβλητής. Για παράδειγμα, η μεταβλητή <code class="literal">preseed/url</code> χρησιμοποιείται με το παρωνύμιο <code class="literal">url</code>. Ένα άλλο παράδειγμα είναι το παρωνύμιο <code class="literal">tasks</code> που μεταφράζεται σε <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Ένα όρισμα <span class="quote">«<span class="quote">---</span>»</span> στις επιλογές εκκίνησης έχει ειδική σημασία. Παράμετροι του πυρήνα που εμφανίζονται μετά το τελευταίο <span class="quote">«<span class="quote">---</span>»</span> μπορούν να αντιγραφούν στο αρχείο ρυθμίσεων του φορτωτή εκκίνησης για το εγκατεστημμένο σύστημα (αν αυτό υποστηρίζεται από τον εγκαταστάτη για τον φορτωτή εκκίνησης). Ο εγκαταστάτης θα φιλτράρει αυτόματα οποιεσδήποτε επιλογές (όπως επιλογές προρύθμισης) μπορεί να αναγνωρίσει. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Σημείωση]" src="images/note.png"></td>
+<th align="left">Σημείωση</th>
+</tr>
+<tr><td align="left" valign="top"><p>Πρόσφατοι πυρήνες του Linux (2.6.9 και μεταγενέστεροι) δέχονται ένα μέγιστο αριθμό 32 επιλογών γραμμής εντολών και 32 επιλογών περιβάλλοντος συμπεριλαμβανομένων οποιωνδήποτε επιλογών προστίθενται εξ' ορισμού από τον εγκαταστάτη. Αν οι αριθμοί αυτοί ξεπεραστούν, ο πυρήνας θα περάσει σε κατάσταση "πανικού" (crash). (Για παλιότερους πυρήνες αυτοί οι αριθμοί επιλογών ήταν χαμηλότεροι). </p></td></tr>
+</table></div>
+<p>Για τις περισσότερες εγκαταστάσεις μερικές από τις προκαθορισμένες επιλογές στο αρχείο ρύθμισης του φορτωτή εκκίνησης, όπως <code class="literal">vga=normal</code>, μπορούν με ασφάλεια να αφαιρεθούν, επιτρέποντας έτσι την προσθήκη περισσότερων επιλογών για προρύθμιση. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Σημείωση]" src="images/note.png"></td>
+<th align="left">Σημείωση</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ίσως να μην είναι πάντα εφικτό να καθορίσετε τιμές με κενά στις παραμέτρους εκκίνησης ακόμα κι αν τις βάλλετε μέσα σε εισαγωγικά. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Αυτόματη Κατάσταση (auto)</h3></div></div></div>
+<p>Υπάρχουν αρκετά χαρακτηριστικά του Εγκαταστάτη του Debian που συνδυάζονται για να επιτρέψουν αρκετά απλές γραμμές εντολών στο προτρεπτικό εκκίνησης να έχουν ως αποτέλεσμα οσοδήποτε σύνθετες προσαρμοσμένες αυτοματοποιημένες εγκαταστάσεις. </p>
+<p>Αυτό ενεργοποιείται χρησιμοποιώντας την επιλογή <code class="literal">Αυτόματη εγκατάσταση</code> κατά την εκκίνηση, που αποκαλείται επίσης <code class="literal">auto</code> σε κάποιες αρχιτεκτονικές ή μεθόδους εκκίνησης. Στην ενότητα αυτή, η λέξη <code class="literal">auto</code> δεν είναι λοιπόν μια παράμετρος, αλλά σημαίνει να διαλέξει κανείς αυτή την επιλογή εκκίνησης και την προσθήκη των ακόλουθων παραμέτρων στο προτρεπτικό εκκίνησης. <span class="phrase">Δείτε την ενότητα <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Η οθόνη εκκίνησης">Τμήμα 5.1.5, «Η οθόνη εκκίνησης»</a> για πληροφορίες σχετικά με την προσθήκη μιας παραμέτρου εκκίνησης.</span> </p>
+<p>Για να το δείξουμε αυτό, ορίστε μερικά παραδείγματα που μπορούν να χρησιμοποιηθούν στο προτρεπτικό εκκίνησης: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Αυτό βασίζεται στην ύπαρξη ενός εξυπηρετητή DHCP ο οποίος θα φέρει το μηχάνημά μας στο σημείο που το όνομα ενός <code class="literal">autoserver</code> μπορεί να προσδιοριστεί μέσω DNS, πιθανόν μετά και την προσθήκη του τοπικού τομέα δικτύου αν αυτό δόθηκε από την υπηρεσία DHCP. Αν αυτό έγινε σε ένα δίκτυο που το όνομα τομέα του είναι  <code class="literal">example.com</code>, και το οποίο διαθέτει μια εύλογη ρύθμιση της υπηρεσίας DHCP, τότε το αποτέλεσμα θα ήταν η ανάκτηση του αρχείου προρύθμισης από το <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Το τελευταίο κομμάτι της διεύθυνσης (<code class="literal">d-i/trixie/./preseed.cfg</code>) λαμβάνεται από το <code class="literal">auto-install/defaultroot</code>. Εξ' ορισμού περιλαμβάνει τον κατάλογο <code class="literal">trixie</code> για να επιτρέπει σε μεταγενέστερες εκδόσεις του Debian να προσδιορίζουν το δικό τους κωδικό όνομα και στους χρήστες να αλλάζουν σ' αυτές με έναν ελεγχόμενο τρόπο. Το κομμάτι <code class="literal">/./</code> χρησιμοποιείται σαν ένδειξη μιας ρίζας, σε σχέση με την οποία να μπορούν να αγκιστρώνονται άλλες διαδρομές στο σύστημα αρχείων που ακολουθούν (για χρήση με τα preseed/include και preseed/run). Αυτό επιτρέπει τον προσδιορισμό αρχείων σαν πλήρεις διευθύνσεις URL, και διαδρομές που ξεκινούν με / αγκιστρώνονται κατ' αυτόν τον τρόπο, ή ακόμα και σαν διαδρομές σχετικά με την τοποθεσία όπου βρέθηκε το τελευταίο αρχείο προρύθμισης. Αυτό μπορεί να χρησιμοποιηθεί στην κατασκευή πιο "φορητών" σεναρίων (script) στα οποία μια ολόκληρη ιεραρχία σεναρίων μπορεί να μετακινηθεί σε μια καινούρια τοποθεσία χωρίς προβλήματα, για παράδειγμα με την αντιγραφή των αρχείων σε ένα stick USB ενώ αυτά προέρχονται από έναν εξυπηρετητή web. Στο παράδειγμα αυτό, αν το αρχείο προρύθμισης θέτει το <code class="literal">preseed/run</code> σαν <code class="literal">/scripts/late_command.sh</code> τότε το αρχείο θα ανακτηθεί από τη διεύθυνση <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Αν δεν είναι διαθέσιμη μια τοπική υποδομή υπηρεσιών DNS ή DHCP, ή αν δεν θέλετε να χρησιμοποιήσετε την προκαθορισμένη διαδρομή στο <code class="filename">preseed.cfg</code>, μπορείτε και πάλι να χρησιμοποιήσετε ένα συγκεκριμένο url, που αν δεν χρησιμοποιήσετε το κομμάτι <code class="literal">/./</code> θα αγκιστρωθεί στην αρχή της διαδρομής (δηλ, το τρίτο <code class="literal">/</code> στο URL). Εδώ είναι ένα παράδειγμα που απαιτεί ελάχιστη υποστήριξη από την τοπική δικτυακή υποδομή:</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> Ο τρόπος με τον οποίο δουλεύει αυτό είναι: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>αν στην διεύθυνση URL δεν υπάρχει κάποιο πρωτόκολλο, υποτίθεται ότι αυτό είναι το http, </p></li>
+<li class="listitem"><p>αν το όνομα του μηχανήματος δεν περιέχει τελείες, τότε προσάπτεται σ' αυτό το όνομα τομέα που προκύπτει από το DHCP, και </p></li>
+<li class="listitem"><p>αν δεν υπάρχει <code class="literal">/</code> μετά το όνομα του μηχανήματος, τότε προστίθεται η προκαθορισμένη διαδρομή. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Επιπρόσθετα από τον προσδιορισμό του url, μπορείτε ακόμα να προσδιορίσετε ρυθμίσεις που δεν επηρεάζουν άμεσα την συμπεριφορά του ίδιου του <code class="classname">debian-installer</code> αλλά μπορούν να περάσουν στα σενάρια που προσδιορίζονται με την χρήση του  <code class="literal">preseed/run</code> στο αρχείο προρύθμισης που έχει ήδη φορτωθεί. Προς το παρόν, το μοναδικό παράδειγμα αυτής της κατάστασης είναι το <code class="literal">auto-install/classes</code>, με παρωνύμιο <code class="literal">classes</code>. Αυτό μπορεί να χρησιμοποιηθεί ως εξής:</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Οι κλάσεις θα μπορούσαν να δηλώνουν για παράδειγμα τον τύπο του συστήματος που πρόκειται να εγκατασταθεί, ή τις τοπικές ρυθμίσεις που πρόκειται να χρησιμοποιηθούν. </p>
+<p>Φυσικά είναι δυνατόν να επεκτείνει κανείς αυτή την ιδέα, και αν κάνετε κάτι τέτοιο, είναι εύλογο να χρησιμοποιήσετε τον χώρο ονομασιών (namespace) auto-install για τον σκοπό αυτό. Έτσι μπορεί κανείς να έχει κάτι όπως το <code class="literal">auto-install/style</code> που στη συνέχεια να χρησιμοποιείται στα σενάριά του. Αν αισθάνεστε την ανάγκη να κάνετε κάτι τέτοιο, παρακαλούμε αναφέρετέ το στη λίστα αλληλογραφίας <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> ώστε να αποφύγουμε ασυμφωνίες στον χώρο ονομασιών και πιθανόν να προσθέσουμε ένα παρωνύμιο για την παράμετρο για λογαριασμό σας. </p>
+<p>Η επικεφαλίδα εκκίνησης <code class="literal">auto</code> δεν έχει ακόμα οριστεί σε όλες τις αρχιτεκτονικές. Το ίδιο αποτέλεσμα μπορεί να επιτευχθεί όμως προσθέτοντας απλά τις δυο παραμέτρους <code class="literal">auto=true priority=critical</code> στη γραμμή εντολών του πυρήνα. Η παράμετρος <code class="literal">auto</code> είναι ένα παρωνύμιο της παραμέτρου <code class="literal">auto-install/enable</code> και η απόδοση της τιμής <code class="literal">true</code> έχει σαν αποτέλεσμα την καθυστέρηση της διατύπωσης των ερωτήσεων για τις τοπικές ρυθμίσεις και το πληκτρολόγιο μέχρι τη στιγμή που θα έχει δοθεί η δυνατότητα προρύθμισής τους, ενώ η παράμετρος <code class="literal">priority</code> είναι παρωνύμιο της παραμέτρου <code class="literal">debconf/priority</code> και ο καθορισμός της σε <code class="literal">critical</code> αποτρέπει την διατύπωση κάθε ερώτησης με χαμηλότερη προτεραιότητα. </p>
+<p>Όταν επιλέγετε μια Αυτόματη εγκατάσταση χωρίς να προσδιορίζετε επίσης μια διαμόρφωση προρυθμίσεων, ο χρήστης θα προτραπεί να δηλώσει μια τοποθεσία προρύθμισης. Εναλλακτικά, αν μια τοποθεσία προρύθμισης έχει προσδιοριστεί, τότε αυτό το προτρεπτικό συνήθως δεν εμφανίζεται ώστε να επιτραπεί μια πλήρως μη διαδραστική εγκατάσταση. Αν, όμως, η πρόθεση είναι η τροποποίηση των προκαθορισμένων ρυθμίσεων με τη χρήση ενός αρχείου <code class="literal">preseed.cfg</code> σε μια μνήμη initrd, τότε το αποτέλεσμα θα συμπεριφερθεί πραγματικά σαν να μην έχει ακόμα προσδιοριστεί preseeding, παρ' όλο που έχει. Σε αυτή την περίπτωση η μεταβλητή <code class="literal">auto-install/cloak_initrd_preseed</code> του debconf μπορεί να οριστεί ως <code class="literal">true</code> (πχ. στο αρχείο <code class="literal">preseed.cfg</code> της μνήμης initrd). ώστε να έχετε την απαιτούμενη συμπεριφορά. behaviour. </p>
+<p>Επιπλέον επιλογές που μπορεί να έχουν ενδιαφέρον στην προσπάθεια αυτοματοποίησης μιας εγκατάστασης με χρήση της υπηρεσίας DHCP είναι: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> που κάνει το μηχάνημα να διαλέξει την πρώτη διαθέσιμη διεπαφή δικτύου (NIC) και να είναι περισσότερο "υπομονετικό" όσον αφορά την λήψη μιας απάντησης στο αίτημά του προς τον εξυπηρετητή DHCP. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Υπόδειξη]" src="images/tip.png"></td>
+<th align="left">Υπόδειξη</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ένα εκτεταμένο παράγειγμα του πώς μπορείτε να χρησιμοποιήσετε αυτό το πλαίσιο, που συμπεριλαμβάνει παραδείγματα σεναρίων (script) και κλάσσεις, μπορεί να βρεθεί στον <a class="ulink" href="http://hands.com/d-i/" target="_top">δικτυακό τόπο του προγραμματιστή</a>. Τα παραδείγματα που δίνονται εκεί δείχνουν επίσης μερικά ακόμα χρήσιμα αποτελέσματα που μπορούν να επιτευχθούν μέσω της δημιουργικής χρήσης της προρύθμισης. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Παρωνύμια χρήσιμα με την προρύθμιση</h3></div></div></div>
+<p>Τα παρακάτω ψευδώνυμα μπορεί να φανούν χρήσιμα όταν χρησιμοποιείτε προρύθμιση (κατάσταση αυτόματης εγκατάστασης). Σημειώστε ότι αυτά είναι απλά σύντομα ψευδώνυμα για ονόματα ερωτήσεων, και ότι θα πρέπει πάντα να προσδιορίζετε και μια τιμή: για παράδειγμα, <code class="literal">auto=true</code> or <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>αρχείο</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>θέμα</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>αρθρώματα</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>συνιστά</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>καθήκοντα</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>επιφάνεια εργασίας</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Παραδείγματα προρύθμισης προτρεπτικού εκκίνησης</h3></div></div></div>
+<p>Εδώ είναι μερικά παραδείγματα για το πώς μπορεί να μοιάζει το προτρεπτικό εκκίνησης (θα χρειαστεί να το προσαρμόσετε στις δικές σας ανακες<span class="phrase">· δείτε επίσης <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Η οθόνη εκκίνησης">Τμήμα 5.1.5, «Η οθόνη εκκίνησης»</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Για να θέστε τα Γαλλικά ως γλώσσα και τη Γαλλία ως χώρα:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Για να θέσετε τα Αγγλικά ως γλώσσα και τη Γερμανία ως χώρα και για να χρησιμοποιήσετε μια διάταξη γερμανικού πληκτρολογίου:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Για να εγκαταστήσετε το περιβάλλον επιφάνειας εργασίας MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Για να εγκαταστήσετε τη σουίτα προγραμμάτων (task) web-server:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Χρήση ενός εξυπηρετητή DHCP για τον προσδιορισμό αρχείων προρυθμίσεων</h3></div></div></div>
+<p>Είναι επίσης δυνατόν να χρησιμοποιήσετε το πρωτόκολλο DHCP για τον προσδιορισμό ενός αρχείου προρυθμίσεων και να το κατεβάσετε από το δίκτυο. Το DHCP επιτρέπει τον προσδιορισμό ενός ονόματος αρχείου. Συνήθως αυτό είναι ένα αρχείο για εκκίνηση από το δίκτυο, αν όμως εμφανίζεται να είναι μια διεύθυνση URL τότε τα μέσα εγκατάστασης που υποστηρίζουν προρύθμιση μέσω δικτύου θα κατεβάσουν το αρχείο από την διεύθυνση αυτή και θα το χρησιμοποιήσουν σαν αρχείο προρυθμίσεων. Εδώ είναι ένα παράδειγμα του πώς να κάνετε την αντίστοιχη ρύθμιση στο αρχείο dhcpd.conf για την έκδοση 3 του εξυπηρετητή DHCP του ISC (το πακέτο isc-dhcp-server στο Debian). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Σημειώστε ότι το προηγούμενο παράδειγμα περιορίζει το όνομα του αρχείου σε πελάτες DHCP που ταυτοποιούνται οι ίδιοι σαν  <span class="quote">«<span class="quote">d-i</span>»</span>, ώστε να μην επηρρεάζονται συνηθισμένοι πελάτες DHCP, αλλά μόνο ο εγκαταστάτης. Μπορείτε επίσης να βάλετε το κείμενο σε stanza μόνο για ένα συγκεκριμένο μηχάνημα για να αποφύγετε την εφαρμογή των προρυθμίσεων για όλες τις εγκαταστάσεις στο δίκτυό σας. </p>
+<p>Ένας καλός τρόπος να χρησιμοποιήσετε την μέθοδο προρύθμισης με χρήση DHCP είναι να προρυθμίσετε μόνο τις τιμές που έχουν να κάνουν με το δίκτυό σας, όπως για παράδειγμα τον καθρέφτη του Debian που θα χρησιμοποιήσετε. Με τον τρόπο αυτό οι εγκαταστάσεις στο δίκτυό σας θα έχουν προεπιλεγμένον έναν κατάλληλο καθρέφτη της αρχειοθήκης, ενώ το υπόλοιπο της εγκατάστασης μπορεί να πραγματοποιηθεί διαδραστικά. Η χρήση προρυθμίσεων μέσω DHCP για την πλήρη αυτοματοποίηση των εγκαταστάσεων του Debian θα πρέπει να γίνεται μόνο με προσοχή. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4037" class="footnote"><p><a href="#id4037" class="para"><sup class="para">[19] </sup></a> Ο κάτοχος (owner) μιας μεταβλητής του debconf (ή ενός υποδείγματος, template) είναι συνήθως το όνομα του πακέτου του πακέτου που περιέχει το αντίστοιχο υπόδειγμα debconf. Για μεταβλητέςπου χρησιμοποιούνται στον ίδιο τον εγκαταστάτη ο κάτοχος είναι <span class="quote">«<span class="quote">d-i</span>»</span>. Υποδείγματα και μεταβλητές μπορούν να έχουν περισσότερους από έναν κατόχους κάτι που βοηθά στον προσδιορισμό του αν αυτές μπορούν να αφαιρεθούν από την βάση δεδομένων του debconf σε περίπτωση πλήρους αφαίρεσης του πακέτου.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Εισαγωγή </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Δημιουργία ενός αρχείου προρυθμίσεων</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apb.html" title="B. függelék - Automata telepítés előírással">
+<link rel="prev" href="apbs03.html" title="B.3. Elő-beállító fájl létrehozása">
+<link rel="next" href="apbs05.html" title="B.5. Haladó lehetőségek">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">B. függelék - Automata telepítés előírással</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)</h2></div></div></div>
+<p>Az itt használt beállító töredékek példa előkonfigurációs fájlként itt is elérhetők: <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Fontos, hogy e példák egy Intel x86 telepítésre épülnek. Más architektúránál pár példa (például billentyűzet és boot-betöltő választás) érdektelen lehet és az architektúrának megfelelő debconf beállításokra kell cserélni. </p>
+<p>Részleteket arról, hogyan működnek a különböző Debian telepítő komponensek, a(z) <a class="xref" href="ch06s03.html" title="6.3. Az egyes összetevők használata">6.3. szakasz - Az egyes összetevők használata</a> részben találhatsz. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Honosítás</h3></div></div></div>
+<p>Egy normál telepítés során először a lokalizációs kérdéseket teszik fel, így ezeket az értékeket csak az initrd vagy a kernel boot paraméter módszerekkel lehet előre megadni. Az automata mód (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Automata mód">B.2.3. szakasz - Automata mód</a>) tartalmazza az <code class="literal">auto-install/enable=true</code> beállítást (általában az <code class="literal">auto</code> preseed aliason keresztül). Ez késlelteti a lokalizációs kérdések feltevését, így bármilyen módszerrel előre megadhatók. </p>
+<p>A locale segítségével megadható a nyelv és az ország is, tetszőleges kombinációban egy <code class="classname">debian-installer</code> által támogatott nyelv és egy ismert ország között. Ha a megadott kombináció nem érvényes hely, a telepítő automatikusan választ egy olyan helyet, ami érvényes a kiválasztott nyelvhez. Ha ezt indítási paraméterként szeretnéd megadni, használd a következőt: <strong class="userinput"><code>locale=<em class="replaceable"><code>en_US.UTF-8</code></em></code></strong>. </p>
+<p>Bár ez a módszer nagyon könnyen használható, nem teszi lehetővé a nyelv, ország és helyi beállítások minden lehetséges kombinációjának előzetes megadását<a href="#ftn.id4255" class="footnote" name="id4255"><sup class="footnote">[20]</sup></a>. Alternatívaként az értékeket egyenként is előre meg lehet adni. A nyelv és az ország boot paraméterként is megadható. </p>
+<div class="informalexample"><pre class="screen"># Az előre beállított locale csak a nyelvet, az országot és a területi beállítást adja meg.
+d-i debian-installer/locale string en_US.UTF-8
+
+# Az értékek külön-külön is beállíthatók nagyobb rugalmasság érdekében.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# További generálandó locale-okat is megadhatsz opcionálisan.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>A billentyűzet beállítása magában foglalja egy billentyűzetkiosztás kiválasztását és (nem latin kiosztások esetén) egy váltó billentyű megadását, amellyel a nem latin és az amerikai kiosztás között lehet váltani. Telepítés közben csak alapvető billentyűzetkiosztás-variánsok érhetők el. A haladó variánsok csak a telepített rendszerben érhetők el, a <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> parancson keresztül. </p>
+<div class="informalexample"><pre class="screen"># Billentyűzet választás.
+d-i keyboard-configuration/xkb-keymap select hu
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>A billentyűzet beállítás átugrására írd elő ezt: <code class="classname">keymap</code> így: <strong class="userinput"><code>skip-config</code></strong>. Így a kernel billentyű-kiosztás marad aktív. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Beszédszintézis</h3></div></div></div>
+<p>Amikor szoftveres beszédszintézissel telepítesz (azaz a <code class="literal">speakup.synth=soft</code> paramétert átadva a kernel parancssorában), előre be lehet állítani a használni kívánt hangkártyát és hangot. </p>
+<p>Mivel a beszédszintézis nagyon korán elindul, ezt csak az initrd-ből vagy a kernel parancssorából lehet előre beállítani. </p>
+<p>Az <code class="literal">espeakup/voice</code> előzetes konfigurálása lehetővé teszi a telepített rendszer beszédalapú akadálymentességi funkcióinak beállítását. Ez akkor is érvénybe lép, ha a szoftveres beszédszintézist valójában nem kapcsoltad be a telepítőben. </p>
+<div class="informalexample"><pre class="screen"># Melyik ALSA kártyát használják a szoftveres beszédhez.
+# Lehet egy szám 0-tól kezdve vagy egy azonosító, amit a
+# /sys/class/sound/card*/id alatt látsz.
+#d-i espeakup/card string 0
+
+# Melyik espeak-ng hangot használják
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Hálózat beállítás</h3></div></div></div>
+<p>Természetesen a hálózati konfiguráció előzetes beállítása nem fog működni, ha az előkonfigurációs fájlodat a hálózatról töltöd be. Viszont remekül működik, ha optikai lemezről vagy USB-meghajtóról bootolsz. Ha az előkonfigurációs fájlokat a hálózatról töltöd be, a hálózati konfigurációs paramétereket a kernel indítási paraméterekkel adhatod meg. </p>
+<p>Ha szükség van egy adott csatoló választására, használj ilyen indító paramétert: <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Bár a hálózati beállítások előzetes megadása normál esetben nem lehetséges hálózati előtelepítés használatakor (a <span class="quote">„<span class="quote">preseed/url</span>”</span> használatával), a következő trükköt alkalmazhatod ennek megkerülésére, például ha statikus címet szeretnél beállítani a hálózati interfész számára. A trükk az, hogy kényszeríted a hálózati beállítások újbóli futtatását az előkonfigurációs fájl betöltése után, egy <span class="quote">„<span class="quote">preseed/run</span>”</span> script létrehozásával, amely a következő parancsokat tartalmazza: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>A következő debconf változók fontosak a hálózati beállításokhoz. </p>
+<div class="informalexample"><pre class="screen"># Teljesen letilthatod a hálózati konfigurációt. Ez hasznos lehet olyan CD-ROM telepítéseknél, ahol a hálózat nélküli eszközökön a hálózati kérdések, figyelmeztetések és hosszú időkorlátok zavaróak.
+#d-i netcfg/enable boolean false
+
+# A netcfg választ egy interfészt, amelynek van kapcsolat, ha lehetséges. Ezáltal elkerülhető a lista megjelenítése, ha több interfész is van.
+d-i netcfg/choose_interface select auto
+
+# Ha egy konkrét interfészt szeretnél választani:
+#d-i netcfg/choose_interface select eth1
+
+# Ha más kapcsolatérzékelési időkorlátot szeretnél beállítani (alapértelmezett 3 másodperc).
+# Az értékeket másodpercekben kell megadni.
+#d-i netcfg/link_wait_timeout string 10
+
+# Ha lassú DHCP szervered van és a telepítő időtúllépés miatt várakozik, ez hasznos lehet.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Az automatikus hálózati konfiguráció az alapértelmezett.
+# Ha inkább manuálisan szeretnéd beállítani a hálózatot, kommenteld ki ezt a sort és az alábbi statikus hálózati konfigurációt.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Ha azt szeretnéd, hogy az előkonfigurációs fájl működjön mind DHCP szerverrel, mind anélkül, kommenteld ki ezeket a sorokat és az alábbi statikus hálózati konfigurációt.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Statikus hálózati konfiguráció.
+#
+# IPv4 példa
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6 példa
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# A DHCP-től kapott gépnév és tartománynév elsőbbséget élvez az itt beállított értékekkel szemben. Azonban az értékek beállítása mégis megakadályozza a kérdések megjelenését, még akkor is, ha a DHCP-től jönnek értékek.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# Ha erőszakosan meg akarod adni a gépnevet, függetlenül attól, hogy mit ad vissza a DHCP szerver vagy mi az IP-hez tartozó fordított DNS bejegyzés, kommenteld ki és állítsd be a következő sort.
+#d-i netcfg/hostname string somehost
+
+# Tiltsd le azt a zavaró WEP kulcs párbeszédablakot.
+d-i netcfg/wireless_wep string
+# Az a furcsa DHCP gépnév, amelyet egyes internetszolgáltatók jelszóként használnak.
+#d-i netcfg/dhcp_hostname string radish
+
+# Ha teljesen le szeretnéd tiltani a firmware keresést (azaz nem akarod használni a telepítőlemezeken elérhető firmware fájlokat vagy csomagokat):
+#d-i hw-detect/firmware-lookup string never
+
+# Ha nem szabad firmware szükséges a hálózathoz vagy más hardverhez, beállíthatod a telepítőt, hogy mindig megpróbálja betölteni azt, kérdezés nélkül. Vagy állítsd false-ra a kérdezés letiltásához.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Kérlek, vedd figyelembe, hogy a <span class="command"><strong>netcfg</strong></span> automatikusan megállapítja az alhálózati maszkot, ha a <code class="classname">netcfg/get_netmask</code> nincs előre megadva. Ilyen esetben a változót <code class="literal">seen</code>-re kell jelölni az automatikus telepítésekhez. Hasonlóképpen, a <span class="command"><strong>netcfg</strong></span> kiválaszt egy megfelelő címet, ha a <code class="classname">netcfg/get_gateway</code> nincs beállítva. Különleges esetként beállíthatod a <code class="classname">netcfg/get_gateway</code>-t <span class="quote">„<span class="quote">none</span>”</span>-ra, hogy megadd, nem kell használni átjárót. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Hálózati konzol</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Használd a következő beállításokat, ha a hálózati konzol komponenst szeretnéd használni távoli SSH-n keresztüli telepítéshez. Ez csak akkor van értelme, ha a telepítés hátralévő részét kézzel szeretnéd elvégezni
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>További információ a network-console-ról a <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Telepítés hálózati konzolon keresztül">6.3.10. szakasz - Telepítés hálózati konzolon keresztül</a> résznél található. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Tükör beállítások</h3></div></div></div>
+<p>A választott telepítő módtól függően egy tükör használható a telepítő további összetevői letöltésére, az alaprendszer telepítésére, és a <code class="filename">/etc/apt/sources.list</code> beállítására a telepített rendszerhez. </p>
+<p>A <code class="classname">mirror/suite</code> paraméter megadja a telepített rendszerhez használt készletet. </p>
+<p>A <code class="classname">mirror/udeb/suite</code> paraméter határozza meg a telepítő további komponenseinek csomagját. Ennek beállítása csak akkor hasznos, ha a komponensek ténylegesen a hálózaton keresztül kerülnek letöltésre, és meg kell egyeznie azzal a csomaggal, amelyet az initrd létrehozásához használtak az alkalmazott telepítési módszernél. Általában a telepítő automatikusan a megfelelő értéket használja, így nem szükséges ezt külön beállítani. </p>
+<div class="informalexample"><pre class="screen"># Tükör protokoll:
+# Ha az ftp-t választod, a mirror/country stringet nem szükséges beállítani.
+# Alapértelmezett érték a tükör protokollhoz: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Telepítendő csomagverzió.
+#d-i mirror/suite string testing
+# A telepítő komponensek betöltéséhez használt csomagverzió (opcionális).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Fiók beállítások</h3></div></div></div>
+<p>A root fiók jelszava, valamint az első normál felhasználói fiók neve és jelszava előre megadható. A jelszavaknál használhatsz akár egyszerű szöveges értékeket, akár crypt(3) <span class="emphasis"><em>hasheket</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>Légy tisztában azzal, hogy a jelszavak előzetes megadása nem teljesen biztonságos, mivel bárki, aki hozzáfér az előkonfigurációs fájlhoz, megismerheti ezeket a jelszavakat. A hashelt jelszavak tárolását biztonságosnak tekintik, kivéve ha gyenge hashelési algoritmust használnak, mint például a DES vagy az MD5, amelyek lehetővé teszik a brute force támadásokat. Ajánlott jelszóhashelési algoritmusok a SHA-256 és a SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Hagyd ki a root fiók létrehozását (a normál felhasználói fiók használhatja a sudot)
+#d-i passwd/root-login boolean false
+# Alternatív megoldásként hagyd ki a normál felhasználói fiók létrehozását
+#d-i passwd/make-user boolean false
+
+# Root jelszó, akár egyszerű szöveges formában
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# vagy titkosítva egy crypt(3) hash használatával
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Normál felhasználói fiók létrehozása
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Normál felhasználó jelszava, akár egyszerű szöveges formában
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# vagy titkosítva egy crypt(3) hash használatával
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Az első felhasználót a megadott UID-vel hozd létre az alapértelmezett helyett
+#d-i passwd/user-uid string 1010
+
+# A felhasználói fiók hozzá lesz adva néhány alapértelmezett kezdeti csoporthoz. Ennek felülírásához használd ezt
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>A <code class="classname">passwd/root-password-crypted</code> és <code class="classname">passwd/user-password-crypted</code> változók <span class="quote">„<span class="quote">!</span>”</span> értéke is előírható. Az adott fiók ekkor kikapcsolt. Ez jó lehet root fióknál, ha természetesen egy más, adminisztratív tevékenységet vagy root bejelentkezést biztosító mód adott (például SSH kulcs hitelesítés vagy <span class="command"><strong>sudo</strong></span>). </p>
+<p>A következő parancs (amely a <code class="classname">whois</code> csomagból érhető el) használható egy SHA-512 alapú crypt(3) hash generálására egy jelszóhoz: </p>
+<div class="informalexample"><pre class="screen">$ printf "r00tmagam" | mkpasswd -s -m md5
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Óra és időzóna beállítás</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Szabályozza, hogy a hardveróra UTC-re van-e állítva
+d-i clock-setup/utc boolean true
+
+# Beállíthatod bármely érvényes $TZ értékre; az érvényes értékeket a /usr/share/zoneinfo/ tartalmazza
+d-i time/zone string US/Eastern
+
+# Szabályozza, hogy használjon-e NTP-t az óra beállításához a telepítés során
+d-i clock-setup/ntp boolean true
+# Az NTP szerver, amit használni kell. Az alapértelmezett itt szinte mindig megfelelő
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Particionálás</h3></div></div></div>
+<p>A merevlemez particionálása előzetes beállítással korlátozott arra, amit a <code class="classname">partman-auto</code> támogat. Választhatsz, hogy meglévő szabad területet particionálsz egy lemezen vagy az egész lemezt. A lemez elrendezését előre definiált recept, egy receptfájlból származó egyedi recept vagy az előzetes konfigurációs fájlban szereplő recept alapján határozhatod meg. </p>
+<p>Támogatott az előzetes beállításokkal történő haladó particionálás RAID, LVM és titkosítás használatával, de nem olyan teljes rugalmassággal, mint amikor particionálsz egy nem előre beállított telepítés során. </p>
+<p>Az alábbi példák csak alapvető információkat nyújtanak a receptek használatáról. Részletes információkért nézd meg a <code class="filename">partman-auto-recipe.txt</code> és <code class="filename">partman-auto-raid-recipe.txt</code> fájlokat, amelyek a <code class="classname">debian-installer</code> csomagban találhatók. Mindkét fájl elérhető a <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top"><code class="classname">debian-installer</code> forrás adattárból</a> is. Vedd figyelembe, hogy a támogatott funkcionalitás változhat a kiadások között. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>A lemezek azonosítása függ betöltött meghajtójuk sorrendjétől. Több lemez esetén ügyelj nagyon, hogy a helyeset válaszd az előírás előtt. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Particionálási példa</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Ha a rendszer rendelkezik szabad hellyel, választhatod, hogy csak azt a területet partícionálod.
+# Ez csak akkor érvényesül, ha a partman-auto/method (lentebb) nincs beállítva.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Alternatívaként megadhatsz egy lemezt a partícionáláshoz. Ha a rendszer csak egy lemezzel rendelkezik, a telepítő azt fogja alapértelmezettként használni, de egyébként a készülék nevét a hagyományos, nem devfs formátumban kell megadni (tehát például /dev/sda és nem például /dev/discs/disc0/disc).
+# Például az első SCSI/SATA merevlemez használatához:
+#d-i partman-auto/disk string /dev/sda
+# Ezen kívül meg kell adnod a használni kívánt módszert.
+# A jelenleg elérhető módszerek:
+# - regular: a szokásos partíciótípusok használata az architektúrádhoz
+# - lvm: LVM használata a lemez partícionálásához
+# - crypto: LVM használata egy titkosított partíción belül
+d-i partman-auto/method string lvm
+
+# Meghatározhatod, hogy mekkora területet használjon az LVM kötetcsoport. Lehet méret egységgel (pl. 20 GB), a szabad hely százaléka, vagy a 'max' kulcsszó.
+d-i partman-auto-lvm/guided_size string max
+
+# Ha az automatikusan partícionálni kívánt lemezek egyike régi LVM konfigurációt tartalmaz, a felhasználó normál esetben figyelmeztetést kap. Ezt előre konfigurálhatod, hogy ne jelenjen meg...
+d-i partman-lvm/device_remove_lvm boolean true
+# Ugyanez vonatkozik a már meglévő szoftveres RAID tömbökre:
+d-i partman-md/device_remove_md boolean true
+# És ugyanígy van a lvm partíciók írásának megerősítésével.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# Választhatsz az előre meghatározott partícionálási receptek közül:
+# - atomic: minden fájl egy partíción
+# - home: külön /home partíció
+# - multi: külön /home, /var és /tmp partíciók
+# - server: külön /var és /srv partíciók; swap 1G-ra korlátozva
+# - small_disk: kis merevlemezekhez (10GB alatt) dedikált séma
+d-i partman-auto/choose_recipe select atomic
+
+# Vagy megadhatsz egy saját receptet...
+# Ha van módod arra, hogy egy receptfájlt bejuttass a d-i környezetébe, csak mutass rá.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Ha nincs, egy teljes receptet is beírhatsz az előkonfigurációs fájlba egy (logikai) sorban. Ez a példa egy kis /boot partíciót hoz létre, megfelelő swap-et, és a fennmaradó helyet a root partícióhoz rendeli:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# A teljes recept formátuma a partman-auto-recipe.txt fájlban van dokumentálva, amely a 'debian-installer' csomag része, vagy elérhető a D-I forráskódtárából. Ez azt is dokumentálja, hogyan adhatók meg beállítások, mint például a fájlrendszer címkék, kötetcsoport nevek, és mely fizikai eszközöket vegyük bele egy kötetcsoportba.
+
+## EFI partícionálás
+# Ha a rendszerednek szüksége van EFI partícióra, valami ilyesmit adhatsz hozzá a fenti recepthez, mint a recept első eleme:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# A fenti töredék az amd64 architektúrához készült; a részletek más architektúrákon eltérőek lehetnek. A 'partman-auto' csomag a D-I forráskódtárában tartalmazhat egy példát, amit követhetsz.
+
+# Ez a beállítás lehetővé teszi, hogy a partman automatikusan partícionáljon megerősítés nélkül, feltéve hogy a fenti módszerek valamelyikével megadtad neki, mit tegyen.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Kényszerített UEFI indítás ('BIOS kompatibilitás' elvész). Alapértelmezett: false.
+#d-i partman-efi/non_efi_system boolean true
+# Biztosítsd, hogy a partíciós tábla GPT legyen - ez szükséges az EFI-hez
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# Ha a lemeztitkosítás engedélyezett, hagyd ki a partíciók előzetes törlését.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Particionálás RAID használatával</h4></div></div></div>
+<p>Használhatsz preseedinget is a szoftveres RAID tömbök partícióinak beállításához. Támogatott RAID szintek: 0, 1, 5, 6 és 10, valamint a hiányos tömbök létrehozása és a tartalék eszközök megadása. </p>
+<p>Ha RAID 1-et használsz, előre beállíthatod a grubot úgy, hogy a tömbben használt összes eszközre települjön; lásd <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Boot betöltő telepítés">B.4.12. szakasz - Boot betöltő telepítés</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ez a fajta automatikus partícionálás könnyen félresikerülhet. Ráadásul ez egy olyan funkció, amit a <code class="classname">debian-installer</code> fejlesztői viszonylag keveset tesztelnek. A felelősség, hogy a különböző receptek helyesek legyenek (értelmesek legyenek és ne ütközzenek), a felhasználóra hárul. Ha problémád adódik, nézd meg a <code class="filename">/var/log/syslog</code> fájlt. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># A módszert "raid"-re kell állítani.
+#d-i partman-auto/method string raid
+# Add meg a partícionálni kívánt lemezeket. Mind ugyanazt az elrendezést kapják,
+# így ez csak akkor működik, ha a lemezek azonos méretűek.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Ezután meg kell adnod a használni kívánt fizikai partíciókat. 
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Végül meg kell határoznod, hogyan lesznek a korábban definiált partíciók
+# felhasználva a RAID beállításban. Ne felejtsd el a megfelelő partíciószámokat
+# használni a logikai partíciókhoz. Támogatott RAID szintek: 0, 1, 5, 6 és 10;
+# az eszközöket "#" használatával válaszd el.
+# A paraméterek:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# További információért lásd a partman-auto-raid-recipe.txt fájlt,
+# amely a 'debian-installer' csomagban található, vagy elérhető a D-I forrás
+# tárházában.
+
+# Ez teszi lehetővé, hogy a partman automatikusan partícionáljon megerősítés nélkül.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. A partíciók csatolásának vezérlése</h4></div></div></div>
+<p>Általában a fájlrendszereket egyetemes egyedi azonosítóval (UUID) csatolják kulcsként; ez lehetővé teszi, hogy akkor is helyesen csatolják őket, ha az eszköz nevük megváltozik. A UUID-k hosszúak és nehezen olvashatók, így ha úgy szeretnéd, a telepítő a hagyományos eszköznevek alapján vagy az általad megadott címke alapján is csatolhatja a fájlrendszereket. Ha azt kéred a telepítőtől, hogy címke alapján csatoljon, akkor azok a fájlrendszerek, amelyek nem rendelkeznek címkével, UUID alapján lesznek csatolva. </p>
+<p>Azok az eszközök, amelyek stabil nevekkel rendelkeznek, mint például az LVM logikai kötetek, továbbra is a hagyományos nevüket fogják használni, nem pedig UUID-ket. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>A hagyományos eszköznevek megváltozhatnak a szerint, hogy a kernel milyen sorrendben találja meg az eszközöket indításkor, ami azt eredményezheti, hogy rossz fájlrendszer lesz csatolva. Hasonlóképpen, a címkék ütközhetnek, ha új lemezt vagy USB meghajtót csatlakoztatsz, és ha ez megtörténik, a rendszered viselkedése indításkor kiszámíthatatlanná válhat. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Alapértelmezés szerint UUID alapján történik a csatolás, de választhatod a
+# "traditional" opciót is, hogy hagyományos eszközneveket használj, vagy a
+# "label" opciót, hogy fájlrendszer címkéket próbálj ki, mielőtt visszatérnél az
+# UUID-hez.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Az Alaprendszer telepítése</h3></div></div></div>
+<p>Jelenleg nincs sok előírható a telepítő e részéhez. Csak a kernel telepítéséhez vannak kérdések. </p>
+<div class="informalexample"><pre class="screen"># Állítsd be az APT-ot, hogy alapértelmezés szerint ne telepítse az ajánlott
+# csomagokat. Ennek az opciónak a használata hiányos rendszerhez
+# vezethet, ezért csak nagyon tapasztalt felhasználóknak ajánlott.
+# d-i base-installer/install-recommends boolean false
+
+# A telepítendő kernel kép (meta) csomag; a "none" használható, ha nem
+# kell kernelt telepíteni.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Az APT beállítása</h3></div></div></div>
+<p>A <code class="filename">/etc/apt/sources.list</code> beállítása és az alap beállítási opciók teljesen önműködőek a telepítő módtól és korábbi válaszoktól függően. További (úgynevezett helyi) tárak is megadhatók. </p>
+<div class="informalexample"><pre class="screen"># Válaszd ki, ha szeretnél további telepítési adathordozókat keresni
+# (alapértelmezett: false).
+d-i apt-setup/cdrom/set-first boolean false
+# Választhatsz, hogy nem szabad firmware-t telepítesz.
+#d-i apt-setup/non-free-firmware boolean true
+# Választhatsz, hogy nem szabad és contrib szoftvereket telepítesz.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Kommenteld ki a következő sort, ha nem szeretnéd, hogy a sources.list
+# bejegyzés egy DVD/BD telepítőlemezhez aktív legyen a telepített rendszerben
+# (a netinst vagy CD képek bejegyzései mindenképpen le lesznek tiltva, függetlenül
+# ettől a beállítástól).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Kommenteld ki ezt, ha nem szeretnél hálózati tükröt használni.
+#d-i apt-setup/use_mirror boolean false
+# Válaszd ki, melyik frissítési szolgáltatásokat szeretnéd használni; határozd meg a használni kívánt tükröket.
+# Az alább látható értékek a normál alapértelmezettek.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# További tárolók, local[0-9] elérhető
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Engedélyezd a deb-src sorokat
+#d-i apt-setup/local0/source boolean true
+# URL a helyi tároló nyilvános kulcsához; meg kell adnod egy kulcsot, különben
+# az apt panaszkodni fog a hitelesítetlen tárolóra, és ezért a
+# sources.list sor ki lesz kommentelve.
+#d-i apt-setup/local0/key string http://local.server/key
+# vagy inline is megadhatod a kulcsfájl tartalmát base64 kódolással
+# (a `base64 -w0` segítségével), így:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# A kulcsfájl tartalmát ellenőrzik, hogy ASCII-armoured formátumú-e.
+# Ha igen, akkor ".asc" kiterjesztéssel mentik el, ellenkező esetben ".gpg" kiterjesztést kap.
+# A "keybox database" formátum jelenleg nem támogatott. (lásd generators/60local az apt-setup forrásában)
+
+# Alapértelmezés szerint a telepítő megköveteli, hogy a tárolók hitelesítve legyenek
+# egy ismert gpg kulcs használatával. Ezzel a beállítással letiltható a
+# hitelesítés. Figyelem: Biztonságtalan, nem ajánlott.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Kommenteld ki ezt, hogy hozzáadd a multiarch konfigurációt i386-ra
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Csomag választás</h3></div></div></div>
+<p>Az elérhető feladatok bármely kombinációja használható. Például: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (alapvető eszközök) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (grafikus asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (Gnome asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (XFCE asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (KDE Plasma asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Cinnamon asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (MATE asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (LXDE asztal) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (webszerver) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH szerver) </p></li>
+</ul></div>
+<p>Feladatok nélküli telepítés is választható és más módon is utasítható a telepítés egy csomag-készletre. Ajánljuk, ez mindig tartalmazza a <strong class="userinput"><code>szabvány</code></strong> feladatot. </p>
+<p>Vagy ha egyáltalán nem szeretnéd, hogy a tasksel párbeszédablak megjelenjen, állítsd be előre a <code class="classname">pkgsel/run_tasksel</code> értékét (ebben az esetben a tasksel nem telepít csomagokat). </p>
+<p>Ha egyéni csomagokat is telepítenél a feladatok által telepített csomagokon kívül, használd a <code class="classname">pkgsel/include</code> paramétert. E paraméter értéke csomagok egy vesszőkkel vagy szóközökkel elválasztott listája, mely lehetővé teszi, hogy a kernelnek is könnyen átadható legyen. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Vagy dönthetsz úgy, hogy egyáltalán nem jelenik meg a tasksel
+# párbeszédablak (és nem telepít csomagokat):
+#d-i pkgsel/run_tasksel boolean false
+
+# Egyéni további csomagok telepítése
+#d-i pkgsel/include string openssh-server build-essential
+# Dönthetsz arról, hogy a debootstrap után frissíted-e a csomagokat.
+# Engedélyezett értékek: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# Kiválaszthatod, hogy a rendszered jelentse-e, milyen szoftvereket
+# telepítettél és használsz. Alapértelmezés szerint nem küld jelentést,
+# de a jelentések küldése segít a projektnek meghatározni, mely
+# szoftverek a legnépszerűbbek, és melyeket érdemes az első DVD-re
+# felvenni.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Boot betöltő telepítés</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># A Grub az indítóbetöltő (x86 esetén).</span>
+
+# Ezt biztonságosan beállíthatod, így a grub automatikusan települ az UEFI partícióra/indítórekordra, ha nem talál más operációs rendszert a gépen.
+d-i grub-installer/only_debian boolean true
+
+# Ez azt eredményezi, hogy a grub-installer az UEFI partícióra/indítórekordra települ, ha más operációs rendszert is talál, ami kevésbé biztonságos lehet, mivel előfordulhat, hogy nem tudja elindítani azt a másik rendszert.
+d-i grub-installer/with_other_os boolean true
+
+# Mivel különösen USB meghajtók miatt, az elsődleges meghajtó helyét általában nem lehet biztonságosan meghatározni, ezért ezt meg kell adni:
+#d-i grub-installer/bootdev  string /dev/sda
+# Az elsődleges eszközre való telepítéshez (feltételezve, hogy nem USB meghajtó):
+#d-i grub-installer/bootdev  string default
+
+# Alternatív megoldásként, ha nem az UEFI partícióra/indítórekordra szeretnél telepíteni, kommenteld ki és szerkeszd ezeket a sorokat:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Grub telepítése több lemezre:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Opcionális jelszó a grubhoz, akár szöveges formában
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# vagy MD5 hash használatával titkosítva, lásd grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Használd az alábbi opciót további indítási paraméterek hozzáadásához a telepített rendszerhez (ha az indítóbetöltő telepítő támogatja).
+# Megjegyzés: az installernek átadott opciók automatikusan hozzáadódnak.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>MD5 hash generálható a(z) <code class="classname">grub</code> jelszóhoz a(z) <span class="command"><strong>grub-md5-crypt</strong></span> parancs segítségével vagy a(z) <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Fiók beállítások">B.4.6. szakasz - Fiók beállítások</a> rész példájában szereplő paranccsal. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Az telepítés befejezése</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Soros konzolon történő telepítések során a szokásos virtuális konzolok
+# (VT1-VT6) általában le vannak tiltva az /etc/inittab fájlban. Kommenteld
+# ki a következő sort, hogy ezt megakadályozd.
+#d-i finish-install/keep-consoles boolean true
+
+# Kerüld el az utolsó üzenetet a telepítés befejeződéséről.
+d-i finish-install/reboot_in_progress note
+
+# Ezzel megakadályozhatod, hogy az installer a lemezt kiadja újraindítás
+# közben, ami egyes helyzetekben hasznos lehet.
+#d-i cdrom-detect/eject boolean false
+
+# Így érheted el, hogy a telepítő leálljon, amikor befejeződik, de ne
+# induljon újra a telepített rendszerbe.
+#d-i debian-installer/exit/halt boolean true
+# Ezzel a gép kikapcsol, ahelyett, hogy csak leállna.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Más csomagok előírása</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># A választott szoftverektől függően, vagy a telepítő folyamat során
+# előjövő hibák esetén, más kérdések is előjöhetnek.
+# Természetesen ezek válaszai is előírhatók. Az összes lehetséges
+# kérdés listájához végezz egy telepítést majd
+# futtasd e parancsokat:
+#   debconf-get-selections --installer &gt; fájl
+#   debconf-get-selections &gt;&gt; fájl
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4255" class="footnote"><p><a href="#id4255" class="para"><sup class="para">[20] </sup></a> Például a <code class="literal">locale</code> előzetes megadásával <strong class="userinput"><code>en_NL</code></strong>-re, az eredmény az lenne, hogy az installált rendszer alapértelmezett helyi beállítása <code class="literal">en_US.UTF-8</code> lesz. Ha például inkább a <code class="literal">en_GB.UTF-8</code> kívánatos, akkor az értékeket egyenként kell előre megadni. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Elő-beállító fájl létrehozása </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Haladó lehetőségek</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

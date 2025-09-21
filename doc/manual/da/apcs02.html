@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. Mappetræet</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Appendiks C. Partitionering for Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Opsætning af partitioner og størrelser for Debian">
+<link rel="next" href="apcs03.html" title="C.3. Anbefalet partitioneringsskema">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. Mappetræet</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks C. Partitionering for Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. Mappetræet</h2></div></div></div>
+<p>Debian GNU/Linux overholder <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> for mappe- og filnavngivning. Denne standard giver brugere og programmer mulighed for at forudsige placeringen af filer og mapper. Rodniveaumappen er repræsenteret af skråstreg <code class="filename">/</code>. På rodniveau inkluderer alle Debian-systemer disse mapper: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Mappe</th>
+<th>Indhold</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>Essentielle binære filer for kommandoer</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>Statiske filer for opstartsindlæseren</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>Enhedsfiler</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Værtsspecifik systemkonfiguration</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>Brugerens hjemmemapper</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Essentielle delte biblioteker og kernemoduler</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>Indeholder monteringspunkter for udskiftelige medier</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Monteringspunkt for monterin et filsytem midlertidigt</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Virtuel mappe for systeminformation</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>Hjemmemappe for root-brugeren</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Variable data for kørselstid</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>Essentielle binære filer for systemet</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Virtuel mappe for systeminformation</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>Midlertidige filer</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Sekundært hierarki</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Variable data</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Data for tjenester tilbudt af systemet</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Udvidelsesprogrampakker</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Det følgende er en list over vigtigte overvejesler jævnfør mapper og partitioner. Bemærk at diskforbruget varierer meget med systemkonfiguration og specifikke brugsmønstre. Anbefalingerne her er generelle vejledninger og tilbyder et udgangspunkt for partitionering. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>The root partition <code class="filename">/</code> must always physically contain <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> and <code class="filename">/usr</code>, otherwise you won't be able to boot. This means that you should provide at least 700–850MB of disk space for the root partition including <code class="filename">/usr</code>, or 5–6GB for a workstation or a server installation. </p></li>
+<li class="listitem"><p><code class="filename">/var</code>: variable data såsom nyhedsartikler, e-post, netsider, databaser, pakkesystemets mellemlager etc. vil blive placeret under denne mappe. Størrelsen af denne mappe afhænger i høj grad på brugen af dit system, men for de fleste være dikteret af pakkehåndteringens ekstra forbrug. Hvis du udfører en fuld installation af så godt som alt Debian kan tilbyde, i en session, bør 2-3 GB plads for <code class="filename">/var</code> være tilstrækkelig. Hvis du installerer stykvist (det vil sige, installere tjenester og redskaber efterfulgt tekststumper, så X, ...), så kan du nøjes med 300–500 MB. Hvis harddiskplads er dyrt og du planlægger at udføre væsentlige systemopdateringer, så kan du nøjes med så lidst som 30 eller 40 MB. </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code>: midlertidige data oprettet af programmer vil højst sandsynlig blive placeret i denne mappe. 40–100 MB bør normalt være nok. Nogle programmer — inkluderer arkivmanipulatorer, cd/dvd-værktøjer og multimedieprogrammer — kan bruge <code class="filename">/tmp</code> til at lagre store billedfiler. Hvis du planlægger at bruge sådanne programmer, så skal du justere den tilgængelige plads i <code class="filename">/tmp</code> jævnfør dette. </p></li>
+<li class="listitem"><p><code class="filename">/home</code>: Hver bruger vil placere sine personlige data i en undermappe i denne mappe. Dens størrelse afhænger af hvor mange brugere som skal bruge systemet og hvilke filer deres lagres i deres mapper. Afhængig af din planlagte brug, skal du reservere omkring 100 MB for hver bruger, men tilpas denne værdi til dine behov. Reserver en masse plads, hvis du planlægger at gemme en masse multimediefiler (billeder, mp3, film) i din hjemmemappe. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Opsætning af partitioner og størrelser for Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Anbefalet partitioneringsskema</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

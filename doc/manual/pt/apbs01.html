@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. Introdução</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Apêndice B. Automatizar a instalação utilizando preseeding">
+<link rel="prev" href="apb.html" title="Apêndice B. Automatizar a instalação utilizando preseeding">
+<link rel="next" href="apbs02.html" title="B.2. Utilizar o preseed">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. Introdução</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apêndice B. Automatizar a instalação utilizando preseeding</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. Introdução</h2></div></div></div>
+<p>O preseed disponibiliza uma forma de dar as respostas às questões colocadas durante o processo de instalação, sem ter de as escrever manualmente enquanto estiver a decorrer a instalação. Isto torna possível automatizar totalmente a maioria dos tipos de instalação e mesmo oferecer algumas funcionalidades que não estão disponíveis durante as instalações normais. </p>
+<p>O peseeding não é necessário. Se está a utilizar um ficheiro de preseed vazio, o instalador irá comportar-se da mesma formado que numa instalação manual normal. A cada questão a que fizer preseed irá (sim, percebeu bem) modificar a instalação de alguma forma a partir da base. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. Métodos de preseed</h3></div></div></div>
+<p>Existem três métodos que podem ser utilizados para fazer preseed: <em class="firstterm">initrd</em>, <em class="firstterm">ficheiro</em> e <em class="firstterm">rede</em>. O preseed através de initrd irá funcionar com qualquer método de instalação e suporta preseed de mais coisas, mas é o que requer maior preparação. O preseeding por ficheiro e rede podem ser utilizados com diferentes métodos de instalação. </p>
+<p>A seguinte tabela mostra quais os métodos de preseed que podem ser utilizados com que métodos de instalação. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Método de instalação</th>
+<th>initrd</th>
+<th>ficheiro</th>
+<th>rede</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>sim</td>
+<td>sim</td>
+<td>sim<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>netboot</td>
+<td>sim</td>
+<td>não</td>
+<td>sim</td>
+</tr>
+<tr>
+<td>hd-media <span class="phrase">(incluindo stick usb)</span>
+</td>
+<td>sim</td>
+<td>sim</td>
+<td>sim<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>mas apenas se tiver acesso à rede, e definir <code class="literal">preseed/url</code> de forma apropriada. </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>Uma diferença importante entre os métodos de preseed é o momento em que o ficheiro de pré-configuração é carregado e processado. Para o preseed por initrd isto acontece logo no início da instalação, mesmo antes de ser colocada a primeira questão. Preseeding a partir da linha de comandos do kernel acontece logo após. É por isso possível ultrapassar a configuração definida no initrd ao editar a linha de comandos do kernel (quer na configuração do gestor de arranque ou manualmente no arranque para os gestores de arranque que o permitam). Para o preseed por ficheiro isto acontece após ter sido carregada a imagem de instalação. Para o preseed por rede acontece apenas após ter sido configurada a rede. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Importante]" src="images/important.png"></td>
+<th align="left">Importante</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Obviamente, a quaisquer questões que tenham sido processadas antes do ficheiro de pré-configuração ter sido carregado, não pode ser feito o preseed (isto inclui questões que são apenas mostradas em prioridades média e baixa, tal como a primeira ronda de deteção de hardware). Uma forma não muito conveniente de evitar essas questões é fazer o preseed a partir dos parâmetros de arranque, tal como é descrito na <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Utilizar parâmetros de arranque para fazer preseed a questões">Secção B.2.2, “Utilizar parâmetros de arranque para fazer preseed a questões”</a>. </p>
+<p>De modo a evitar facilmente questões que normalmente iriam aparecer antes de ocorrer o preseed, pode iniciar o instalador em modo <span class="quote">“<span class="quote">auto</span>”</span>. Isto atrasa as questões que normalmente seriam colocadas muito cedo para lhes ser feito o preseed (i.e. linguagem, país e seleção de teclado) até ter rede, permitindo assim que lhes seja feito o preseed. Também corre a instalação na prioridade crítica, a qual previne a colocação de muitas questões pouco importantes. Para detalhes veja a <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modo Auto">Secção B.2.3, “Modo Auto”</a>. </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. Limitações</h3></div></div></div>
+<p>Embora possa ser feito preseed à maioria das questões utilizadas pelo <code class="classname">debian-installer</code> utilizando este método existem algumas notáveis excepções. Tem de (re)particionar um disco completo ou utilizar o espaço vazio disponível num disco; não é possível utilizar partições já existentes. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Apêndice B. Automatizar a instalação utilizando preseeding </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> B.2. Utilizar o preseed</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

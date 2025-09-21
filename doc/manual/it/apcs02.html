@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. L'albero delle directory</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Appendice C. Partizionare per Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Decidere il numero e la dimensione delle partizioni per Debian">
+<link rel="next" href="apcs03.html" title="C.3. Schema di partizionamento raccomandato">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. L'albero delle directory</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Appendice C. Partizionare per Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. L'albero delle directory</h2></div></div></div>
+<p>Debian GNU/Linux è conforme al <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> per la denominazione dei file e delle directory. Questo standard consente agli utenti e ai programmi di predire la posizione di file e directory sul sistema. La directory <span class="quote">«<span class="quote">root</span>»</span> (principale) del sistema è rappresentata semplicemente dal carattere <span class="quote">«<span class="quote">slash</span>»</span>: <code class="filename">/</code>. A questo livello, tutti i sistemi Debian contengono le seguenti directory: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Directory</th>
+<th>Contenuto</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>File binari dei comandi essenziali</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>File statici del boot loader</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>File di device</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Configurazioni di sistema specifiche per l'host</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>Directory home degli utenti</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Librerie condivise essenziali e moduli del kernel</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>Punti di montaggio per dispositivi rimovibili</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Punti di montaggio per montare un file system temporaneamente</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Directory virtuale per le informazioni di sistema</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>Directory home dell'utente root</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Dati variabili dei programmi in esecuzione</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>File binari essenziali per il sistema</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Directory virtuale per le informazioni di sistema</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>File temporanei</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Gerarchia secondaria</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Dati variabili</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Dati dei servizi forniti dal sistema</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Pacchetti software applicativi opzionali</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Quelle che seguono sono alcune considerazioni importanti a proposito delle directory e delle partizioni. Si noti che i requisiti di spazio su disco variano molto a seconda della configurazione del sistema e del tipo di utilizzo specifico. Le raccomandazioni che seguono sono delle linee guida generali e costituiscono un punto di partenza per le decisioni di partizionamento. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>La partizione <span class="quote">«<span class="quote">root</span>»</span> <code class="filename">/</code> deve sempre contenere fisicamente <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> e <code class="filename">/usr</code>, altrimenti non sarà possibile avviare il sistema. Ciò vuol dire che occorrono circa 700–850MB di spazio disco per la partizione root quando contiene <code class="filename">/usr</code> oppure 5–6GB per una installazione workstation o server. </p></li>
+<li class="listitem"><p><code class="filename">/var</code>: dati variabili, come code di posta e di messaggi news, siti web, database, la cache del sistema di gestione dei pacchetti, ecc. verranno conservati in questa directory. La dimensione da scegliere dipende fortemente dal tipo di uso che si farà del sistema, ma per la maggior parte degli utenti il fattore principale di cui tenere conto è il funzionamento del sistema di gestione dei pacchetti: se si intende installare in una sola sessione tutto il software fornito da Debian, dovrebbero bastare 2 o 3 GB di spazio per <code class="filename">/var</code>. Se invece si intende installare il sistema a più riprese (ad esempio, installare le utilità di sistema, poi quelle per la gestione dei documenti, poi il sistema X, ecc), è sufficiente riservare da 300 a 500 MB. Se si intende risparmiare al massimo lo spazio su disco e non si hanno in programma massicci aggiornamenti del sistema, è possibile riservare anche solo 30 o 40 MB. </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code>: i dati temporanei creati dai programmi vengono scritti prevalentemente in questa directory. Di solito è sufficiente riservare da 40 a 100 MB. Alcune applicazioni (tra cui gestori di archivi, strumenti per la creazione di CD e DVD, e software multimediale) utilizzano <code class="filename">/tmp</code> per scrivere file di immagine temporanei; se si intende utilizzare questo tipo di applicazioni, occorrerà scegliere una dimensione adeguata per la directory <code class="filename">/tmp</code>. </p></li>
+<li class="listitem"><p><code class="filename">/home</code>: ogni utente conserverà i propri dati personali in una sotto-directory di questa directory. La sua dimensione dipende dal numero di utenti che utilizzeranno il sistema e dal tipo di file che saranno conservati nelle loro directory. A seconda dell'uso che si intende fare del sistema, il valore indicativo di 100 MB per ogni utente andrà aumentato, soprattutto se le directory home conterranno molti file multimediali (immagini, MP3, filmati). </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Decidere il numero e la dimensione delle partizioni per Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Schema di partizionamento raccomandato</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

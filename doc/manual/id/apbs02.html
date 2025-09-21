@@ -1,0 +1,275 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Menggunakan preseed</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Lampiran B. Mengotomatiskan instalasi menggunakan preseed">
+<link rel="prev" href="apbs01.html" title="B.1. Pengantar">
+<link rel="next" href="apbs03.html" title="B.3. Membuat berkas prakonfigurasi">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Menggunakan preseed</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Lampiran B. Mengotomatiskan instalasi menggunakan preseed</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Menggunakan preseed</h2></div></div></div>
+<p>Pertama Anda harus membuat berkas prakonfigurasi dan menempatkannya di lokasi dari mana Anda ingin menggunakannya. Membuat berkas prakonfigurasi dibahas nanti dalam lampiran ini. Menempatkannya di lokasi yang benar cukup mudah untuk preseed jaringan atau jika Anda ingin membaca berkas dari flash disk USB. Jika Anda ingin memasukkan berkas dalam image ISO instalasi, Anda harus me-remaster image. Cara mendapatkan berkas prakonfigurasi yang termasuk dalam initrd berada di luar cakupan dokumen ini; silakan baca dokumentasi pengembang untuk <code class="classname">debian-installer</code>. </p>
+<p>Contoh berkas prakonfigurasi yang dapat Anda gunakan sebagai dasar untuk berkas prakonfigurasi Anda sendiri tersedia dari <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Berkas ini didasarkan pada fragmen konfigurasi yang disertakan dalam lampiran ini. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Memuat berkas prakonfigurasi</h3></div></div></div>
+<p>Jika Anda menggunakan preseed initrd, Anda hanya perlu memastikan berkas bernama <code class="filename">preseed.cfg</code> disertakan dalam direktori root initrd. Pemasang akan secara otomatis memeriksa apakah berkas ini ada dan memuatnya. </p>
+<p>Untuk metode preseed lainnya, Anda perlu memberi tahu pemasang berkas apa yang akan digunakan saat Anda mem-boot-nya. Ini biasanya dilakukan dengan meneruskan kernel parameter boot, baik secara manual pada saat boot atau dengan mengedit berkas konfigurasi bootloader <span class="phrase">(misalnya <code class="filename">syslinux.cfg</code>) dan menambahkan parameter ke akhir baris append untuk kernel.</span> </p>
+<p>Jika Anda menentukan berkas prakonfigurasi dalam konfigurasi bootloader, Anda dapat mengubah konfigurasi sehingga Anda tidak perlu menekan enter untuk mem-boot pemasang. <span class="phrase">Untuk syslinux ini berarti mengatur batas waktu ke <code class="literal">1</code> di <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Untuk memastikan pemasang mendapatkan berkas prakonfigurasi yang tepat, Anda dapat secara opsional menentukan checksum bagi berkas tersebut. Saat ini harus berupa md5sum, dan jika ditentukan harus cocok dengan berkas prakonfigurasi atau pemasang akan menolak untuk menggunakannya. </p>
+<div class="informalexample"><pre class="screen">Parameter boot yang ditentukan:
+- jika Anda netboot:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- atau
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- jika Anda mem-boot image instalasi remaster:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- jika Anda memasang dari media USB (masukkan berkas prakonfigurasi di
+  direktori tingkat puncak flash disk USB):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Perhatikan bahwa <code class="filename">preseed/url</code> dapat disingkat menjadi hanya <code class="filename">url</code>, <code class="filename">preseed/file</code> menjadi hanya <code class="filename">file</code> dan <code class="filename">preseed/file/checksum</code> menjadi hanya <code class="filename">preseed-md5</code> ketika mereka dilewatkan sebagai parameter boot. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Menggunakan parameter boot untuk pertanyaan preseed</h3></div></div></div>
+<p>Jika berkas prakonfigurasi tidak dapat digunakan untuk melakukan preseed beberapa langkah, instalasi masih dapat sepenuhnya otomatis, karena Anda dapat meneruskan nilai preseed pada baris perintah saat mem-boot pemasang. </p>
+<p>Parameter boot juga dapat digunakan jika Anda tidak benar-benar ingin menggunakan preseed, tetapi hanya ingin memberikan jawaban untuk pertanyaan tertentu. Beberapa contoh di mana ini dapat berguna didokumentasikan di tempat lain dalam manual ini. </p>
+<p>Untuk menetapkan nilai yang akan digunakan di dalam <code class="classname">debian-installer</code>, cukup berikan <strong class="userinput"><code><em class="replaceable"><code>path/ke/variabel</code></em>=<em class="replaceable"><code>nilai</code></em></code></strong> bagi salah satu variabel preseed yang tercantum dalam contoh di lampiran ini. Jika nilai akan digunakan untuk mengonfigurasi paket bagi sistem target, Anda harus menambahkan <em class="firstterm">pemilik</em><a href="#ftn.id4544" class="footnote" name="id4544"><sup class="footnote">[19]</sup></a> dari variabel seperti pada <strong class="userinput"><code><em class="replaceable"><code>pemilik</code></em>:<em class="replaceable"><code>path/ke/variabel</code></em>=<em class="replaceable"><code>nilai</code></em></code></strong>. Jika Anda tidak menentukan pemilik, nilai untuk variabel tidak akan disalin ke basis data debconf dalam sistem target dan dengan demikian tetap tidak digunakan selama konfigurasi paket yang relevan. </p>
+<p>Biasanya, mem-preseed pertanyaan dengan cara ini akan berarti bahwa pertanyaan tersebut tidak akan ditanyakan. Untuk menetapkan nilai baku tertentu bagi pertanyaan, tetapi pertanyaan masih diajukan, gunakan <span class="quote">“<span class="quote">?=</span>”</span>, bukan <span class="quote">“<span class="quote">=</span>”</span> sebagai operator. Lihat juga <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Menggunakan preseed untuk mengubah nilai baku">Bagian B.5.2, “Menggunakan preseed untuk mengubah nilai baku”</a>. </p>
+<p>Perhatikan bahwa beberapa variabel yang sering diatur pada prompt boot memiliki alias yang lebih pendek. Jika alias tersedia, itu digunakan dalam contoh dalam lampiran ini, bukan variabel lengkap. Variabel <code class="literal">preseed/url</code> misalnya telah diberi alias sebagai <code class="literal">url</code>. Contoh lain adalah alias <code class="literal">tasks</code>, yang diterjemahkan menjadi <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Sebuah <span class="quote">“<span class="quote">---</span>”</span> dalam opsi boot memiliki arti khusus. Parameter kernel yang muncul setelah <span class="quote">“<span class="quote">---</span>”</span> terakhir dapat disalin ke dalam konfigurasi bootloader untuk sistem yang dipasang (jika didukung oleh pemasang untuk bootloader). Pemasang akan secara otomatis memfilter opsi apa pun (seperti opsi prakonfigurasi) yang dikenalinya. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Kernel linux saat ini (2.6.9 dan yang lebih baru) menerima maksimum 32 opsi baris perintah dan 32 opsi lingkungan, termasuk opsi apa pun yang ditambahkan secara baku untuk pemasang. Jika angka-angka ini terlampaui, kernel akan panik (crash). (Untuk kernel sebelumnya, angka-angka ini lebih rendah.) </p></td></tr>
+</table></div>
+<p>Untuk sebagian besar instalasi, beberapa opsi baku dalam berkas konfigurasi bootloader Anda, seperti <code class="literal">vga=normal</code>, dapat dihapus dengan aman yang memungkinkan Anda menambahkan lebih banyak opsi untuk preseed. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Tidak selalu mungkin untuk menentukan nilai dengan spasi untuk parameter boot, bahkan jika Anda membatasinya dengan tanda kutip. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Modus otomatis</h3></div></div></div>
+<p>Ada beberapa fitur Pemasang Debian yang menggabungkan agar memungkinkan baris perintah yang cukup sederhana pada prompt boot untuk menghasilkan sebarang instalasi otomatis khusus yang kompleks. </p>
+<p>Ini diaktifkan dengan menggunakan pilihan boot <code class="literal">Instalasi otomatis</code>, juga disebut <code class="literal">auto</code> untuk beberapa arsitektur atau metode boot. Di bagian ini, <code class="literal">auto</code> dengan demikian bukan parameter, itu berarti memilih pilihan boot itu, dan menambahkan parameter boot berikut pada prompt boot. <span class="phrase">Lihat <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Layar Boot">Bagian 5.1.5, “Layar Boot”</a> untuk informasi tentang cara menambahkan parameter boot.</span> </p>
+<p>Untuk mengilustrasikan ini, berikut adalah beberapa contoh yang dapat digunakan pada prompt boot: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Ini bergantung pada adanya server DHCP yang akan membawa mesin ke titik dimana <code class="literal">autoserver</code> dapat diuraikan dengan DNS, mungkin setelah menambahkan domain lokal jika itu disediakan oleh DHCP. Jika ini dilakukan di situs dimana domain adalah <code class="literal">example.com</code>, dan mereka memiliki pengaturan DHCP yang cukup waras, itu akan mengakibatkan berkas preseed diambil dari <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Bagian terakhir dari url itu (<code class="literal">d-i/trixie/./preseed.cfg</code>) diambil dari <code class="literal">auto-install/defaultroot</code>. Secara baku ini termasuk direktori <code class="literal">trixie</code> untuk memungkinkan versi mendatang menentukan nama kode mereka sendiri dan membiarkan orang bermigrasi ke depan dengan cara yang terkontrol. Bagian <code class="literal">/./</code> digunakan untuk menunjukkan root, relatif terhadap path selanjutnya yang dapat ditambatkan (untuk digunakan dalam preseed/include dan preseed/run). Hal ini memungkinkan berkas untuk ditentukan baik sebagai URL lengkap, path yang dimulai dengan / yang dengan demikian berlabuh, atau bahkan path relatif terhadap lokasi di mana berkas preseed terakhir ditemukan. Ini dapat digunakan untuk membangun skrip yang lebih portabel dimana seluruh hierarki skrip dapat dipindahkan ke lokasi baru tanpa merusaknya, misalnya menyalin berkas ke flash disk USB ketika mereka mulai di server web. Dalam contoh ini, jika berkas preseed mengatur <code class="literal">preseed/run</code> ke <code class="literal">/scripts/late_command.sh</code> maka berkas akan diambil dari <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Jika tidak ada infrastruktur DHCP atau DNS lokal, atau jika Anda tidak ingin menggunakan path baku untuk <code class="filename">preseed.cfg</code>, Anda masih dapat menggunakan url eksplisit, dan jika Anda tidak menggunakan elemen <code class="literal">/./</code> itu akan ditambatkan ke awal path (yaitu <code class="literal">/</code> ketiga di URL). Berikut adalah contoh yang membutuhkan dukungan minimal dari infrastruktur jaringan lokal: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> Cara kerjanya adalah: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>jika URL tidak memiliki protokol, http diasumsikan, </p></li>
+<li class="listitem"><p>jika bagian nama host tidak berisi titik, ia memiliki domain yang berasal dari DHCP yang ditambahkan kepadanya, dan </p></li>
+<li class="listitem"><p>jika tidak ada <code class="literal">/</code> setelah nama host, maka path baku ditambahkan. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Selain menentukan url, Anda juga dapat menentukan pengaturan yang tidak secara langsung mempengaruhi perilaku <code class="classname">debian-installer</code> itu sendiri, tetapi dapat diteruskan ke skrip yang ditentukan menggunakan <code class="literal">preseed/run</code> dalam berkas preseed yang dimuat. Saat ini, satu-satunya contoh dari ini adalah <code class="literal">auto-install/classes</code>, yang memiliki alias <code class="literal">classes</code>. Maka ini dapat digunakan: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Kelas misalnya dapat menunjukkan jenis sistem yang akan dipasang, atau pelokalan yang akan digunakan. </p>
+<p>Tentu saja dimungkinkan untuk memperluas konsep ini, dan jika Anda melakukannya, masuk akal untuk menggunakan namespace instalasi otomatis untuk ini. Jadi seseorang mungkin memiliki sesuatu seperti <code class="literal">auto-install/style</code> yang kemudian digunakan dalam skrip Anda. Jika Anda merasa perlu melakukan ini, sebutkan di milis <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> sehingga kami dapat menghindari konflik namespace, dan mungkin menambahkan alias untuk parameter bagi Anda. </p>
+<p>Pilihan boot <code class="literal">auto</code> belum didefinisikan pada semua arsitektur. Efek yang sama dapat dicapai hanya dengan sekadar menambahkan dua parameter <code class="literal">auto=true priority=critical</code> ke baris perintah kernel. Parameter kernel <code class="literal">auto</code> adalah alias untuk <code class="literal">auto-install/enable</code> dan mengaturnya ke <code class="literal">true</code> menunda pertanyaan lokal dan papan ketik sampai setelah ada kesempatan untuk mem-preseed mereka, sedangkan <code class="literal">priority</code> adalah alias untuk <code class="literal">debconf/priority</code> dan mengaturnya ke <code class="literal">critical</code> menghentikan pertanyaan apa pun dengan prioritas yang lebih rendah untuk ditanyakan. </p>
+<p>Ketika instalasi otomatis dipilih tanpa juga menentukan konfigurasi preseed, pengguna akan diminta untuk memberikan lokasi preseed. Atau, jika konfigurasi preseed telah ditentukan, maka prompt biasanya ditekan untuk mengaktifkan instalasi non-interaktif sepenuhnya. Namun, jika maksudnya adalah untuk memodifikasi default dengan menggunakan <code class="literal">preseed.cfg </code> dalam initrd, maka hasilnya harus benar-benar berperilaku seolah-olah tidak ada preseeding belum ditentukan, meskipun memiliki. Dalam hal itu, variabel debconf <code class="literal">auto-install/cloak_initrd_preseed</code> dapat diatur ke <code class="literal">true</code> (misalnya dalam initrd <code class="literal">preseed.cfg</code>) untuk mendapatkan perilaku yang diperlukan. </p>
+<p>Opsi tambahan yang mungkin menarik saat mencoba mengotomatiskan instalasi saat menggunakan DHCP adalah: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> yang membuat mesin memilih NIC pertama yang layak dan lebih sabar untuk mendapatkan balasan atas kueri DHCP-nya. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>Contoh ekstensif tentang cara menggunakan kerangka kerja ini, termasuk contoh skrip dan kelas, dapat ditemukan di <a class="ulink" href="http://hands.com/d-i/" target="_top">situs web pengembangnya</a>. Contoh yang tersedia di sana juga menunjukkan banyak efek bagus lainnya yang dapat dicapai dengan penggunaan prakonfigurasi secara kreatif. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Alias-alias yang berguna dengan preseed</h3></div></div></div>
+<p>Alias berikut dapat berguna saat menggunakan preseed (mode auto). Perhatikan bahwa ini hanyalah alias pendek untuk nama pertanyaan, dan Anda selalu perlu menentukan nilai juga: misalnya, <code class="literal">auto=true</code> atau <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Contoh preseed prompt boot</h3></div></div></div>
+<p>Berikut adalah beberapa contoh bagaimana prompt boot mungkin terlihat seperti (Anda perlu menyesuaikan ini dengan kebutuhan Anda<span class="phrase">; lihat juga <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Layar Boot">Bagian 5.1.5, “Layar Boot”</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Untuk mengatur bahasa Prancis sebagai bahasa dan Prancis sebagai negara:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Untuk mengatur bahasa Inggris sebagai bahasa dan Jerman sebagai negara,
+# dan menggunakan tata letak papan tik Jerman:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US. UTF-8 keymap=de --- quiet
+# Untuk memasang desktop MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Untuk memasang tugas server web:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Menggunakan server DHCP untuk menentukan berkas prakonfigurasi</h3></div></div></div>
+<p>Anda juga dapat menggunakan DHCP untuk menentukan berkas prakonfigurasi yang akan diunduh dari jaringan. DHCP memungkinkan menentukan nama berkas. Biasanya ini adalah berkas ke netboot, tetapi jika tampaknya menjadi URL maka media instalasi yang mendukung preseed jaringan akan mengunduh berkas dari URL dan menggunakannya sebagai berkas prakonfigurasi. Berikut adalah contoh cara mengaturnya di dhcpd.conf untuk versi 3 dari server DHCP ISC (paket Debian isc-dhcp-server). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Perhatikan bahwa contoh di atas membatasi nama berkas ini untuk klien DHCP yang mengidentifikasi diri mereka sebagai <span class="quote">“<span class="quote">d-i</span>”</span>, sehingga tidak akan mempengaruhi klien DHCP biasa, tetapi hanya pemasang. Anda juga dapat menempatkan teks dalam bait hanya untuk satu host tertentu agar menghindari mem-preseed semua instalasi di jaringan Anda. </p>
+<p>Cara yang baik untuk menggunakan preseed DHCP adalah dengan hanya preseed nilai khusus untuk jaringan Anda, seperti mirror Debian yang akan digunakan. Dengan cara ini instalasi di jaringan Anda akan secara otomatis memilih cermin yang baik, tetapi sisa instalasi dapat dilakukan secara interaktif. Menggunakan preseed DHCP untuk sepenuhnya mengotomatisasi instalasi Debian hanya boleh dilakukan dengan hati-hati. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4544" class="footnote"><p><a href="#id4544" class="para"><sup class="para">[19] </sup></a> Pemilik variabel debconf (atau templat) biasanya adalah nama paket yang berisi templat debconf yang sesuai. Untuk variabel yang digunakan dalam pemasang itu sendiri pemiliknya adalah <span class="quote">“<span class="quote">d-i</span>”</span>. Templat dan variabel dapat memiliki lebih dari satu pemilik yang membantu menentukan apakah mereka dapat dihapus dari basis data debconf jika paket dibersihkan. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Pengantar </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Membuat berkas prakonfigurasi</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

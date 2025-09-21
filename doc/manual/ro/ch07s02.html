@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Montarea volumelor criptate</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch07.html" title="Cap. 7. Pornirea în noul dumneavoastră sistem Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Momentul adevărului">
+<link rel="next" href="ch07s03.html" title="7.3. Autentificarea în cont">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Montarea volumelor criptate</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 7. Pornirea în noul dumneavoastră sistem Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Montarea volumelor criptate</h2></div></div></div>
+<p>Dacă ați creat volume criptate în timpul instalării și le-ați atribuit puncte de montare, vi se va cere să introduceți fraza de acces pentru fiecare dintre aceste volume în timpul pornirii. </p>
+<p>Pentru partițiile criptate folosind dm-crypt, vi se va afișa următorul prompt în timpul pornirii: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> În prima linie a promptului, <em class="replaceable"><code>part</code></em> este numele partiției subiacente, de exemplu sda2 sau md0. Probabil că acum vă întrebați <span class="emphasis"><em>pentru ce volum</em></span> introduceți de fapt fraza de acces. Are legătură cu <code class="filename">/home</code>? Sau cu <code class="filename">/var</code>? Desigur, dacă aveți un singur volum criptat, acest lucru este ușor de descifrat și puteți introduce doar fraza de acces pe care ați folosit-o la configurarea acestui volum. Dacă ați configurat mai mult de un volum criptat în timpul instalării, notele pe care le-ați scris la ultimul pas în <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Configurarea volumelor criptate">Secțiune 6.3.4.6, „Configurarea volumelor criptate”</a> sunt utile. Dacă nu ați notat mai înainte asocierea dintre <code class="filename"><em class="replaceable"><code>parte</code></em>_crypt</code> și punctele de montare, o puteți găsi în continuare în fișierele <code class="filename">/etc/crypttab</code> și <code class="filename">/etc/fstab</code> ale noului dumneavoastră sistem. </p>
+<p>Promptul poate arăta oarecum diferit atunci când este montat un sistem de fișiere rădăcină criptat. Aceasta depinde de ce generator initramfs a fost folosit pentru a genera initrd-ul folosit pentru a porni sistemul. Exemplul de mai jos este pentru un initrd generat folosind <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Nu vor fi afișate caractere (nici măcar asteriscuri) la introducerea frazei de acces. Dacă introduceți o frază de acces greșită, mai aveți două încercări de a o corecta. După a treia încercare, procesul de pornire va omite acest volum și va continua să monteze următorul sistem de fișiere. Consultați <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Rezolvarea problemelor">Secțiune 7.2.1, „Rezolvarea problemelor”</a> pentru mai multe informații. </p>
+<p>După introducerea tuturor frazelor de acces, pornirea ar trebui să continue ca de obicei. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Rezolvarea problemelor</h3></div></div></div>
+<p>Dacă unele dintre volumele criptate nu au putut fi montate pentru că a fost introdusă o frază de acces greșită, va trebui să le montați manual după pornire. Se prezintă mai multe cazuri: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Primul caz se referă la partiția rădăcină. Când nu este montată corect, procesul de pornire se va opri și va trebui să reporniți calculatorul pentru a încerca din nou. </p></li>
+<li class="listitem">
+<p>Cel mai simplu caz este pentru volumele criptate care dețin date precum <code class="filename">/home</code> sau <code class="filename">/srv</code>. Puteți să le montați pur și simplu manual după pornire. </p>
+<p>Cu toate acestea, pentru «dm-crypt», acest lucru este puțin complicat. Mai întâi trebuie să înregistrați volumele cu <span class="application">device-mapper</span> rulând: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Aceasta va scana toate volumele menționate în fișierul <code class="filename">/etc/crypttab</code> și va crea dispozitive adecvate în directorul <code class="filename">/dev</code> după introducerea frazelor de acces corecte (volumele deja înregistrate vor fi omise, așa că puteți repeta această comandă de mai multe ori fără să vă faceți griji). După înregistrarea cu succes, puteți monta pur și simplu volumele în modul obișnuit: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/punctul_de_montare</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Dacă nu a putut fi montat niciun volum care conține fișiere de sistem necritice (<code class="filename">/usr</code> sau <code class="filename">/var</code>), sistemul ar trebui să pornească în continuare și ar trebui să puteți monta volumele manual, ca în cazul precedent. Cu toate acestea, va trebui, de asemenea, să (re)porniți orice servicii care rulează de obicei la nivelul de rulare implicit, deoarece este foarte probabil să nu fi fost pornit. Cel mai simplu mod este să reporniți calculatorul. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Momentul adevărului </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Autentificarea în cont</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Opcions avançades</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia">
+<link rel="prev" href="apbs04.html" title="B.4. Continguts del fitxer de configuració prèvia (per a trixie)">
+<link rel="next" href="apc.html" title="Apèndix C. Fer particions per a Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Opcions avançades</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Opcions avançades</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Execució d'ordres personalitzades a la instal·lació</h3></div></div></div>
+<p>Una opció molt potent i flexible oferta per les eines de preconfiguració és la possibilitat d'executar ordres o guions en alguns punts de la instal·lació. </p>
+<p>Quan el sistema d'arxius del sistema objectiu està muntat, està disponible a <code class="filename">/target</code>. Si s'ha fet servir un DVD d'instal·lació, quan està muntat està disponible a <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Necessàriament, la configuració prèvia de l'instal·lador del Debian no pot
+# ser segura. No hi ha res que comprove els intents de sobreeiximent de
+# memòria intermèdia o d'altres abusos sobre els valors d'un fitxer de
+# configuració prèvia com el present. Feu servir només aquests fitxers si
+# provenen de llocs de confiança! Per raons de control, i perquè és útil
+# en general, aquí teniu una manera d'executar de forma automàtica
+# qualsevol ordre de l'interpret que vulgueu dins l'instal·lador.
+
+# Aquesta primera ordre s'executa tan prompte com es pot, tot just després
+# de llegir el fitxer de configuració prèvia.
+#d-i preseed/early_command string anna-install some-udeb
+# Aquesta ordre s'executa just abans d'iniciar l'eina de fer particions.
+# Pot ser útil per a aplicar dinàmicament una configuració prèvia de l'eina
+# que depenga de l'estat dels discs (que potser no estiguen encara visibles
+# en executar «preseed/early_command»).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Aquesta s'executa just abans que finalitzi la instal·lació, però
+# quan encara es pot usar un directori de destí «/target». Podeu fer «chroot»
+# sobre «/target» i usar-lo directament, o fer servir les ordres «apt-install»
+# i «in-target» per instal·lar paquets fàcilment i executar ordres al
+# sistema de destinació.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Ús de la configuració prèvia per canviar els valors predeterminats</h3></div></div></div>
+<p>És pot utilitzar la configuració prèvia per canviar la resposta predeterminada a una pregunta, però que encara es faci la pregunta. Per fer açò l'indicador <em class="firstterm">seen</em> s'ha de posar a <span class="quote">«<span class="quote">false</span>»</span> després de donar-li el valor a una pregunta. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Podeu assolir el mateix efecte per a <span class="emphasis"><em>totes</em></span> les preguntes si establiu el paràmetre <code class="classname">preseed/interactive=true</code> a l'indicador d'arrencada. També pot ser útil per provar o depurar el vostre fitxer de preconfiguració. </p>
+<p>Adoneu-vos que el propietari <span class="quote">«<span class="quote">d-i</span>»</span> només s'ha d'emprar per a variables a usar pel propi instal·lador. Per a variables corresponents als paquets instal·lats al sistema de destinació cal que empreu el nom del paquet. Vegeu la nota al peu de <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Utilització dels paràmetres d'arrencada per complementar la configuració prèvia">Secció B.2.2, «Utilització dels paràmetres d'arrencada per complementar la configuració prèvia»</a>. </p>
+<p>Si esteu preconfigurant mitjançant els paràmetres d'arrencada, podeu fer que l'instal·lador pregunti una qüestió en concret utilitzant l'operador <span class="quote">«<span class="quote">?=</span>»</span>, p. ex. <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>valor</code></em></code></strong> (o <strong class="userinput"><code><em class="replaceable"><code>propietari</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>valor</code></em></code></strong>). Tingueu en compte que això només afectarà els paràmetres corresponents a les preguntes que realment es mostren durant el procés d'instal·lació, i no als paràmetres <span class="quote">«<span class="quote">interns</span>»</span>. </p>
+<p>Per a més informació sobre la depuració, feu servir el paràmetre d'arrencada <code class="classname">DEBCONF_DEBUG=5</code>. D'aquesta manera, <code class="classname">debconf</code> imprimirà més detalls sobre la configuració actual de cada variable i sobre el seu progrés mitjançant els guions d'instal·lació de cada paquet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Càrrega en cadena de fitxers de configuració prèvia</h3></div></div></div>
+<p>En un fitxer de configuració prèvia se'n poden incloure d'altres. Qualsevol paràmetre d'aquests fitxers prevaldrà sobre els dels fitxers carregats primer. Això fa possible, per exemple, indicar la configuració general de la xarxa a un fitxer i els paràmetres més específics a altres. </p>
+<div class="informalexample"><pre class="screen"># Es pot incloure més d'un fitxer, separat per espais; es carregaran tots.
+# Els fitxers inclosos poden tenir directrius de configuració prèvia pròpies
+# o bé incloure fitxers amb d'altres. Tingueu en compte que si els noms de
+# fitxer són relatius, s'agafen del mateix directori que el del fitxer que
+# els inclou.
+#d-i preseed/include string x.cfg
+
+# L'instal·lador pot comprovar sumes de verificació de fitxers de configuració
+# prèvia abans de fer-los servir. Actualment sols es pot emprar «md5sums»,
+# llistau els «md5sums» en el mateix ordre que la llista de fitxers que s'ha
+# d'incloure.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Més flexible que això és el següent, que executa una ordre al intèrpret i,
+# si s'obté algun nom de fitxer de configuració prèvia, s'hi inclou.
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# El més flexible de tots, açò descarrega un programa i l'executa.
+# El programa pot utilitzar ordres com «debconf-set» per manipular la base
+# de dades «debconf». Es pot llistar més d'un guió, separat per espais.
+# Adoneu-vos que si els noms de fitxers són relatius, s'agafen
+# del mateix directori que el fitxer de preconfiguració que els executa.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>És possible l'encadenament des de l'«initrd» o de la fase de configuració prèvia amb fitxer, a una configuració prèvia en xarxa donant el valor a «preseed/url» en els fitxers anteriors. Açò farà que la configuració prèvia de la xarxa es realitze quan la xarxa s'aixeque. Necessiteu anar en compte quan ho feu, ja que hi ha dues formes diferents de fer la configuració prèvia, que vol dir per exemple que tindreu l'oportunitat d'executar l'ordre «preseed/early», la segona que es du a terme després d'aixecar la xarxa. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Continguts del fitxer de configuració prèvia (per a trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> Apèndix C. Fer particions per a Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

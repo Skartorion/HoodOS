@@ -1,0 +1,792 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Installing Debian GNU/Linux from a Unix/Linux System</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="apd.html" title="Appendix D. Random Bits">
+<link rel="prev" href="apds02.html" title="D.2. Disk Space Needed for Tasks">
+<link rel="next" href="apds04.html" title="D.4. Installing Debian GNU/Linux over Parallel Line IP (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Installing Debian GNU/Linux from a Unix/Linux System</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Appendix D. Random Bits</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Installing Debian GNU/Linux from a Unix/Linux System</h2></div></div></div>
+<p>
+
+This section explains how to install Debian GNU/Linux from an existing
+Unix or Linux system, without using the menu-driven installer as
+explained in the rest of the manual. This <span class="quote">“<span class="quote">cross-install</span>”</span>
+HOWTO has been requested by users switching to Debian GNU/Linux from
+Red Hat, Mandriva, and SUSE. In this section some familiarity with
+entering *nix commands and navigating the file system is assumed. In
+this section, <code class="prompt">$</code> symbolizes a command to be entered in
+the user's current system, while <code class="prompt">#</code> refers to a
+command entered in the Debian chroot.
+
+</p>
+<p>
+
+Once you've got the new Debian system configured to your preference,
+you can migrate your existing user data (if any) to it, and keep on
+rolling. This is therefore a <span class="quote">“<span class="quote">zero downtime</span>”</span> Debian GNU/Linux
+install. It's also a clever way for dealing with hardware that
+otherwise doesn't play friendly with various boot or installation
+media.
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+As this is a mostly manual procedure, you should bear in mind that you
+will need to do a lot of basic configuration of the system yourself,
+which will also require more knowledge of Debian and of Linux in general
+than performing a regular installation. You cannot expect this procedure
+to result in a system that is identical to a system from a regular
+installation. You should also keep in mind that this procedure only
+gives the basic steps to set up a system. Additional installation and/or
+configuration steps may be needed.
+
+</p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5431"></a>D.3.1. Getting Started</h3></div></div></div>
+<p>
+
+With your current *nix partitioning tools, repartition the hard
+drive as needed, creating at least one filesystem plus swap. You
+need around 647MB of space available for a console only install,
+or about 2635MB if you plan to install X (more if you intend to
+install desktop environments like GNOME or KDE Plasma).
+
+</p>
+<p>
+
+Next, create file systems on the partitions. For example, to create an
+ext3 file system on partition <code class="filename">/dev/sda6</code> (that's
+our example root partition):
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p>
+
+To create an ext2 file system instead, omit <strong class="userinput"><code>-j</code></strong>.
+
+</p>
+<p>
+
+Initialize and activate swap (substitute the partition number for
+your intended Debian swap partition):
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p>
+
+Mount one partition as <code class="filename">/mnt/debinst</code> (the
+installation point, to be the root (<code class="filename">/</code>) filesystem
+on your new system). The mount point name is strictly arbitrary, it is
+referenced later below.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+If you want to have parts of the filesystem (e.g. /usr) mounted on
+separate partitions, you will need to create and mount these directories
+manually before proceeding with the next stage.
+
+</p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5452"></a>D.3.2. Install <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>
+
+The utility used by the Debian installer, and recognized as the
+official way to install a Debian base system, is
+<span class="command"><strong>debootstrap</strong></span>. It uses <span class="command"><strong>wget</strong></span> and
+<span class="command"><strong>ar</strong></span>, but otherwise depends only on
+<code class="classname">/bin/sh</code> and basic Unix/Linux tools<a href="#ftn.id5460" class="footnote" name="id5460"><sup class="footnote">[21]</sup></a>. Install <span class="command"><strong>wget</strong></span> and
+<span class="command"><strong>ar</strong></span> if they aren't already on your current system,
+then download and install <span class="command"><strong>debootstrap</strong></span>.
+
+</p>
+<p>
+
+Or, you can use the following procedure to install it
+manually. Make a work folder for extracting the .deb into:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p>
+
+The <span class="command"><strong>debootstrap</strong></span> binary is located in the Debian
+archive (be sure to select the proper file for your
+architecture). Download the <span class="command"><strong>debootstrap</strong></span> .deb from
+the <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top">
+pool</a>, copy the package to the work folder, and extract the
+files from it. You will need to have root privileges to install
+the files.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5477"></a>D.3.3. Run <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>
+
+<span class="command"><strong>debootstrap</strong></span> can download the needed files directly
+from the archive when you run it. You can substitute any Debian
+archive mirror for <strong class="userinput"><code>http.us.debian.org/debian</code></strong> in
+the command example below, preferably a mirror close to you
+network-wise. Mirrors are listed at
+<a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>.
+
+</p>
+<p>
+
+If you have a trixie Debian GNU/Linux installation image mounted at
+<code class="filename">/cdrom</code>, you could substitute a file URL instead
+of the http URL: <strong class="userinput"><code>file:/cdrom/debian/</code></strong>
+
+</p>
+<p>
+
+Substitute one of the following for <em class="replaceable"><code>ARCH</code></em>
+in the <span class="command"><strong>debootstrap</strong></span> command:
+<strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p>
+
+If the target architecture is different than the host, you should add the
+<strong class="userinput"><code>--foreign</code></strong> option.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5499"></a>D.3.4. Configure The Base System</h3></div></div></div>
+<p>
+
+Now you've got a real Debian system, though rather lean, on disk.
+<span class="command"><strong>chroot</strong></span> into it:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p>
+
+If the target architecture is different from the host,
+you will need to first copy qemu-user-static to the new host:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p>
+
+After chrooting you may need to set the terminal definition to be
+compatible with the Debian base system, for example:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p>
+
+Depending on the value of TERM, you may have to install the
+<code class="classname">ncurses-term</code> package to get support for it.
+</p>
+<p>
+If the target architecture is different from the host,
+you need to finish the multi-stage boot strap:
+
+</p>
+<div class="informalexample"><pre class="screen">
+/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5514"></a>D.3.4.1. Create device files</h4></div></div></div>
+<p>
+
+At this point <code class="filename">/dev/</code> only contains very basic device
+files. For the next steps of the installation additional device files may
+be needed. There are different ways to go about this and which method you
+should use depends on the host system you are using for the installation,
+on whether you intend to use a modular kernel or not, and on whether you
+intend to use dynamic (e.g. using <code class="classname">udev</code>) or static
+device files for the new system.
+
+</p>
+<p>
+
+A few of the available options are:
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>
+
+install the makedev package, and create a default set of static device files
+using (after chrooting)
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>
+
+manually create only specific device files using <span class="command"><strong>MAKEDEV</strong></span>
+
+</p></li>
+<li class="listitem"><p>
+
+bind mount /dev from your host system on top of /dev in the target system;
+note that the postinst scripts of some packages may try to create device
+files, so this option should only be used with care
+
+</p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5530"></a>D.3.4.2. Mount Partitions</h4></div></div></div>
+<p>
+
+You need to create <code class="filename">/etc/fstab</code>.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p>
+
+Here is a sample you can modify to suit:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p>
+
+Use <strong class="userinput"><code>mount -a</code></strong> to mount all the file systems you
+have specified in your <code class="filename">/etc/fstab</code>, or, to mount
+file systems individually, use:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p>
+
+Current Debian systems have mountpoints for removable media under
+<code class="filename">/media</code>, but keep compatibility symlinks in
+<code class="filename">/</code>. Create these as as needed, for example:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p>
+
+You can mount the proc file system multiple times and to arbitrary
+locations, though <code class="filename">/proc</code> is customary. If you didn't use
+<strong class="userinput"><code>mount -a</code></strong>, be sure to mount proc before continuing:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>
+
+The command <strong class="userinput"><code>ls /proc</code></strong> should now show a non-empty
+directory. Should this fail, you may be able to mount proc from outside
+the chroot:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5554"></a>D.3.4.3. Setting Timezone</h4></div></div></div>
+<p>
+
+Setting the third line of the file <code class="filename">/etc/adjtime</code> to 
+<span class="quote">“<span class="quote">UTC</span>”</span> or <span class="quote">“<span class="quote">LOCAL</span>”</span> determines
+whether the system will interpret the hardware clock as being set to UTC
+respective local time.  The following command allows you to set that.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p>
+
+Here is a sample:
+</p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p>
+
+The following command allows you to choose your timezone.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5566"></a>D.3.4.4. Configure Networking</h4></div></div></div>
+<p>
+
+To configure networking, edit
+<code class="filename">/etc/network/interfaces</code>,
+<code class="filename">/etc/resolv.conf</code>,
+<code class="filename">/etc/hostname</code> and
+<code class="filename">/etc/hosts</code>.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p>
+
+Here are some simple examples from
+<code class="filename">/usr/share/doc/ifupdown/examples</code>:
+
+</p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# The loopback interface isn't really required any longer, but can be used
+# if needed.
+#
+# auto lo
+# iface lo inet loopback
+
+# To use dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# An example static IP setup: (network, broadcast and gateway are optional)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p>
+
+Enter your nameserver(s) and search directives in
+<code class="filename">/etc/resolv.conf</code>:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p>
+
+A simple example <code class="filename">/etc/resolv.conf</code>:
+
+</p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p>
+
+Enter your system's host name (2 to 63 characters):
+
+</p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p>
+
+And a basic <code class="filename">/etc/hosts</code> with IPv6 support:
+
+</p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p>
+
+If you have multiple network cards, you should arrange the names of
+driver modules in the <code class="filename">/etc/modules</code> file into the
+desired order. Then during boot, each card will be associated with the
+interface name (eth0, eth1, etc.) that you expect.
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5590"></a>D.3.4.5. Configure Apt</h4></div></div></div>
+<p>
+
+Debootstrap will have created a very basic
+<code class="filename">/etc/apt/sources.list</code> that will allow installing
+additional packages. However, you may want to add some additional sources,
+for example for source packages and security updates:
+
+</p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p>
+
+Make sure to run <strong class="userinput"><code>apt update</code></strong> after you have
+made changes to the sources list.
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5597"></a>D.3.4.6. Configure Locales and Keyboard</h4></div></div></div>
+<p>
+
+To configure your locale settings to use a language other than
+English, install the <code class="classname">locales</code> support package
+and configure it. Currently the use of UTF-8 locales is recommended.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p>
+
+To configure your keyboard (if needed):
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>
+
+Note that the keyboard cannot be set while in the chroot, but will be
+configured for the next reboot.
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5606"></a>D.3.5. Install a Kernel</h3></div></div></div>
+<p>
+
+If you intend to boot this system, you probably want a Linux kernel
+and a boot loader. Identify available pre-packaged kernels with:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>
+
+Then install the kernel package of your choice using its package name.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5615"></a>D.3.6. Set up the Boot Loader</h3></div></div></div>
+<p>
+
+To make your Debian GNU/Linux system bootable, set up your boot loader to load
+the installed kernel with your new root partition. Note that
+<span class="command"><strong>debootstrap</strong></span> does not install a boot loader, but you
+can use <span class="command"><strong>apt</strong></span> inside your Debian chroot to do so.
+
+</p>
+<p>
+
+Check <strong class="userinput"><code>info grub</code></strong>
+for instructions on setting up the
+bootloader.  If you are keeping the system you used to install Debian, just
+add an entry for the Debian install to your existing grub2
+<code class="filename">grub.cfg</code>.
+
+</p>
+<p>
+
+Installing and setting up <code class="classname">grub2</code> is as easy as:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p>
+
+The second command will install <span class="command"><strong>grub2</strong></span> (in this case in
+the MBR of <code class="literal">sda</code>). The last command will create a sane
+and working <code class="filename">/boot/grub/grub.cfg</code>.
+
+</p>
+<p>
+
+Note that this assumes that a <code class="filename">/dev/sda</code> device file has
+been created. There are alternative methods to install <span class="command"><strong>grub2</strong></span>,
+but those are outside the scope of this appendix.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5634"></a>D.3.7. Remote access: Installing SSH and setting up access</h3></div></div></div>
+<p>
+
+In case you can login to the system via console, you can skip this section. If
+the system should be accessible via the network later on, you need to install
+SSH and set up access.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p>
+
+
+Root login with password is disabled by default, so setting up access can be
+done by setting a password and re-enable root login with password:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p>
+
+This is the option to be enabled:
+
+</p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p>
+
+Access can also be set up by adding an ssh key to the root account:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p>
+
+Lastly, access can be set up by adding a non-root user and setting a password:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5647"></a>D.3.8. Finishing touches</h3></div></div></div>
+<p>
+
+As mentioned earlier, the installed system will be very basic. If you
+would like to make the system a bit more mature, there is an easy method
+to install all packages with <span class="quote">“<span class="quote">standard</span>”</span> priority:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p>
+
+Of course, you can also just use <span class="command"><strong>apt</strong></span> to install
+packages individually.
+
+</p>
+<p>
+
+After the installation there will be a lot of downloaded packages in
+<code class="filename">/var/cache/apt/archives/</code>. You can free up some
+diskspace by running:
+
+</p>
+<div class="informalexample"><pre class="screen">
+# apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5460" class="footnote"><p><a href="#id5460" class="para"><sup class="para">[21] </sup></a>
+
+These include the GNU core utilities and commands like <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> and <span class="command"><strong>gzip</strong></span>.
+
+</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Disk Space Needed for Tasks </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Installing Debian GNU/Linux over Parallel Line IP (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Créer un fichier de préconfiguration</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Annexe B. Automatisation de l'installation par préconfiguration">
+<link rel="prev" href="apbs02.html" title="B.2. Utiliser la préconfiguration">
+<link rel="next" href="apbs04.html" title="B.4. Contenu du fichier de préconfiguration (pour trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Créer un fichier de préconfiguration</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Annexe B. Automatisation de l'installation par préconfiguration</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Créer un fichier de préconfiguration</h2></div></div></div>
+<p>Le format de ce fichier est celui de la commande <span class="command"><strong>debconf-set-selections</strong></span>. Chaque ligne est de cette forme : </p>
+<div class="informalexample"><pre class="screen">&lt;propriétaire&gt; &lt;nom de la question&gt; &lt;type de la question&gt; &lt;valeur&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Le fichier doit commencer par <code class="literal">#_preseed_V1</code>. </p>
+<p>Voici quelques règles pour écrire un fichier de préconfiguration : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Une seule espace (ou tabulation) autorisée entre le type et la valeur. Toute autre espace sera considérée comme appartenant à la valeur ; </p></li>
+<li class="listitem"><p>Une ligne peut être divisée en ajoutant une barre oblique inverse (<span class="quote">« <span class="quote"><code class="literal">\</code></span> »</span>) pour signifier la continuation de la ligne. Il vaut mieux couper la ligne après le nom de la question. Ce n'est pas très heureux de la couper entre le type et la valeur. Les lignes coupées seront réunies en une seule ligne et toutes les espaces superflues condensées en une seule ; </p></li>
+<li class="listitem"><p>Le propriétaire des variables debconf utilisées seulement dans l'installateur doit être <span class="quote">« <span class="quote">d-i</span> »</span>. Pour les variables utilisées dans le système installé, le propriétaire doit correspondre au nom du paquet qui contient ces variables. Seules les variables dont le propriétaire n'est pas <span class="quote">« <span class="quote">d-i</span> »</span> sont conservées dans la base de données debconf du système installé ; </p></li>
+<li class="listitem"><p>La plupart des valeurs doivent être en anglais et non pas en français. Mais il existe des valeurs, dans <code class="classname">partman</code> par exemple, qui doivent être données en français ; </p></li>
+<li class="listitem"><p>Certaines valeurs reçoivent du code comme valeur au lieu du texte anglais qui est affiché pendant l'installation. </p></li>
+<li class="listitem"><p>Commencer le fichier par <code class="literal">#_preseed_V1</code>. </p></li>
+<li class="listitem"><p>Un commentaire est une ligne qui <span class="emphasis"><em>commence</em></span> par un dièse (<span class="quote">« <span class="quote"><code class="literal">#</code></span> »</span>) et qui continue jusqu'à la fin de la ligne. </p></li>
+</ul></div>
+<p>Pour créer le fichier de préconfiguration, la méthode la plus facile est de travailler à partir du fichier d'exemple dans la <a class="xref" href="apbs04.html" title="B.4. Contenu du fichier de préconfiguration (pour trixie)">Section B.4, « Contenu du fichier de préconfiguration (pour trixie) »</a>. </p>
+<p>Une autre méthode est de faire une installation puis, après le redémarrage, d'utiliser la commande <span class="command"><strong>debconf-get-selections</strong></span> du paquet <code class="classname">debconf-utils</code> pour copier la base de données debconf et la base de données cdebconf de l'installateur dans un fichier unique : </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>fichier</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>fichier</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>fichier</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Cependant ce fichier contiendra des éléments qui ne peuvent pas être préconfigurés et il vaut mieux utiliser le fichier d'exemple. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Cette méthode est fondée sur le fait qu'à la fin de l'installation, la base de données cdebconf de l'installateur est sauvegardée dans le fichier <code class="filename">/var/log/installer/cdebconf</code>. Mais cette base peut contenir des données sensibles et par défaut elle n'est lisible que par le superutilisateur. </p>
+<p>Le répertoire <code class="filename">/var/log/installer</code> et tous ses fichiers seront détruits si vous <span class="quote">« <span class="quote">purgez</span> »</span> le paquet <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Pour examiner les valeurs données aux variables, on peut utiliser <span class="command"><strong>nano</strong></span> et consulter les fichiers dans <code class="filename">/var/lib/cdebconf</code> pendant l'installation. Regardez <code class="filename">templates.dat</code> pour les exemples et <code class="filename">questions.dat</code> pour les valeurs actuelles et les valeurs affectées aux variables. </p>
+<p>Pour vérifier que votre fichier de préconfiguration est correct avant de faire une installation, vous pouvez utiliser la commande <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Utiliser la préconfiguration </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Contenu du fichier de préconfiguration (pour trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

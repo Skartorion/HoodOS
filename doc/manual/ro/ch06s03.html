@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Utilizarea de componente individuale</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch06.html" title="Cap. 6. Utilizarea programului de instalare Debian">
+<link rel="prev" href="ch06s02.html" title="6.2. Componentele - Introducere">
+<link rel="next" href="ch06s04.html" title="6.4. Încărcarea firmware-ului lipsă">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Utilizarea de componente individuale</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 6. Utilizarea programului de instalare Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Utilizarea de componente individuale</h2></div></div></div>
+<p>În această secțiune vom descrie în detaliu fiecare componentă de instalare. Componentele au fost grupate în etape care ar trebui să fie recunoscute de utilizatori. Sunt prezentate în ordinea în care apar în timpul instalării. Rețineți că nu toate modulele vor fi utilizate pentru fiecare instalare; care module sunt utilizate efectiv depinde de metoda de instalare pe care o utilizați și de componentele, dispozitivele și perifericele calculatorului dumneavoastră. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Configurarea programului de instalare Debian și a configurației calculatorului</h3></div></div></div>
+<p>Să presupunem că programul de instalare Debian a pornit și că vă aflați în primul său ecran. În acest moment, capacitățile lui <code class="classname">debian-installer</code> sunt încă destul de limitate. Nu știe multe despre calculatorul dvs., limba preferată sau chiar despre sarcina pe care ar trebui să o îndeplinească. Nu vă faceți griji. Deoarece <code class="classname">debian-installer</code> este destul de inteligent, poate verifica automat calculatorul dvs., poate localiza restul componentelor sale și se poate actualiza pentru a devenii un sistem de instalare capabil. Cu toate acestea, mai trebuie să ajutați <code class="classname">debian-installer</code> cu unele informații pe care nu le poate determina automat (cum ar fi selectarea limbii preferate, aranjamentul tastaturii sau oglinda din rețea dorită). </p>
+<p>Veți observa că <code class="classname">debian-installer</code> efectuează <em class="firstterm">detecția componentelor și dispozitivelor calculatorului</em> de mai multe ori în această etapă. Prima dată este direcționată în mod special către componentele și dispozitivele necesare pentru a încărca componentele de instalare (de exemplu, CD-ROM-ul sau placa de rețea). Deoarece nu toți controlorii pot fi disponibili în timpul acestei prime rulări, detectarea componentelor și dispozitivelor calculatorului trebuie repetată mai târziu în cadrul procesului de instalare. </p>
+<p>În timpul detectării componentelor și dispozitivelor <code class="classname">debian-installer</code> verifică dacă vreunul dintre controlorii pentru dispozitivele din sistemul dumneavoastră necesită încărcarea firmware-ului. Dacă este solicitat vreun firmware, dar nu este disponibil, va fi afișat un dialog care permite încărcarea firmware-ului lipsă de pe un mediu amovibil. Consultați <a class="xref" href="ch06s04.html" title="6.4. Încărcarea firmware-ului lipsă">Secțiune 6.4, „Încărcarea firmware-ului lipsă”</a> pentru mai multe detalii. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Verificarea memoriei disponibile / modul cantitate redusă de memorie</h4></div></div></div>
+<p>Unul dintre primele lucruri pe care le face <code class="classname">debian-installer</code> este verificarea memoriei disponibile. Dacă cantitatea de memorie disponibilă este redusă, această componentă va face unele modificări în procesul de instalare, care cu un pic de noroc vă vor permite să instalați Debian GNU/Linux pe sistemul dumneavoastră. </p>
+<p>Prima măsură luată pentru a reduce consumul de memorie de către programul de instalare este dezactivarea traducerilor, ceea ce înseamnă că instalarea se poate face doar în limba engleză. Desigur, puteți definii parametrii regionali ai sistemului instalat după ce instalarea s-a terminat. </p>
+<p>Dacă acest lucru nu este suficient, programul de instalare va reduce și mai mult consumul de memorie prin încărcarea doar a acelor componente esențiale pentru finalizarea unei instalări de bază. Acest lucru reduce funcționalitatea sistemului de instalare. Vi se va oferi posibilitatea de a încărca manual componente suplimentare, dar ar trebui să realizați că fiecare componentă pe care o selectați va folosi memorie suplimentară și, prin urmare, poate duce la eșuarea instalării. </p>
+<p>Dacă programul de instalare rulează în modul „memorie puțină”, se recomandă crearea unei partiții de interschimb (swap) relativ mare (1–2Go). Partiția de interschimb va fi folosită ca memorie virtuală și va crește cantitatea de memorie disponibilă în sistem. Programul de instalare va activa partiția de interschimb cât mai curând posibil în timpul procesului de instalare. A se reține că utilizarea masivă a partiției de interschimb va reduce performanța sistemului și poate duce la o activitate ridicată a discului. </p>
+<p>În ciuda acestor măsuri, este totuși posibil ca sistemul să se blocheze, să apară erori neașteptate sau ca procesele să fie omorâte de către nucleu deoarece sistemul rămâne fără memorie (lucru care va rezulta în mesaje <span class="quote">„<span class="quote">Out of memory</span>”</span>, adică, «Memorie insuficientă» la VT4 - terminalul virtual 4 - și în syslog). </p>
+<p>De exemplu, au existat rapoarte că încercarea de a crea un sistem mare de fișiere ext3 în modul „memorie puțină” eșuează dacă nu există spațiu de interschimb (swap) suficient. Dacă nici un spațiu de interschimb mai mare nu ajută, încercați să creați sistemul de fișiere ca ext2 (componentă esențială a programului de instalare). O partiție ext2 poate fi schimbată în ext3 după instalare. </p>
+<p>Programul de instalare poate fi forțat să folosească un nivel mai ridicat pentru limita de memorie puțină decât cea bazată pe memoria disponibilă, prin intermediul parametrului de pornire <span class="quote">„<span class="quote">lowmem</span>”</span> așa cum este descris în <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametrii programului de instalare Debian">Secțiune 5.3.2, „Parametrii programului de instalare Debian”</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Selectarea opțiunilor de configurație regională</h4></div></div></div>
+<p>În cele mai multe cazuri, primele întrebări vor fi legate de selectarea opțiunilor configurației regionale care vor fi folosite atât pentru instalare cât și pentru sistemul instalat. Opțiunile configurației regionale sunt limba, țara și localizarea geografică (fusul orar), plus aranjamentul de tastatură. </p>
+<p>Limba aleasă va fi folosită pentru restul procesului de instalare, cu condiția să existe traduceri pentru diversele ferestre de dialog afișate. Dacă nu există o traducere validă pentru limba selectată, programul de instalare va folosi implicit limba engleză. </p>
+<p>Locația geografică selectată (în majoritatea cazurilor o țară) va fi utilizată mai târziu în procesul de instalare pentru a selecta fusul orar corect și o oglindă Debian potrivită pentru acea țară. Limba și țara, împreună, vor ajuta la determinarea localizării implicite pentru sistemul dumneavoastră. și la selectarea aranjamentului corect al tastaturii. </p>
+<p>Veți fi întrebat mai întâi să selectați limba preferată. Numele limbilor sunt afișate atât în engleză (în partea stângă) cât și în limba respectivă (în partea dreaptă); numele din partea dreaptă sunt afișate chiar în tipul de scriere potrivit pentru limbă. Lista este ordonată după numele englezești. În capul listei există o opțiune suplimentară care vă permite să selectați locala <span class="quote">„<span class="quote">C</span>”</span> în loc de o limbă. Dacă alegeți locala <span class="quote">„<span class="quote">C</span>”</span>, procesul de instalare se va face în engleză, iar sistemul instalat nu va avea suport de configurație regională deoarece pachetul <code class="classname">locales</code> nu va fi instalat. </p>
+<p>În continuare, vi se va cere să selectați locația dvs. geografică. Dacă ați selectat o limbă care este recunoscută ca limbă oficială pentru mai multe țări <a href="#ftn.id3154" class="footnote" name="id3154"><sup class="footnote">[4]</sup></a>, vi se va afișa doar o listă cu acele țări. Pentru a selecta o țară care nu se află în lista respectivă, alegeți <span class="guimenuitem">alta</span> (ultima opțiune). Apoi vi se va prezenta o listă de continente; selectarea unui continent va duce la o listă de țări relevante de pe acel continent. </p>
+<p>Dacă limba are asociată o singură țară, va fi afișată o listă de țări pentru continentul sau regiunea căreia îi aparține țara, cu țara respectivă selectată ca implicită. Utilizați opțiunea <span class="guibutton">Go Back</span> pentru a selecta țări de pe un alt continent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Este important să selectați țara în care locuiți sau unde vă aflați, deoarece aceasta determină fusul orar care va fi configurat pentru sistemul instalat. </p></td></tr>
+</table></div>
+<p>Dacă ați selectat o combinație de limbă și țară pentru care nu este definită nicio configurație regională și există mai multe configurări regionale pentru limbă, atunci programul de instalare vă va permite să alegeți care dintre acele configurări regionale o preferați ca fiind configurația regională implicită pentru sistemul instalat<a href="#ftn.id3162" class="footnote" name="id3162"><sup class="footnote">[5]</sup></a>. În toate celelalte cazuri, o configurație regională implicită va fi selectată în funcție de limba și țara selectate. </p>
+<p>Orice configurație regională implicită selectată așa cum este descris în paragraful anterior va folosi <em class="firstterm">UTF-8</em> pentru codificarea caracterelor. </p>
+<p>Dacă instalați cu prioritate scăzută (low), veți avea opțiunea de a selecta configurații regionale suplimentare, inclusiv așa-numitele configurații regionale <span class="quote">„<span class="quote">vechi (legacy)</span>”</span><a href="#ftn.id3168" class="footnote" name="id3168"><sup class="footnote">[6]</sup></a>, care urmează să fie generat pentru sistemul instalat; dacă o faceți, veți fi întrebat care dintre configurațiile regionale selectate ar trebui să fie implicită pentru sistemul instalat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Alegerea tastaturii</h4></div></div></div>
+<p>Tastaturile sunt adesea proiectate după caracterele utilizate într-o limbă. Selectați un aranjament care este conform cu tastatura folosită, sau selectați ceva apropiat, dacă aranjamentul de tastatură dorit nu este reprezentat. Odată instalat sistemul, veți putea să selectați un aranjament de tastatură dintr-o gamă mai largă de opțiuni (rulați comanda <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>, ca root, după ce ați terminat instalarea). </p>
+<p>Mutați cursorul la selecția de tastatură dorită și apăsați tasta <span class="keycap"><strong>Enter</strong></span>. Folosiți săgețile pentru a muta cursorul — se află în același loc pe aranjamentele de tastaturi naționale, deci sunt independente de configurația tastaturii. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Căutarea imaginii ISO a programului de instalare al Debian</h4></div></div></div>
+<p>Când se instalează folosind metoda <span class="emphasis"><em>hd-media</em></span>, va exista un moment când va trebui să găsiți și să montați imaginea iso a programului de instalare al Debian, pentru a obține restul de fișiere de instalare. Componenta <span class="command"><strong>iso-scan</strong></span> face exact acest lucru. </p>
+<p>La început, <span class="command"><strong>iso-scan</strong></span> montează automat toate dispozitivele de blocuri (ex.: partiții și volume logice) care au un sistem de fișiere cunoscut pe ele și caută secvențial fișiere care se termină cu <code class="filename">.iso</code> (sau <code class="filename">.ISO</code>). Atenție, prima încercare examinează doar fișierele din directorul rădăcină și de pe primul nivel de subdirectoare (mai exact, găsește <code class="filename">/<em class="replaceable"><code>ceva</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>ceva</code></em>.iso</code>, dar nu <code class="filename">/data/tmp/<em class="replaceable"><code>ceva</code></em>.iso</code>). După ce a fost găsită o imagine iso, <span class="command"><strong>iso-scan</strong></span> îi verifică conținutul pentru a determina dacă imaginea este sau nu o imagine iso validă pentru Debian. Dacă da, atunci procesul s-a terminat, în caz contrar, <span class="command"><strong>iso-scan</strong></span> caută o altă imagine. </p>
+<p>În cazul în care încercarea anterioară de a găsi o imagine iso eșuează, <span class="command"><strong>iso-scan</strong></span> vă va întreba dacă să se efectueze o căutare mai amănunțită. Această scanare nu doar caută în cele mai de sus directoare, ci chiar piaptănă întregul sistem de fișiere. </p>
+<p>Dacă <span class="command"><strong>iso-scan</strong></span> nu vă descoperă imaginea iso a programului de instalare, reporniți în sistemul de operare original și verificați dacă imaginea are numele corect (dacă se termină în <code class="filename">.iso</code>), dacă imaginea se află pe un sistem de fișiere recunoscut de <code class="classname">debian-installer</code> și dacă nu este coruptă (verificați suma de control). Utilizatorii experimentați de Unix ar putea face aceste lucruri fără a reporni, de la a doua consolă. </p>
+<p>Rețineți că partiția (sau discul) care găzduiește imaginea ISO nu poate fi reutilizată în timpul procesului de instalare, deoarece va fi utilizată de instalator. Pentru a rezolva acest lucru și cu condiția să aveți suficientă memorie RAM în sistem, instalatorul poate copia imaginea ISO în RAM înainte de a o monta. Aceasta este controlată de întrebarea debconf <code class="literal">iso-scan/copy_iso_to_ram</code> cu prioritate scăzută (sunteți întrebat doar dacă cerința de memorie este îndeplinită). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Configurarea rețelei</h4></div></div></div>
+<p>La intrarea în acest pas, dacă sistemul detectează că aveți mai mult de un dispozitiv de rețea, vi se va cere să alegeți care dispozitiv va fi interfața de rețea <span class="emphasis"><em>primară</em></span>, adică aceea pe care doriți s-o folosiți la instalare. Celelalte interfețe nu vor fi configurate la acest moment. Veți putea să configurați alte interfețe după ce se va termina instalarea; a se vedea pagina de manual <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Configurarea automată a rețelei</h5></div></div></div>
+<p>Implicit, <code class="classname">debian-installer</code> încearcă să configureze automat rețeaua calculatorului dumneavoastră, în măsura posibilului. Dacă configurația automată eșuează, aceasta poate fi cauzată de mulți factori, de la un cablu de rețea deconectat la infrastructura lipsă pentru configurarea automată. Pentru explicații suplimentare în cazul unor erori, verificați mesajele de eroare de pe a patra consolă. În orice caz, veți fi întrebat dacă doriți să reîncercați sau dacă doriți să efectuați o configurare manuală. Uneori, serviciile de rețea utilizate pentru autoconfigurare pot fi lente în răspunsurile lor, așa că, dacă sunteți sigur că totul este la locul său, pur și simplu începeți din nou încercarea de autoconfigurare. Dacă autoconfigurarea eșuează în mod repetat, puteți alege configurarea manuală a rețelei. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Configurarea manuală a rețelei</h5></div></div></div>
+<p>Configurarea manuală a rețelei vă va pune la rândul său o serie de întrebări despre rețeaua dumneavoastră, în special <code class="computeroutput">adresa IP</code>, <code class="computeroutput">masca de rețea</code>, adresa <code class="computeroutput">pasarelei</code>, adrese ale <code class="computeroutput">serverelor de nume</code> și <code class="computeroutput">numele mașinii (gazdei)</code>. În plus, dacă aveți o interfață de rețea fără fir, vi se va cere să furnizați <code class="computeroutput">ESSID-ul fără fir</code> (<span class="quote">„<span class="quote">numele rețelei fără fir</span>”</span>) și <code class="computeroutput">cheia WEP</code> sau <code class="computeroutput">parola de acces WPA/WPA2</code>. Pentru completarea acestor răspunsuri, consultați informațiile din<a class="xref" href="ch03s03.html" title="3.3. Informații de care veți avea nevoie">Secțiune 3.3, „Informații de care veți avea nevoie”</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Câteva detalii pe care poate le veți găsi ca fiind utile (sau poate că nu): programul va presupune că adresa rețelei este rezultatul operației <span class="quote">„<span class="quote">AND</span>”</span> la nivel de biți dintre adresa dumneavoastră IP și masca de rețea. Adresa de difuzare implicită este calculată ca rezultat al operației <span class="quote">„<span class="quote">OR</span>”</span> la nivel de biți a adresei IP a sistemului dvs. cu valoarea negată la nivel de biți a măștii de rețea. De asemenea, vă va ghici adresa <span class="quote">„<span class="quote">pasarelei (porții de acces)</span>”</span>. Dacă nu găsiți vreuna dintre aceste informații, folosiți răspunsurile sistemului — le puteți schimba, dacă este nevoie, imediat ce sistemul este instalat, prin editarea fișierului <code class="filename">/etc/network/interfaces</code>. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 și IPv6</h5></div></div></div>
+<p>De la Debian GNU/Linux 7.0 (<span class="quote">„<span class="quote">Wheezy</span>”</span>) în continuare, <code class="classname">debian-installer</code> acceptă IPv6, precum și IPv4 <span class="quote">„<span class="quote">clasic</span>”</span>. Sunt acceptate toate combinațiile de IPv4 și IPv6 (doar IPv4, doar IPv6 și configurații duale cu cele două protocoale). </p>
+<p>Autoconfigurarea pentru IPv4 se face prin DHCP (Dynamic Host Configuration Protocol). Configurarea automată pentru IPv6 acceptă configurarea automată fără stare folosind NDP (Neighbor Discovery Protocol, inclusiv atribuirea serverului DNS recursiv (RDNSS)), autoconfigurarea cu stare prin DHCPv6 și autoconfigurarea mixtă fără stare/cu stare (configurarea adresei prin NDP, parametri suplimentari prin DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Configurarea utilizatorilor și a parolelor</h3></div></div></div>
+<p>Chiar înainte de a configura ceasul, programul de instalare vă va permite să configurați contul <span class="quote">„<span class="quote">root</span>”</span> și/sau un cont pentru primul utilizator. Alte conturi de utilizator pot fi create după finalizarea instalării. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Configurarea parolei pentru „root”</h4></div></div></div>
+<p>Contul „<span class="emphasis"><em>root</em></span>” este numit și contul „<span class="emphasis"><em>super-utilizatorului</em></span>”; este o autentificare care ocolește toată protecția de securitate a sistemului dumneavoastră. Contul „root” ar trebui folosit doar pentru a efectua administrarea sistemului și trebuie folosit doar pentru o perioadă cât mai scurtă posibil. </p>
+<p>Orice parolă pe care o creați trebuie să conțină cel puțin 6 caractere și ar trebui să conțină atât caractere majuscule, cât și minuscule, precum și caractere de punctuație. Aveți grijă deosebită când stabiliți parola de root, deoarece este un cont dotat cu multe privilegii. Evitați cuvintele din dicționar sau utilizarea oricăror informații personale care ar putea fi ghicite. </p>
+<p>Dacă cineva vă spune vreodată că are nevoie de parola dumneavoastră de root, fiți extrem de atenți. În mod normal, nu ar trebui să dați niciodată parola de root, cu excepția cazului în care administrați o mașină cu mai mult de un administrator de sistem. </p>
+<p>În cazul în care nu specificați aici o parolă pentru utilizatorul <span class="quote">„<span class="quote">root</span>”</span>, acest cont va fi dezactivat, iar pachetul <span class="command"><strong>sudo</strong></span> va fi instalat ulterior pentru a permite efectuarea sarcinilor administrative pe noul sistem. În mod implicit, primului utilizator creat pe sistem i se va permite să folosească comanda <span class="command"><strong>sudo</strong></span> pentru a deveni root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Crearea unui utilizator obișnuit</h4></div></div></div>
+<p>Sistemul vă va întreba dacă doriți să creați un cont de utilizator obișnuit în acest moment. Acest cont ar trebui să fie utilizat ca principalul cont personal de conectare în sistemul instalat. Ar trebui să <span class="emphasis"><em>nu</em></span> să utilizați contul root pentru utilizarea zilnică sau precum cont personal de conectare. </p>
+<p>De ce nu? Ei bine, un motiv pentru a evita utilizarea privilegiilor root este faptul că este foarte ușor să faci daune ireparabile ca root. Un alt motiv este că s-ar putea să fiți păcălit să rulați un program <span class="emphasis"><em>Trojan-horse</em></span> (cal troian) — acesta este un program care profită de privilegiile dvs. de super-utilizator pentru a compromite securitatea sistemului pe la spatele dvs. Orice carte bună despre administrarea sistemului Unix va acoperi acest subiect mai detaliat — Luați în considerare să citiți una dacă aceste lucruri sunt noi pentru dvs. </p>
+<p>Mai întâi vi se va solicita numele complet al utilizatorului. Apoi vi se va cere un nume pentru contul de utilizator; în general, prenumele dvs. sau ceva similar va fi suficient și, de fapt, va fi numele implicit al contului. În cele din urmă, vi se va solicita o parolă pentru acest cont. </p>
+<p>Dacă în orice moment după instalare doriți să creați un alt cont, utilizați comanda <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Configurarea ceasului și a fusului orar</h3></div></div></div>
+<p>Programul de instalare va încerca mai întâi să se conecteze la un server de timp din internet (folosind protocolul <em class="firstterm">NTP</em>) pentru a configura corect ora și data sistemului. Dacă aceasta nu reușește, programul de instalare va presupune că ora și data obținute de la ceasul sistemului la pornire sunt corecte. Ajustarea manuală a timpului sistemului (ora + data) în timpul instalării nu este posibilă. </p>
+<p>În funcție de locația selectată mai devreme în procesul de instalare, este posibil să vi se afișeze o listă de fusuri orare relevante pentru acea locație. Dacă locația dumneavoastră are un singur fus orar și faceți o instalare implicită, nu veți fi întrebat nimic și sistemul va prelua acel fus orar.. </p>
+<p>În modul expert sau când instalați cu prioritate medie, veți avea opțiunea suplimentară de a selecta <span class="quote">„<span class="quote">Timp universal coordonat</span>”</span> („Coordinated Universal Time”: UTC) ca fus orar. </p>
+<p>Dacă, dintr-un motiv sau altul doriți să folosiți în sistemul instalat un fus orar care <span class="emphasis"><em>nu</em></span> este specific locației selectate, există două opțiuni. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Cea mai simplă opțiune este să selectați un alt fus orar după terminarea instalării și după ce ați pornit sistemul instalat. Comanda pentru a face acest lucru este: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>O altă variantă este să definiți fusul orar chiar la începutul instalării cu parametrul de pornire <strong class="userinput"><code>time/zone=<em class="replaceable"><code>valoare</code></em></code></strong>pasat programului de instalare la pornirea acestuia. Valoarea, desigur, trebuie să fie un fus orar valid, de exemplu, <strong class="userinput"><code>Europe/Bucharest</code></strong> sau <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Pentru instalările automate fusul orar poate fi configurat la orice valoare dorită folosind preconfigurarea. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Partiționarea și selectarea punctelor de montare</h3></div></div></div>
+<p>Acum, după ce detecția de dispozitive a fost executată o ultimă dată, <code class="classname">debian-installer</code> ar trebui să fie în deplinătatea forțelor sale, particularizat pentru nevoile utilizatorului și este gata să facă lucruri utile. După cum indică și titlul acestei secțiuni, principala sarcină a următoarelor componente este de a partiționa discurile, de a crea sistemele de fișiere, de a asocia punte de montare și, opțional, să configureze lucruri legate strâns de acestea, precum RAID, LVM sau dispozitive criptate. </p>
+<p>Dacă nu vă simțiți confortabil în legătură cu partiționarea sau dacă doriți să aflați mai multe detalii, consultați <a class="xref" href="apc.html" title="Anexa C. Partiționarea pentru Debian">Anexa C, <i>Partiționarea pentru Debian</i></a>. </p>
+<p>Mai întâi vi se va oferi posibilitatea de a partiționa automat fie un disc întreg, fie spațiul liber disponibil pe un disc. Aceasta se mai numește și partiționare <span class="quote">„<span class="quote">ghidată</span>”</span>. Dacă nu doriți să partiționați automat, alegeți opțiunea <span class="guimenuitem">Manuală</span> din meniu. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Opțiuni de partiționare acceptate</h4></div></div></div>
+<p>Programul de partitionare folosit în <code class="classname">debian-installer</code> este destul de versatil. Permite crearea multor scheme de partiționare diferite, utilizând diverse tabele de partiții, sisteme de fișiere și dispozitive bloc avansate. </p>
+<p>Exact ce opțiuni sunt disponibile depinde în principal de arhitectură, dar și de alți factori. De exemplu, pe sistemele cu memorie internă limitată este posibil ca unele opțiuni să nu fie disponibile. Valorile implicite pot varia, de asemenea. Tipul de tabelă de partiții utilizat implicit poate fi diferit, de exemplu, pentru discuri dure/solide de mare capacitate față de cel pentru discuri mai mici. Unele opțiuni pot fi modificate numai atunci când se instalează cu prioritate „debconf” medie (medium) sau scăzută (low); la priorități mai mari vor fi utilizate valori implicite adecvate. </p>
+<p>Programul de instalare acceptă diverse forme de partiționare avansată și de utilizare a dispozitivelor de stocare, care în multe cazuri pot fi utilizate în combinație. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Gestionarea de volume logice (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Software RAID</em></span>
+  </p>
+<p>Sunt acceptate nivelurile RAID 0, 1, 4, 5, 6 și 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Criptarea</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimental) </p>
+<p>Consultați <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">wiki-ul nostru</a> pentru mai multe informații. Suportul pentru rute multiple (multipath) este disponibil în prezent numai dacă este activat când programul de instalare este pornit. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Sunt acceptate următoarele sisteme de fișiere. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Sistemul de fișiere implicit selectat în majoritatea cazurilor este ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (nu este disponibil pe toate arhitecturile) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (nu este disponibil pe toate arhitecturile) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (opțional; nu este disponibil pe toate arhitecturile) </p>
+<p>Suportul pentru sistemul de fișiere Reiser nu mai este disponibil în mod implicit. Când programul de instalare rulează cu prioritate „debconf” medie (medium) sau scăzută (low), acesta poate fi activat selectând componenta <code class="classname">partman-reiserfs</code>. Doar versiunea 3 a sistemului de fișiere este acceptată. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Partițiile existente vor fi recunoscute și este posibil să le atribuiți puncte de montare. Nu este posibil să se creeze noi partiții qnx4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (numai citire) </p>
+<p>Partițiile NTFS existente pot fi redimensionate și este posibil să le atribuiți puncte de montare. Nu este posibil să se creeze noi partiții NTFS. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Programul de partiționare acceptă unități ca putere de zece (1 Mo = 1000 ko = 1000000 octeți), precum și ca putere de doi (1 Mio = 1024 kio = 1048576 octeți). Prefixele de unitate sunt acceptate până la Eo/Eio (exaocteți/exbiocteți). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Partiționarea ghidată</h4></div></div></div>
+<p>Dacă alegeți partiționarea ghidată, puteți avea trei opțiuni: să creați partiții direct pe discul dur/solid (metoda clasică), să le creați folosind gestionarea de volume logice (<span class="quote">„<span class="quote">LVM</span>”</span>) sau să le creați folosind <span class="quote">„<span class="quote">LVM</span>”</span> criptat.<a href="#ftn.id3353" class="footnote" name="id3353"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Opțiunea de a folosi LVM (criptat) este posibil să nu fie disponibilă pe toate arhitecturile. </p></td></tr>
+</table></div>
+<p>Dacă se folosește <span class="quote">„<span class="quote">LVM</span>”</span> sau <span class="quote">„<span class="quote">LVM criptat</span>”</span>, programul de instalare va crea majoritatea partițiilor în interiorul unei partiții mari; avantajul acestei metode este că partițiile din această partiție mare pot fi redimensionate relativ ușor, mai târziu. În cazul LVM-ului criptat, această partiție mare nu va putea fi citită fără a cunoaște o parolă-frază specială, astfel oferind un nivel suplimentar de securitate pentru datele dumneavoastră (personale). </p>
+<p>Când se folosește LVM criptat, programul de instalare va șterge de asemeni automat discul prin scrierea de date aleatoare pe el. Acest lucru îmbunătățește și mai mult securizarea (pentru că distincția dintre părțile goale și cele utilizate ale discului este imposibilă și pentru că eventualele urme ale instalărilor precedente sunt șterse), dar poate dura ceva timp, în funcție de dimensiunea discului. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Dacă alegeți partiționarea ghidată folosind <span class="quote">„<span class="quote">LVM</span>”</span> sau <span class="quote">„<span class="quote">LVM criptat</span>”</span>, unele schimbări în tabela de partiții vor trebui scrise pe discul selectat în timpul pregătirii <span class="quote">„<span class="quote">LVM</span>”</span>. Aceste schimbări efectiv șterg datele care sunt în prezent pe discul dur/solid selectat și nu le veți putea anula mai târziu. Totuși, programul de instalare vă va cere să confirmați aceste schimbări înainte de a fi scrise pe disc. </p></td></tr>
+</table></div>
+<p>Dacă alegeți partiționarea ghidată<span class="phrase"> (fie clasică, fie folosind LVM (criptat))</span> pentru un disc întreg, vi se va cere să selectați discul pe care doriți să-l folosiți. Verificați că toate discurile sunt afișate și, dacă aveți mai multe discuri, asigurați-vă că îl selectați pe cel corect. Ordinea lor de afișare ar putea fi diferită față de cea cu care sunteți obișnuit. Dimensiunea discurilor ar putea să vă fie de ajutor în identificarea lor. </p>
+<p>Orice date de pe discul pe care îl selectați se vor pierde în cele din urmă, dar vi se va cere întotdeauna să confirmați orice modificări înainte ca acestea să fie scrise pe disc. <span class="phrase"> Dacă ați selectat metoda clasică de partiționare, veți putea anula orice modificare până aproape de final; atunci când utilizați LVM (criptat) acest lucru nu este posibil. </span> </p>
+<p>În continuare, veți putea alege dintre schemele enumerate în tabelul de mai jos. Toate schemele au avantajele și dezavantajele lor, unele dintre ele fiind discutate în <a class="xref" href="apc.html" title="Anexa C. Partiționarea pentru Debian">Anexa C, <i>Partiționarea pentru Debian</i></a>. Dacă nu sunteți sigur, alegeți-o pe prima. Rețineți că partiționarea ghidată necesită o anumită cantitate minimă de spațiu liber pentru a opera. Dacă nu îi acordați cel puțin aproximativ 3 Go de spațiu (depinde de schema aleasă), partiționarea ghidată va eșua. De asemenea, pe discurile mici probabil că nu veți vedea toate schemele menționate mai jos. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Schema de partiționare</th>
+<th>Spațiu minim</th>
+<th>Partiții create</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Toate fișierele într-o singură partiție</td>
+<td>8Go</td>
+<td>
+<code class="filename">/</code>, spațiul de interschimb (swap)</td>
+</tr>
+<tr>
+<td>Partiție /home separată</td>
+<td>9Go</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, spațiul de interschimb (swap) </td>
+</tr>
+<tr>
+<td>Partiții /home, /var și /tmp separate</td>
+<td>12Go</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, spațiul de interschimb (swap) </td>
+</tr>
+<tr>
+<td>Partiții „/srv” și „/var” separate; spațiul de interschimb (swap) limitat la 1Go (pentru server)</td>
+<td>8Go</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, spațiul de interschimb (swap) </td>
+</tr>
+<tr>
+<td>Schemă în special pentru discuri mici</td>
+<td>3Go</td>
+<td>
+<code class="filename">/</code>, spațiul de interschimb (swap)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Dacă alegeți partiționare ghidată folosind LVM (criptat), programul de instalare va crea și o partiție <code class="filename">/boot</code> separată. Celelalte partiții, inclusiv partiția spațiului de interschimb (swap), vor fi create în interiorul partiției LVM. </p>
+<p>Dacă ați pornit în modul EFI, atunci în cadrul configurării de partiționare ghidată va exista o partiție suplimentară, formatată ca un sistem de fișiere apt de a fi pornit FAT32, pentru încărcătorul de pornire EFI. Această partiție este cunoscută ca o partiție de sistem EFI („EFI System Partition”: ESP). Există, de asemenea, un element de meniu suplimentar în meniul de formatare pentru a configura manual o partiție ca ESP. </p>
+<p>După selectarea unei scheme, următorul ecran va afișa noul tabel de partiții, inclusiv informații despre dacă și cum vor fi formatate partițiile și unde vor fi montate. </p>
+<p>Lista partițiilor ar putea să arate așa: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 Go WDC AC36400L
+        #1 primară   16.4 Mo  B f ext2       /boot
+        #2 primară  551.0 Mo      swap       swap
+        #3 primară    5.8 Go      ntfs
+           pri/log    8.2 Mo      SPAȚIU LIBER
+
+  SCSI2 (1,0,0) (sdb) - 80.0 Go ST380021A
+        #1 primară   15.9 Mo      ext3
+        #2 primară  996.0 Mo      fat16
+        #3 primară    3.9 Go      xfs        /home
+        #5 logical    6.0 Go    f ext4       /
+        #6 logică     1.0 Go    f ext3       /var
+        #7 logică   498.8 Mo      ext3
+</pre></div>
+<p> Acest exemplu ilustrează două discuri dure/solide împărțite în mai multe partiții; primul disc are ceva spațiu liber. Fiecare linie de partiție constă din numărul partiției, tipul său, dimensiunea, fanioane opționale, sistemul de fișiere și punctul de montare (dacă există). Notă: această configurare nu poate creată folosind partiționarea ghidată, dar ilustrează variațiile posibile care pot fi obținute folosind partiționarea manuală. </p>
+<p>Cu aceasta se încheie partiționarea ghidată. Dacă sunteți mulțumit cu tabela de partiții generată, puteți alege <span class="guimenuitem">Finalizează partiționarea și scrie modificările pe disc</span> din meniu, pentru a pune în practică noua tabelă de partiții (după cum e descris la sfârșitul acestei secțiuni). Dacă nu sunteți mulțumit, puteți alege <span class="guimenuitem">Anulează schimbările făcute asupra partițiilor</span> și să rulați partiționarea ghidată din nou sau să modificați schimbările propuse așa cum este descris mai jos pentru partiționarea manuală. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Partiționarea manuală</h4></div></div></div>
+<p>Un ecran similar cu cel dinainte va fi afișat dacă alegeți partiționarea manuală, cu excepția că va fi afișată tabela de partiții actuală și punctele de montare nu vor fi afișate. Cum să configurați manual tabela de partiții și modul de utilizare a partițiilor de către noul dumneavoastră sistem Debian vor fi acoperite în restul acestei secțiuni. </p>
+<p>Dacă selectați un disc nou care nu are nici partiții nici spațiu liber pe el, veți fi întrebat dacă doriți să creați o nouă tabelă de partiții (acest lucru este necesar pentru a putea crea noi partiții). După aceasta o linie nouă numită <span class="quote">„<span class="quote">SPAȚIU LIBER</span>”</span> ar trebui să apară sub discul selectat. </p>
+<p>Dacă selectați spațiul liber, veți avea posibilitatea de a crea o nouă partiție. Va trebui să răspundeți la o serie scurtă de întrebări despre dimensiunea, tipul (primar sau logic) și locul de plasare (începutul sau sfârșitul spațiului liber). După aceasta, vi se va prezenta un rezumat detaliat al noii partiții. Opțiunea principală este <span class="guimenuitem">Utilizați ca:</span>, care determină dacă partiția va avea un sistem de fișiere pe ea sau va fi folosită pentru spațiul de interschimb,<span class="phrase"> software RAID, LVM, un sistem de fișiere criptat,</span> sau să nu fie folosită deloc. Alte opțiuni includ punctul de montare, opțiunile de montare și fanionul de pornire; ce opțiuni sunt afișate la un moment dat, depinde de modul în care va fi utilizată partiția. Dacă nu vă plac valorile implicite preselectate, nu ezitați să le modificați după bunul plac. De exemplu. selectând opțiunea <span class="guimenuitem">Utilizați ca:</span>, puteți alege un alt sistem de fișiere pentru această partiție, inclusiv opțiuni de utilizare a partiției pentru spațiul de interschimb (swap),<span class="phrase"> software RAID, LVM,</span> sau să n-o folosiți deloc. Când sunteți mulțumit de noua partiție, selectați <span class="guimenuitem">S-a finalizat pregătirea partiției</span> și veți reveni la ecranul principal al lui <span class="command"><strong>partman</strong></span>. </p>
+<p>Dacă vă decideți să schimbați ceva legat de partiție, pur și simplu selectați partiția, ceea ce vă va duce la meniul de configurare a partiției. Deoarece este același ecran ca la crearea unei partiții, puteți schimba același set de opțiuni. Un lucru care poate nu este evident la prima vedere este că o partiție se poate redimensiona prin selectarea elementului care specifică dimensiunea partiției. Sistemele de fișiere despre care se știe că pot fi redimensionate sunt fat16, fat32, ext2, ext3 și swap. Acest meniu vă permite și să ștergeți o partiție. </p>
+<p>Asigurați-vă că ați creat cel puțin două partiții: una pentru sistemul de fișiere <span class="emphasis"><em>rădăcină</em></span> (care trebuie montat ca <code class="filename">/</code>) și una pentru <span class="emphasis"><em>spațiul de interschimb (swap)</em></span>. Dacă uitați să montați sistemul de fișiere rădăcină, <span class="command"><strong>partman</strong></span> nu vă va lăsa să continuați până nu corectați această problemă. </p>
+<p>Dacă porniți în modul EFI, dar uitați să selectați și să formatați o partiție de sistem EFI (ESP), <span class="command"><strong>partman</strong></span> va detecta acest lucru și nu vă va lăsa să continuați până când nu alocați una. </p>
+<p>Capacitățile lui <span class="command"><strong>partman</strong></span> pot fi extinse cu module ale programului de instalare, dar depind de arhitectura sistemului dumneavoastră. Deci, dacă nu observați toate facilitățile promise, verificați că ați încărcat toate modulele necesare (ex.: <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code>, sau <code class="filename">partman-lvm</code>). </p>
+<p>După ce sunteți mulțumit de partiționare, selectați <span class="guimenuitem">Finalizează partiționarea și scrie modificările pe disc</span> din meniul de partiționare. Vi se va prezenta un rezumat al modificărilor făcute pe discuri și vi se va cere să confirmați că sistemele de fișiere trebuie create așa cum a fost solicitat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Configurarea dispozitivelor multi-disc (RAID software)</h4></div></div></div>
+<p>Dacă aveți mai mult de un disc dur/solid<a href="#ftn.id3452" class="footnote" name="id3452"><sup class="footnote">[8]</sup></a> în calculator, puteți folosi <span class="command"><strong>partman-md</strong></span> pentru a configura dispozitivele pentru performanțe sporite și/sau siguranță sporită a datelor. Rezultatul este numit <em class="firstterm">Dispozitiv multi-disc</em> (sau, după cea mai faimoasă variantă a sa, <span class="quote">„<span class="quote"><em class="firstterm">RAID software</em> (redundanța ansamblurilor de discuri multiple)</span>”</span>). </p>
+<p>MD este, de fapt, un ansamblu de partiții aflate pe discuri diferite și care, combinate, formează un dispozitiv <span class="emphasis"><em>logic</em></span>. Acest dispozitiv poate fi folosit ca o partiție obișnuită (drept urmare, în <span class="command"><strong>partman</strong></span> îl puteți formata, îi puteți asocia un punct de montare, etc.). </p>
+<p>Beneficiile obținute depind de tipul de dispozitiv MD pe care-l creați. În prezent sunt implementate: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Este în principal direcționat spre performanță. RAID0 împarte toate datele primite în <em class="firstterm">fâșii</em> (eng. <em class="firstterm">stripes</em>) și le distribuie egal între fiecare dintre discurile din ansamblu. Acest lucru poate spori performanța la operațiile de citire/scriere, dar dacă unul dintre discuri se defectează, veți pierde <span class="emphasis"><em>tot</em></span> (o parte din informații se vor afla încă pe discul/discurile fără probleme, însă cealaltă parte <span class="emphasis"><em>a fost</em></span> pe discul defect). </p>
+<p> Scenariul tipic de utilizare a RAID0 este pentru prelucrare video. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Este potrivit pentru configurații în care siguranța este preocuparea principală. Acesta constă în mai multe (uzual două) partiții de aceiași dimensiune în care fiecare partiție conține exact aceleași date. Acest lucru înseamnă în esență trei lucruri. În primul rând, în cazul în care unul dintre discuri se defectează, aveți în continuare datele oglindite pe discurile rămase. În cel de-al doilea rând, puteți folosi doar o parte din capacitatea disponibilă (mai exact, este dimensiunea celei mai mici partiții din RAID). În cel de-al treilea rând, citirile sunt echilibrat distribuite între discuri, lucru care poate spori performanța pe un server, cum este un server de fișiere care are tendința de a fi mai încărcat cu operații de citire decât cu operații de scriere. </p>
+<p> Opțional, puteți avea în ansamblu un disc de rezervă care să ia locul discului defect, dacă apare un asemenea caz. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> Este un bun compromis între viteză, siguranță și redundanță de date. RAID5 împarte datele primite în fâșii și le distribuie pe toate discurile, cu excepția unuia (la fel ca RAID0). Spre deosebire de RAID0, RAID5 calculează și o informație de <em class="firstterm">paritate</em> care va fi scrisă pe discul rămas. Discul de paritate nu este static (în acest caz ar fi fost RAID4), ci este schimbat periodic, astfel încât informația de paritate este distribuită uniform pe toate discurile. În cazul unui defect la unul dintre discuri, informația lipsă poate fi calculată din datele rămase și din informațiile de paritate. RAID5 trebuie să fie format din cel puțin trei partiții active. Opțional, puteți avea în ansamblu un disc de rezervă care să ia locul unui disc defect, dacă apare un asemenea caz. </p>
+<p> După cum se poate observa, RAID5 are același grad de siguranță ca și RAID1 în timp ce realizează o redundanță mai slabă. Pe de altă parte, acesta este posibil să fie puțin mai lent la operațiile de scriere decât RAID0 datorită calculului informației de paritate. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Este similar cu RAID5, cu excepția faptului că folosește două dispozitive de paritate în loc de unul. </p>
+<p>Un ansamblu RAID6 poate supraviețui până la două erori de disc. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p>RAID10 combină împărțirea în fâșii (ca în RAID0) și oglindirea (ca în RAID1). Acesta creează <em class="replaceable"><code>n</code></em> copii ale datelor primite și le distribuie pe partiții, astfel încât niciuna dintre copiile acelorași date să nu fie pe același dispozitiv. Valoarea implicită a <em class="replaceable"><code>n</code></em> este 2, dar poate fi stabilită la altă valoare în modul expert. Numărul de partiții utilizate trebuie să fie de cel puțin <em class="replaceable"><code>n</code></em>. RAID10 are diferite scheme pentru distribuirea copiilor. În mod implicit, este utilizat modul <span class="emphasis"><em>near</em></span> (apropiate). În acest mod, copiile au aproximativ aceeași poziție pe toate discurile. În modul <span class="emphasis"><em>far</em></span> (depărtate), copiile au poziții diferite pe discuri. În modul <span class="emphasis"><em>offset</em></span> (poziția), fâșia este copiată, nu blocul de date. </p>
+<p>RAID10 poate fi folosit pentru a obține fiabilitate și redundanță fără dezavantajul de a fi necesar să se calculeze paritatea. </p>
+</dd>
+</dl></div>
+<p> Pentru a rezuma: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Tipul</th>
+<th>Minim de dispozitive</th>
+<th>Dispozitive de rezervă</th>
+<th>Supraviețuiește la un defect de disc?</th>
+<th>Spațiu disponibil</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nu</td>
+<td>nu</td>
+<td>Dimensiunea celei mai mici partiții înmulțită cu numărul de dispozitive din RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>opțional</td>
+<td>da</td>
+<td>Dimensiunea celei mai mici partiții din RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>opțional</td>
+<td>da</td>
+<td>Dimensiunea celei mai mici partiții înmulțită cu (numărul de dispozitive din RAID minus unu) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>opțional</td>
+<td>da</td>
+<td>Dimensiunea celei mai mici partiții înmulțită cu (numărul de dispozitive din RAID minus două) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>opțional</td>
+<td>da</td>
+<td>Totalul partițiilor împărțit la numărul de copii în bucăți (în mod implicit la două) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Dacă doriți să aflați mai multe despre Software RAID, consultați <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Rețetarul RAID software</a>. </p>
+<p>Pentru a crea un dispozitiv MD (multi-disc), trebuie ca partițiile pe care le doriți să facă parte din RAID, să fie marcate precum „folosite într-un RAID”. (Aceasta se face în <span class="command"><strong>partman</strong></span> în meniul <span class="guimenu">Configurația partiției</span> unde ar trebui să selectați <span class="guimenu">Folosită ca:</span> → <span class="guimenuitem">volum fizic pentru RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Asigurați-vă că sistemul poate fi pornit cu schema de partiționare pe care o planificați. În general, va fi necesar să creați un sistem de fișiere separat pentru <code class="filename">/boot</code> atunci când folosiți RAID pentru sistemul de fișiere rădăcină (<code class="filename">/</code>). Majoritatea încărcătoarelor de pornire <span class="phrase">(inclusiv grub)</span> nu au suport pentru RAID1 (RAID în modul oglindă, fără fâșii!), deci folosirea, de exemplu, a lui RAID5 pentru <code class="filename">/</code> și RAID1 pentru <code class="filename">/boot</code> poate fi o variantă posibilă. </p></td></tr>
+</table></div>
+<p>În continuare, va trebui să alegeți <span class="guimenuitem">Configurează RAID-ul software</span> din meniul principal al lui <span class="command"><strong>partman</strong></span>; (meniul va apărea după ce marcați cel puțin o partiție pentru utilizare ca <span class="guimenuitem">volum fizic pentru RAID</span>). În primul ecran al <span class="command"><strong>partman-md</strong></span> doar selectați <span class="guimenuitem">Creează dispozitiv MD</span>. Vi se va afișa o listă de tipuri de dispozitive MD acceptate din care trebuie să alegeți unul (ex. RAID1). Ceea ce va urma depinde de tipul de dispozitiv MD selectat. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 este simplu — vi se va prezenta lista de partiții RAID disponibile și singurul lucru pe care va trebui să-l faceți este să selectați partițiile care vor forma dispozitivul MD. </p></li>
+<li class="listitem"><p>RAID1 este un pic mai dificil. Mai întâi vi se va cere să introduceți numărul de dispozitive active și numărul de dispozitive de rezervă care vor forma dispozitivul MD. Apoi va trebui să selectați din lista de partiții RAID disponibile pe acelea care vor fi active și pe cele care vor fi de rezervă. Numărul partițiilor selectate trebuie să fie egal cu cel precizat mai devreme. Nu vă îngrijorați. Dacă greșiți și selectați un număr diferit de partiții, <code class="classname">debian-installer</code> nu vă va lăsa să continuați până când nu corectați problema. </p></li>
+<li class="listitem"><p>RAID5 are o procedură de configurare similară cu cea pentru RAID1, cu excepția faptului că va trebui să folosiți cel puțin <span class="emphasis"><em>trei</em></span> partiții active. </p></li>
+<li class="listitem"><p>RAID6 are, de asemenea, o procedură de configurare similară cea pentru RAID1, cu excepția faptului că va trebui să folosiți cel puțin <span class="emphasis"><em>patru</em></span> partiții active. </p></li>
+<li class="listitem"><p>Și RAID10 are o procedură de pregătire similară cu cea pentru RAID1, exceptând modul expert. În modul expert <code class="classname">debian-installer</code> vă va cere să precizați schema de repartizare a datelor. Schema are două părți. Prima parte este tipul de schemă. Este <code class="literal">n</code> (pentru copii în modul <span class="emphasis"><em>near</em></span> (apropiate)), <code class="literal">f</code> (pentru copii în modul <span class="emphasis"><em>far</em></span> (depărtate)), sau <code class="literal">o</code> (pentru copii în modul <span class="emphasis"><em>offset</em></span> (poziția)). A doua parte este numărul de copii de făcut pentru date. Trebuie să fie cel puțin atât de multe dispozitive active ca acest număr, astfel încât copiile să fie distribuite pe discuri diferite. </p></li>
+</ul></div>
+<p>Este posibil să aveți concomitent mai multe tipuri de dispozitive MD. De exemplu, dacă aveți trei discuri de câte 200Go pentru MD, fiecare conținând două partiții de 100Go, puteți să combinați primele partiții din cele trei discuri în RAID0 (partiție de 300Go, rapidă, pentru editare video) și să folosiți celelalte trei partiții (2 active și 1 de rezervă) pentru RAID1 (partiție de 100Go, destul de sigură pentru <code class="filename">/home</code>). </p>
+<p>După ce configurați dispozitivele MD după bunul dumneavoastră plac, puteți selecta <span class="guimenuitem">Finalizează</span> din <span class="command"><strong>partman-md</strong></span> pentru a vă întoarce la <span class="command"><strong>partman</strong></span> pentru a crea sisteme de fișiere pe noile dispozitive MD și să le asociați atributele obișnuite precum punctele de montare. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Configurarea Managerului de volume logice („Logical Volume Manager”: LVM)</h4></div></div></div>
+<p>Dacă lucrați cu calculatoarele ca administrator sau ca utilizator <span class="quote">„<span class="quote">avansat</span>”</span>, ați văzut, cu siguranță situația în care pe o partiție (de obicei, cea mai importantă) spațiul liber era foarte limitat, în timp ce o altă partiție era foarte puțin utilizată și a trebuit să rezolvați această problemă mutând fișiere dintr-o parte într-alta, făcând legături simbolice, etc. </p>
+<p>Pentru a evita situația descrisă, puteți folosi managerul de volume logice (LVM). Pe scurt, cu LVM puteți combina partițiile (<em class="firstterm">volume fizice</em> în jargonul LVM) pentru a forma un disc virtual (așa-numitul <em class="firstterm">grup de volume</em>) care poate fi apoi divizat în partiții virtuale (<em class="firstterm">volume logice</em>). Ideea este că volumele logice (și, desigur, grupele de volume care sunt la baza acestora) se pot întinde peste mai multe discuri fizice. </p>
+<p>Acum, în momentul în care vă dați seama că aveți nevoie de mai mult spațiu pentru vechea partiție <code class="filename">/home</code> de 160Go, puteți, pur și simplu, să adăugați un disc nou de 300Go la calculator, să îl adăugați la grupul de volume existent și să redimensionați volumul logic care conține sistemul de fișiere <code class="filename">/home</code> și, gata — utilizatorii vor avea din nou spațiu pe partiția reînnoită de 460Go. Acest exemplu este, desigur, un pic simplificat. Dacă nu l-ați citit încă, ar fi bine să citiți <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">Rețetarul LVM</a>. </p>
+<p>Configurarea LVM în <code class="classname">debian-installer</code> este destul de simplă și complet integrată în <span class="command"><strong>partman</strong></span>. Mai întâi, va trebui să marcați partiția(iile) care să fie folosite ca volume fizice pentru LVM. Acest lucru se face în meniul <span class="guimenu">Configurația partiției:</span>, unde va trebui să selectați <span class="guimenu">Folosită ca:</span> → <span class="guimenuitem">volum fizic pentru LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Aveți grijă: noua configurare LVM va distruge toate datele de pe toate partițiile marcate cu un cod de tip LVM. Deci, dacă aveți deja un LVM pe unele dintre discuri și doriți să instalați Debian suplimentar la acea mașină, vechiul LVM (deja existent) va fi șters! Același lucru este valabil și pentru partițiile, care sunt (din orice motiv) marcate în mod înșelător cu un cod de tip LVM, dar care conțin ceva diferit (cum ar fi un volum criptat). Trebuie să eliminați astfel de discuri din sistem înainte de a efectua o nouă configurare LVM! </p></td></tr>
+</table></div>
+<p>Odată cu întoarcerea la ecranul principal al lui <span class="command"><strong>partman</strong></span> veți vedea o nouă opțiune <span class="guimenuitem">Configurarea Managerului de volume logice (LVM)</span>. După selectarea acesteia, mai întâi vi se va cere să confirmați schimbările în așteptare ce se vor face asupra tabelei de partiții (dacă există) și apoi se va afișa meniul de configurare al LVM-ului. Meniul este sensibil la context și afișează doar acțiunile valide. Acțiunile posibile sunt: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Afișează detaliile de configurare</span>: arată structura dispozitivului LVM, numele și dimensiunile volumelor logice și multe altele </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Creează grup de volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Creează volum logic</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Șterge grupul de volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Șterge volumul logic</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Extinde grupul de volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Reduce grupul de volume</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Finalizare</span>: reveniți la ecranul <span class="command"><strong>partman</strong></span> principal </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Folosiți opțiunile din acest meniu pentru a crea mai întâi un grup de volume și apoi creați volumele logice în interiorul acestuia. </p>
+<p>După ce reveniți la ecranul principal al lui <span class="command"><strong>partman</strong></span>, toate volumele logice create vor fi afișate în același mod ca și partițiile obișnuite (și ar trebui să le tratați ca atare). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Configurarea volumelor criptate</h4></div></div></div>
+<p><code class="classname">debian-installer</code> vă oferă posibilitatea să configurați partiții criptate. Orice fișier scris pe o asemenea partiție este imediat salvat pe dispozitiv în formă criptată. Accesul la datele criptate este permis doar după introducerea <em class="firstterm">frazei de acces</em> folosite când a fost creată partiția criptată. Această caracteristică este utilă pentru protejarea datelor confidențiale în eventualitatea furtului laptopului sau a discului dur/solid. Hoțul ar putea căpăta acces fizic la discul dur/solid, dar fără a cunoaște fraza de acces corectă, datele de pe disc vor arăta ca niște caractere aleatorii. </p>
+<p>Cele mai importante două partiții de criptat sunt: partiția „home”, unde se află datele private ale dumneavoastră și partiția spațiului de interschimb (swap), unde este posibil ca date confidențiale să fie stocate temporar în timpul funcționării. Desigur, nimic nu vă împiedică să criptați orice altă partiție care ar putea prezenta interes. De exemplu, <code class="filename">/var</code>, unde serverele de baze de date, serverele de poștă electronică și serverele de imprimare își stochează datele, sau <code class="filename">/tmp</code> care este folosit de diverse programe să stocheze fișiere temporare potențial interesante. Unele persoane ar putea să cripteze întregul sistem. Singura excepție este partiția <code class="filename">/boot</code>care trebuie să rămână necriptată deoarece în prezent nu există nici o metodă de a încărca nucleul de pe un sistem de fișiere criptat (GRUB este acum capabil să facă asta, dar <code class="classname">debian-installer</code> în prezent nu are suport nativ pentru <code class="filename">/boot</code> criptat. Prin urmare, configurarea este acoperită într-un <a class="ulink" href="https://cryptsetup-team.%20pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">document separat</a>). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>A se reține că performanța partițiilor criptate va fi mai scăzută decât cea a partițiilor necriptate deoarece datele trebuie să fie criptate sau decriptate pentru fiecare operație de scriere sau citire. Impactul asupra performanței depinde de viteza procesorului, tipul de cifrare ales și lungimea cheii. </p></td></tr>
+</table></div>
+<p>Pentru a folosi criptarea trebuie să creați o nouă partiție selectând în meniul principal al programului de partiționare un spațiu liber. O altă opțiune este selectarea unei partiții existente (ex. o partiție obișnuită, un volum logic LVM sau un volum RAID). În meniul <span class="guimenu">Configurația partiției</span> trebuie să selectați <span class="guimenuitem">volum fizic pentru criptare</span> la opțiunea <span class="guimenu">Folosește ca:</span>. Meniul se va schimba apoi și va include câteva opțiuni criptografice pentru acea partiție. </p>
+<p>Metoda de criptare acceptată de <code class="classname">debian-installer</code> este <em class="firstterm">dm-crypt</em> (inclus în nucleele Linux mai noi, capabil să găzduiască volume fizice LVM). </p>
+<p>Mai întâi să vedem opțiunile disponibile la selectarea lui <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>ca metodă de criptare. Ca de obicei, dacă aveți îndoieli, folosiți valorile implicite deoarece au fost alese cu grijă, având în vedere securitatea. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Criptare: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Această opțiune vă permite să selectați algoritmul de criptare (<em class="firstterm">cifrare</em>) care va fi folosit la criptarea datelor pe partiție. <code class="classname">debian-installer</code> are în prezent suport pentru următorii algoritmi de cifrare pentru blocuri: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> și <em class="firstterm">twofish</em>. Discuția despre calitățile acestor algoritmi nu este obiectul acestui document, totuși este posibil ca să vă ajute să vă decideți faptul că în 2000 institutul Național American de Standarde și Tehnologii a ales <span class="emphasis"><em>AES</em></span> ca fiind algoritmul standard de criptare pentru protejarea datelor confidențiale în secolul 21. </p></dd>
+<dt><span class="term">Dimensiunea cheii: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Aici puteți preciza lungimea cheii de criptare. Cu cât dimensiunea cheii este mai mare, cu atât criptarea este mai puternică. Pe de altă parte, mărirea cheii duce, de obicei, la o degradare a performanței. Disponibilitatea diverselor dimensiuni de chei depinde de algoritmul de cifrare. </p></dd>
+<dt><span class="term">Algoritmul VI: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">Vectorul de Inițializare</em> sau algoritmul <em class="firstterm">VI</em> (în eng. „Initialization Vector”: IV) este utilizat în criptografie pentru a se asigura că aplicarea cifrului pe aceleași date de <em class="firstterm">text clar</em> cu aceeași cheie produce întotdeauna un <em class="firstterm">text cifrat unic</em>. Ideea este de a preveni încercarea unui atacator de a deduce informații din șabloane repetate în datele criptate. </p>
+<p>Dintre alternativele oferite, cea implicită, <strong class="userinput"><code>xts-plain64</code></strong> este în prezent cea mai puțin vulnerabilă la atacurile cunoscute. Folosiți celelalte alternative doar dacă trebuie să asigurați compatibilitatea cu un alt sistem instalat anterior care nu poate folosi algoritmii mai noi. </p>
+</dd>
+<dt><span class="term">Cheia de criptare: <strong class="userinput"><code>Frază de acces</code></strong></span></dt>
+<dd>
+<p>Aici puteți alege tipul de cheie de criptare pentru această partiție. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Fraza de acces</span></dt>
+<dd><p>Cheia de criptare va fi calculată <a href="#ftn.id3703" class="footnote" name="id3703"><sup class="footnote">[9]</sup></a> pe baza unei fraze de acces pe care o veți putea introduce mai târziu în decursul procesului. </p></dd>
+<dt><span class="term">Cheie aleatoare</span></dt>
+<dd>
+<p>O nouă cheie de criptare va fi generată din date aleatoare de fiecare dată când încercați să inițializați partiția criptată. Cu alte cuvinte, la fiecare oprire conținutul partiției se va pierde deoarece cheia este ștearsă din memorie (desigur, ați putea să încercați să ghiciți cheia cu un atac de tip „forță brută”, dar acest lucru nu este realizabil în decursul unei întregi vieți, decât dacă există o slăbiciune necunoscută în algoritmul de cifrare). </p>
+<p>Cheile aleatorii sunt utile pentru partițiile de spațiu de interschimb (swap), deoarece nu trebuie să vă deranjați să vă amintiți fraza de acces sau să ștergeți informațiile sensibile din partiția de spațiu de interschimb (swap) înainte de a închide computerul. Totuși, înseamnă, de asemenea, că <span class="emphasis"><em>nu</em></span> veți putea utiliza funcționalitatea <span class="quote">„<span class="quote">suspend-to-disk</span>”</span> (suspendare pe disc) oferită de nucleele Linux mai noi, deoarece va fi imposibil (în timpul unei porniri ulterioare) pentru a recupera datele suspendate scrise pe partiția de spațiu de interschimb (swap). </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Ștergeți datele: <strong class="userinput"><code>da</code></strong></span></dt>
+<dd><p>Stabilește dacă conținutul acestei partiții trebuie suprascris cu date aleatorii înainte de a configura criptarea. Acest lucru este recomandat deoarece, altfel, ar putea fi posibil ca un atacator să discearnă care părți ale partiției sunt în uz și care nu. În plus, acest lucru va îngreuna recuperarea oricăror date rămase din instalările anterioare<a href="#ftn.id3718" class="footnote" name="id3718"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>După ce ați selectat parametrii doriți pentru partițiile criptate, reveniți la meniul principal de partiționare. Ar trebui să existe acum un nou element de meniu numit <span class="guimenu">Configurarea volumelor criptate</span>. După ce îl selectați, vi se va cere să confirmați ștergerea datelor de pe partițiile marcate pentru a fi șterse și, eventual, alte acțiuni, cum ar fi scrierea unui nou tabel de partiții. Pentru partițiile mari, acest lucru poate dura ceva timp. </p>
+<p>În continuare, vi se va cere să introduceți o frază de acces pentru partițiile configurate să utilizeze una. Frazele de acces bune trebuie să aibă mai mult de 8 caractere, trebuie să fie un amestec de litere, cifre și alte caractere și nu trebuie să conțină cuvinte comune din dicționar sau informații ușor de asociat cu dvs. (cum ar fi datele de naștere, hobby-uri, nume de animale de companie, numele membrilor familiei sau ale rudelor, etc.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Înainte de a introduce fraze de acces, ar fi trebuit să vă asigurați că tastatura este configurată corect și generează caracterele așteptate. Dacă nu sunteți sigur, puteți trece la a doua consolă virtuală și puteți tasta ceva text la prompt. Acest lucru vă asigură că nu veți fi surprins mai târziu, de ex. încercând să introduceți o expresie de acces folosind un aranjament de tastatură „qwerty” când ați folosit un aranjament „azerty” în timpul instalării. Această situație poate avea mai multe cauze. Poate că ați trecut la un alt aranjament de tastatură în timpul instalării sau este posibil ca aranjamentul de tastatură selectat să nu fi fost încă configurat când ați introdus fraza de acces pentru sistemul de fișiere rădăcină. </p></td></tr>
+</table></div>
+<p>Dacă ați ales să utilizați alte metode decât o frază de acces pentru a crea chei de criptare, acestea vor fi generate acum. Deoarece este posibil ca nucleul să nu fi adunat o cantitate suficientă de entropie în această etapă incipientă a instalării, procesul poate dura mult timp. Puteți ajuta la accelerarea procesului prin generarea de entropie: de ex. prin apăsarea tastelor de formă aleatorie sau prin trecerea la shell-ul de pe a doua consolă virtuală și generarea de trafic de rețea și de disc (descărcarea unor fișiere, introducerea de fișiere mari în <code class="filename">/dev/null</code> etc.). Acest lucru se va repeta pentru fiecare partiție care urmează să fie criptată. </p>
+<p>După revenirea la meniul principal de partiționare, veți vedea toate volumele criptate ca partiții suplimentare care pot fi configurate în același mod ca și partițiile obișnuite. Următorul exemplu arată un volum criptat prin «dm-crypt». </p>
+<div class="informalexample"><pre class="screen">
+Volum criptat (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 Go Linux device-mapper
+     #1 115.1 Go  F ext3
+</pre></div>
+<p> Acum este momentul să atribuiți puncte de montare volumelor și să schimbați opțional tipurile de sisteme de fișiere dacă cele implicite nu vi se potrivesc. </p>
+<p>Acordați atenție identificatorilor din paranteze (<em class="replaceable"><code>sda2_crypt</code></em> în acest caz) și punctelor de montare pe care le-ați atribuit fiecărui volum criptat. Veți avea nevoie de aceste informații mai târziu când porniți noul sistem. Diferențele dintre procesul de pornire obișnuit și procesul de pornire cu volume criptate vor fi acoperite mai târziu în <a class="xref" href="ch07s02.html" title="7.2. Montarea volumelor criptate">Secțiune 7.2, „Montarea volumelor criptate”</a>. </p>
+<p>Odată ce sunteți mulțumit de schema de partiționare, continuați cu instalarea. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Instalarea sistemului de bază</h3></div></div></div>
+<p>Deși această etapă este cea mai puțin problematică, consumă o parte semnificativă a instalării, deoarece descarcă, verifică și despachetează întregul sistem de bază. Dacă aveți o conexiune lentă la computer sau la rețea, acest lucru ar putea dura ceva timp. </p>
+<p>În timpul instalării sistemului de bază, mesajele de despachetare și de configurare a pachetului sunt redirecționate către <strong class="userinput"><code>tty4</code></strong> (terminalul 4). Puteți accesa acest terminal apăsând <span class="keycap"><strong>Alt stânga</strong></span>+<span class="keycap"><strong>F4</strong></span>; reveniți la procesul principal de instalare cu <span class="keycap"><strong>Alt stânga</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Mesajele de despachetare/configurare generate în această fază sunt de asemenea salvate în <code class="filename">/var/log/syslog</code>. Le puteți verifica acolo dacă instalarea se realizează printr-o consolă serială. </p>
+<p>Ca parte a instalării, va fi instalat un nucleu Linux. La prioritatea implicită, programul de instalare va alege pentru dvs. unul care se potrivește cel mai bine cu echipamentul dvs. În modurile cu prioritate inferioară, veți putea alege dintr-o listă de nuclee disponibile. </p>
+<p>Când pachetele sunt instalate utilizând sistemul de gestionare a pachetelor, acesta va instala implicit și pachetele care sunt recomandate de acele pachete. Pachetele recomandate nu sunt strict necesare pentru funcționalitatea de bază a software-ului selectat, dar îmbunătățesc acel software și ar trebui, în opinia responsabililor de pachete, să fie instalate în mod normal împreună cu acel software. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Din motive tehnice, pachetele instalate în timpul instalării sistemului de bază sunt instalate fără pachetele <span class="quote">„<span class="quote">Recomandate</span>”</span>. Regula descrisă mai sus intră în vigoare numai după acest moment al procesului de instalare. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Instalarea de software suplimentar</h3></div></div></div>
+<p>În acest moment aveți un sistem utilizabil, dar limitat. Majoritatea utilizatorilor vor dori să instaleze software suplimentar pe sistem pentru a-l adapta nevoilor lor, iar programul de instalare vă permite să faceți acest lucru. Acest pas poate dura chiar mai mult decât instalarea sistemului de bază dacă aveți o conexiune lentă la calculator sau la rețea. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Configurarea lui «apt»</h4></div></div></div>
+<p>Unul dintre instrumentele folosite pentru a instala pachete pe un sistem Debian GNU/Linux este programul <span class="command"><strong>apt</strong></span>, din pachetul <code class="classname">apt</code><a href="#ftn.id3761" class="footnote" name="id3761"><sup class="footnote">[11]</sup></a>. Alte interfețe pentru gestionarea pachetelor, cum ar fi <span class="command"><strong>aptitude</strong></span> și <span class="command"><strong>synaptic</strong></span>, sunt de asemenea utilizate. Aceste interfețe sunt recomandate utilizatorilor noi, deoarece integrează unele caracteristici suplimentare (căutarea pachetelor și verificări de stare) într-o interfață de utilizator plăcută. </p>
+<p><span class="command"><strong>apt</strong></span> trebuie configurat astfel încât să știe de unde să recupereze pachetele. Rezultatele acestei configurări sunt scrise în fișierul <code class="filename">/etc/apt/sources.list</code>. Puteți examina și edita acest fișier după bunul plac după finalizarea instalării. </p>
+<p>Dacă instalați cu prioritatea implicită, programul de instalare se va ocupa în mare măsură de configurație automat, pe baza metodei de instalare pe care o utilizați și, eventual, folosind alegerile făcute mai devreme în instalare. În majoritatea cazurilor, programul de instalare va adăuga automat o oglindă de securitate și, dacă instalați distribuția stabilă, o oglindă pentru serviciul <span class="quote">„<span class="quote">stable-updates</span>”</span> (actualizări pentru distribuția stabilă). </p>
+<p>Dacă instalați la o prioritate mai mică (de exemplu, în modul expert), veți putea lua mai multe decizii singur. Puteți alege dacă să utilizați sau nu serviciile de securitate și/sau de actualizări pentru distribuția stabilă și puteți alege să adăugați pachete din secțiunile <span class="quote">„<span class="quote">contrib</span>”</span>, <span class="quote">„<span class="quote">non-free</span>”</span> și <span class="quote">„<span class="quote">non-free-firmware</span>”</span> ale arhivei . </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Instalarea de pe mai multe imagini de DVD</h5></div></div></div>
+<p>Dacă instalați de pe o imagine de DVD care face parte dintr-un set mai mare, programul de instalare vă va întreba dacă doriți să scaneze medii suplimentare de instalare. Dacă aveți la dispoziție astfel de suporturi suplimentare, probabil că doriți să faceți acest lucru, astfel încât instalatorul să poată folosi pachetele incluse pe ele. </p>
+<p>Dacă nu aveți niciun suport suplimentar, aceasta nu este nicio problemă: utilizarea acestora nu este necesară. Dacă, de asemenea, nu utilizați o oglindă de rețea (după cum este explicat în secțiunea următoare), poate însemna că nu pot fi instalate toate pachetele care aparțin sarcinilor pe care le selectați în următorul pas al instalării. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Pachetele sunt incluse pe imaginile DVD în ordinea popularității lor. Aceasta înseamnă că pentru cele mai multe utilizări este necesară doar prima imagine a unui set și că doar foarte puțini oameni folosesc de fapt oricare dintre pachetele incluse pe ultimele imagini ale unui set. </p>
+<p>De asemenea, înseamnă că achiziționarea de la diverși vânzători sau descărcarea și inscripționarea unui set complet de DVD-uri este doar o risipă de bani, deoarece nu le veți folosi niciodată pe multe dintre ele. În cele mai multe cazuri, este mai bine să obțineți doar primele 1 până la 2 DVD-uri și să instalați orice pachet suplimentar de care aveți nevoie din Internet, folosind o oglindă. </p>
+</td></tr>
+</table></div>
+<p>Dacă scanați mai multe medii de instalare, programul de instalare vă va solicita să le schimbați atunci când are nevoie de pachete de la unul care nu este în prezent în unitate. Rețineți că numai discurile care aparțin aceluiași set ar trebui scanate. Ordinea în care sunt scanate nu contează cu adevărat, dar scanarea lor în ordine crescătoare va reduce șansele de greșeli. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Utilizarea unei oglinzi de rețea</h5></div></div></div>
+<p>O întrebare care va fi pusă în timpul majorității instalărilor este dacă să se folosească sau nu o oglindă de rețea ca sursă pentru pachete. În cele mai multe cazuri, răspunsul implicit ar trebui să fie cel adecvat, dar există câteva excepții. </p>
+<p>Dacă <span class="emphasis"><em>nu</em></span> instalați de pe o imagine de DVD, ar trebui să utilizați o oglindă din rețea, deoarece altfel veți ajunge cu un sistem foarte minim. Totuși, dacă aveți o conexiune limitată la Internet, cel mai bine este să <span class="emphasis"><em>nu</em></span> selectați sarcina <code class="literal">mediu de birou</code> în următorul pas al instalării. </p>
+<p>Dacă instalați de pe DVD, orice pachet necesar în timpul instalării ar trebui să fie prezent pe prima imagine DVD. Utilizarea unei oglinzi de rețea este opțională. </p>
+<p>Un avantaj al adăugării unei oglinzi de rețea este că actualizările, care au avut loc de când imaginile DVD au fost create și au fost incluse într-o versiune punctuală, vor deveni disponibile pentru instalare, prelungind astfel durata de viață a setului de DVD-uri fără a compromite securitatea sau stabilitatea sistemului instalat. </p>
+<p>În rezumat: selectarea unei oglinzi de rețea este în general o idee bună, cu excepția cazului în care nu aveți o conexiune bună la Internet. Dacă versiunea curentă a unui pachet este disponibilă de pe mediul de instalare, programul de instalare o va folosi întotdeauna. Deci, cantitatea de date care va fi descărcată dacă selectați o oglindă depinde de </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>sarcinile pe care le selectați în următorul pas al instalării, </p></li>
+<li class="listitem"><p>ce pachete sunt necesare pentru sarcinile respective, </p></li>
+<li class="listitem"><p>care dintre aceste pachete sunt prezente pe suportul de instalare pe care l-ați scanat și </p></li>
+<li class="listitem"><p>dacă versiunile actualizate ale pachetelor incluse pe suportul de instalare sunt disponibile dintr-o oglindă (fie o oglindă a pachetului obișnuit, fie o oglindă pentru securitate sau actualizări ale distribuției stabile). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Rețineți că ultimul punct înseamnă că, inclusiv dacă alegeți să nu utilizați o oglindă de rețea, unele pachete pot fi încă descărcate de pe Internet dacă există o actualizare de securitate sau actualizări ale distribuției stabile disponibile pentru ele și acele servicii au fost configurate. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Alegerea unei oglinzi din rețea</h5></div></div></div>
+<p>Cu excepția cazului în care ați ales să nu utilizați o oglindă de rețea, vi se va prezenta o listă de oglinzi de rețea bazată pe selecția țării dvs. mai devreme în procesul de instalare. Alegerea implicită oferită este, de obicei, cea adecvată. </p>
+<p>Valoarea implicită oferită este deb.debian.org, care nu este o oglindă în sine, dar va redirecționa către o oglindă care ar trebui să fie actualizată și rapidă. Aceste oglinzi acceptă TLS (protocol https) și IPv6. Acest serviciu este întreținut de echipa de administratori a sistemului Debian („Debian System Administration ”:DSA). </p>
+<p>O oglindă poate fi, de asemenea, specificată manual, alegând <span class="quote">„<span class="quote">introduceți manual informațiile</span>”</span> . Puteți specifica apoi un nume de gazdă în oglindă și un număr de port opțional. Aceasta trebuie să fie de fapt o bază URL, adică atunci când specificați o adresă IPv6, trebuie să adăugați paranteze drepte în jurul ei, de exemplu <span class="quote">„<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Dacă calculatorul dvs. se află într-o rețea exclusiv IPv6 (ceea ce probabil nu este cazul pentru marea majoritate a utilizatorilor), este posibil ca utilizarea oglinzii implicite pentru țara dvs. să nu funcționeze. Toate oglinzile din listă sunt accesibile prin IPv4, dar numai unele dintre ele pot fi utilizate prin IPv6. Deoarece conectivitatea oglinzilor individuale se poate modifica în timp, aceste informații nu sunt disponibile în programul de instalare. Dacă nu există conectivitate IPv6 pentru oglinda implicită pentru țara dvs., puteți fie să încercați unele dintre celelalte oglinzi care vi se oferă sau să alegeți opțiunea <span class="quote">„<span class="quote">introduceți manual informațiile</span>”</span>. Apoi puteți specifica <span class="quote">„<span class="quote">ftp.ipv6.debian.org</span>”</span> ca nume de oglindă, care este un alias pentru o oglindă disponibilă prin IPv6, deși probabil că nu va fi cea mai rapidă posibilă. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Selectarea și instalarea software-ului</h4></div></div></div>
+<p>În timpul procesului de instalare, vi se oferă posibilitatea de a selecta software suplimentar de instalat. În loc să alegeți pachete software individuale din pachetele <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    disponibile, această etapă a procesului de instalare se concentrează pe selectarea și instalarea colecțiilor predefinite de software pentru a configura rapid calculatorul pentru a efectua diverse sarcini. </p>
+<p>Aceste sarcini reprezintă în mod vag un număr de activității sau lucruri diferite pe care doriți să le faceți cu calculatorul dvs., cum ar fi <span class="quote">„<span class="quote">Mediu de birou</span>”</span>, <span class="quote">„<span class="quote">Server web</span>”</span> sau <span class="quote">„<span class="quote">Server SSH</span>”</span><a href="#ftn.id3823" class="footnote" name="id3823"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Spațiu pe disc necesar pentru sarcini">Secțiune D.2, „Spațiu pe disc necesar pentru sarcini”</a> enumeră cerințele de spațiu pentru sarcinile disponibile. </p>
+<p>Unele sarcini pot fi preselectate pe baza caracteristicilor calculatorului pe care instalați. Dacă nu sunteți de acord cu aceste selecții, le puteți deselecta. Puteți chiar să optați pentru a nu instala deloc sarcini în acest moment. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Indicație]" src="images/tip.png"></td>
+<th align="left">Indicație</th>
+</tr>
+<tr><td align="left" valign="top"><p>În interfața cu utilizatorul standard a programului de instalare, puteți utiliza bara de spațiu pentru a activa/dezactiva selectarea unei sarcini. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Sarcina <span class="quote">„<span class="quote">Mediu de birou</span>”</span> va instala un mediu grafic de birou. </p>
+<p>Implicit, <code class="classname">debian-installer</code> instalează mediul de birou <span class="phrase">Gnome</span> . Este posibil să selectați în mod interactiv un alt mediu de birou în timpul instalării. De asemenea, este posibil să instalați mai multe medii de birou, dar este posibil ca unele combinații dintre aceste medii de birou să nu fie co-instalabile. </p>
+<p>Rețineți că acest lucru va funcționa numai dacă pachetele necesare pentru mediul de birou dorit sunt efectiv disponibile. Instalarea oricăruia dintre mediile de birou disponibile în acest fel ar trebui să funcționeze bine dacă utilizați o imagine DVD sau orice altă metodă de instalare cu o oglindă din rețea. </p>
+</td></tr>
+</table></div>
+<p>Diferitele sarcini de server vor instala software aproximativ după cum urmează. Server web: <code class="classname">apache2</code>; Server SSH: <code class="classname">openssh</code>. </p>
+<p>Sarcina <span class="quote">„<span class="quote">Utilități de sistem standard</span>”</span> va instala orice pachet care are un <span class="quote">„<span class="quote">standard</span>”</span> prioritar. Aceasta include o mulțime de utilități comune care sunt disponibile în mod normal pe orice sistem Linux sau Unix. Ar trebui să lăsați această sarcină selectată dacă nu știți ce faceți și doriți un sistem cu adevărat minim. </p>
+<p>Dacă în timpul selectării limbii a fost selectată o altă configurație regională implicită diferită de <span class="quote">„<span class="quote">C</span>”</span>, <span class="command"><strong>tasksel</strong></span> va verifica dacă sunt definite sarcini de localizare pentru acea configurație regională și va încerca automat să instaleze pachetele de configurație regională relevante . Aceasta include, de exemplu, pachete care conțin liste de cuvinte sau fonturi speciale pentru limba dumneavoastră. Dacă a fost selectat un mediu de birou, acesta va instala și pachetele de configurație regională adecvate pentru acesta (dacă sunt disponibile). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Începând cu Debian Trixie, <code class="classname">debian-installer</code> permite instalarea directă a combinațiilor Debian de software „Debian Pure Blends”. Există o intrare <span class="quote">„<span class="quote">Alege o combinație Debian de software pentru instalare</span>”</span> în partea de jos a listei de sarcini, care permite apariția unui dialog suplimentar de alegeri, după ce <span class="command"><strong>tasksel</strong></span> s-a încheiat. </p>
+<p>În acest dialog (<span class="command"><strong>blendsel</strong></span>), puteți alege ce combinație de software să instalați, similar cu această selecție de sarcini. </p>
+<p>Consultați <a class="ulink" href="https://www.debian.org/blends" target="_top">situl Debian</a> pentru mai multe informații despre combinațiile Debian de software „Debian Pure Blends”. </p>
+</td></tr>
+</table></div>
+<p>După ce ați selectat sarcinile, pulsați butonul <span class="guibutton">Continue</span>. În acest moment, <span class="command"><strong>apt</strong></span> va instala pachetele care fac parte din sarcinile selectate. Dacă un anumit program are nevoie de mai multe informații de la utilizator, acesta vă va solicita furnizarea lor în timpul acestui proces. </p>
+<p>Ar trebui să știți că, în special, sarcina «Mediu grafic de birou» este foarte mare. Mai ales când se instalează de pe o imagine de CD „netinst” în combinație cu o oglindă pentru pachete care nu sunt pe „netinst”, programul de instalare poate dori să recupereze o mulțime de pachete prin rețea. Dacă aveți o conexiune la internet relativ lentă, acest lucru poate dura mult timp. Nu există nicio opțiune de a anula instalarea pachetelor odată ce aceasta a început. </p>
+<p>Chiar și atunci când pachetele sunt incluse în imaginea de instalare, programul de instalare le poate prelua din oglindă dacă versiunea disponibilă pe oglindă este mai recentă decât cea inclusă pe imagine. Dacă instalați distribuția stabilă, acest lucru se poate întâmpla după o lansare punctuală (o actualizare a versiunii stabile originale); dacă instalați distribuția de testare, acest lucru se va întâmpla dacă utilizați o imagine mai veche. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Faceți ca sistemul să fie capabil să pornească</h3></div></div></div>
+<p>Dacă instalați o stație de lucru fără disc, evident, pornirea de pe discul local nu este o opțiune semnificativă și acest pas va fi omis. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Detectarea altor sisteme de operare</h4></div></div></div>
+<p>Înainte ca un încărcător de pornire să fie instalat, instalatorul va încerca să caute alte sisteme de operare care sunt instalate în calculator. Dacă găsește un sistem de operare acceptat, veți fi informat despre acest lucru în timpul pasului de instalare a încărcătorului de pornire, iar calculatorul va fi configurat să pornească acest alt sistem de operare în plus față de Debian. </p>
+<p>Rețineți că mai multe sisteme de operare pornind pe o singură mașină este încă ceva ce ține de magia neagră, oricum ceva mistic. Suportul automat pentru detectarea și configurarea încărcătoarelor de pornire pentru a porni alte sisteme de operare variază în funcție de arhitectură și chiar de subarhitectură. Dacă nu funcționează, ar trebui să consultați documentația gestionarului de pornire pentru mai multe informații. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3871"></a>6.3.7.2. Instalați încărcătorul de pornire <span class="command"><strong>Grub</strong></span> pe discul dur/solid</h4></div></div></div>
+<p>Încărcătorul de pornire pentru amd64 se numește <span class="quote">„<span class="quote">grub</span>”</span>. Grub este un încărcător de pornire flexibil și robust și o alegere implicită bună pentru utilizatorii noi și vechi, deopotrivă. </p>
+<p>În mod implicit, «grub» va fi instalat pe partiția UEFI sau în sectorul de pornire al unității primare, unde va prelua controlul complet al procesului de pornire. Dacă preferați, îl puteți instala în altă parte. Consultați manualul «grub» pentru informații complete. </p>
+<p>Dacă nu doriți să instalați grub, utilizați butonul <span class="guibutton">Go Back</span> pentru a ajunge la meniul principal și de acolo selectați orice încărcător de pornire pe care doriți să îl utilizați. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Continuați fără încărcătorul de pornire</h4></div></div></div>
+<p>Această opțiune poate fi folosită pentru a finaliza instalarea chiar și atunci când nu trebuie instalat niciun încărcător de pornire, fie pentru că arhitectura/subarhitectura nu oferă unul, fie pentru că nu se dorește niciunul (de exemplu, veți folosi încărcătorul de pornire existent). </p>
+<p>Dacă intenționați să configurați manual încărcătorul de pornire, ar trebui să verificați numele nucleului instalat în <code class="filename">/target/boot</code>. De asemenea, ar trebui să verificați acel director pentru prezența unui <em class="firstterm">initrd</em>; dacă există unul, probabil va trebui să instruiți încărcătorul de pornire să îl folosească. Alte informații de care veți avea nevoie sunt discul și partiția pe care le-ați selectat pentru sistemul dvs. de fișiere <code class="filename">/</code> și, dacă ați ales să instalați <code class="filename">/boot</code> pe o partiție separată, și sistemul de fișiere al <code class="filename">/boot</code>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Se finalizează instalarea</h3></div></div></div>
+<p>Acesta este ultimul pas în procesul de instalare al Debian în timpul căruia programul de instalare va efectua orice activitate de ultimă oră. Constă mai ales în a face ordine după <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Configurați ceasul sistemului</h4></div></div></div>
+<p>Programul de instalare vă poate întreba dacă ceasul calculatorului este configurat la UTC. În mod normal, această întrebare este evitată dacă este posibil și programul de instalare încearcă să stabilească dacă ceasul este configurat la UTC pe baza unor lucruri precum alte sisteme de operare instalate. </p>
+<p>În modul expert, veți putea întotdeauna să alegeți dacă ceasul este sau nu configurat la UTC.  <span class="phrase">Sistemele care (de asemenea) rulează Windows sunt configurate în mod normal la ora locală. Dacă doriți să porniți dual, selectați ora locală în loc de UTC.</span> </p>
+<p>În acest punct <code class="classname">debian-installer</code> va încerca, de asemenea, să salveze ora curentă în ceasul mașinii dumneavoastră. Acest lucru se va face fie în UTC, fie în ora locală, în funcție de selecția care tocmai a fost făcută. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Repornirea sistemului</h4></div></div></div>
+<p>Vi se va solicita să eliminați mediul de pornire (CD, stick USB etc.) pe care l-ați folosit pentru a porni programul de instalare. După aceea, sistemul va fi repornit în noul dumneavoastră sistem Debian. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Rezolvarea problemelor</h3></div></div></div>
+<p>Componentele enumerate în această secțiune nu sunt de obicei implicate în procesul de instalare, dar așteaptă în fundal pentru a ajuta utilizatorul în cazul în care ceva nu merge bine. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Salvarea jurnalelor de instalare</h4></div></div></div>
+<p>Dacă instalarea are succes, fișierele jurnal create în timpul procesului de instalare vor fi salvate automat în <code class="filename">/var/log/installer/</code> pe noul dumneavoastră sistem Debian. </p>
+<p>Alegerea opțiunii <span class="guimenuitem">Salvează jurnalele de depanare</span> din meniul principal vă permite să salvați fișierele de jurnal pe un stick USB, rețea, disc dur sau alte medii. Acest lucru poate fi util dacă întâmpinați probleme fatale în timpul instalării și doriți să studiați jurnalele pe alt sistem sau să le atașați la un raport de instalare. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Utilizarea Shell și vizualizarea jurnalelor</h4></div></div></div>
+<p>Există mai multe metode pe care le puteți folosi pentru a obține un shell în timp ce rulați o instalare. Pe majoritatea sistemelor, și dacă nu instalați printr-o consolă serială, cea mai ușoară metodă este să comutați la a doua <span class="emphasis"><em>consolă virtuală</em></span> apăsând <span class="keycap"><strong>Alt stânga</strong></span>+<span class="keycap"><strong>F2 </strong></span><a href="#ftn.id3918" class="footnote" name="id3918"><sup class="footnote">[13]</sup></a> (pe o tastatură Mac, <span class="keycap"><strong>Opțiune</strong></span>+<span class="keycap"><strong>F2</strong></span>). Folosiți <span class="keycap"><strong>Alt stânga</strong></span>+<span class="keycap"><strong>F1</strong></span> pentru a reveni la programul de instalare. </p>
+<p>Pentru programul de instalare grafic, consultați, de asemenea, <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Utilizarea programului de instalare în modul grafic">Secțiune 6.1.1, „Utilizarea programului de instalare în modul grafic”</a>. </p>
+<p>Dacă nu puteți comuta între console, există și un element <span class="guimenuitem">Execută un Shell</span> în meniul principal care poate fi folosit pentru a porni un shell. Puteți ajunge la meniul principal din majoritatea dialogurilor apăsând butonul <span class="guibutton">Go Back</span> o dată sau de mai multe ori. Tastați <strong class="userinput"><code>exit</code></strong> pentru a închide shell-ul și a reveni la programul de instalare. </p>
+<p>În acest moment, ați pornit de pe discul RAM și există un set limitat de utilități Unix disponibile pentru utilizare. Puteți vedea ce programe sunt disponibile cu comanda <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> și tastând <span class="command"><strong>help</strong></span>. Shell-ul este o clonă Bourne numită <span class="command"><strong>ash</strong></span> și are câteva caracteristici drăguțe, cum ar fi completarea automată și istoricul. </p>
+<p>Pentru a edita și vizualiza fișiere, utilizați editorul de text <span class="command"><strong>nano</strong></span>. Fișierele jurnal pentru sistemul de instalare pot fi găsite în directorul <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Deși puteți face practic orice într-un shell din lucrurile pe care comenzile disponibile vă permit să le faceți, opțiunea de a folosi un shell este într-adevăr acolo doar în cazul în care ceva merge prost și pentru depanare. </p>
+<p>A face lucruri manual din shell poate interfera cu procesul de instalare și poate duce la erori sau la o instalare incompletă. În special, ar trebui să lăsați întotdeauna programul de instalare să vă activeze partiția de swap și să nu faceți acest lucru singur din shell. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Instalarea prin consola de rețea (network-console)</h3></div></div></div>
+<p>Una dintre cele mai interesante componente este <em class="firstterm">consola de rețea</em>. Vă permite să faceți o mare parte a instalării prin rețea prin SSH. Utilizarea rețelei implică că va trebui să efectuați primii pași ai instalării din consolă, cel puțin până la configurarea rețelei; (deși puteți automatiza acea parte cu <a class="xref" href="ch04s06.html" title="4.6. Instalare automată">Secțiune 4.6, „Instalare automată”</a>). </p>
+<p>Această componentă nu este încărcată în meniul principal de instalare în mod implicit, așa că trebuie să o solicitați în mod explicit. Dacă instalați de pe un mediu optic, trebuie să porniți cu prioritate medie sau să invocați în alt mod meniul principal de instalare și să alegeți <span class="guimenuitem">Încărcați componentele de instalare din mediul de instalare</span> și din lista de componente suplimentare selectați <span class="guimenuitem">network-console: Se continuă instalarea de la distanță, utilizând SSH</span>. Încărcarea reușită este indicată de o nouă intrare de meniu numită <span class="guimenuitem">Continuați instalarea de la distanță folosind SSH</span>. </p>
+<p><span class="phrase">După selectarea acestei noi intrări, vi se</span>  să utilizați o nouă parolă pentru a vă conecta la sistemul de instalare, iar acesta vă va cere confirmarea parolei. Asta e tot. Acum ar trebui să vedeți un ecran care vă indică să vă conectați de la distanță ca utilizator <span class="emphasis"><em>installer</em></span> cu parola pe care tocmai ați furnizat-o. Un alt detaliu important de observat pe acest ecran este amprenta acestui sistem. Trebuie să transferați în siguranță amprenta către persoana care va continua instalarea de la distanță. </p>
+<p>Dacă decideți să continuați cu instalarea local, puteți oricând să apăsați <span class="keycap"><strong>Enter</strong></span>, ceea ce vă va aduce înapoi la meniul principal, unde puteți selecta o altă componentă. </p>
+<p>Acum să trecem la cealaltă parte a firului. Ca o condiție prealabilă, trebuie să vă configurați terminalul pentru codificarea UTF-8, deoarece asta este ceea ce folosește sistemul de instalare. Dacă nu o faceți, instalarea de la distanță va fi totuși posibilă, dar este posibil să întâlniți artefacte ciudate de afișare, cum ar fi margini de dialog distruse sau caractere non-ascii necitibile. Stabilirea unei conexiuni cu sistemul de instalare este la fel de simplă ca și tastarea: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> Unde <em class="replaceable"><code>install_host</code></em> este fie numele, fie adresa IP a calculatorului pe care instalați. Înainte de autentificarea efectivă va fi afișată amprenta sistemului de la distanță și va trebui să confirmați că este corectă. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Serverul <span class="command"><strong>ssh</strong></span> din programul de instalare folosește o configurație implicită care nu trimite pachete de menținere a conexiunii (<span class="quote">„<span class="quote">keep-alive packets</span>”</span>). În principiu, o conexiune la sistemul instalat ar trebui să fie menținută deschisă pe termen nelimitat. Cu toate acestea, în unele situații — în funcție de configurarea rețelei locale — conexiunea se poate pierde după o perioadă de inactivitate. Un caz obișnuit în care acest lucru se poate întâmpla este atunci când există o formă de traducere a adresei de rețea („Network Address Translation”: NAT) undeva între client și sistemul instalat. În funcție de momentul în care s-a pierdut conexiunea, este posibil sau nu să puteți relua instalarea după reconectare. </p>
+<p>Este posibil să evitați întreruperea conexiunii adăugând opțiunea <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>valoare</code></em></code></strong> când porniți conexiunea <span class="command"><strong>ssh</strong></span> sau adăugând acea opțiune în fișierul de configurare <span class="command"><strong>ssh</strong></span>. Rețineți totuși că, în unele cazuri, adăugarea acestei opțiuni poate, de asemenea, să <span class="emphasis"><em>cauzeze</em></span> întreruperea unei conexiuni (de exemplu, dacă pachetele de menținere a conexiunii (<span class="quote">„<span class="quote">keep-alive packets</span>”</span>) sunt trimise în timpul unei scurte întreruperi de rețea, de la care <span class="command"><strong>ssh</strong></span> altfel s-ar fi recuperat), așa că ar trebui să fie folosit numai atunci când este necesar. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Dacă instalați pe rând, pe mai multe calculatoare și se întâmplă să aibă aceeași adresă IP sau nume de gazdă, <span class="command"><strong>ssh</strong></span> va refuza să se conecteze la o astfel de gazdă. Motivul este că va avea amprentă diferită, ceea ce este de obicei un semn al unui atac de falsificare. Dacă sunteți sigur că nu este cazul, va trebui să ștergeți linia relevantă din <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3982" class="footnote" name="id3982"><sup class="footnote">[14]</sup></a> și încercați din nou. </p></td></tr>
+</table></div>
+<p>După autentificare, vi se va afișa un ecran inițial unde aveți două posibilități numite <span class="guimenuitem">Meniu Start</span> și <span class="guimenuitem">Pornește o consolă</span>. Primul vă aduce la meniul principal de instalare, unde puteți continua instalarea ca de obicei. Acesta din urmă pornește un shell din care puteți examina și, eventual, repara sistemul de la distanță. Ar trebui să porniți o singură sesiune SSH pentru meniul de instalare, dar puteți începe mai multe sesiuni pentru shell-uri. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>După ce ați început instalarea de la distanță prin SSH, nu ar trebui să vă întoarceți la sesiunea de instalare care rulează pe consola locală. Acest lucru poate deteriora baza de date care deține configurația noului sistem. Acest lucru, la rândul său, poate duce la o instalare eșuată sau la probleme cu sistemul instalat. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3154" class="footnote"><p><a href="#id3154" class="para"><sup class="para">[4] </sup></a> În termeni tehnici: atunci când există mai multe regiuni pentru acea limbă cu coduri de țară diferite. </p></div>
+<div id="ftn.id3162" class="footnote"><p><a href="#id3162" class="para"><sup class="para">[5] </sup></a> La prioritate medie și scăzută puteți oricând să selectați configurația regională preferată dintre cele disponibile pentru limba selectată (dacă există mai multe). </p></div>
+<div id="ftn.id3168" class="footnote"><p><a href="#id3168" class="para"><sup class="para">[6] </sup></a>Configurațiile regionale vechi sunt acele configurații regionale care nu folosesc codificarea UTF-8, ci unul dintre standardele mai vechi pentru codificarea caracterelor, cum ar fi ISO 8859-1 (folosit de limbile vest-europene) sau EUC-JP (folosit de japoneză). </p></div>
+<div id="ftn.id3353" class="footnote"><p><a href="#id3353" class="para"><sup class="para">[7] </sup></a> Programul de instalare va cripta grupul de volume LVM folosind o cheie AES de 256 de biți și folosește suportul <span class="quote">„<span class="quote">dm-crypt</span>”</span> al nucleului. </p></div>
+<div id="ftn.id3452" class="footnote"><p><a href="#id3452" class="para"><sup class="para">[8] </sup></a> De fapt, se poate construi un dispozitiv multi-disc chiar și cu partiții de pe același disc fizic, dar acest lucru nu va aduce nici un fel de beneficii. </p></div>
+<div id="ftn.id3703" class="footnote"><p><a href="#id3703" class="para"><sup class="para">[9] </sup></a> Folosirea unei fraze de acces pe post de cheie în prezent înseamnă că partiția va fi configurată folosind <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3718" class="footnote"><p><a href="#id3718" class="para"><sup class="para">[10] </sup></a> Se crede că băieții de la agențiile cu trei litere pot restaura datele chiar și după mai multe rescrieri ale mediilor magnetooptice. </p></div>
+<div id="ftn.id3761" class="footnote"><p><a href="#id3761" class="para"><sup class="para">[11] </sup></a> Rețineți că programul care instalează efectiv pachetele se numește <span class="command"><strong>dpkg</strong></span>. Cu toate acestea, acest program este mai mult un instrument de nivel scăzut. <span class="command"><strong>apt</strong></span> este un instrument de nivel superior, care va invoca <span class="command"><strong>dpkg</strong></span> după caz. Știe cum să recupereze pachetele din mediul de instalare, din rețea sau de oriunde. De asemenea, este capabil să instaleze automat alte pachete care sunt necesare pentru ca pachetul pe care încercați să îl instalați să funcționeze corect. </p></div>
+<div id="ftn.id3823" class="footnote"><p><a href="#id3823" class="para"><sup class="para">[12] </sup></a>Trebuie să știți că pentru a prezenta această listă, programul de instalare doar invocă programul <span class="command"><strong>tasksel</strong></span>. Poate fi rulat în orice moment după instalare pentru a instala mai multe pachete (sau a le elimina), sau puteți utiliza un instrument mai precis, cum ar fi <span class="command"><strong>aptitude</strong></span>. Dacă sunteți în căutarea unui singur pachet specific, după finalizarea instalării, pur și simplu rulați <strong class="userinput"><code>aptitude install <em class="replaceable"><code>pachet</code></em></code></strong>, unde <em class="replaceable"><code>pachet</code></em> este numele pachetului ce căutați. </p></div>
+<div id="ftn.id3918" class="footnote"><p><a href="#id3918" class="para"><sup class="para">[13] </sup></a>Adică: apăsați tasta <span class="keycap"><strong>Alt</strong></span> din partea stângă a <span class="keycap"><strong>barei de spațiu</strong></span> și tasta de funcții <span class="keycap"><strong>F2</strong></span> în același timp. </p></div>
+<div id="ftn.id3982" class="footnote"><p><a href="#id3982" class="para"><sup class="para">[14] </sup></a> Următoarea comandă va elimina o intrare existentă pentru o gazdă: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>nume_gazdă</code></em>|<em class="replaceable"><code>adresă IP</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Componentele - Introducere </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Încărcarea firmware-ului lipsă</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

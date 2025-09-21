@@ -1,0 +1,172 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>A.2. Booting the installer</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="apa.html" title="Appendix A. Installation Howto">
+<link rel="prev" href="apas01.html" title="A.1. Preliminaries">
+<link rel="next" href="apas03.html" title="A.3. Installation">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">A.2. Booting the installer</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apas01.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Appendix A. Installation Howto</th>
+<td width="20%" align="right"> <a accesskey="n" href="apas03.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="howto-getting-images"></a>A.2. Booting the installer</h2></div></div></div>
+<p>
+
+
+The debian-cd team provides builds of installation images using <code class="classname">debian-installer</code> on the
+<a class="ulink" href="https://www.debian.org/CD/" target="_top">Debian CD/DVD page</a>.
+For more information on where to get installation images, see <a class="xref" href="ch04s01.html" title="4.1. Official Debian GNU/Linux installation images">Section 4.1, “Official Debian GNU/Linux installation images”</a>.
+
+</p>
+<p>
+
+Some installation methods require other images than those for optical media.
+
+<a class="xref" href="ch04s02.html#where-files" title="4.2.1. Where to Find Installation Files">Section 4.2.1, “Where to Find Installation Files”</a> explains how to find images on Debian
+mirrors.
+
+</p>
+<p>
+
+The subsections below will give the details about which images you should
+get for each possible means of installation.
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="howto-getting-images-cdrom"></a>A.2.1. Optical disc</h3></div></div></div>
+<p>
+
+The netinst CD image is a popular image which can be used to install
+trixie with the <code class="classname">debian-installer</code>. This installation method is intended to boot from the image and
+install additional packages over a network; hence the name <span class="quote">“<span class="quote">netinst</span>”</span>.
+The image has the software components needed to run the installer and
+the base packages to provide a minimal trixie system.  If you'd
+rather, you can get a DVD image which will not need the network
+to install. You only need the first image of such set.
+
+</p>
+<p>
+
+Download whichever type you prefer and burn it to an optical disc.
+<span class="phrase">To boot the disc, you may need to change your BIOS/UEFI
+configuration, as explained in <a class="xref" href="ch03s06.html#bios-setup" title="3.6.1. Invoking the BIOS/UEFI Set-Up Menu">Section 3.6.1, “Invoking the BIOS/UEFI Set-Up Menu”</a>.</span>
+
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="howto-getting-images-usb"></a>A.2.2. USB memory stick</h3></div></div></div>
+<p>
+
+It's also possible to install from removable USB storage devices. For
+example a USB keychain can make a handy Debian install medium that you
+can take with you anywhere.
+
+</p>
+<p>
+
+The easiest way to prepare your USB memory stick is to download any
+Debian CD or DVD image that will fit on it, and write the image directly
+to the memory stick. Of course this will destroy anything already
+on the stick. This works because Debian CD/DVD images are
+<span class="quote">“<span class="quote">isohybrid</span>”</span> images that can boot both from optical and USB drives.
+
+</p>
+<p>
+
+There are other, more flexible ways to set up a memory stick to use the
+debian-installer, and it's possible to get it to work with smaller memory
+sticks. For details, see <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">our wiki</a>.
+
+</p>
+<p>
+
+While booting from USB storage is quite common on UEFI systems, this is somewhat
+different in the older BIOS world.
+Some BIOSes can boot USB storage directly, and some cannot. You may need to
+configure your BIOS/UEFI to enable
+<span class="quote">“<span class="quote">USB legacy support</span>”</span> or <span class="quote">“<span class="quote">Legacy support</span>”</span>. The boot device
+selection menu should show <span class="quote">“<span class="quote">removable drive</span>”</span> or <span class="quote">“<span class="quote">USB-HDD</span>”</span>
+to get it to boot from the USB device. For helpful
+hints and details, see <a class="xref" href="ch05s01.html#usb-boot-x86" title="5.1.1. Booting from USB Memory Stick">Section 5.1.1, “Booting from USB Memory Stick”</a>.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="howto-getting-images-netboot"></a>A.2.3. Booting from network</h3></div></div></div>
+<p>
+
+It's also possible to boot <code class="classname">debian-installer</code> completely from the net. The
+various methods to netboot depend on your architecture and netboot setup.
+The files in <code class="filename">netboot/</code> can be used to netboot <code class="classname">debian-installer</code>.
+
+</p>
+<p>
+
+The easiest thing to set up is probably PXE netbooting. Untar the
+file <code class="filename">netboot/pxeboot.tar.gz</code> into
+<code class="filename">/srv/tftp</code> or
+wherever is appropriate for your tftp server. Set up your DHCP server to pass
+filename <code class="filename">pxelinux.0</code> to clients, and with luck
+everything will just work.
+For detailed instructions, see <a class="xref" href="ch04s05.html" title="4.5. Preparing Files for TFTP Net Booting">Section 4.5, “Preparing Files for TFTP Net Booting”</a>.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="howto-getting-images-hard-disk"></a>A.2.4. Booting from hard disk</h3></div></div></div>
+<p>
+
+It's possible to boot the installer using no removable media, but just an
+existing hard disk, which can have a different OS on it. Download
+<code class="filename">hd-media/initrd.gz</code>, <code class="filename">hd-media/vmlinuz</code>,
+and a Debian DVD image to the top-level directory of the hard disk. Make sure
+that the image has a filename ending in <code class="literal">.iso</code>. Now
+it's just a matter of booting linux with the initrd.
+<span class="phrase">
+<a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. Booting from Linux using GRUB">Section 5.1.3, “Booting from Linux using
+  <span class="command"><strong>GRUB</strong></span>”</a> explains one way to do it.
+</span>
+
+</p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apas01.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apa.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apas03.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">A.1. Preliminaries </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> A.3. Installation</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

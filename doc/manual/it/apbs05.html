@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Opzioni avanzate</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Appendice B. Installazione automatica tramite preconfigurazione">
+<link rel="prev" href="apbs04.html" title="B.4. Contenuto del file di preconfigurazione (per trixie)">
+<link rel="next" href="apc.html" title="Appendice C. Partizionare per Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Opzioni avanzate</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Appendice B. Installazione automatica tramite preconfigurazione</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Opzioni avanzate</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Uso di comandi personalizzati durante l'installazione</h3></div></div></div>
+<p>Una funzionalità molto potente e flessibile offerta dagli strumenti di preconfigurazione è la possibilità si eseguire dei comandi o degli script in determinati momenti dell'installazione. </p>
+<p>Il filesystem su cui verrà installato il sistema, una volta montato, è disponibile in <code class="filename">/target</code>. Se l'installazione avviene da CD/DVD, una volta montato, è disponibile in <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># La preconfigurazione del d-i è intrinsecamente non sicura. Niente
+# nell'installatore verifica i tentativi di buffer overflow o di altri
+# exploit attraverso i valori presenti in un file di preconfigurazione
+# come questo. Usare solo file di preconfigurazione provenienti da fonti
+# fidate! Per comprendere il rischio, e poiché è generalmente utile,
+# ecco un modo per eseguire automaticamente qualsiasi comando della shell
+# all'interno dell'installatore.
+
+# Questo è primo comando, è eseguito il prima possibile, appena dopo la
+# lettura della preconfigurazione.
+#d-i preseed/early_command string anna-install some-udeb
+# Questo comando viene eseguito immediatamente prima di avviare il
+# partizionatore. Può essere utile per applicare una preconfigurazione
+# dinamica del partizionatore in funzione dello stato dei dischi (che
+# potrebbe non essere visibile nel momento in cui viene eseguito
+# preseed/early_command).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Questo è l'ultimo comando, è eseguito appena prima che l'installatore
+# termini, ma quando la directory /target è ancora usabile. È possibile
+# fare un chroot su /target e usarlo direttamente oppure usare i comandi
+# apt-install e in-target per installare dei pacchetti ed eseguire comandi
+# nel file system target.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Uso della preconfigurazione per modificare i valori predefiniti</h3></div></div></div>
+<p>È possibile usare la preconfigurazione per modificare la risposta predefinita a una domanda ma fare in modo che la domanda venga comunque posta. Per farlo si deve impostare il flag <em class="firstterm">seen</em> a <span class="quote">«<span class="quote">false</span>»</span> dopo aver impostato il valore della domanda. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string valore
+d-i foo/bar seen false
+</pre></div>
+<p> Si può estendere questo effetto a <span class="emphasis"><em>tutte</em></span> le domande inserendo il parametro <code class="classname">preseed/interactive=true</code> al prompt boot. Questo può essere utile per effettuare delle prove o il debug del proprio file di preconfigurazione. </p>
+<p>Notare che <span class="quote">«<span class="quote">d-i</span>»</span> deve essere usato come proprietario delle sole variabili dell'installatore. Le variabili appartenenti ai pacchetti da installare sul sistema finale devono avere come proprietario il nome del pacchetto. Si veda la nota a piè di pagina in <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Uso dei parametri di avvio per la preconfigurazione">Sezione B.2.2, «Uso dei parametri di avvio per la preconfigurazione»</a>. </p>
+<p>Quando si usa la preconfigurazione tramite i parametri d'avvio si può richiedere all'installatore di chiedere comunque le domande preconfigurate usando l'operatore <span class="quote">«<span class="quote">?=</span>»</span> in questo modo <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>valore</code></em></code></strong> (oppure <strong class="userinput"><code><em class="replaceable"><code>proprietario</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>valore</code></em></code></strong>). Ovviamente questo ha effetto solo sui parametri che corrispondono alle domande che sono effettivamente visualizzate durante l'installazione e non sui parametri <span class="quote">«<span class="quote">interni</span>»</span>. </p>
+<p>Per avere ulteriori informazioni di debug, usare il parametro di avvio <code class="classname">DEBCONF_DEBUG=5</code>; ciò provoca la stampa da parte di <code class="classname">debconf</code> di molti più dettagli sulle attuali impostazioni di ciascuna variabile e sulla loro evoluzione durante l'esecuzione degli script di installazione del pacchetto. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Caricamento in cascata di più file di preconfigurazione</h3></div></div></div>
+<p>Da un file di preconfigurazione è anche possibile includere anche altri file di preconfigurazione. Qualsiasi impostazione fatta in questi file sovrascrive l'eventuale configurazione fatta dai file caricati in precedenza. Questo permette di inserire, per esempio, una configurazione di rete generica in un file e di mettere alcune configurazioni particolari in altri file. </p>
+<div class="informalexample"><pre class="screen"># Si possono elencare più file separandoli con degli spazi; verranno
+# caricati tutti. Anche i file inclusi possono avere al loro interno delle
+# direttive preseed/include. Si noti che se i nomi dei file sono relativi,
+# sono prelevati dalla stessa directory del file di preconfigurazione che
+# li include.
+#d-i preseed/include string x.cfg
+
+# Facoltativamente il programma d'installazione può verificare le checksum
+# dei file prima di processarli. Attualmente sono supportati solo le checksum
+# md5sum che vanno elencate nello stesso ordine con cui sono inclusi i file.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Ancora più flessibile, questo esegue un comando di shell e se restituisce
+# i nomi dei file di preconfigurazione allora include questi file.
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Il massimo della flessibilità, questo scarica ed esegue un programma.
+# Il programma può usare debconf-set per manipolare il database di
+# debconf; è possibile elencare più di uno script separandoli con degli
+# spazi. Si noti che se i nomi dei file sono relativi, sono prelevati
+# dalla stessa directory del file di preconfigurazione che li esegue.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Con la preconfigurazione di tipo initrd e file è possibile anche caricare in cascata una preconfigurazione di tipo network, impostando preseed/url nei file precedenti. Ciò avvia la preconfigurazione via rete appena questa diviene disponibile. Nell'effettuare questa operazione si deve porre particolare attenzione, dato che la preconfigurazione viene eseguita in due occasioni distinte, aprendo la possibilità che il comando preseed/early venga eseguito nuovamente, con la seconda esecuzione che avviene dopo l'attivazione della rete. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Contenuto del file di preconfigurazione (per trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> Appendice C. Partizionare per Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

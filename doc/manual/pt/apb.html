@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Apêndice B. Automatizar a instalação utilizando preseeding</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="prev" href="apas05.html" title="A.5. E finalmente…">
+<link rel="next" href="apbs01.html" title="B.1. Introdução">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">Apêndice B. Automatizar a instalação utilizando preseeding</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apas05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center"> </th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs01.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="appendix">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="appendix-preseed"></a>Apêndice B. Automatizar a instalação utilizando preseeding</h1></div></div></div>
+<div class="toc">
+<p><b>Índice</b></p>
+<dl class="toc">
+<dt><span class="sect1"><a href="apbs01.html">B.1. Introdução</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs01.html#preseed-methods">B.1.1. Métodos de preseed</a></span></dt>
+<dt><span class="sect2"><a href="apbs01.html#preseed-limitations">B.1.2. Limitações</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs02.html">B.2. Utilizar o preseed</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs02.html#preseed-loading">B.2.1. Carregar o ficheiro de pré-configuração</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-bootparms">B.2.2. Utilizar parâmetros de arranque para fazer preseed a questões</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-auto">B.2.3. Modo Auto</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-aliases">B.2.4. Abreviaturas úteis com o preseed</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-bootparms-examples">B.2.5. Exemplos de preseeding pela linha de comandos de arranque</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-dhcp">B.2.6. Utilizar um servidor de DHCP para especificar ficheiros de pré-configuração</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs03.html">B.3. Criar um ficheiro de pré-configuração</a></span></dt>
+<dt><span class="sect1"><a href="apbs04.html">B.4. Conteúdo do ficheiro de pré-configuração (para trixie)</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs04.html#preseed-l10n">B.4.1. Localização</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-speech">B.4.2. Gerador de voz</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-network">B.4.3. Configuração de rede</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-network-console">B.4.4. Consola de rede</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-mirror">B.4.5. Parâmetros do mirror</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-account">B.4.6. Configuração de contas</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-time">B.4.7. Configuração do relógio e fuso horário</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-partman">B.4.8. Particionamento</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-base-installer">B.4.9. Instalação do sistema base</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-apt">B.4.10. Configuração do Apt</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-pkgsel">B.4.11. Seleção de pacotes</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-bootloader">B.4.12. Instalação do gestor de arranque</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-finish">B.4.13. A terminar a instalação</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-other">B.4.14. Preseed de outros pacotes</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs05.html">B.5. Opções avançadas</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs05.html#preseed-hooks">B.5.1. Executar comandos personalizados durante a instalação</a></span></dt>
+<dt><span class="sect2"><a href="apbs05.html#preseed-seenflag">B.5.2. Utilizar o preseed para alterar valores predefinidos</a></span></dt>
+<dt><span class="sect2"><a href="apbs05.html#preseed-chainload">B.5.3. Carregamento em série dos ficheiros de pré-configuração</a></span></dt>
+</dl></dd>
+</dl>
+</div>
+<p>Este apêndice explica como fazer preseed ás respostas das questões no <code class="classname">debian-installer</code> para automatizar a sua instalação. </p>
+<p>Os fragmentos da configuração utilizados neste apêndice também estão disponíveis como ficheiro de exemplo de pré-configuração a partir de <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apas05.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"> </td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs01.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">A.5. E finalmente… </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> B.1. Introdução</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

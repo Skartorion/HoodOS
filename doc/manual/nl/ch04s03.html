@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Bestanden klaar maken om van een USB-geheugenstick op te starten</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch04.html" title="Hoofdstuk 4. Media met het installatiesysteem verkrijgen">
+<link rel="prev" href="ch04s02.html" title="4.2. Bestanden downloaden van Debian spiegelservers">
+<link rel="next" href="ch04s04.html" title="4.4. Bestanden voorbereiden om vanaf een harde schijf op te starten">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Bestanden klaar maken om van een USB-geheugenstick op te starten</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 4. Media met het installatiesysteem verkrijgen</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Bestanden klaar maken om van een USB-geheugenstick op te starten</h2></div></div></div>
+<p>Om een USB-stick klaar te maken, raden we aan om een systeem te gebruiken waarop GNU/Linux reeds actief is en dat USB ondersteunt. Op de huidige GNU/Linux-systemen zou de USB-stick automatisch herkend moeten worden als u hem in de USB-aansluiting plaatst. Als dat niet gebeurt, moet u nagaan of de kernel-module usb-storage geladen is. Als u de USB-stick in de aansluiting plaatst, zal hij herkend worden als een apparaat met als naam <code class="filename">/dev/sdX</code>, waarbij de <span class="quote">“<span class="quote">X</span>”</span> een letter is uit het bereik a-z. U kunt nagaan als welk apparaat de USB-stick herkend werd, door het commando <span class="command"><strong>lsblk</strong></span> voor en na het plaatsen van de stick in de aansluiting. (Een andere mogelijke methode hiervoor is de uitvoer bekijken van het commando <span class="command"><strong>dmesg</strong></span> dat u als root-gebruiker moet geven). Om naar uw stick te kunnen schrijven, kan het nodig zijn om het schakelaartje dat hem tegen schrijven beveiligt, op uit te zetten. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>De procedures die in dit deel beschreven worden zullen alles wat al op het apparaat staat, verwijderen! Vergewis u er dus heel goed van dat u de correcte apparaatnaam gebruikt voor uw USB-stick. Indien u de verkeerde apparaatnaam gebruikt, kan het resultaat zijn dat alle informatie op bijvoorbeeld een harde schijf verloren gaat. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Een USB-stick klaar maken met een hybride CD/DVD-image</h3></div></div></div>
+<p>Debian installatie-images voor deze architectuur worden met de <span class="command"><strong>isohybrid</strong></span>-technologie gemaakt. Dit betekent dat zij rechtstreeks naar een USB-stick geschreven kunnen worden, wat een erg gemakkelijke manier is om een installatiemedium aan te maken. Kies gewoon een image (zoals het image voor netinst of dvd-1) dat past op uw USB-stick. Ga naar <a class="xref" href="ch04s01.html" title="4.1. Officiële Debian GNU/Linux installatie-images">Paragraaf 4.1, “Officiële Debian GNU/Linux installatie-images”</a> om een installatie-image op te halen. </p>
+<p>Het installatie-image dat u kiest, moet rechtstreeks naar de USB-stick geschreven worden. Daarbij wordt de huidige inhoud ervan overschreven. Bijvoorbeeld, als u een bestaand GNU/Linux-systeem gebruikt, kan het imagebestand op de volgende manier naar een USB-stick geschreven worden, nadat u er zich eerst van vergewist heeft dat de stick niet aangekoppeld is: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Voor de meeste gebruikers zou het op deze manier eenvoudig wegschrijven van een installatie-image naar USB goed moeten werken. Voor bijzondere behoeften is er deze <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">wikipagina</a>. </p>
+<p>Informatie over hoe dit op andere besturingssystemen moet gebeuren, is te vinden in de <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD FAQ</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Belangrijk]" src="images/important.png"></td>
+<th align="left">Belangrijk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Het image moet geschreven worden op het volledige schijfapparaat en niet op en partitie, bijvoorbeeld /dev/sdb en niet /dev/sdb1. Gebruik geen gereedschap zoals <span class="command"><strong>unetbootin</strong></span> dat aan het image veranderingen aanbrengt. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Bestanden downloaden van Debian spiegelservers </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Bestanden voorbereiden om vanaf een harde schijf op te starten</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

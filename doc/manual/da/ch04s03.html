@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Forberedning af filer for opstart via USB-hukommelsesdrev</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Kapitel 4. Find systeminstallationsmedie">
+<link rel="prev" href="ch04s02.html" title="4.2. Hentning af filer fra Debian-spejl">
+<link rel="next" href="ch04s04.html" title="4.4. Forberedelse af filer for harddiskopstart">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Forberedning af filer for opstart via USB-hukommelsesdrev</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 4. Find systeminstallationsmedie</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Forberedning af filer for opstart via USB-hukommelsesdrev</h2></div></div></div>
+<p>For at forberede USB-drevet, så skal du bruge et system hvor GNU/Linux allerede er installeret og hvor USB er understøttet. Med nuværende GNU/Linux-systemer vil USB-drevet automatisk blive genkendt, når det indsættes. Hvis ikke bør du kontrollere om usb-storage-kernemodulet er indlæst. Når USB-drevet indsættes, så vil det blive lagt på en enhed navngivet <code class="filename">/dev/sdX</code>, hvor <span class="quote">“<span class="quote">X</span>”</span> er et bogstav i intervallet a-z. Du bør kunne se hvilken enhed USB-drevet blev lagt på ved at køre kommandoen <span class="command"><strong>lsblk</strong></span> før og efter indsættelse. (Resultatet af <span class="command"><strong>dmesg</strong></span> (som root) er en anden mulig metode til dette). For at skrive til dit drev skal du måske stille på skrivebeskyttelsesknappen. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Procedurerne beskrevet i dette afsnit vil fjerne alt på enheden! Vær sikker på, at du bruger det korrekte enhedsnavn for dit USB-drev. Hvis du bruger den forkerte enhed kan resultatet være at hele informationen på for eksempel en harddisk mistes. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Forberedning af et USB-drev via et hybrid cd/dvd-aftryk</h3></div></div></div>
+<p>Debian installation images for this architecture are created using the <span class="command"><strong>isohybrid</strong></span> technology; that means they can be written directly to a USB stick, which is a very easy way to make an installation media. Simply choose an image (such as the netinst or DVD-1) that will fit on your USB stick. See <a class="xref" href="ch04s01.html" title="4.1. Officielle Debian GNU/Linux installationsaftryk">Afsnit 4.1, “Officielle Debian GNU/Linux installationsaftryk”</a> to get an installation image. </p>
+<p>The installation image you choose should be written directly to the USB stick, overwriting its current contents. For example, when using an existing GNU/Linux system, the image file can be written to a USB stick as follows, after having made sure that the stick is unmounted: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Simply writing the installation image to USB like this should work fine for most users. For special needs there is this <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">wiki page</a>. </p>
+<p>Information om hvordan dette gøres på andre operativsystemer kan findes i <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debians OSS for cd</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Vigtigt]" src="images/important.png"></td>
+<th align="left">Vigtigt</th>
+</tr>
+<tr><td align="left" valign="top"><p>Aftrykket skal skrives til whole-disk-enheden og ikke en partition, f.eks. /dev/sdb og ikke /dev/sdb1. Brug ikke værktøjer såsom <span class="command"><strong>unetbootin</strong></span> som ændrer aftrykket. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Hentning af filer fra Debian-spejl </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Forberedelse af filer for harddiskopstart</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

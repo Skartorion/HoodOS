@@ -1,0 +1,188 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Advanced options</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="apb.html" title="Appendix B. Automating the installation using preseeding">
+<link rel="prev" href="apbs04.html" title="B.4. Contents of the preconfiguration file (for trixie)">
+<link rel="next" href="apc.html" title="Appendix C. Partitioning for Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Advanced options</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Appendix B. Automating the installation using preseeding</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Advanced options</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Running custom commands during the installation</h3></div></div></div>
+<p>
+
+A very powerful and flexible option offered by the preconfiguration tools
+is the ability to run commands or scripts at certain points in the
+installation.
+
+</p>
+<p>
+
+When the filesystem of the target system is mounted, it is available in
+<code class="filename">/target</code>. If an installation CD/DVD is used, when it is mounted
+it is available in <code class="filename">/cdrom</code>.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# d-i preseeding is inherently not secure. Nothing in the installer checks
+# for attempts at buffer overflows or other exploits of the values of a
+# preconfiguration file like this one. Only use preconfiguration files from
+# trusted locations! To drive that home, and because it's generally useful,
+# here's a way to run any shell command you'd like inside the installer,
+# automatically.
+
+# This first command is run as early as possible, just after
+# preseeding is read.
+#d-i preseed/early_command string anna-install some-udeb
+# This command is run immediately before the partitioner starts. It may be
+# useful to apply dynamic partitioner preseeding that depends on the state
+# of the disks (which may not be visible when preseed/early_command runs).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# This command is run just before the install finishes, but when there is
+# still a usable /target directory. You can chroot to /target and use it
+# directly, or use the apt-install and in-target commands to easily install
+# packages and run commands in the target system.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Using preseeding to change default values</h3></div></div></div>
+<p>
+
+It is possible to use preseeding to change the default answer for a
+question, but still have the question asked. To do this the
+<em class="firstterm">seen</em> flag must be reset to <span class="quote">“<span class="quote">false</span>”</span> after
+setting the value for a question.
+
+</p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p>
+
+The same effect can be achieved for <span class="emphasis"><em>all</em></span> questions by
+setting the parameter <code class="classname">preseed/interactive=true</code> at
+the boot prompt. This can also be useful for testing or debugging your
+preconfiguration file.
+
+</p>
+<p>
+
+Note that the <span class="quote">“<span class="quote">d-i</span>”</span> owner should only be used for variables
+used in the installer itself. For variables belonging to packages installed
+on the target system, you should use the name of that package instead. See
+the footnote to <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Using boot parameters to preseed questions">Section B.2.2, “Using boot parameters to preseed questions”</a>.
+
+</p>
+<p>
+
+If you are preseeding using boot parameters, you can make the installer ask
+the corresponding question by using the <span class="quote">“<span class="quote">?=</span>”</span> operator, i.e.
+<strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>
+(or <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>).
+This will of course only have effect for parameters that correspond to
+questions that are actually displayed during an installation and not for
+<span class="quote">“<span class="quote">internal</span>”</span> parameters.
+
+</p>
+<p>
+
+For more debugging information, use the boot parameter
+<code class="classname">DEBCONF_DEBUG=5</code>.
+This will cause <code class="classname">debconf</code> to print much more detail
+about the current settings of each variable and about its progress through
+each package's installation scripts.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Chainloading preconfiguration files</h3></div></div></div>
+<p>
+
+It is possible to include other preconfiguration files from a preconfiguration
+file. Any settings in those files will override pre-existing settings from
+files loaded earlier. This makes it possible to put, for example, general
+networking settings for your location in one file and more specific
+settings for certain configurations in other files.
+
+</p>
+<div class="informalexample"><pre class="screen">
+# More than one file can be listed, separated by spaces; all will be
+# loaded. The included files can have preseed/include directives of their
+# own as well. Note that if the filenames are relative, they are taken from
+# the same directory as the preconfiguration file that includes them.
+#d-i preseed/include string x.cfg
+
+# The installer can optionally verify checksums of preconfiguration files
+# before using them. Currently only md5sums are supported, list the md5sums
+# in the same order as the list of files to include.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# More flexibly, this runs a shell command and if it outputs the names of
+# preconfiguration files, includes those files. 
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Most flexibly of all, this downloads a program and runs it. The program
+# can use commands such as debconf-set to manipulate the debconf database.
+# More than one script can be listed, separated by spaces.
+# Note that if the filenames are relative, they are taken from the same
+# directory as the preconfiguration file that runs them.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>
+
+It is also possible to chainload from the initrd or file preseeding phase,
+into network preseeding by setting preseed/url in the earlier files.
+This will cause network preseeding to be performed when the network comes
+up.  You need to be careful when doing this, since there will be two
+distinct runs at preseeding, meaning for example that you get another
+chance to run the preseed/early command, the second one happening after the
+network comes up.
+
+</p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Contents of the preconfiguration file (for trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> Appendix C. Partitioning for Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

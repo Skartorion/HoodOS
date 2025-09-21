@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Konfigurera ditt system att använda e-post</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch08.html" title="Kapitel 8. Nästa steg och hur man ska gå vidare">
+<link rel="prev" href="ch08s03.html" title="8.3. Ytterligare läsning och information">
+<link rel="next" href="ch08s05.html" title="8.5. Bygg en ny kärna">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Konfigurera ditt system att använda e-post</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 8. Nästa steg och hur man ska gå vidare</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Konfigurera ditt system att använda e-post</h2></div></div></div>
+<p>Idag är e-post en viktig del av många personers liv. Eftersom det finns många alternativ för hur man gör konfigurationen, och eftersom det är viktigt för några Debian-verktyg att den är rätt konfigurerad, kommer vi försöka att täcka in grunderna i det här avsnittet. </p>
+<p>Det finns tre huvudfunktioner som definierar ett e-postsystem. Först är det <em class="firstterm">e-postklienten</em> (MUA) som är det program som en användare använder för att skriva och läsa e-post. Sedan är det <em class="firstterm">Mail Transfer Agent</em> (MTA) som tar hand om överföringen av meddelanden från en dator till en annan. Till sist är det <em class="firstterm">Mail Delivery Agent</em> (MDA) som tar hand om leveransen av inkommande e-post till användarens inkorg. </p>
+<p>Dessa tre funktioner kan genomföras av separata program, men de kan även kombineras till ett eller två program. Det är också möjligt att ha olika program som hanterar dessa funktioner för olika typer av e-post. </p>
+<p>På Linux- och Unix-system är <span class="command"><strong>mutt</strong></span> historiskt sett en mycket populär e-postklient. Som de flesta traditionella Linux-program är den textbaserad. Den används ofta i kombination med <span class="command"><strong>exim</strong></span> eller <span class="command"><strong>sendmail</strong></span> som MTA och <span class="command"><strong>procmail</strong></span> som MDA. </p>
+<p>Med den ökande populariteten för grafiska skrivbordssystem, har användningen av grafiska e-postprogram som GNOME:s <span class="command"><strong>evolution</strong></span>, KDE:s <span class="command"><strong>kmail</strong></span> eller Mozilla:s <span class="command"><strong>thunderbird</strong></span> blivit mer populär. Dessa program kombinerar funktionerna av en MUA, MTA och MDA, men kan — och används ofta —  i kombination med de traditionella Linux-verktygen. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Standardkonfiguration för e-post</h3></div></div></div>
+<p>Även om du planerar att använda ett grafiskt e-postprogram, skulle det vara användbart att ha en traditionell MTA/MDA installerad och rätt konfigurerad på ditt Debian GNU/Linux-system. Anledningen är att olika verktyg som kör på systemet<a href="#ftn.id3678" class="footnote" name="id3678"><sup class="footnote">[16]</sup></a> kan skicka viktiga notifieringar via e-post för att informera systemadministratören om (potentiella) problem eller ändringar. </p>
+<p>För detta kan du installera <code class="classname">exim4</code> och <code class="classname">mutt</code> med <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> är en kombination av MTA/MDA som är relativt liten men mycket flexibel. Den kommer som standard att konfigureras för att endast hantera e-post lokalt till själva systemet, och e-post adresserad till systemadministratören (root-kontot) kommer att levereras till det vanliga användarkontot som skapades under installationen<a href="#ftn.id3689" class="footnote" name="id3689"><sup class="footnote">[17]</sup></a>. </p>
+<p>När e-post från systemet levereras kommer de att läggas till i en fil i <code class="filename">/var/mail/<em class="replaceable"><code>kontonamn</code></em></code>. E-postmeddelandena kan läsas med <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Skicka e-post utanför systemet</h3></div></div></div>
+<p>Som tidigare nämnts, är det installerade Debian-systemet endast konfigurerat att hantera e-post lokalt för systemet, inte för att skicka e-post till andra eller för att ta emot post från andra. </p>
+<p>Om du vill att <code class="classname">exim4</code> ska hantera extern e-post, referera till nästa underavsnitt för de grundläggande konfigurationsalternativen. Se till att testa att post kan skickas och tas emot korrekt. </p>
+<p>Om du tänker använda ett grafiskt e-postprogram och använda en e-postserver hos din Internetleverantör (ISP) eller ditt företag, finns det egentligen inget behov att konfigurera <code class="classname">exim4</code> till att hantera extern e-post. Konfigurera helt enkelt ditt grafiska favoritpostprogram till att använda de rätta servrarna till att skicka och ta emot e-post (hur man gör det är utanför omfånget för den här handboken). </p>
+<p>Men om så är fallet behöver du konfigurera individuella verktyg till att korrekt skicka e-post. Ett sådant verktyg är <span class="command"><strong>reportbug</strong></span>, ett program som hanterar insändandet av felrapporter mot Debian-paket. Det förväntar sig som standard att kunna använda <code class="classname">exim4</code> för att skicka in felrapporter. </p>
+<p>För att korrekt konfigurera <span class="command"><strong>reportbug</strong></span> till att använda en extern e-postserver, kör kommandot <span class="command"><strong>reportbug --configure</strong></span> och svara <span class="quote">”<span class="quote">nej</span>”</span> på frågan om en  MTA finns tillgänglig. Du kommer då att bli frågad efter den SMTP-server som ska användas för att skicka in felrapporter. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Konfigurera e-postservern Exim4</h3></div></div></div>
+<p>Om du vill att ditt system även ska hantera extern e-post, behöver du konfigurera om paketet <code class="classname">exim4</code><a href="#ftn.id3714" class="footnote" name="id3714"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Efter det kommandot har angivits (som root), kommer du att bli frågad om du vill dela upp konfigurationen i mindre filer. Välj standardalternativet om du är osäker. </p>
+<p>Härnäst kommer du att bli presenterad med flera vanliga postscenarior. Välj det alternativ som bäst återspeglar dina behov. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">internetsystem</span></dt>
+<dd><p>Ditt system är anslutet till ett nätverk och din e-post skickas och tas emot direkt via SMTP. På de efterföljande skärmarna kommer du bli frågad en del enkla frågor, såsom postnamnet för din maskin, eller en lista på domäner för vilka du tar emot eller vidaresänder post. </p></dd>
+<dt><span class="term">e-post skickad av smart värd</span></dt>
+<dd>
+<p>I det här scenariot kommer din utgående post att vidarebefordras till en annan maskin, en så kallad <span class="quote">”<span class="quote">smart värd</span>”</span> (smarthost), som tar hand om sändningen av meddelandet till dess mål. Den smarta värden lagrar vanligtvis inkommande post som är adresserad till din dator, så att du inte behöver vara permanent ansluten. Det betyder också att du måste hämta din e-post från den smarta värden med program som till exempel fetchmail. </p>
+<p>I många fall kommer den smarta värden att vara din Internetleverantörs e-postserver, vilket gör det här alternativ mycket lämpligt för användare med uppringd anslutning. Den kan även vara ett företags e-postserver, eller till och med ett annat system på ditt egna nätverk. </p>
+</dd>
+<dt><span class="term">e-post skickad av smart värd; ingen lokal post</span></dt>
+<dd><p>Det här alternativet är i stort sett samma som det föregående, förutom att systemet inte kommer att konfigureras till att hantera post för en lokal e-postdomän. Post på själva systemet (t.ex. för systemadministratören) kommer fortfarande att hanteras. </p></dd>
+<dt><span class="term">endast lokal leverans</span></dt>
+<dd><p>Det här alternativet har ditt system konfigurerats med som standard. </p></dd>
+<dt><span class="term">ingen konfiguration för närvarande</span></dt>
+<dd><p>Välj den här om du är absolut säker på att du vet vad du gör. Det innebär att du kommer att ha ett okonfigurerat e-postsystem — tills du konfigurerar det, du kommer inte att kunna ta emot eller skicka någon post och du kan missa viktiga meddelanden från dina systemverktyg. </p></dd>
+</dl></div>
+<p>Om inget av dessa scenarior passar dina behov, eller om du behöver en mer finmaskig konfiguration, behöver du redigera konfigurationsfilerna i katalogen <code class="filename">/etc/exim4</code> efter att installationen är färdig. Mer information om <code class="classname">exim4</code> kan hittas i <code class="filename">/usr/share/doc/exim4</code>; filen <code class="filename">README.Debian.gz</code> har ytterligare detaljer om hur man konfigurerar <code class="classname">exim4</code> och förklarar var man kan hitta ytterligare dokumentation. </p>
+<p>Observera att sändning av post direkt till Internet, när du inte har ett officiellt domännamn, kan resultera i att din post avvisas på grund av skräppostfunktioner på mottagande servrar. Användning av din Internetleverantörs e-postserver är att föredra. Om du fortfarande vill skicka ut post direkt, kanske du vill använda en annan e-postadress än den som genereras som standard. Om du använder <code class="classname">exim4</code> som din MTA, är det här möjligt genom att lägga till en post i <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3678" class="footnote"><p><a href="#id3678" class="para"><sup class="para">[16] </sup></a> Exempel är: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3689" class="footnote"><p><a href="#id3689" class="para"><sup class="para">[17] </sup></a> Vidarebefordring av e-post för root till det vanliga användarkontot konfigureras i <code class="filename">/etc/aliases</code>. Om inget vanligt användarkonto skapades, kommer posten så klart att levereras till själva root-kontot. </p></div>
+<div id="ftn.id3714" class="footnote"><p><a href="#id3714" class="para"><sup class="para">[18] </sup></a> Du kan så klart också ta bort <code class="classname">exim4</code> och ersätta det med en alternativ MTA/MDA. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Ytterligare läsning och information </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Bygg en ny kärna</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

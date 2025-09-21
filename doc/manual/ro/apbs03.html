@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Crearea unui fișier de preconfigurare</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apb.html" title="Anexa B. Automatizarea instalării folosind preconfigurarea">
+<link rel="prev" href="apbs02.html" title="B.2. Utilizarea preconfigurării">
+<link rel="next" href="apbs04.html" title="B.4. Conținutul fișierului de preconfigurare (pentru trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Crearea unui fișier de preconfigurare</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa B. Automatizarea instalării folosind preconfigurarea</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Crearea unui fișier de preconfigurare</h2></div></div></div>
+<p>Fișierul de preconfigurare este în formatul folosit de comanda <span class="command"><strong>debconf-set-selections</strong></span>. Formatul general al unei linii într-un fișier de preconfigurare este: </p>
+<div class="informalexample"><pre class="screen">&lt;proprietar&gt; &lt;numele întrebării&gt; &lt;tipul întrebării&gt; &lt;valoare&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Fișierul trebuie să înceapă cu <code class="literal">#_preseed_V1</code> </p>
+<p>Există câteva reguli de reținut atunci când scrieți un fișier de preconfigurare. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Puneți doar un singur spațiu sau tab între tip și valoare: orice spațiu alb suplimentar va fi interpretat ca aparținând valorii. </p></li>
+<li class="listitem"><p>O linie poate fi împărțită în mai multe linii adăugând o bară oblică inversă (<span class="quote">„<span class="quote"><code class="literal">\</code></span>”</span>) drept caracter de continuare a liniei. Un loc bun pentru a împărți o linie este după numele întrebării; un loc prost este între tip și valoare. Liniile divizate vor fi unite într-o singură linie cu toate spațiile albe de început/finale condensate într-un singur spațiu. </p></li>
+<li class="listitem"><p>Pentru variabilele (șabloane) debconf utilizate numai în programul de instalare, proprietarul ar trebui să fie fixat la <span class="quote">„<span class="quote">d-i</span>”</span>; pentru a preconfigura variabilele utilizate în sistemul instalat, trebuie folosit numele pachetului care conține șablonul debconf corespunzător. Numai variabilele care au proprietarul fixat la altceva decât <span class="quote">„<span class="quote">d-i</span>”</span> vor fi propagate în baza de date debconf pentru sistemul instalat. </p></li>
+<li class="listitem"><p>Majoritatea întrebărilor trebuie să fie prestabilite folosind valorile valabile în engleză și nu valorile traduse. Cu toate acestea, există câteva întrebări (de exemplu, în <code class="classname">partman</code>) în care trebuie folosite valorile traduse. </p></li>
+<li class="listitem"><p>Unele întrebări iau ca valoare un cod în loc de textul în limba engleză care este afișat în timpul instalării. </p></li>
+<li class="listitem"><p>Începe cu <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>Un comentariu constă dintr-o linie care <span class="emphasis"><em>începe</em></span> cu un caracter hash (<span class="quote">„<span class="quote"><code class="literal">#</code></span>”</span>) și se extinde până la lungimea acelei linii. </p></li>
+</ul></div>
+<p>Cel mai simplu mod de a crea un fișier de preconfigurare este să utilizați fișierul exemplu prezentat în <a class="xref" href="apbs04.html" title="B.4. Conținutul fișierului de preconfigurare (pentru trixie)">Secțiune B.4, „Conținutul fișierului de preconfigurare (pentru trixie)”</a> ca bază, și să lucrați de acolo. </p>
+<p>O metodă alternativă este de a face o instalare manuală și apoi, după repornire, să utilizați <span class="command"><strong>debconf-get-selections</strong></span> din pachetul <code class="classname">debconf-utils</code> pentru a descărca atât baza de date debconf, cât și baza de date cdebconf a programului de instalare într-un singur fișier: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>fișier</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>fișier</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>fișier</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Cu toate acestea, un fișier generat în acest mod va avea unele elemente care nu ar trebui să fie preconfigurate, iar fișierul exemplu este un loc de pornire mai bun pentru majoritatea utilizatorilor. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Această metodă se bazează pe faptul că, la sfârșitul instalării, baza de date cdebconf a programului de instalare este salvată în sistemul instalat în <code class="filename">/var/log/installer/cdebconf</code>. Cu toate acestea, deoarece baza de date poate conține informații sensibile, în mod implicit fișierele pot fi citite numai de către root. </p>
+<p>Directorul <code class="filename">/var/log/installer</code> și toate fișierele din acesta vor fi șterse din sistemul dumneavoastră dacă ștergeți pachetul <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Pentru a verifica valorile posibile pentru întrebări, puteți utiliza editorul <span class="command"><strong>nano</strong></span> pentru a examina fișierele din <code class="filename">/var/lib/cdebconf</code> în timp ce o instalare este în curs. Vizualizați <code class="filename">templates.dat</code> pentru șabloanele brute și <code class="filename">questions.dat</code> pentru valorile curente și pentru valorile atribuite variabilelor. </p>
+<p>Pentru a verifica dacă formatul fișierului dumneavoastră de preconfigurare este valid înainte de a efectua o instalare, puteți utiliza comanda <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Utilizarea preconfigurării </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Conținutul fișierului de preconfigurare (pentru trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

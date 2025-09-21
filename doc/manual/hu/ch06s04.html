@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Hiányzó firmware betöltése</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch06.html" title="6. fejezet - A Debian Telepítő használata">
+<link rel="prev" href="ch06s03.html" title="6.3. Az egyes összetevők használata">
+<link rel="next" href="ch06s05.html" title="6.5. Testreszabás">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Hiányzó firmware betöltése</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">6. fejezet - A Debian Telepítő használata</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Hiányzó firmware betöltése</h2></div></div></div>
+<p>A <a class="xref" href="ch02s02.html" title="2.2. Firmware-t igénylő eszközök">2.2. szakasz - Firmware-t igénylő eszközök</a>-ben leírtak szerint, néhány eszközhöz firmware betöltése szükséges. A legtöbb esetben az eszköz egyáltalán nem fog működni firmware nélkül, néhány esetben viszont az alapfunkcionalitás elérhető lesz, és a firmware csak ahhoz kell, hogy további funkciók is működjenek. </p>
+<p>A Debian GNU/Linux 12.0 verziótól kezdve – a <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022-es általános szavazás a nem szabad firmware-ekről</a> eredményeként – a hivatalos telepítőképek (például a netinst) már tartalmazhatnak nem szabad firmware csomagokat is. Ennek ellenére előfordulhat, hogy bizonyos firmware fájlok továbbra is hiányoznak vagy lehet, hogy olyan netboot fájlokat használsz, amelyek eleve nem tartalmaznak firmware csomagokat. </p>
+<p>Ha az eszköz meghajtó olyan firmware-t igényel, ami nem elérhető, a <code class="classname">debian-installer</code> egy párbeszédet jelenít meg, ami felajánlja a hiányzó firmware betöltését. Ha ezt választod, a <code class="classname">debian-installer</code> végignézi a rendelkezésre álló eszközöket firmware fájlért, vagy olyan csomagért, ami tartalmaz firmware-t. Ha talál, bemásolja a megfelelő helyre (<code class="filename">/lib/firmware</code>), és a meghajtó modult újra betölti. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Hogy mely eszközök lesznek átvizsgálva, és mely fájlrendszerek támogatottak, az az architektúrától, a telepítési módtól és a telepítés fázisától függ. Különösen a telepítés korai szakaszában a firmware betöltése legnagyobb valószínűséggel akkor sikerül, ha egy FAT-formázott USB stickről történik. <span class="phrase">i386 és amd64 esetén a firmware betölthető MMC vagy SD kártyáról is.</span> </p></td></tr>
+</table></div>
+<p>Jó tudni, hogy a firmware betöltés ki is hagyható, ha tudod, hogy az eszköz anélkül is működni fog, vagy ha nincs szükséged az eszközre a telepítés alatt. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3432"></a>6.4.1. Adathordozó előkészítése</h3></div></div></div>
+<p>A leggyakoribb módszer az ilyen firmware betöltésére valamilyen cserélhető adathordozóról, például USB stickről történik. Ahhoz, hogy előkészíts egy USB sticket (vagy más adathordozót, mint például egy merevlemez partíciót), a firmware fájlokat vagy csomagokat az adathordozó fájlrendszerének gyökérkönyvtárába vagy egy <code class="filename">/firmware</code> nevű könyvtárba kell helyezni. A javasolt fájlrendszer a FAT, mert ez biztosan támogatott a telepítés korai szakaszaiban. </p>
+<p>Az aktuális csomagokat tartalmazó tarballok és zip fájlok a leggyakoribb firmware-ekhez, valamint a hozzájuk tartozó metaadatok, amelyek biztosítják a telepítő megfelelő észlelését (<code class="filename">dep11</code> könyvtár), elérhetők innen: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Csak töltsd le a megfelelő kiadáshoz tartozó tarballt vagy zip fájlt, és csomagold ki az adathordozó fájlrendszerére. </p>
+<p>Lehetséges önálló firmware fájlokat is az adathordozóra másolni. Önálló firmware szerezhető egy már telepített rendszerről, vagy hardverkereskedőtől. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3443"></a>6.4.2. Firmware és a telepített rendszer</h3></div></div></div>
+<p>Bármilyen firmware, amit a telepítés során töltöttél be, automatikusan átmásolódik a telepített rendszerbe. A legtöbb esetben ez biztosítja, hogy az eszköz, amelyhez a firmware szükséges, a rendszer újraindítása után is helyesen működjön a telepített rendszerben. Azonban, ha a telepített rendszer más kernel verziót futtat, mint a telepítő, van egy kis esély arra, hogy a firmware nem töltődik be a verzióeltérés miatt. </p>
+<p>Ha a firmware-t egy csomagból töltötted be, a(z) <code class="classname">debian-installer</code> ezt a csomagot is telepíti a telepített rendszerhez, és automatikusan hozzáadja a csomagarchívum nem szabad firmware részlegét az APT <code class="filename">sources.list</code> fájljához. Ennek az az előnye, hogy a firmware-nek automatikusan frissül, ha elérhetővé válik egy új verzió. </p>
+<p>Ha a telepítés során kihagytad a firmware telepítését, az érintett eszköz valószínűleg nem fog működni a telepített rendszerre, amíg a firmware-t vagy firmware csomagot kézzel nem telepíted. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ha a firmware-t önálló firmware fájlból töltötted be, a telepített rendszerre másolt firmware <span class="emphasis"><em>nem</em></span> fog automatikusan frissülni, hacsak a megfelelő firmware csomag (ha van) nem kerül telepítésre a telepítés befejezte után. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. A telepített rendszer befejezése</h3></div></div></div>
+<p>Attól függően, hogyan történt a telepítés, előfordulhat, hogy a firmware szükségességét nem érzékelte a rendszer a telepítés során, a megfelelő firmware nem volt elérhető vagy valaki úgy döntött, hogy akkor nem telepíti a firmware-t. Néhány esetben a sikeres telepítés után is fekete képernyőt vagy zavaros megjelenítést tapasztalhatsz, amikor újraindítod a telepített rendszert. Ilyenkor a következő megoldásokat próbálhatod ki: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Add meg a <code class="code">nomodeset</code> opciót a kernel parancssorában. Ez segíthet elindítani egy <span class="quote">„<span class="quote">vészhelyzeti grafikus</span>”</span> módot.</p></li>
+<li class="listitem"><p>Használd a <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> billentyűkombinációt, hogy átválts VT2-re, ahol talán egy működő bejelentkezési promptot találsz.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Az egyes összetevők használata </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Testreszabás</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

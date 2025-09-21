@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Програми для розподілу в Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Додаток C. Перерозподіл диска для Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Назви пристроїв у Linux">
+<link rel="next" href="apd.html" title="Додаток D. Різні поради">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Програми для розподілу в Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток C. Перерозподіл диска для Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Програми для розподілу в Debian</h2></div></div></div>
+<p>Кожна системна архітектура та тип дисків можуть підтримуватися різними програмами для розподілу дисків. Розробники Debian адаптували багато з них. Придатні для Вашої системи нижче в списку. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Рекомендований інструмент для розподілу в Debian. Цей швейцарський армійський ніж може також змінювати розміри розділів, створювати файлові системи <span class="phrase"> (<span class="quote">«<span class="quote">форматувати</span>»</span> мовою Windows)</span> та призначати їх точкам монтування. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Оригінальний Linux-засіб для розподілу дисків, підходить для гуру. </p>
+<p>Будьте обережні, якщо на Вашій машині містяться розділи FreeBSD. Інсталяційні ядра мають підтримку цих розділів, але те, як <span class="command"><strong>fdisk</strong></span> їх представляє (або ні) може призвести до того, що назви пристроїв відрізнятимуться. Перегляньте <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Простий у використанні повноекранний інструмент розподілу дисків для звичайних людей. </p>
+<p>Зверніть увагу, що <span class="command"><strong>cfdisk</strong></span> взагалі не розпізнає розділи FreeBSD, і, знову ж таки, назви пристроїв можуть відрізнятися. </p>
+</dd>
+</dl></div>
+<p>Типово буде запущена одна з цих програм, якщо Ви виберете <span class="guimenuitem">Розділи дисків</span> (або подібне). Ймовірно, є можливість використання іншого інструмента розподілу з командного рядка на VT2, але це не рекомендовано. </p>
+<p>Не забудьте свій <span class="quote">«<span class="quote">Завантажувальний</span>»</span> розділ відповідно позначити (bootable). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4732"></a>C.5.1. Розподіл для <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Якщо Ви використовуєте новий жорсткий диск (або хочете стерти всю таблицю розділів на диску), необхідно створити нову таблицю розділів. <span class="quote">«<span class="quote">Керований розподіл</span>»</span> робить це автоматично, але під час ручного розподілу перемістіть виділення на запис верхнього рівня цього диска та натисніть <span class="keycap"><strong>Enter</strong></span>. Це створить на цьому диску нову таблицю розділів. У експертному режимі Вам буде також запропоновано вказати тип таблиці розділів. Типовим значенням для систем з UEFI є <span class="quote">«<span class="quote">gpt</span>»</span>, а для старішої версії BIOS це <span class="quote">«<span class="quote">msdos</span>»</span>. У стандартному основному встановленні ці параметри використовуються автоматично. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Якщо вибрано таблицю розділів типу <span class="quote">«<span class="quote">gpt</span>»</span> (стандарт для систем UEFI), на початку диска автоматично буде збережений вільний простір розміром 1 МБ. Це призначено та необхідно для вбудовування завантажувача GRUB2. </p></td></tr>
+</table></div>
+<p>Якщо у Вас є інша операційна система, наприклад Windows, і Ви бажаєте зберегти цю операційну систему під час встановлення Debian, можливо Вам буде потрібно змінити розмір її розділу для звільнення місця під Debian. Інсталятор підтримує зміну розміру для файлових систем FAT та NTFS; як дійдете до етапу розподілу програмою встановлення, виберіть параметр <span class="guimenuitem">Вручну</span> (Manual), а потім просто виберіть потрібний розділ та змініть його розмір. </p>
+<p>Хоча сучасні системи UEFI не мають перерахованих нижче обмежень, BIOS для старих ПК зазвичай додає додаткові обмеження для розподілу диска. Існує обмеження щодо кількості <span class="quote">«<span class="quote">основних</span>»</span> та <span class="quote">«<span class="quote">логічних</span>»</span> розділів, які може містити диск. </p>
+<p>У старих ПК з системою BIOS <span class="quote">«<span class="quote">основні</span>»</span> розділи є оригінальною схемою розподілу дисків. Однак їх може бути тільки чотири. Для подолання цього обмеження, були винайдені <span class="quote">«<span class="quote">extended</span>»</span> (розширені) та <span class="quote">«<span class="quote">logical</span>»</span> (логічні) розділи. Встановивши один з основних розділів як розширений, можна розділити весь простір цього розділу на логічні розділи. Ви можете створити до 60 логічних розділів в розширеному розділі; однак на диску можна мати лише один розширений розділ. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Назви пристроїв у Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> Додаток D. Різні поради</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

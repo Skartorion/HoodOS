@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. Введение</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Приложение B. Автоматическая установка с помощью списка ответов">
+<link rel="prev" href="apb.html" title="Приложение B. Автоматическая установка с помощью списка ответов">
+<link rel="next" href="apbs02.html" title="B.2. Использование автоматической установки">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. Введение</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Приложение B. Автоматическая установка с помощью списка ответов</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. Введение</h2></div></div></div>
+<p>Автоматическая установка позволяет автоматизировать ручной ввод ответов на вопросы программы установки. Это даёт возможность автоматизации наиболее типичных установок, а также предоставляет дополнительные возможности, недоступные во время обычной установки. </p>
+<p>Автоматическая установка не является обязательной. Если вы укажите пустой файл ответов, то программа установки станет работать также, как при установке вручную. Каждый автоматический ответ на вопрос меняет (если поняли его правильно!) ход установки. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. Методы использования файла ответов</h3></div></div></div>
+<p>Есть три метода использования для автоматизации: <em class="firstterm">initrd</em>, <em class="firstterm">файловый</em> и <em class="firstterm">сетевой</em>. Метод initrd работает при любом способе установки системы и поддерживает ответы на большинство вопросов, но он наиболее трудоёмок. Файловый и сетевой методы могут использоваться при различных способах установки. </p>
+<p>В следующей таблице показано соответствие методов автоматической установки со способами установки операционной системы. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>способ установки системы</th>
+<th>initrd</th>
+<th>файловый</th>
+<th>сетевой</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>да</td>
+<td>да</td>
+<td>да<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>netboot</td>
+<td>да</td>
+<td>нет</td>
+<td>да</td>
+</tr>
+<tr>
+<td>hd-media <span class="phrase">(включая usb-носители)</span>
+</td>
+<td>да</td>
+<td>да</td>
+<td>да<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>только если есть подключение к сети и указан соответствующий <code class="literal">preseed/url</code> </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>An important difference between the preseeding methods is the point at which the preconfiguration file is loaded and processed. For initrd preseeding this is right at the start of the installation, before the first question is even asked. Preseeding from the kernel command line happens just after. It is thus possible to override configuration set in the initrd by editing the kernel command line (either in the bootloader configuration or manually at boot time for bootloaders that allow it). For file preseeding this is after the installation image has been loaded. For network preseeding it is only after the network has been configured. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Важно]" src="images/important.png"></td>
+<th align="left">Важно</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Очевидно, что на любые вопросы, задаваемые перед загрузкой файла ответов, нельзя указать готовые ответы (сюда включаются вопросы, которые задаются только на среднем и низком уровне важности, например запуск определения аппаратуры). И не существует удобного способа избежать этих вопросов кроме указания ответов на них через параметры загрузки, как описано в <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Использование параметров загрузки для автоматизации">Раздел B.2.2, «Использование параметров загрузки для автоматизации»</a>. </p>
+<p>Чтобы просто избежать вопросов, которые обычно задаются перед тем как начнёт действовать автоматизация ответов, вы можете запустить программу установки в режиме <span class="quote">«<span class="quote">auto</span>»</span>. Это позволит отложить вопросы, которые обычно задаются перед автоматической установкой (например, про язык, страну и выбор клавиатурной раскладки), до появления работоспособной сети. Также этот режим используется когда установка выполняется с критическим уровнем важности, что позволяет избежать многих неважных вопросов. Подробней смотрите в <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Автоматический режим">Раздел B.2.3, «Автоматический режим»</a>. </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. Ограничения</h3></div></div></div>
+<p>Хотя для большинства вопросов <code class="classname">debian-installer</code> могут быть заданы предварительные ответы, есть несколько заметных исключений. Вы можете (пере)разметить только весь диск или использовать только доступное место на диске; невозможно задействовать существующие разделы. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Приложение B. Автоматическая установка с помощью списка ответов </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> B.2. Использование автоматической установки</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

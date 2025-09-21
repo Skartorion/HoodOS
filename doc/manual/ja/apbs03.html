@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. 事前設定ファイルの作成</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="prev" href="apbs02.html" title="B.2. preseed の利用">
+<link rel="next" href="apbs04.html" title="B.4. 事前設定ファイルの内容 (trixie 用)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. 事前設定ファイルの作成</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録B preseed を利用したインストールの自動化</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. 事前設定ファイルの作成</h2></div></div></div>
+<p>事前設定ファイルのフォーマットは、<span class="command"><strong>debconf-set-selections</strong></span> コマンドで使用されるものと同じです。事前設定ファイルの行の一般的なフォーマットは以下のようになります。 </p>
+<div class="informalexample"><pre class="screen">&lt;所有者&gt; &lt;質問名&gt; &lt;質問タイプ&gt; &lt;値&gt;
+</pre></div>
+<p>
+
+</p>
+<p>このファイルの内容は <code class="literal">#_preseed_V1</code> から始まります </p>
+<p>事前設定ファイルを記述する際には、ちょっとした規則があると気に留めておいてください。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>型と値の間には、空白かタブを 1 つだけおいてください。空白を追加すると、値の一部として解釈されます。空値を指定する場合は、型の後に空白かタブを、ひとつ記述したままにしてください。 </p></li>
+<li class="listitem"><p>行継続文字としてバックスラッシュ (<span class="quote">「<span class="quote"><code class="literal">\</code></span>」</span>) を付けて複数行に分割できます。質問名の後で分割するのが適当でしょう。型と値の間はよくありません。値の途中で行を分割するのは、パーティション分割のレシピを除いて、サポートしていません。 </p></li>
+<li class="listitem"><p>インストーラ自身でのみ使用する debconf 変数 (テンプレート) では、所有者を <span class="quote">「<span class="quote">d-i</span>」</span> と設定しておきます。インストールしたシステムで使用する preseed 変数では、対応する debconf テンプレートを含むパッケージ名を使用するべきです。所有者が <span class="quote">「<span class="quote">d-i</span>」</span> ではない変数だけを、インストールしたシステムの debconf データベースに伝播させます。 </p></li>
+<li class="listitem"><p>ほとんどの質問では、訳した値ではなく英語の値を指定する必要がありますが、 (<code class="classname">partman</code> など) 訳した値を使用できる質問もあります。 </p></li>
+<li class="listitem"><p>質問の中には、インストール中に表示される英語のテキストの代わりに、コードを取るものがあります。 </p></li>
+<li class="listitem"><p><code class="literal">#_preseed_V1</code> から始まります </p></li>
+<li class="listitem"><p>コメントは<span class="emphasis"><em>先頭が</em></span>ハッシュ記号 (<span class="quote">「<span class="quote"><code class="literal">#</code></span>」</span>) の行で、その行の最後まで続きます。 </p></li>
+</ul></div>
+<p>事前設定ファイルを作成する簡単な方法は、<a class="xref" href="apbs04.html" title="B.4. 事前設定ファイルの内容 (trixie 用)">「事前設定ファイルの内容 (trixie 用)」</a> にあるサンプルファイルを元にして作業することです。 </p>
+<p>その他には、手動インストールを行い、再起動してから <code class="classname">debconf-utils</code> パッケージの <span class="command"><strong>debconf-get-selections</strong></span> を使用します。以下のように debconf データベースとインストーラの cdebconf データベースを 1 ファイルに出力してください。 </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>しかし、この方法で生成したファイルでは preseed されない項目があります。ほとんどのユーザはサンプルファイルから始めるのがよいでしょう。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>この方法は、インストーラの cdebconf データベースが、インストールしたシステムの <code class="filename">/var/log/installer/cdebconf</code> に保存されているのを前提にしています。しかし、データベースに機密情報が含まれる可能性がありますので、デフォルトでは root にのみ読み込みが許可されています。 </p>
+<p><code class="filename">/var/log/installer</code> ディレクトリとその中のファイルは、<code class="classname">installation-report</code> パッケージを完全削除することで、削除されます。 </p>
+</td></tr>
+</table></div>
+<p>有効な質問の値をチェックするのに、インストール中に <code class="filename">/var/lib/cdebconf</code> のファイルを、<span class="command"><strong>nano</strong></span> を使用して確認できます。生のテンプレートは <code class="filename">templates.dat</code> を、現在の値や変数に割り当てられた値は <code class="filename">questions.dat</code> を確認してください。 </p>
+<p>インストールを実行する前に、事前設定ファイルのフォーマットが適切かどうかを調べるには、<span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span> が使えます。 </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. preseed の利用 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> B.4. 事前設定ファイルの内容 (trixie 用)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

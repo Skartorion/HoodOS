@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Cài đặt Debian GNU/Linux qua IP đường song song (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Phụ lục D. Thông Tin Linh Tinh">
+<link rel="prev" href="apds03.html" title="D.3. Cài đặt Debian GNU/Linux từ hệ thống UNIX/Linux">
+<link rel="next" href="apds05.html" title="D.5. Cài đặt Debian GNU/Linux dùng PPP qua Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Cài đặt Debian GNU/Linux qua IP đường song song (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục D. Thông Tin Linh Tinh</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Cài đặt Debian GNU/Linux qua IP đường song song (PLIP)</h2></div></div></div>
+<p>Phần này diễn tả phương pháp cài đặt Debian GNU/Linux vào máy tính không có thẻ Ethernet, chỉ có máy tính cổng ra từ xa được gắn nối bằng cáp Null-Modem (bộ điều giải không có, cũng được gọi như là cáp Null-Printer, máy in không có). Máy tính cổng ra nên được kết nối đến một mạng chứa máy nhân bản Debian (v.d. có kết nối đến Internet). </p>
+<p>Mẫu trong phụ lục này sẽ hiển thị phương pháp thiết lập sự kết nối PLIP, dùng cổng ra được kết nối đến Internet qua sự kết nối quay số (ppp0). Nó sẽ dùng địa chỉ IP <strong class="userinput"><code>192.168.0.1</code></strong> và <strong class="userinput"><code>192.168.0.2</code></strong> cho hai giao diện PLIP trên hệ thống đích và hệ thống nguồn riêng từng cái (những địa chỉ này nên là không dùng bên trong miền địa chỉ của mạng của bạn). </p>
+<p>Sự kết nối PLIP được thiết lập trong khi cài đặt sẽ cũng sẵn sàng sau khi khởi động lại vào hệ thống đã cài đặt (xem <a class="xref" href="ch07.html" title="Chương 7. Khởi động vào hệ thống Debian mới">Chương 7, <i>Khởi động vào hệ thống Debian mới</i></a>). </p>
+<p>Trước khi bắt đầu, bạn cần phải xem cấu hình BIOS (địa chỉ cơ bản IO và IRQ) để tìm cổng song song của hệ thống cả đích lẫn nguồn. Giá trị thường nhất là <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5714"></a>D.4.1. Nhu cầu</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Máy tính đích, được gọi như là <span class="emphasis"><em>target</em></span> (đích), vào đó Debian sẽ được cài đặt. </p></li>
+<li class="listitem"><p>Vật chứa phần mềm cài đặt hệ thống; xem <a class="xref" href="ch02s04.html" title="2.4. Vật chứa trình cài đặt">Phần 2.4, “Vật chứa trình cài đặt”</a>. </p></li>
+<li class="listitem"><p>Máy tính khác được kết nối đến Internet, được gọi như là <span class="emphasis"><em>source</em></span> (nguồn), mà sẽ hoạt động là cổng ra. </p></li>
+<li class="listitem"><p>Một cáp Null-Modem DB-25. Xem tài liệu cài đặt PLIP Thế Nào <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> để tìm thông tin thêm về cáp kiểu này, gồm hướng dẫn về cách tạo điều riêng. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5729"></a>D.4.2. Thiết lập nguồn</h3></div></div></div>
+<p>Theo đây có một tập lệnh trình bao là mẫu đơn giản về phương pháp cấu hình máy tính nguồn như là cổng ra Internet dùng ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Gỡ bỏ các mô-đun đang chạy ra hạt nhân để tránh xung đột,
+# cũng để tự cấu hình lại.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Cấu hình giao diện PLIP (chọn « plip0 », xem « dmesg | grep plip »)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Cấu hình cổng ra
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5739"></a>D.4.3. Cài đặt đích</h3></div></div></div>
+<p>Khởi động vật chứa cài đặt. Cần phải chạy tiến trình cài đặt bằng chế độ nhà chuyên môn: hãy nhập <strong class="userinput"><code>expert</code></strong> vào dấu nhắc khởi động. Nếu bạn cần đặt tham số cho mô-đun hạt nhân, cũng cần phải làm như thế tại dấu nhắc khởi động. Chẳng hạn, để khởi động trình cài đặt và đặt giá trị cho những tùy chọn <span class="quote">“<span class="quote">io</span>”</span> và <span class="quote">“<span class="quote">irq</span>”</span> cho mô-đun <code class="filename">partport_pc</code>, hãy nhập dãy dưới vào dấu nhắc khởi động:</p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p>Bên dưới có những trả lời cần nhập trong những giai đoạn khác nhau của tiến trình cài đặt. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Load installer components from installation media</span>
+
+</p>
+<p>Chọn mục <strong class="userinput"><code>plip-modules</code></strong> trong danh sách: nó sẽ làm cho các trình điều khiển PLIP sẵn sàng cho hệ thống cài đặt. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Phát hiện phần cứng mạng</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Nếu máy đích <span class="emphasis"><em>có phải</em></span> chứa thẻ mạng, trình cài đặt sẽ hiển thị danh sách các mô-đun trình điều khiển cho những thẻ được phát hiện. Nếu bạn muốn ép buộc <code class="classname">debian-installer</code> dùng PLIP thay thế, bạn cần phải bỏ chọn mọi mô-đun trình điều khiển đã liệt kê. Tất nhiên, nếu máy đích không có thẻ mạng, trình cài đặt sẽ không hiển thị danh sách này. </p></li>
+<li class="listitem"><p>Vì chưa phát hiện thẻ mạng, trình cài đặt sẽ nhắc bạn chọn trình điều khiển mạng trong danh sách. Hãy chọn mô-đun <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Cấu hình mạng</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Tự động cấu hình mạng bằng DHCP không? : Không </p></li>
+<li class="listitem"><p>Địa chỉ IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Địa chỉ điểm-đến-điểm: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Các địa chỉ của máy phục vụ tên: bạn có khả năng nhập cùng những địa chỉ được dùng trên máy tính nguồn (xem tập tin cấu hình <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Cài đặt Debian GNU/Linux từ hệ thống UNIX/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Cài đặt Debian GNU/Linux dùng PPP qua Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

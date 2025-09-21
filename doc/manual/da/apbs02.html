@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Brug af forhåndskonfiguration</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)">
+<link rel="prev" href="apbs01.html" title="B.1. Introduktion">
+<link rel="next" href="apbs03.html" title="B.3. Oprettelse af en forhåndskonfigurationsfil">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Brug af forhåndskonfiguration</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Brug af forhåndskonfiguration</h2></div></div></div>
+<p>Du skal først oprette en prækonfigurationsfil og placere den samme sted, hvor du ønsker at bruge den. Oprettelse af prækonfigurationsfilen er dækket senere i dette appendiks. Placering af den det korrekte sted er ret nemt for forhåndskonfiguration via netværket, eller hvis du ønsker at læse filen fra et usb-drev. Hvis du ønsker at inkludere filen i et ISO-installationsaftryk, så skal du ændre aftrykket. Hvordan du får prækonfigurationsfilen inkluderet i initrd er uden for dette dokuments område; se venligst udviklerens dokumentation for <code class="classname">debian-installer</code>. </p>
+<p>Et eksempel på en prækonfigurationsfil, du kan bruge som grundlag for din egen prækonfiguraitonsfil er tilgængelig fra <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Denne fil er baseret på konfigurationsfragmenter inkluderet i dette appendiks. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Indlæsning af filen til forhåndskonfiguration</h3></div></div></div>
+<p>Hvis du bruger initrd-forhåndskonfiugration, så skal du kun sikre at en fil navngivet <code class="filename">preseed.cfg</code> er inkluderet i rodmappen for initrd. Installationsprogramemt vil automatisk kontrollere om denne fil er til stede og indlæse den. </p>
+<p>For the other preseeding methods you need to tell the installer what file to use when you boot it. This is normally done by passing the kernel a boot parameter, either manually at boot time or by editing the bootloader configuration file <span class="phrase">(e.g. <code class="filename">syslinux.cfg</code>) and adding the parameter to the end of the append line(s) for the kernel.</span> </p>
+<p>If you do specify the preconfiguration file in the bootloader configuration, you might change the configuration so you don't need to hit enter to boot the installer. <span class="phrase">For syslinux this means setting the timeout to <code class="literal">1</code> in <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>For at sikre at installationsprogrammet får fat i den korrekte prækonfigurationsfil, så kan du valgfrit angive en kontrolsum for filen. I øjeblikket skal det være en md5sum og hvis angivet, så skal den matche prækonfigurationsfilen ellers vil installationsprogrammet afvise at bruge den. </p>
+<div class="informalexample"><pre class="screen">Opstartsparametre at angive:
+- hvis du bruger opstart for nettet:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- or
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- hvis du starter op fra et remastered installationsaftryk:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- hvis du installerer fra USB-medie (placer prækonfigurationsfilen i
+  den øverste mappe af USB-drevet):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Bemærk at <code class="filename">preseed/url</code> kan forkortes til bare <code class="filename">url</code>, <code class="filename">preseed/file</code> til bare <code class="filename">file</code> og <code class="filename">preseed/file/checksum</code> til bare <code class="filename">preseed-md5</code>, når de sendes som opstartsparametre. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Brug af opstartsparametre til at forhåndskonfigurere spørgsmål</h3></div></div></div>
+<p>Hvis en forhåndskonfigurationsfil ikke kan bruges til at forhåndskonfigurere nogle trin, så kan installationen stadig automatiseres, da du kan sende forhåndskonfigurerede værdier på kommandolinjen når installationsprogrammet startes op. </p>
+<p>Opstartsparametere kan også bruges hvis du ikke reelt ønsker at bruge forhåndskonfiguration, men bare ønsker at tilbyder et svar på et specifikt spørgsmål. Nogle eksempler hvor dette kan være nyttigt er dokumenteret et andet sted i denne manual. </p>
+<p>For at angive en værdi til brug inden i <code class="classname">debian-installer</code>, så send bare <strong class="userinput"><code><em class="replaceable"><code>sti/til/variabel</code></em>=<em class="replaceable"><code>værdi</code></em></code></strong> for enhver af variablerne vist i eksemplet i dette appendiks. hvis en værdi skal bruges til at konfigure pakker for målsystemet, så skal du foranstille <em class="firstterm">ejeren</em><a href="#ftn.id3978" class="footnote" name="id3978"><sup class="footnote">[19]</sup></a> af variablen som i <strong class="userinput"><code><em class="replaceable"><code>ejer</code></em>:<em class="replaceable"><code>sti/til/variabel</code></em>=<em class="replaceable"><code>værdi</code></em></code></strong>. Hvis du ikke angiver ejeren, vil værdien for variablen ikke blive kopieret til debconf-databasen i målsystemet og forbliver dermed ubrugt under konfiguration af den relevante pakke. </p>
+<p>Normalt vil forhåndskonfiguration af et spørgsmål på den måde betyde, at spørgsmålet ikke vil blive stillet. For at angive en specifik standardværdi for et spørgsmål, men stadig få spørgsmålet, så brug <span class="quote">“<span class="quote">?=</span>”</span> i stedet for <span class="quote">“<span class="quote">=</span>”</span> som operatør. Se også <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Brug af forhåndskonfiguration til at ændre standardværdier">Afsnit B.5.2, “Brug af forhåndskonfiguration til at ændre standardværdier”</a>. </p>
+<p>Bemærk at nogle variabler som ofte angives ved opstartsprompten har et kortere alias. Hvis et alias er tilgængelig, så bruges det i eksemplerne i dette appendiks i stedet for den fulde variabel. Variablen <code class="literal">preseed/url</code> har for eksempel et alias som <code class="literal">url</code>. Et andet eksempel er aliasset <code class="literal">tasks</code>, som oversættes til <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Et <span class="quote">“<span class="quote">---</span>”</span> i opstartstilvalget har speciel betydning. Kerneparametre som fremgår efter det sidste <span class="quote">“<span class="quote">---</span>”</span> kan kopieres til opstartsindlæserens konfiguration for det installerede system (hvis understøttet af installationsprogrammet for opstartsindlæseren). Installationsprogrammet vil automatisk filtrere tilvalg væk (såsom forhåndskonfigurerede tilvalg), som den genkender. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nuværnede Linuxkerner (2.6.9 og senere) accepterer et maksimum på 32 kommandolinjetilvalg og 32 miljøtilvalg, inklusive eventuelle tilvalg tilføjet som standard for installationsprogrammet. Hvis der anvendes højere antal, vil kernen gå i panik (nedbrud). (For tidligere kerner er disse antal lavere). </p></td></tr>
+</table></div>
+<p>For de fleste installationer kan nogle af standardtilvalgene i opstartsindlæserens konfigurationsfil, såsom <code class="literal">vga=normal</code>, fjernes uden problemer, hvilket giver mulighed for at tilføje flere tilvalg for forhåndskonfigurationen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Det er ikke altid muligt at specificere værdier med mellemrum for opstartsparametre, selv ikke hvis du afgrænser dem med citationstegn. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Auto-tilstand</h3></div></div></div>
+<p>Der er flere funktioner i Debian-installationsprogrammet, som kombineret medfører at ret så simple kommandolinjer på opstartsprompten medfører arbitrære og komplekse tilpassede automatiske installationer. </p>
+<p>Dette aktiveres ved at bruge opstartsvalget <code class="literal">Automatiseret installation</code>, også kaldt <code class="literal">auto</code> for nogle arkitekturer eller opstartsmetoder. I dette afsnit, er <code class="literal">auto</code> derfor ikke en parameter, det betyder valg af opstartindstillingen, og tilføjelse af den efterfølgende opstartsparameter på opstartsprompten. <span class="phrase">Se <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Opstartsskærmen">Afsnit 5.1.5, “Opstartsskærmen”</a> for information om hvordan en opstartsparameter tilføjes.</span> </p>
+<p>For at illustrere dette er her nogle eksempler, som kan bruges ved opstartsprompten: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Dette afhænger af, at der er en DHCP-server, som vil få maskinen til det punkt hvor <code class="literal">autoserver</code> kan slås op via DNS, måske efter tilføjelse af det lokale domæne, hvis det blev angivet af DHCP. Hvis dette blev gjort et sted hvor domænet er <code class="literal">eksempel.com</code>, og de har en fornuftig DHCP-opsætning, vil det medføre at filen med forhåndskonfigurationen hentes fra <code class="literal">http://autoserver.eksempel.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Den sidste del af den adresse (<code class="literal">d-i/trixie/./preseed.cfg</code>) tages fra <code class="literal">auto-install/defaultroot</code>. Som standard inkluderer dette at mappen <code class="literal">trixie</code> tillader fremtidige versioner at angive deres eget kodenavn og lade folk migrere videre på en kontrolleret måde. Delen <code class="literal">/./</code> bruges til at indikere en rod, relativ til hvilke efterfølgende stier kan forankres (for brug i preseed/include og pressed/run). Dette gør det muligt at filer angives enten som fulde adresser, stier startende med / som dermed forankres eller endda stier relative til stedet hvor den sidste fil til forhåndskonfiguration blev fundet. Dette kan bruges til at konstruere mere flytbare skripter, hvor et helt hierarki af skripter kan flyttes til en ny placering uden at blive ødelagt, for eksempel kopiere filerne ned på et USB-drev, når de startede på en internetserver. I dette eksempel, hvis filen til forhåndskonfiguration indstiller <code class="literal">preseed/run</code> til <code class="literal">/scripts/late_command.sh</code> så vil filen blive hentet fra <code class="literal">http://autoserver.eksempel.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Hvis der ingen lokal DHCP- eller DNS-infrastruktur er, eller hvis du ikke ønsker at bruge standardstien til <code class="filename">preseed.cfg</code>, så kan du stadig bruge en eksplicit adresse, og hvis du ikke bruger <code class="literal">/./</code>-elementet, så vil det blive forankret til begyndelsen af stien (dvs. den tredje <code class="literal">/</code> i adressen). Her er et eksempel, der kræver minimal understøttelse fra den lokale netværksinfrastruktur: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> Måden dette fungerer på er: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>hvis adressen mangler en protokol, så anvendes http, </p></li>
+<li class="listitem"><p>hvis værtsnavnafsnittet ikke indeholder punktummer, så bliver domænet afledt fra HDCP tilføjet til det, og </p></li>
+<li class="listitem"><p>hvis der ikke er nogle <code class="literal">/</code> efter værtsnavnet, så tilføjes standardstien. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Udover at angive adressen, så kan du også angive indstillinger, som ikke har en direkte påvirkning på opførelsen hos selve <code class="classname">debian-installer</code>, men som kan sendes videre igennem til skripter angivet via <code class="literal">preseed/run</code> i den indlæste fil til forhåndskonfiguration. I øjeblikket er det eneste eksempel på dette <code class="literal">auto-install/classes</code>, der har et alias <code class="literal">classes</code>. Dette kan bruges således: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Klasserne kan for eksempel betegne typen af system til installation, eller oversættelsen. </p>
+<p>Det er selvfølgelig muligt at udvide dette koncept, og hvis du gør det, er det fornuftigt at bruge det automatisk installerede navnerum til dette formål. Så man kan have noget ala dette <code class="literal">auto-install/style</code>, som så bruges i dine skripter. Hvis du har brug for dette, så nævn det på postlisten <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, så vi kan undgå navnerumskonflikter, og måske tilføje et alias for parameteren for dig. </p>
+<p>Opstartsvalget <code class="literal">auto</code> er ikke defineret på alle arkitekturer. Den samme effekt kan opnås ved at tilføje de to parametre <code class="literal">auto=true priority=critical</code> til kernens kommandolinje. Kerneparameteren <code class="literal">auto</code> er et alias for <code class="literal">auto-install/enable</code> og angivelse af den til <code class="literal">true</code> forsinker spørgsmålene om sprog og tastatur indtil efter, at der har været en mulighed for at forhåndskonfigurere dem, mens <code class="literal">priority</code> er et alias for <code class="literal">debconf/priority</code> og angivelse af den til <code class="literal">critical</code> stopper alle spørgsmål med en lavere prioritet i at blive stillet. </p>
+<p>When an Automatic install is selected without also specifying a preseed configuration, the user will be prompted to provide a preseed location. Alternatively, if a preseed configuration has been specified, then that prompt is normally suppressed in order to enable a fully non-interactive install. However, if the intent is to modify defaults by using a <code class="literal">preseed.cfg</code> in an initrd, then the result should really behave as though no preseeding has yet been specified, even though it has. In that case, the debconf variable <code class="literal">auto-install/cloak_initrd_preseed</code> can be set to <code class="literal">true</code> (e.g. in the initrd's <code class="literal">preseed.cfg</code>). to get the required behaviour. </p>
+<p>Yderligere indstililnger som kan have interesse under forsøget på at automatisere en installation mens DHCP anvendes: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> som får maskinen til at vælge den første levedygtige NIC og være tålmodig med at få et svar til dets DHCP-forespørgsel. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Vink]" src="images/tip.png"></td>
+<th align="left">Vink</th>
+</tr>
+<tr><td align="left" valign="top"><p>Et omfattende eksempel på hvordan denne ramme anvendes, inklusive eksemplskripter og klasser, kan findes på <a class="ulink" href="http://hands.com/d-i/" target="_top">hjemmesiden for udvikleren</a>. Eksemplerne der viser også mange andre gode effekter, som kan opnås ved kreativ brug af forhåndskonfiguration. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Aliassser nyttig under forhåndskonfiguration</h3></div></div></div>
+<p>De følgende aliasser kan være nyttige når forhåndskonfiguration (auto-tilstand) anvendes. Bemærk at dette er simple korte aliasser for spørgsmålnavne, og at du altid også skal specificere en værdi: For eksempel, <code class="literal">auto=true</code> eller <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>fil</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Eksempler på forhåndskonfiguration af opstart via prompten</h3></div></div></div>
+<p>Her er nogle eksempler på hvordan opstartsprompten kan se ud (du skal tilpasse dette til dine behov<span class="phrase">; se også <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Opstartsskærmen">Afsnit 5.1.5, “Opstartsskærmen”</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Fransk som sprog og Frankrig som land:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Engelsk som sprog og Tyskland som land, og brug en et tysk tastaturlayout:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Installation af MATE-skrivebordet:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Installaiton af opgaven web-server:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Brug af en DHCP-server til at specificere forhåndskonfigurationsfiler</h3></div></div></div>
+<p>Det er også muligt at bruge DHCP til at specificere en prækonfigurationsfil, der skal hentes via netværket. DHCP gør det muligt at specificere et filnavn. Normalt er dette en fil til netboot, men hvis det fremstår som en adresse (URL), så vil intallationsmediet, der understøtter netværksforhåndskonfiguration, hente filen fra adressen og bruge den som en prækonfigurationsfil. Her er et eksemepl på hvordan det opsættes i dhcpd.conf for version 3 af ISC DHCP-serveren (Debian-pakken isc-dhcp-server). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Bemærk at det ovenstående eksempel begrænser dette filnavn til DHCP-klineter, som identificerer sig selv som <span class="quote">“<span class="quote">d-i</span>”</span>, så det vil ikke påvirke normale DHCP-klienter, men kun installationsprogrammet. Du kan også placere teksten i en stanza for en bestemt vært for at undgå forhåndskonfiguration af alle installationer på dit netværk. </p>
+<p>En god måde at bruge DHCP-forhåndskonfiguration er kun at forhåndskonfigurere værdier specifikke for dit netværk, såsom Debian-spejlet. Med denne metode vil installationer på dit netværk automatisk få et godt spejl valgt, mens resten af installationen kan udføres interaktivt. Brug af DHCP-forhåndskonfiguration til helt automatiserede Debian-installationer bør kun udføres med omhyggelighed. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3978" class="footnote"><p><a href="#id3978" class="para"><sup class="para">[19] </sup></a> Ejeren af en debconf-variabel (eller skabelon) er normalt navnet på pakken, der indeholder den tilsvarende debconf-skabelon. For variabler brugt i selve installationsprogrammet er ejeren <span class="quote">“<span class="quote">d-i</span>”</span>. Skabeloner og variabler kan have mere end en ejer, hvilket hjælper med at bestemme om de kan fjernes fra debconf-databasen, hvis pakken fjernes. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Introduktion </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Oprettelse af en forhåndskonfigurationsfil</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

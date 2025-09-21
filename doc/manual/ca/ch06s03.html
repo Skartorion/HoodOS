@@ -1,0 +1,802 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Utilització dels elements individualment</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Capítol 6. Utilització de l'instal·lador de Debian">
+<link rel="prev" href="ch06s02.html" title="6.2. Introducció als elements">
+<link rel="next" href="ch06s04.html" title="6.4. Carregar microprogramari no inclòs a l'instal·lador">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Utilització dels elements individualment</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 6. Utilització de l'instal·lador de Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Utilització dels elements individualment</h2></div></div></div>
+<p>En aquesta secció descriurem detalladament cada element de l'instal·lador. Els elements s'han agrupat en fases que els usuaris haurien de reconèixer. Es presenten en l'ordre que apareixen durant la instal·lació. Recordeu que en cada instal·lació no s'utilitzaran tots els mòduls, els que realment s'utilitzen depenen del mètode d'instal·lació que s'utilitza i del maquinari. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Configuració de l'instal·lador de Debian i del maquinari</h3></div></div></div>
+<p>Suposem que l'instal·lador de Debian ha arrencat i que esteu davant la primera pantalla. En aquesta fase, les capacitats del <code class="classname">debian-installer</code> encara són bastant limitades. Desconeix la major part de característiques del maquinari, idioma preferit, o fins i tot quina tasca ha de realitzar. No us preocupeu, el <code class="classname">debian-installer</code> és bastant llest i pot enquestar automàticament el vostre maquinari, localitzar la resta dels seus elements i actualitzar-se a un sistema d'instal·lació capaç. Tot i això encara caldrà ajudar el <code class="classname">debian-installer</code> amb alguna informació que no pot determinar automàticament (com la selecció de l'idioma preferit, l'esquema del teclat o la rèplica de xarxa a utilitzar). </p>
+<p>Notareu que en aquesta fase el <code class="classname">debian-installer</code> realitza la <em class="firstterm">detecció de maquinari</em> diverses vegades. El primer cop l'objectiu és, específicament, el maquinari necessari per carregar els elements de l'instal·lador (p. ex. el CD-ROM o la targeta de xarxa). Com que no tots els controladors estan disponibles en aquesta primera execució, és necessari repetir la detecció de maquinari posteriorment. </p>
+<p>Durant la detecció de maquinari, el <code class="classname">debian-installer</code> comprova si algun dels dispositius del sistema necessita carregar algun microprogramari. Si es sol·licita un microprogramari que no està disponible, es mostrarà un diàleg que permet carregar el microprogramari des d'una unitat extraïble. Vegeu <a class="xref" href="ch06s04.html" title="6.4. Carregar microprogramari no inclòs a l'instal·lador">Secció 6.4, «Carregar microprogramari no inclòs a l'instal·lador»</a> per a més detalls. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Comprovació de la memòria disponible / mode <span class="emphasis"><em>poca memòria</em></span>
+</h4></div></div></div>
+<p>Una de les primeres coses que fa el <code class="classname">debian-installer</code> és comprovar la memòria disponible. Si la memòria disponible és limitada, aquest component realitzarà algunes modificacions en el procés d'instal·lació que us haurien de permetre instal·lar Debian GNU/Linux al sistema. </p>
+<p>La primera mesura que es pren per reduir el consum de memòria per part de l'instal·lador és inhabilitar les traduccions, de manera que el procés només es podrà seguir en anglès. Evidentment, encara podreu afegir la traducció al vostre idioma al sistema després que la instal·lació s'hagi completat. </p>
+<p>Si això no és suficient, l'instal·lador encara reduirà més el consum de memòria carregant només els components essencials per completar la instal·lació bàsica. Això redueix la funcionalitat del sistema d'instal·lació. Tindreu l'oportunitat de carregar components addicionals manualment, però haureu d'anar amb compte perquè cada component que seleccioneu utilitzarà més memòria i, per tant, també hi haurà més possibilitats que el procés falli. </p>
+<p>Si l'instal·lador funciona en mode de poca memòria, és recomanable generar una partició d'intercanvi relativament gran (1–2GB). La partició d'intercanvi s'utilitzarà com a memòria virtual, incrementant així la quantitat de memòria disponible per al sistema. L'instal·lador activarà la partició d'intercanvi tan aviat com sigui possible en el procés d'instal·lació. Tingueu en compte que un ús excessiu de la memòria d'intercanvi pot reduir el rendiment del sistema i augmentar l'activitat del disc. </p>
+<p>Malgrat totes aquestes mesures, encara és possible que el sistema es bloquegi, que es produeixin errors inesperats, o que el nucli mati processos si es queda sense memòria (fet que resultarà en missatges de <span class="quote">«<span class="quote">Out of memory</span>»</span> mostrats a VT4 i al registre del sistema). </p>
+<p>Per exemple, s'ha pogut comprovar que la generació d'un sistema de fitxers ext3 gran falla en mode de <span class="emphasis"><em>poca memòria</em></span> quan no hi ha prou espai d'intercanvi. Si més memòria d'intercanvi no ajuda a solucionar-ho, podeu provar a generar el sistema de fitxers com a ext2 (que és un component essencial de l'instal·lador). És possible passar particions ext2 a ext3 després de la instal·lació. </p>
+<p>Hi ha la possibilitat de forçar l'instal·lador a emprar un valor més gran per «lowmem» (“poca memòria”) al basat en la memòria disponible usant el paràmetre d'arrencada <span class="quote">«<span class="quote">lowmem</span>»</span> com es descriu a <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Paràmetres de l'instal·lador Debian">Secció 5.3.2, «Paràmetres de l'instal·lador Debian»</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Selecció de les opcions de localització</h4></div></div></div>
+<p>En la majoria dels casos, les primeres qüestions que us apareixeran faran referència a les opcions de localització a utilitzar en la instal·lació i pel sistema instal·lat. Les opcions de localització consisteixen en l'idioma, la ubicació i els usos locals («locales»). </p>
+<p>L'idioma seleccionat s'utilitzarà en la resta del procés d'instal·lació, a condició que existeixi una traducció dels diferents quadres de diàleg. En cas de no existir una traducció de l'idioma seleccionat, l'instal·lador utilitzarà la versió en l'anglès. </p>
+<p>La ubicació geogràfica seleccionada (sovint un país) s'utilitzarà posteriorment en el procés d'instal·lació per seleccionar el fus horari correcte i una rèplica de Debian apropiada pel país indicat. L'idioma i el país s'utilitzaran per ajudar a determinar els usos locals («locale») predeterminats del sistema i definir la distribució correcta del teclat. </p>
+<p>Primer se us demanarà que seleccioneu el vostre idioma preferit. Els noms dels idiomes estan llistats en anglès (banda esquerra) i en el propi idioma (banda dreta); els noms de la banda dreta es mostren utilitzant la tipografia pròpia de l'idioma. La llista està ordenada en funció dels noms en anglès. Al capdamunt de la llista hi ha una opció extra que permet seleccionar els usos locals («locale») <span class="quote">«<span class="quote">C</span>»</span> en comptes d'un idioma. Si seleccioneu els usos locals («locale») <span class="quote">«<span class="quote">C</span>»</span> la instal·lació es realitzarà en anglès; el sistema instal·lat no disposarà del suport per a la localització, ja que el paquet <code class="classname">locales</code> no estarà instal·lat. </p>
+<p>A continuació se vos demanarà que escolliu una ubicació geogràfica. Si havíeu escollit un idioma reconegut com a oficial a més d'un país<a href="#ftn.id2582" class="footnote" name="id2582"><sup class="footnote">[4]</sup></a>, se us mostrarà una llista amb tan sols eixos països. Per seleccionar un país que no és a la llista, trieu l'opció <span class="guimenuitem">altra</span> (l'última opció). Us trobareu aleshores amb una llista de continents; seleccionat el continent, arribareu a una llista amb els països rellevants del continent. </p>
+<p>Si l'idioma tan sols té un país associat amb ell, es mostrarà una llista de països del continent o regió on es troba el país, que estarà marcat per defecte. Empreu l'opció <span class="guibutton">Vés enrere</span> per a escollir un país d’un altre continent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>És important que escolliu el país on viviu o on vos trobeu perquè determina el fus horari que es configurarà al sistema instal·lat. </p></td></tr>
+</table></div>
+<p>Si heu escollit una combinació d'idioma i país per al qual no hi ha cap «locale» definit, i existeixen múltiples «locales» per a l'idioma, l'instal·lador vos permetrà escollir quin d'aquests «locales» preferiu com a «locale» predeterminat del sistema instal·lat<a href="#ftn.id2590" class="footnote" name="id2590"><sup class="footnote">[5]</sup></a>. A la resta dels casos s'escollirà un «locale» predeterminat basat en l'idioma i país escollits. </p>
+<p>Tot «locale» predeterminat escollit com es descriu al paràgraf de dalt emprarà <em class="firstterm">UTF-8</em> com a codificació de caràcters. </p>
+<p>Si esteu instal·lant amb una prioritat baixa, se vos donarà l'opció d'escollir «locales» addicionals, incloent els anomenats «locales» <span class="quote">«<span class="quote">tradicionals</span>»</span> <a href="#ftn.id2596" class="footnote" name="id2596"><sup class="footnote">[6]</sup></a>, a generar per al sistema instal·lat. En aquest cas, se vos preguntarà quin dels «locales» escollits voleu que siga el «locale» predeterminat per al sistema instal·lat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Selecció d'un teclat</h4></div></div></div>
+<p>Els teclats acostumen a estar adaptats als caràcters utilitzats en un idioma. Seleccioneu un format idoni al teclat que esteu utilitzant o un de similar en cas de que no aparegui. Una vegada instal·lat el sistema podreu seleccionar-ne un entre un rang de possibilitats més gran (un cop finalitzada la instal·lació executeu l'ordre <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> com a superusuari). </p>
+<p>Moveu el ressaltat al teclat que voleu utilitzar i premeu <span class="keycap"><strong>Intro</strong></span>. Utilitzeu el cursor del teclat per moure el — ressaltat; tots els formats de teclat de tots els idiomes situen el cursor en la mateixa ubicació i, per tant, són independents a la configuració del teclat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Cerca de la imatge ISO de l'instal·lador de Debian</h4></div></div></div>
+<p>Quan instal·leu segons el mètode <span class="emphasis"><em>hd-media</em></span>, hi haurà un moment en què necessitareu trobar i muntar la imatge ISO de l'instal·lador de Debian per tal d'obtenir la resta de fitxers de la instal·lació. Això és exactament el que fa el component <span class="command"><strong>iso-scan</strong></span>. </p>
+<p>Al principi, l'<span class="command"><strong>iso-scan</strong></span> munta automàticament tots els dispositius de bloc (p. ex. particions i volums lògics) que tinguin algun sistema de fitxers conegut i cerca de forma seqüencial noms de fitxer acabats en <code class="filename">.iso</code> (o, per aquest propòsit, <code class="filename">.ISO</code>). Pareu atenció en què el primer intent només analitza fitxers en el directori arrel i en el primer nivell de subdirectoris (p. ex. troba <code class="filename">/<em class="replaceable"><code>qualsevol_cosa</code></em>.iso</code> i <code class="filename">/data/<em class="replaceable"><code>qualsevol_cosa</code></em>.iso</code>, però no <code class="filename">/data/tmp/<em class="replaceable"><code>qualsevol_cosa</code></em>.iso</code>). Després que hagi trobat una imatge iso, l'<span class="command"><strong>iso-scan</strong></span> comprova el seu contingut per determinar si la imatge és una imatge iso de Debian vàlida o no. En el primer cas hem acabat, en el segon l'<span class="command"><strong>iso-scan</strong></span> cerca una altra imatge. </p>
+<p>En el cas que l'intent previ per trobar una imatge iso de l'instal·lador falli, l'<span class="command"><strong>iso-scan</strong></span> us preguntarà si voleu realitzar una cerca més exhaustiva. En aquest cas, no es mira només els directoris superiors, sinó que es recorre el sistema de fitxers complet. </p>
+<p>Si l'<span class="command"><strong>iso-scan</strong></span> no localitza la imatge iso de l'instal·lador, torneu a arrencar al vostre sistema operatiu original i comproveu si la imatge té un nom correcte (acabat en <code class="filename">.iso</code>), si es troba en un sistema de fitxers que el <code class="classname">debian-installer</code> pugui reconèixer, i si no és corrupte (verifiqueu la suma de comprovació). Els usuaris de Unix experimentats poden fer-ho des de la segona consola, sense tornar a arrencar. </p>
+<p>Adoneu-vos-en que la partició (o disc) que conté la imatge ISO no pot ser reutilitzada durant el procés d'instal·lació ja que estarà sent usada per l'instal·lador. Per evitar-ho, i sempre que tingueu prou memòria al sistema, l'instal·lador pot copiar la imatge ISO a la RAM abans de muntar-la. Això és controlat per la pregunta debconf de baixa prioritat <code class="literal">iso-scan/copy_iso_to_ram</code> (només es demana si el requeriment de memòria es compleix). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Configuració de la xarxa</h4></div></div></div>
+<p>Quan entreu en aquest pas, si el sistema detecta que teniu més d'un dispositiu de xarxa, se us demanarà que elegiu quin dispositiu serà la vostra interfície de xarxa <span class="emphasis"><em>primària</em></span>, és a dir, la que voleu utilitzar per a la instal·lació. Les altres interfícies no es configuraran en aquest moment. Podeu configurar les altres interfícies un cop hagi finalitzat la instal·lació; vegeu la pàgina de manual <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Configuració automàtica de la xarxa</h5></div></div></div>
+<p>De manera predeterminada, el <code class="classname">debian-installer</code> intenta configurar la xarxa del vostre ordinador automàticament via DHCP. Si la prova té èxit, ja estareu. Si la prova falla es pot deure a molts factors, des d'un cable de xarxa desconnectat, fins a una mala configuració del DHCP. O potser no disposeu d'un servidor DHCP a la vostra xarxa local. Per a més explicacions comproveu els missatges d'error a la quarta consola. En qualsevol cas, se us preguntarà si ho voleu tornar a intentar, o si voleu realitzar una configuració manual. Els servidors DHCP de vegades són realment lents en les seves respostes; per tant, si esteu segurs que tot és correcte, intenteu-ho de nou. Si l'autoconfiguració falla repetidament, podeu provar a configurar la xarxa manualment. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Configuració manual de la xarxa</h5></div></div></div>
+<p>La configuració manual de la xarxa us plantejarà algunes qüestions sobre la vostra xarxa, notablement <code class="computeroutput">l'adreça IP</code>, <code class="computeroutput">la màscara de la subxarxa</code>, <code class="computeroutput">la passarel·la</code>, <code class="computeroutput">l'adreça del servidor de noms</code>, i un <code class="computeroutput">nom per a l'ordinador</code>. A més, si teniu una interfície de xarxa sense fils, se us demanarà que indiqueu el vostre <code class="computeroutput">Wireless ESSID</code> (<span class="quote">«<span class="quote">el nom de la xarxa sense fils</span>»</span>) i una <code class="computeroutput">clau WEP</code> o <code class="computeroutput">clau WPA/WPA2</code>. Ompliu-ho amb les respostes de la <a class="xref" href="ch03s03.html" title="3.3. Informació necessària">Secció 3.3, «Informació necessària»</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Alguns detalls tècnics que podeu, o no, trobar útils: el programa suposa que l'adreça IP de la xarxa és l'AND bit a bit de la IP del vostre sistema i la màscara. L'adreça de difusió es calcularà com l'OR bit a bit de l'adreça IP del vostre sistema amb la negació bit a bit de la màscara. També endevinarà la passarel·la. Si no podeu trobar alguna d'aquestes respostes, utilitzeu les propostes predeterminades — si és necessari, podeu canviar-les un cop el sistema s'hagi instal·lat editant el fitxer <code class="filename">/etc/network/interfaces</code>. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 i IPv6</h5></div></div></div>
+<p>Des de Debian GNU/Linux 7.0 (<span class="quote">«<span class="quote">Wheezy</span>»</span>) i posteriors, <code class="classname">debian-installer</code> admet IPv6 a més de la <span class="quote">«<span class="quote">clàssica</span>»</span> IPv4. Totes les combinacions de IPv4 i IPv6 (només IPv4, només IPv6 i ambdues) són compatibles. </p>
+<p>L'autoconfiguració per IPv4 es fa amb DHCP («Dynamic Host Configuration Protocol» protocol de configuració dinàmica de servidor). L'autoconfiguració de IPv6 admet la configuració dinàmica sense estat fent servir NDP («Neighbor Discovery Protocol», protocol de descobriment de veïns, incloent l'assignació recursiva del servidor DNS (RDNSS)), autoconfiguració amb estat mitjançant DHCPv6 i l'autoconfiguració mixta amb i sense estat (configuració d'adreces mitjançant NDP i paràmetres addicionals mitjançant DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Configuració d'usuaris i contrasenyes</h3></div></div></div>
+<p>Després d'instal·lar el sistema base, l'instal·lador us permetrà configurar el compte de superusuari <span class="quote">«<span class="quote">root</span>»</span> i/o un compte per al primer usuari. Altres usuaris es poden generar després que la instal·lació s'hagi acabat. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Establir la contrasenya del Root</h4></div></div></div>
+<p>El compte <span class="emphasis"><em>root</em></span>, també anomenat <span class="emphasis"><em>super usuari</em></span>, és un accés que es bota totes les proteccions de seguretat al vostre sistema. El compte root tan sòls s'hauria d'utilitzar per administrar el sistema i el mínim temps possible. </p>
+<p>Qualsevol contrasenya que creeu ha de contenir al menys 6 caràcters, i hauria de contenir majúscules i minúscules, així com signes de puntuació. Eviteu paraules de diccionari o utilitzar informació personal que es pugui endevinar. </p>
+<p>Si algú us demana alguna vegada la vostra contrasenya de root, sigueu extremadament cautelosos. No hauríeu de donar mai la vostra contrasenya de root, a no ser que estigueu administrant una màquina amb més d'un administrador. </p>
+<p>En cas que no especifiqueu una clau per a l'usuari <span class="quote">«<span class="quote">root</span>»</span> en aquest punt, el compte quedarà desactivat però el paquet <span class="command"><strong>sudo</strong></span> serà instal·lat posteriorment per poder dur a terme tasques administratives en el nou sistema. Per defecte, el primer usuari creat al sistema tindrà permès usar l'ordre <span class="command"><strong>sudo</strong></span> per esdevenir root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Crear un usuari normal</h4></div></div></div>
+<p>El sistema us demanarà si voleu generar un compte d'usuari normal en aquest punt. Aquest compte hauria de ser el vostra accés personal principal. <span class="emphasis"><em>No</em></span> hauríeu d'utilitzar el compte de root per l'ús diari o pel vostre accés personal. </p>
+<p>Per que no? Bé, una raó per evitar utilitzar els privilegis de root és que és molt fàcil fer desperfectes irreparables com a root. Un altra raó és que us podrien enganyar per executar un programa tipus <span class="emphasis"><em>Cavall de Troia</em></span> — que és un programa que utilitza els poders de super usuari per comprometre la seguretat del vostre sistema sense que us en adoneu. Qualsevol bon llibre d'administració de sistemes Unix tractarà aquest assumpte amb més detall — considereu llegir algun d'aquests si açò és nou per a vosaltres. </p>
+<p>Primer vos preguntarà pel nom complet de l'usuari. Aleshores us preguntarà pel nom del compte de l'usuari; normalment el vostre nom o quelcom paregut serà prou i serà el que de fet estarà per defecte. A l'últim pas, ús demanarà una contrasenya per a aquest compte. </p>
+<p>Si en qualsevol punt després de la instal·lació voleu generar un altre compte, utilitzeu l'ordre <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Configuració del rellotge i la zona horària</h3></div></div></div>
+<p>En primer lloc l'instal·lador intentarà connectar-se a un servidor d'hora d'Internet (utilitzant el protocol <em class="firstterm">NTP</em>) per tal de fitxar l'hora del sistema correctament. Si no ho aconsegueix, assumirà que l'hora i data obtingudes del rellotge del sistema en el moment d'arrencar l'instal·lador són correctes. No és possible establir l'hora del sistema manualment durant el procés d'instal·lació. </p>
+<p>Depenent de la localització seleccionada anteriorment durant el procés d'instal·lació, pot ser que se us mostri una llista de zones horàries rellevants a aquesta localització. Si la vostra localització només en té una i esteu realitzant una instal·lació predeterminada, no se us preguntarà res i el sistema assumirà aquesta zona horària. </p>
+<p>Al mode expert o quan instal·leu amb prioritat mitjana, tindreu l'opció addicional d'escollir el <span class="quote">«<span class="quote">Temps Universal Coordinat</span>»</span> (UTC) com a zona horària. </p>
+<p>Si per algun motiu voleu establir una zona horària que <span class="emphasis"><em>no</em></span> coincideixi amb la localització seleccionada, hi ha dues opcions. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>L'opció més fàcil és seleccionar simplement un fus horari diferent una vegada s'ha completat la instal·lació i s'ha arrencat el nou sistema. L'ordre per fer-ho és: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternativament, la zona horària es pot establir al principi de la instal·lació passant el paràmetre <strong class="userinput"><code>time/zone=<em class="replaceable"><code>valor</code></em></code></strong> quan arrenqueu el sistema d'instal·lació. El valor hauria de ser un fus horari vàlid, per exemple <strong class="userinput"><code>Europe/London</code></strong> o <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Per instal·lacions automatitzades, podeu establir el fus horari a qualsevol valor mitjançant una configuració prèvia. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Realització de particions i selecció de punts de muntatge</h3></div></div></div>
+<p>En aquest instant, després de l'última execució de la detecció de maquinari, el <code class="classname">debian-installer</code> hauria d'estar a plena potència, adaptat a les necessitats de l'usuari i preparat per fer la feina real. Tal i com indica el títol d'aquesta secció, la tasca principal dels pròxims elements és fer les particions als vostres discs, generar els sistemes de fitxers, assignar els punts de muntatges i, opcionalment, configurar opcions estretament relacionades com dispositius RAID, LVM o xifrats. </p>
+<p>Si no esteu convençuts de com fer particions o simplement voleu obtenir més informació, vegeu <a class="xref" href="apc.html" title="Apèndix C. Fer particions per a Debian">Apèndix C, <i>Fer particions per a Debian</i></a>. </p>
+<p>Primer podreu fer particions automàticament de la unitat sencera o l'espai lliure corresponent. Aquesta opció s'anomena fer particions de forma <span class="quote">«<span class="quote">guiada</span>»</span>. Si no voleu fer particions de forma automàtica escolliu l'opció <span class="guimenuitem">Manual</span> del menú. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Opcions per a la generació de particions</h4></div></div></div>
+<p>L'eina de partició emprada per <code class="classname">debian-installer</code> és bastant versàtil. Permet generar molts esquemes de partició diferents fent servir diverses taules de particions, sistemes de fitxers i dispositius de blocs avançats. </p>
+<p>Les opcions disponibles, de fet, depenen principalment de l'arquitectura, però també d'altres factors. Per exemple, en sistemes amb una memòria interna limitada algunes opcions no estan disponibles. Els valors per defecte també varien. El tipus de taula de particions emprada per defecte pot diferir per exemple entre discs de gran capacitat i altres de més menuts. Algunes opcions només poden ser canviades en instal·lar amb un nivell mitjà o baix de prioritat del sistema de configuració de Debian («debconf») amb prioritats majors s'empraran valors per defecte adequats. </p>
+<p>L’instal·lador ofereix diverses formes de generació avançada de particions i ús de dispositius d'emmagatzematge, que sovint poder ser combinats. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Gestor de volums lògics (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>RAID per programari</em></span>
+  </p>
+<p>S'admeten els nivells de RAID 0, 1, 4, 5, 6 i 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Xifrat</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimental) </p>
+<p>Vegeu <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">el nostre wiki</a> per a més informació. De moment, la funció «multipath» només està disponible si s'habilita en arrencar l'instal·lador. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>S'admeten els sistemes de fitxers següents. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>El sistema de fitxers escollit per defecte en la majora dels casos és ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (no disponible en totes les arquitectures) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (no disponible en totes les arquitectures) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (opcional; no disponible en totes les arquitectures) </p>
+<p>El sistema de fitxers Reiser ja no està disponible per defecte. Quan l'instal·lador funciona amb una prioritat mitjana o baixa del sistema de configuració Debian («debconf»), podeu habilitar-lo escollint el component <code class="classname">partman-reiserfs</code>. Només s'admet la versió 3 del protocol. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Se'n reconeixen les particions existents i és possible assignar-lis punts de muntatge. No es poden generar noves particions qnx4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (només lectura) </p>
+<p>Es pot canviar la mida de les particions NTFS existents i és possible assignar-lis punts de muntatge. No es poden generar noves particions NTFS. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>El particionador accepta tant unitats amb potències de deu ((1 MB = 1000 kB = 1000000 B) com amb potències de dos (1 MiB = 1024 kiB = 1048576 B). Els prefixes d'unitat estan suportats fins a EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Fer particions de forma guiada</h4></div></div></div>
+<p>Si escolliu fer les particions de forma guiada podreu triar entre tres opcions: generar les particions al disc directament (mètode clàssic), generar-les mitjançant l'Administrador de Volums Lògics (LVM), o generar-les utilitzant LVM xifrat.<a href="#ftn.id2776" class="footnote" name="id2776"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>L'opció d'utilitzar LVM (xifrat) pot no estar disponible a totes les arquitectures. </p></td></tr>
+</table></div>
+<p>Quan s'utilitza LVM o LVM xifrat, l'instal·lador generarà la major part de les particions dins una gran partició; l'avantatge d'aquest mètode és que més endavant podreu canviar la mida de les particions que estan dins d'aquesta gran partició de forma relativament senzilla. En el cas d'LVM xifrat, no es podrà llegir la partició gran sense conèixer una frase clau especial, proporcionant així certa seguretat extra per a les vostres dades personals. </p>
+<p>Quan s'utilitza LVM xifrat, l'instal·lador també esborra automàticament el disc escrivint-hi dades aleatòries. Això millora encara més la seguretat (ja que d'aquesta manera és impossible dir quines parts del disc s'estan utilitzant, i a més també s'esborren restes d'instal·lacions anteriors), però pot trigar temps segons la mida del disc dur. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Si trieu fer particions de forma guiada amb LVM o LVM xifrat, s'hauran d'escriure alguns canvis a la taula de particions del disc seleccionat mentre es configura LVM. Aquests canvis esborraran efectivament tota informació que hi hagi al disc dur seleccionat, i no serà possible desfer-ho més endavant. Tanmateix, l'instal·lador us demanarà una confirmació dels canvis abans de fer-los efectius definitivament. </p></td></tr>
+</table></div>
+<p>Si trieu fer particions de forma guiada <span class="phrase">(ja sigui en format clàssic o amb LVM, xifrat o no),</span> per a un disc sencer, primer haureu de seleccionar el disc que voleu utilitzar. Comproveu que apareixen tots els discs i, si en teniu més d'un, assegureu-vos de seleccionar el correcte. L'ordre en què es llisten pot variar respecte el que esteu acostumats a veure. La mida dels discs pot ajudar a identificar-los. </p>
+<p>Les dades que tingueu al disc seleccionat es perdran, però l'instal·lador sempre demanarà confirmació dels canvis proposats abans d'escriure res al disc. <span class="phrase">Si heu seleccionat el mètode de fer particions clàssic, podreu desfer els canvis fins al final; si utilitzeu LVM (xifrat), això no serà possible.</span> </p>
+<p>A continuació, podreu triar entre els esquemes llistats a la taula que hi ha a continuació. Tots els esquemes tenen els seus pros i contres, alguns dels quals podeu veure en detall a <a class="xref" href="apc.html" title="Apèndix C. Fer particions per a Debian">Apèndix C, <i>Fer particions per a Debian</i></a>. Si no n'esteu segurs, escolliu la primera opció. Heu de tenir present que fer particions de forma guiada precisa d'un mínim d'espai lliure amb el qual treballar. Si no li assigneu un mínim de 3 GB d'espai (en funció de l'esquema escollit), es produirà un error del particionat guiat. A més a més, en discos petits és probable que no es vegin tots els esquemes mencionats més avall. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Esquema de particions</th>
+<th>Espai mínim</th>
+<th>Particions generades</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Tots els fitxers en una partició</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>Partició /home separada</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>Particions separades /home, /usr, /var i /tmp</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Particions /srv i /var separades; «swap» limitat a 1GB (per a servidor)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Esquema per a discos petits</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Si escolliu fer particions de forma guiada utilitzant LVM (xifrat), l'instal·lador també crearà una partició <code class="filename">/boot</code> separada. Les altres particions, inclosa la d'intercanvi (swap), es crearan dins la partició LVM. </p>
+<p>Si escolliu fer particions de forma guiada en un sistema IA-64 hi haurà una partició addicional, formatada amb un sistema de fitxers arrencable FAT16, pel carregador d'arrencada EFI. També hi ha un opció addicional del menú de formatat per configurar manualment una partició com a partició d'arrencada EFI. </p>
+<p>Després de la selecció d'un esquema, la pantalla següent mostrarà la nova taula de particions, on s'inclourà informació respecte a si es formataran, i com, les particions i on es muntaran. </p>
+<p>La llista de particions hauria de ser similar  a:</p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      FREE SPACE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p> L'exemple mostra dos discs durs dividits en múltiples particions; el primer disc disposa d'espai lliure. Cada línia de partició disposa del número de partició, el tipus, mida, senyaladors opcionals, sistema de fitxers i punt de muntatge (si n'hi ha). Avís: aquesta configuració particular no es pot generar fent les particions de forma guiada però mostra les possibles variacions que es poden aconseguir fent les particions manualment. </p>
+<p>En aquest punt finalitza la partició guiada. Si la taula de particions generada satisfà les vostres necessitats podeu escollir l'opció de menú <span class="guimenuitem">Finalitza la partició i escriu els canvis al disc</span> per desar la nova taula de particions (tal i com es descriu al final d'aquesta secció). Si no satisfà les vostres necessitats podeu escollir l'opció <span class="guimenuitem">Desfés els canvis a les particions</span> i executar el partit guiat altra vegada, o modificar els canvis proposats tal i com es descriu a continuació per fer les particions manualment. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Fer particions de forma manual</h4></div></div></div>
+<p>En cas d'escollir de fer les particions de forma manual us apareixerà una pantalla similar a la mostrada anteriorment, exceptuant que es mostrarà la taula de particions actual i sense els punts de muntatges. El mètode per configurar manualment la taula de particions i la utilització de les particions per part de Debian es descriurà al llarg de la resta de la secció. </p>
+<p>Si escolliu un disc nou sense particions o espai lliure, se us oferirà la possibilitat de generar una nova taula de particions (és necessària per generar noves particions). Posteriorment hauria d'aparèixer una nova línia sota el disc seleccionat amb el títol <span class="quote">«<span class="quote">ESPAI LLIURE</span>»</span>. </p>
+<p>Si seleccioneu l'espai lliure tindreu l'oportunitat de generar una nova partició. Haureu de contestar a una sèrie de qüestions ràpides referents a la mida, tipus (primària o lògica) i la ubicació (al principi o al final de l'espai lliure). Posteriorment se us presentarà la informació referent a la nova partició. El paràmetre principal és <span class="guimenuitem">Utilitza-ho com a:</span>, que determina si la partició tindrà un sistema de fitxers o si s'utilitzarà per a memòria d'intercanvi, <span class="phrase">RAID per software, LVM, un sistema de fitxers xifrat,</span> o fins i tot deixar-la sense utilitzar. Altres opcions inclouen el punt de muntatge, opcions del muntatge i senyaladors d'arrencada; aquells que es mostraran depenen de com s'usarà la partició. Podeu modificar lliurement els valors predeterminats en funció de les vostres necessitats. P. ex. seleccionant l'opció <span class="guimenuitem">Utilitza-ho com a:</span>, podeu seleccionar un sistema de fitxers diferent per aquesta partició, incloent opcions per usar la partició com a memòria d'intercanvi («swap»), <span class="phrase">RAID per software, LVM,</span> o simplement no usar-la. Un cop la nova partició satisfaci les vostres necessitats seleccioneu l'opció <span class="guimenuitem">S'ha finalitzat la configuració de la partició</span> i retorneu a la pantalla principal del <span class="command"><strong>partman</strong></span>. </p>
+<p>Si voleu modificar alguna característica de la partició seleccioneu-la i accedireu al menú de configuració de la partició. Com que és la mateixa pantalla que la utilitzada en la generació de noves particions, podreu modificar-ne les mateixes característiques. Una característica que probablement no sigui evident en un primer moment és la possibilitat de modificar la mida de la partició seleccionant l'element que mostra la mida de la partició. Els sistemes de fitxers que s'han comprovat que funcionen són, com a mínim, fat16, fat32, ext2, ext3 i swap. Aquest menú també us permet suprimir una partició. </p>
+<p>Assegureu-vos de generar un mínim de dues particions: una pel sistema de fitxers <span class="emphasis"><em>root</em></span> (que s'ha de muntar com a <code class="filename">/</code>) i una pel <span class="emphasis"><em>swap</em></span>. Si us oblideu de muntar el sistema de fitxers root, el <span class="command"><strong>partman</strong></span> no us deixarà continuar fins que no solucioneu el problema. </p>
+<p>Si us heu oblidat de seleccionar i formatar una partició d'arrencada EFI, el <span class="command"><strong>partman</strong></span> ho detectarà i no us deixarà continuar fins que no n'assigneu una. </p>
+<p>Les possibilitats del <span class="command"><strong>partman</strong></span> es poden ampliar a través dels mòduls de l'instal·lador, però dependran de l'arquitectura del sistema. Si no teniu accés a totes les possibilitats que esperàveu comproveu que heu carregat tots els mòduls necessaris (p. ex. <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code>, o <code class="filename">partman-lvm</code>). </p>
+<p>Un cop la partició satisfaci les vostres necessitats, seleccioneu l'opció de partició <span class="guimenuitem">Finalitza la partició i escriu els canvis al disc</span>. Se us presentarà un resum dels canvis realitzats als disc i se us demanarà que confirmeu la generació dels sistemes de fitxers tal i com els heu sol·licitat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Configuració de dispositius de discs múltiples (RAID de programari)</h4></div></div></div>
+<p>Si teniu més d'un disc dur<a href="#ftn.id2870" class="footnote" name="id2870"><sup class="footnote">[8]</sup></a> en el vostre ordinador, podeu utilitzar el <span class="command"><strong>partman-md</strong></span> per configurar els vostres discs per obtenir un millor rendiment i/o més seguretat en les vostres dades. El resultat s'anomena <em class="firstterm">dispositiu de discs múltiples</em> (MD) (o la seva variant més coneguda, <em class="firstterm">RAID de programari</em>). </p>
+<p>Els MD són bàsicament un grapat de particions localitzades a diversos discs i que es combinen juntes per formar un dispositiu <span class="emphasis"><em>lògic</em></span>. Aquest dispositiu es pot utilitzar llavors com una partició ordinària (p. ex. en el <span class="command"><strong>partman</strong></span> la podeu formatar, assignar-li un punt de muntatge, etc.). </p>
+<p>Els beneficis que això aporta depèn del tipus de dispositiu MD que genereu. Actualment se suporten: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> S'enfoca principalment al rendiment. El RAID0 reparteix totes les dades entrants en <em class="firstterm">bandes</em> i les distribueix de la mateixa manera sobre cada disc de la matriu. Això pot augmentar la velocitat de les operacions de lectura/escriptura, però quan un dels discs falla, ho perdreu <span class="emphasis"><em>tot</em></span> (part de la informació encara és al disc/s sa, l'altra part <span class="emphasis"><em>era</em></span> al disc que ha fallat).</p>
+<p> L'ús típic del RAID0 és una partició per edició de vídeo.</p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> És adequat per a les configuracions on la fiabilitat és la primera preocupació. Consisteix en diverses (usualment dues) particions de la mateixa mida en les quals es desen les mateixes dades. Això significa essencialment tres coses. La primera, que si un dels discs falla, encara teniu les dades repetides en els discs restants. La segona, que només podeu utilitzar una fracció de la capacitat disponible (més precisament, la mida de la partició més petita del RAID). La tercera, que les lectures als fitxers s'equilibren entre els discs, cosa que pot augmentar el rendiment en un servidor, com un servidor de fitxers, que tendeix a carregar-se amb més lectures que no pas escriptures. </p>
+<p> Opcionalment podeu tenir un disc de recanvi en la matriu que agafaria el lloc del disc espatllat en cas de fallida.</p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> És un bon compromís entre velocitat, rendiment i redundància de les dades. El RAID5 reparteix totes les dades entrants en bandes i les distribueix equitativament entre tots els discs excepte un (similar al RAID0). A diferència del RAID0, el RAID5 també calcula informació de <em class="firstterm">paritat</em>, que s'escriu en el disc restant. El disc de paritat no és estàtic (això seria l'anomenat RAID4), sinó que canvia periòdicament, de manera que la informació de paritat es distribueixi equitativament entre tots els discs. Quan un dels discs falla, la part d'informació que falta es pot calcular a partir de les dades restants i de la seva paritat. El RAID5 ha de consistir en almenys tres particions actives. Opcionalment podeu tenir un disc de recanvi en la matriu, el qual agafaria el lloc del disc espatllat en cas de fallida. </p>
+<p> Com podeu veure, el RAID5 té un grau de rendiment similar al RAID1 però aconsegueix menys redundància. Per altra banda, pot resultar una mica més lent en les operacions d'escriptura que no pas el RAID0 degut al càlcul de la informació de paritat. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> És similar a RAID5 excepte pel fet que utilitza dos dispositius de paritat en comptes d'un. </p>
+<p> Un RAID6 pot sobreviure fins a dues fallades de disc. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 combina la segmentació (com RAID0) i la rèplica (com RAID1). Genera <em class="replaceable"><code>n</code></em> còpies de les dades d'entrada i les distribueix en diverses particions de forma que cap de les còpies es trobi al mateix dispositiu. El valor predeterminat de <em class="replaceable"><code>n</code></em> és 2, però això es pot canviar en mode expert. El nombre de particions utilitzades ha de ser <em class="replaceable"><code>n</code></em> com a mínim. RAID10 té diferents formats per distribuir les còpies. Per defecte farà còpies properes («near»). Això vol dir que totes les còpies es troben aproximadament a la mateixa posició en tots els discs. Les còpies allunyades («far») disposen les còpies en diferents posicions. Les còpies desplaçades («offset») copien el segment, no fan les còpies individualment. </p>
+<p> RAID10 es pot utilitzar per aconseguir fiabilitat i redundància sense l'inconvenient d'haver de calcular la paritat.</p>
+</dd>
+</dl></div>
+<p> Per resumir-ho: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Tipus</th>
+<th>Dispositius mínims</th>
+<th>Dispositiu de recanvi</th>
+<th>Sobreviu a una fallida de disc?</th>
+<th>Espai disponible</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>no</td>
+<td>no</td>
+<td>Mida de la partició més petita multiplicada pel nombre de dispositius en el RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>opcional</td>
+<td>sí</td>
+<td>Mida de la partició més petita en el RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>opcional</td>
+<td>sí</td>
+<td>Mida de la partició més petita multiplicada pel nombre de dispositius en el RAID menys ú </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>opcional</td>
+<td>sí</td>
+<td>Mida de la partició més petita multiplicada pel nombre de dispositius en RAID menys dos </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>opcional</td>
+<td>sí</td>
+<td>El total de totes les particions dividit pel nombre de còpies (per omissió és dos) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Si voleu conèixer més sobre el RAID de programari, doneu un cop d'ull al <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">COM ES FA del RAID de programari</a>. </p>
+<p>Per generar un dispositiu MD, necessiteu tenir les particions de què desitgeu que consti marcades per a ser usades en un RAID. (Això és fa amb <span class="command"><strong>partman</strong></span> en el menú <span class="guimenu">Paràmetres de la partició</span> on hauríeu de seleccionar <span class="guimenu">Utilitza-ho com:</span> → <span class="guimenuitem">volum físic per a RAID</span>). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Assegureu-vos que el sistema de fitxers es pot arrencar amb l'esquema de partició que esteu planejant. En general, si voleu fer servir RAID per al sistema de fitxers arrel (<code class="filename">/</code>), serà necessari generar un sistema de fitxers separat per a <code class="filename">/boot</code>. La majoria de gestors d'arrencada <span class="phrase">(incloent «grub»)</span> suporten RAID1 en mirall (no en bandes!), per tant, una opció és usar RAID5 per a <code class="filename">/</code> i RAID1 per a <code class="filename">/boot</code>. </p></td></tr>
+</table></div>
+<p>A continuació, hauríeu d'escollir <span class="guimenuitem">Configura el RAID de programari</span> del menú principal del <span class="command"><strong>partman</strong></span>. (El menú tan sols apareixerà després de marcar als menús una partició per utilitzar-la com <span class="guimenuitem">volum físic per al RAID</span>.) A la primera pantalla del <span class="command"><strong>partman-md</strong></span> seleccioneu <span class="guimenuitem">Crea dispositius MD</span>. Se us presentarà una llista dels tipus de dispositius MD suportats, dels quals n'haureu d'escollir un (p. ex. RAID1). El que segueixi dependrà del tipus de MD que seleccioneu. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>El RAID0 és senzill — se us proporcionarà una llista de les particions RAID disponibles i la vostra única tasca serà seleccionar la partició que formarà el MD. </p></li>
+<li class="listitem"><p>El RAID1 és una mica més delicat. Primer, se us demanarà que introduïu el nombre de dispositius actius i el nombre de dispositius de recanvi que formaran el MD. A continuació, necessitareu seleccionar d'una llista de les particions RAID disponibles aquelles que seran actives i aquelles que serviran de recanvi. El compte de particions seleccionades ha de ser igual al nombre proporcionat prèviament. Però no us preocupeu. Si cometeu un error i seleccioneu un nombre diferent de particions, el <code class="classname">debian-installer</code> no us permetrà continuar fins que ho corregiu. </p></li>
+<li class="listitem"><p>El RAID5 té un procediment de configuració similar al RAID1 amb l'excepció que necessitareu utilitzar almenys <span class="emphasis"><em>tres</em></span> particions actives. </p></li>
+<li class="listitem"><p>RAID6 també té un procediment de configuració similar a RAID1 amb l'excepció que necessitareu com a mínim <span class="emphasis"><em>quatre</em></span> particions actives. </p></li>
+<li class="listitem"><p>RAID10 també té un procediment de configuració semblant al del RAID1 excepte en el mode expert. En mode expert, el <code class="classname">debian-installer</code> sol·licitarà la disposició. La disposició té dues parts. La primera és el tipus: <code class="literal">n</code> (per còpies properes, «near» en anglès), <code class="literal">f</code> (per còpies allunyades, «far» en anglès), o <code class="literal">o</code> (per còpies desplaçades, «offset» en anglès). La segona part és el nombre de còpies de les dades que voleu fer. Caldrà que hi hagi com a mínim tants dispositius actius com còpies, de manera que totes les còpies puguin distribuir-se en discs diferents. </p></li>
+</ul></div>
+<p>És perfectament possible tenir diversos tipus de MD a la vegada. Per exemple, si teniu tres discs durs de 200 GiB dedicats a MD, i cadascun conté dues particions de 100 GiB, podeu combinar les primeres particions dels tres discs en un RAID0 (partició ràpida de 300 GiB per a edició de vídeo) i utilitzar les altres tres particions (2 actives i 1 de recanvi) per a un RAID1 (una partició bastant fiable de 100 GiB pel <code class="filename">/home</code>). </p>
+<p>Després que hàgiu configurat els dispositius MD al vostre gust, podeu seleccionar <span class="guimenuitem">Finalitza</span> el <span class="command"><strong>partman-md</strong></span> per retornar al <span class="command"><strong>partman</strong></span> per generar els sistemes de fitxers en els nous dispositius MD i assignar-lis els atributs usuals com els punts de muntatge. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Configurar el Gestor de Volums Lògics (LVM)</h4></div></div></div>
+<p>Si esteu utilitzant l'ordinador com a administrador de sistemes o usuari <span class="quote">«<span class="quote">avançat</span>»</span>, segur que us heu trobat en la situació que alguna partició del disc (normalment la més important) ha exhaurit tot l'espai lliure, mentre que d'altres particions estan molt poc utilitzades i heu hagut de reconduir la situació movent continguts, creant enllaços simbòlics, etc. </p>
+<p>Per evitar la situació descrita anteriorment podeu utilitzar el Gestor de Volums Lògics (LVM). Resumit d'una manera fàcil, amb LVM podeu combinar particions (anomenades <em class="firstterm">volums físics</em> en l'entorn de LVM) per formar un disc virtual (anomenat <em class="firstterm">grup de volums</em>), que es pot dividir en particions virtuals (<em class="firstterm">volums lògics</em>). La característica interessant és que els volums lògics (i per descomptat els grups de volums associats) es poden expandir a través de múltiples discs físics. </p>
+<p>En cas d'adonar-vos que necessiteu més espai per a l'antiga partició <code class="filename">/home</code> de 160 GiB, podeu afegir un nou disc de 300 GiB i ajuntar-lo al grup de volums i seguidament redimensionar el volum lògic que disposa el sistema de fitxers <code class="filename">/home</code> i per art de màgia — els usuaris disposaran de més espai en la seva nova partició de 460 GiB. Aquest exemple està un pèl massa simplificat. Llegiu el document <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a> si encara no ho heu fet. </p>
+<p>La configuració d'LVM al <code class="classname">debian-installer</code> és prou senzilla i està completament suportada dins del <span class="command"><strong>partman</strong></span>. Primer, heu de marcar les particions que voleu utilitzar com volums físics per LVM. Açò es fa al menú <span class="guimenu">Paràmetres de la partició</span> on hauríeu de seleccionar <span class="guimenu">Utilitza-ho com a: </span> → <span class="guimenuitem">volum físic per a LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avís]" src="images/warning.png"></td>
+<th align="left">Avís</th>
+</tr>
+<tr><td align="left" valign="top"><p>Aneu amb compte: la nova configuració LVM destruirà totes les dades en totes les particions marcades amb un codi de tipus LVM. Així, si ja teniu un LVM en algun dels discos, i voleu instal·lar Debian addicionalment a la màquina, l'antiga (ja preexistent) LVM serà esborrada! El mateix passa amb les particions, que estiguin (per motiu que sigui) marcades amb un codi de tipus LVM, però continguin qualsevol cosa diferent (com ara un volum xifrat). Cal que retireu aquests discos del sistema abans de realitzar una nova configuració LVM! </p></td></tr>
+</table></div>
+<p>Quan torneu a la pantalla principal de <span class="command"><strong>partman</strong></span>, voreu una opció nova <span class="guimenuitem">Configura el gestor de volums lògics</span>. En seleccionar-la, primer se us demanarà que confirmeu els canvis pendents a la taula de particions (si n'hi ha) i després es mostrarà el menú de configuració d'LVM. A la part superior del menú es mostra un resum de la configuració d'LVM. El menú en sí mateix és sensible al context i tan sols mostra les accions vàlides. Les possibles accions són: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Mostra els detalls de la configuració</span>: mostra l'estructura del dispositiu LVM, noms i mides dels volums lògics i més </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Genera un grup de volums</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Genera volums lògics</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Suprimeix el grup de volums</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Suprimeix el volum lògic</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Estén grup de volums</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Redueix el grup de volums</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Finalitza</span>: torna a la pantalla principal de <span class="command"><strong>partman</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Utilitzeu les opcions d'aquest menú per generar primer un grup de volums i després generar volums lògics dins d'aquest. </p>
+<p>Després de tornar a la pantalla principal de <span class="command"><strong>partman</strong></span>, qualsevol volum lògic es mostrarà de la mateixa forma que les particions normals (i les podreu tractar com a tals). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Configuració de volums xifrats</h4></div></div></div>
+<p>El <code class="classname">debian-installer</code> permet preparar particions xifrades. Cada fitxer que escriviu a estes particions és immediatament desat al dispositiu de forma xifrada. L'accés a les dades xifrades és possible tan sols després d'introduir la <em class="firstterm">contrasenya</em> utilitzada quan la partició xifrada es va generar originalment. Aquesta característica és útil per protegir dades sensibles en el cas de que us roben el vostre portàtil o disc dur. El lladre podrà tenir accés físic al disc dur, però sense conèixer la contrasenya correcta, les dades al disc dur es mostraran com caràcters aleatoris. </p>
+<p>Les dues particions més importants a xifrar són: la partició d'usuari (home), on són les vostres dades privades, i la partició d'intercanvi, on les dades sensibles es podrien emmagatzemar temporalment durant l'operació. Per suposat, res impedeix que xifreu qualsevol altra partició que tingueu interès. Per exemple <code class="filename">/var</code> on els servidors de base de dades, servidors de correu o servidors d'impressió emmagatzemen les seves dades, o <code class="filename">/tmp</code> que utilitzen alguns programes per emmagatzemar fitxers temporals interessants. Algunes persones voldran inclús xifrar tot el sistema complet. Sovint l'única excepció aquí és la partició <code class="filename">/boot</code> que ha de ser no xifrada, ja que històricament no hi havia forma de carregar un nucli des d'una partició xifrada. (El GRUB és ara capaç de fer-ho, però el <code class="classname">debian-installer</code> actualment no ofereix suport nadiu per a un <code class="filename">/boot</code> xifrat. Aquesta configuració es troba explicada en un <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">document separat</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Adoneu-vos que el rendiment de les particions xifrades serà menor que les no xifrades per la necessitat de xifrar i desxifrar les dades per a cada lectura o escriptura. L'impacte en el rendiment depèn de la velocitat de la vostra CPU, el xifrat escollit i la longitud de la clau. </p></td></tr>
+</table></div>
+<p>Per utilitzar el xifrat, heu de generar una partició nova seleccionant algun espai lliure al menú principal de fer particions. Altra opció és escollir una partició existent (p. ex. una partició normal, un volum lògic LVM o un volum RAID). Al menú <span class="guimenu">Paràmetres de fer particions</span>, necessitareu seleccionar <span class="guimenuitem">volum físic per a xifrar</span> a l'opció <span class="guimenu">Utilitzar com</span>. Aleshores el menú canviarà per incloure algunes opcions de criptografia per a la partició. </p>
+<p>El mètode de xifrat suportat pel <code class="classname">debian-installer</code> és <em class="firstterm">dm-crypt</em> (inclòs als nous nuclis Linux, capaços de contenir volums físics LVM). </p>
+<p>Primer, mireu les opcions disponibles quan seleccioneu xifrar mitjançant <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Com sempre, quan dubteu, utilitzeu l'opció predeterminada, ja que es van escollir amb molta cura amb la seguretat en ment. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Xifrat: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Aquesta opció permet seleccionar l'algorisme de xifrat (<em class="firstterm">cipher</em>) que serà utilitzat per xifrar les dades a la partició. En aquest moment el <code class="classname">debian-installer</code> suporta els xifrats: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> i <em class="firstterm">twofish</em>. Està més enllà de l'abast d'aquest document discutir les qualitats dels diferents algorismes, per altra banda, podria ajudar en la vostra decisió saber que al 2000, <span class="emphasis"><em>AES</em></span> fou escollit pel Institut Nacional Americà d'estàndards i Tecnologia com l'algorisme de xifrat estàndard per protegir informació sensible al segle XXI. </p></dd>
+<dt><span class="term">Mida de la Clau: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Ací podeu especificar la longitud de la clau de xifrat. Amb una mida de la clau gran, la força del xifrat augmenta generalment. Per altra banda, incrementar la mida de la clau normalment té un impacte negatiu pel que fa al rendiment. Les mides per la clau disponibles varien depenent del xifrat. </p></dd>
+<dt><span class="term">Algorisme IV: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>El <em class="firstterm">Vector d'Inicialització</em> o algorisme <em class="firstterm">IV</em> s'utilitza al xifratge per assegurar que l'aplicació del xifrat al mateix <em class="firstterm">text en clar</em> amb la mateixa clau sempre produeix un únic <em class="firstterm">text xifrat</em>. La idea és previndre l'atac de deduir informació de plantilles repetides a les dades xifrades. </p>
+<p>De les alternatives proporcionades, la predeterminada <strong class="userinput"><code>xts-plain64</code></strong> és en aquest moment la menys vulnerable a atacs coneguts. Utilitzeu altres alternatives tan sols quan necessiteu assegurar la compatibilitat amb un sistema prèviament instal·lat que no pot utilitzar algorismes nous. </p>
+</dd>
+<dt><span class="term">Clau de xifrat: <strong class="userinput"><code>Contrasenya</code></strong></span></dt>
+<dd>
+<p>Ací podeu escollir el tipus de clau de xifrat per a aquesta partició. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Contrasenya</span></dt>
+<dd><p>La clau de xifrat serà computada<a href="#ftn.id3113" class="footnote" name="id3113"><sup class="footnote">[9]</sup></a> en base a la contrasenya que us permetrà entrar després en el procés. </p></dd>
+<dt><span class="term">Clau aleatòria</span></dt>
+<dd>
+<p>Es generarà una nova clau de xifrat des de dades aleatòries cada vegada que proveu d'accedir a la partició xifrada. En altres paraules: cada vegada que tanqueu, el contingut de la partició es perdrà ja que la clau s'esborra de la memòria. (Per suposat, podeu intentar de aconseguir la clau amb un atac de força bruta, però a no ser que l'algorisme de xifrat tinga una debilitat, no és pot aconseguir en tota la nostra vida completa.) </p>
+<p>Les claus aleatòries són útils per a particions d'intercanvi ja que no necessiteu molestar-vos en recordar la contrasenya o esborrar informació sensible de la partició d'intercanvi abans d'apagar el vostre ordinador. Per altra banda, això significa també que <span class="emphasis"><em>no</em></span> podreu utilitzar la funcionalitat <span class="quote">«<span class="quote">suspendre a disc</span>»</span> que donen els nous nuclis ja que serà impossible (a les arrencades següents) recuperar les dades suspeses escrites a la partició d'intercanvi. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Esborrar dades: <strong class="userinput"><code>sí</code></strong></span></dt>
+<dd><p>Determina si el contingut d'aquesta partició ha de ser sobreescrit amb dades aleatòries abans de configurar el xifrat. Açò es recomana ja que d'altra manera seria possible per a un atacant diferenciar quines parts de la partició estan en ús i quines no. Addicionalment, açò farà més difícil recuperar qualsevol residu de dades d'instal·lacions prèvies<a href="#ftn.id3128" class="footnote" name="id3128"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Després de seleccionar els paràmetres desitjats per les vostres particions xifrades, tornau al menú principal de fer particions. Allí hauríeu de trobar ara un nou element del menú que es diu <span class="guimenu">Configurar volums xifrats</span>. Després de seleccionar-lo, se us preguntarà confirmació per esborrar les dades de les particions marcades per esborrar i possiblement altres accions com escriure una nova taula de particions. Per a grans particions, açò podria tardar un temps. </p>
+<p>A continuació se us demanarà d'introduir una contrasenya per a particions configurades per utilitzar-la. Bones contrasenyes haurien de tenir més de 8 caràcters, mescla de lletres, nombres i altes caràcters i no hauria de contenir paraules comuns al diccionari o informació fàcilment associada amb tu (com aniversaris, aficions, noms de mascotes, noms de familiars o parents, etc.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avís]" src="images/warning.png"></td>
+<th align="left">Avís</th>
+</tr>
+<tr><td align="left" valign="top"><p>Abans d'introduir cap contrasenya, hauríeu d'assegurar-vos que el vostre teclat està correctament configurat i que genera els caràcters esperats. Si no esteu segurs, canvieu a una segona consola virtual i escriviu alguna cosa a l'indicador del sistema. Açò assegurarà que després no tindreu sorpreses, p. ex. escollint introduir una contrasenya utilitzant una disposició de teclat «qwerty» quan heu utilitzat una disposició «azerty» a la instal·lació. Aquesta situació pot tenir diverses causes. Pot ser vau canviar a un altra disposició de teclat al llarg de la instal·lació, o la disposició de teclat seleccionada no s'hauria configurat quan esteu introduint la contrasenya pel sistema de fitxers arrel. </p></td></tr>
+</table></div>
+<p>Si trieu utilitzar altres mètodes apart d'una contrasenya per generar claus de xifrat, es generarà ara. Com que el nucli no ha recollit suficient entropia en aquest punt de la instal·lació, el procés pot ser molt llarg. Podeu accelerar el procés generant entropia: p. ex. prement tecles aleatòriament, o canviat a una segona consola virtual i generant algun tràfic de xarxa i tràfic de disc (descarregant fitxers, alimentant amb grans fitxers a <code class="filename">/dev/null</code>, etc.). Açò es repetirà per a cada partició per xifrar-se. </p>
+<p>Després de tornar al menú principal de fer particions, voreu tots els volums xifrats com particions addicionals que es poden configurar de la mateixa forma que les particions normals. L'exemple següent mostra un volum xifrat amb «dm-crypt». </p>
+<div class="informalexample"><pre class="screen">
+Encrypted volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Ara és el moment d'assignar punts de muntatge als volums i opcionalment canviar els tipus de sistema de fitxers si el tipus predeterminat no us convé. </p>
+<p>Fixeu-vos en els identificadors entre parèntesis (<em class="replaceable"><code>sda2_crypt</code></em> en aquest cas) i els punts de muntatge que heu assignat a cada volum xifrat. Necessitareu aquesta informació després quan arrenqueu el nou sistema. Les diferències entre el procés d'arrencada normal i el d'arrencada amb xifrat es descriuen més endavant a la <a class="xref" href="ch07s02.html" title="7.2. Muntar volums xifrats">Secció 7.2, «Muntar volums xifrats»</a>. </p>
+<p>Quant estigueu satisfets amb l'esquema de particions, continueu amb la instal·lació. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Instal·lació del sistema base</h3></div></div></div>
+<p>Encara que aquesta fase és la menys problemàtica consumeix una part important del temps de la instal·lació, ja que es baixa, verifica i desempaqueta el sistema base complet. Si teniu un ordinador o una connexió de xarxa lents pot portar el seu temps. </p>
+<p>Al llarg de la instal·lació del sistema base, els missatges del desempaquetat dels paquets i de la instal·lació es redirigeixen a <strong class="userinput"><code>tty4</code></strong>. Podeu accedir a aquesta terminal prement <span class="keycap"><strong>Alt esquerra</strong></span>+<span class="keycap"><strong>F4</strong></span>; torneu al procés principal de l'instal·lador amb <span class="keycap"><strong>Alt esquerra</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Els missatges de desempaquetat i configuració que genera la instal·lació del sistema base es desen a <code class="filename">/var/log/syslog</code>. Podeu comprovar-los allà, si la instal·lació es realitza a través d'una consola sèrie. </p>
+<p>Com a part de la instal·lació, s'instal·larà un nucli del Linux. A la prioritat predeterminada, l'instal·lador elegirà aquell que es correspongui millor amb el maquinari. En modes de prioritat més baixa, podreu elegir a partir d'una llista dels nuclis disponibles. </p>
+<p>Quan el sistema de gestió de paquets instal·le el programari, inclourà per defecte també els paquets recomanats per aquest. Els paquets recomanats no són estrictament necessaris per al funcionament essencial del programari escollit, però el milloren i normalment haurien, en l'opinió dels mantenidors dels seus paquets, de ser instal·lats amb aquests. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Per motius tècnics, la instal·lació dels paquets del sistema base no inclou la de llurs paquets <span class="quote">«<span class="quote">Recomanats</span>»</span>. Les indicacions de dalt només s'aplicaran a partir d'aquest punt del procés d'instal·lació. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Instal·lació de programari addicionals</h3></div></div></div>
+<p>En aquest punt disposareu d'un sistema usable però limitat. La majoria d'usuaris prefereixen instal·lar programari addicional al sistema per tal d'adaptar-lo a les seves necessitats, i és possible fer-ho amb l'instal·lador. Aquest pas pot portar encara més temps que la instal·lació del sistema base si teniu una màquina o connexió de xarxa lenta. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Configuració de l'apt</h4></div></div></div>
+<p>Una de les eines més utilitzades per a instal·lar paquets en sistemes Debian GNU/Linux és un programa anomenat <span class="command"><strong>apt</strong></span>, que forma part del paquet <code class="classname">apt</code><a href="#ftn.id3171" class="footnote" name="id3171"><sup class="footnote">[11]</sup></a>. Altres entorns per a la gestió de paquets, com l'<span class="command"><strong>aptitude</strong></span> i el <span class="command"><strong>synaptic</strong></span> també s'utilitzen. Aquests entorns són més recomanables per a usuaris novells, ja que integren algunes característiques addicionals (cerca de paquets i comprovacions del seu estat) amb una interfície d'usuari més agradable. </p>
+<p>L'<span class="command"><strong>apt</strong></span> s'ha de configurar per saber d'on obtenir els paquets. El resultat d'aquesta configuració s'escriu al fitxer <code class="filename">/etc/apt/sources.list</code>. Podeu examinar-lo i editar-lo al vostre gust després de completar la instal·lació. </p>
+<p>Si esteu instal·lant amb la prioritat predeterminada, l'instal·lador s'encarregarà de bona part de la configuració automàticament, depenent del mètode d'instal·lació i possiblement aprofitant les opcions indicades anteriorment durant la instal·lació. En la majoria de casos l'instal·lador afegirà una rèplica de seguretat i, si esteu instal·lant una distribució estable, una rèplica del servei d'actualitzacions (<span class="quote">«<span class="quote">stable-updates</span>»</span>). </p>
+<p>Si instal·leu amb una prioritat més baixa (p. ex. en mode expert), podreu prendre més decisions. Podreu triar si voleu utilitzar els serveis d'actualitzacions de seguretat i/o serveix d'actualitzacions estables («stable-updates»), o si voleu afegir paquets de les seccions <span class="quote">«<span class="quote">contrib</span>»</span>, <span class="quote">«<span class="quote">non-free</span>»</span> i <span class="quote">«<span class="quote">non-free-firmware</span>»</span> de l'arxiu. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Instal·lar usant més d'una imatge de DVD</h5></div></div></div>
+<p>Si esteu instal·lant des d'una imatge de DVD que és part d'un joc més gran, l'instal·lador us preguntarà si voleu afegir nous mitjans d'instal·lació. Si teniu aquests mitjans addicionals a mà, possiblement voldreu fer-ho per tal que l'instal·lador pugui utilitzar-ne els paquets continguts. </p>
+<p>Si no teniu cap mitjà addicional, això no és un problema: no es requereix la seua utilització. Si tampoc utilitzeu una rèplica de xarxa (com s'explica en la pròxima secció), això pot implicar que no tots els paquets que pertanyen a les tasques que seleccioneu al pròxim pas de la instal·lació podran instal·lar-se. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Els paquets inclosos a les imatges de DVD estan ordenats per la seua popularitat. Açò vol dir que per a la major part d'usos tan sols es necessita la primera imatge del conjunt i que molt poca gent utilitza qualsevol dels paquets inclosos en les darreres imatges del joc. </p>
+<p>Això també vol dir que comprar o descarregar i cremar un joc complet de DVD és malbaratar els diners ja que mai n'utilitzareu la majoria. En la major part dels casos la millor opció és descarregar el primer i potser també el segon dels DVDs i instal·lar la resta dels paquets que necessiteu d'Internet utilitzant una rèplica. </p>
+</td></tr>
+</table></div>
+<p>Si afegiu múltiples mitjans d'instal·lació, l'instal·lador us demanarà intercanviar-los quan necessite paquets d'un diferent al que estigui actualment a la unitat de disc. Tingueu en compte que tan sols es poden utilitzar discos que corresponguin al mateix joc. L'ordre en què es processen no té importància, però fer-ho en ordre ascendent reduirà les possibilitats d'error. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Utilitzar una rèplica de xarxa</h5></div></div></div>
+<p>Una pregunta que es farà en la majoria de les instal·lacions és si s'ha d'utilitzar o no una rèplica de xarxa com a origen dels paquets. La resposta predeterminada normalment serà correcta, però hi ha certes excepcions. </p>
+<p>Si <span class="emphasis"><em>no</em></span> esteu instal·lant des d'una imatge de DVD, hauríeu de fer servir una rèplica de xarxa; altrament acabareu amb un sistema molt mínim. Tanmateix, si teniu una connexió a Internet limitada, és millor que <span class="emphasis"><em>no</em></span> seleccioneu la tasca <code class="literal">escriptori</code> en el següent pas de la instal·lació. </p>
+<p>Si esteu instal·lant des d'un DVD, qualsevol paquet necessari per a la instal·lació hauria de trobar-se al primer DVD. L'ús d'una rèplica de xarxa és opcional. </p>
+<p>Un dels avantatges d'afegir una rèplica de xarxa és que les actualitzacions que s'hagen produït des de que es van generar les imatges de DVD i que s'han inclòs en un nou llançament també estaran disponibles per a la instal·lació; açò allarga la vida del vostre joc de DVD sense comprometre la seguretat o la estabilitat del sistema instal·lat. </p>
+<p>Resumint: seleccionar una rèplica de xarxa és normalment una molt bona idea, excepte si no teniu una bona connexió a Internet. Si la versió actual d'un paquet es troba als mitjans d'instal·lació, l'instal·lador sempre la utilitzarà. La quantitat de dades que es descarregarà si seleccioneu una rèplica depèn de </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>les tasques que seleccioneu en el pròxim pas de la instal·lació, </p></li>
+<li class="listitem"><p>quins paquets fan falta per a eixes tasques, </p></li>
+<li class="listitem"><p>quins d'eixos paquets estan presents als mitjans d'instal·lació que heu afegit, i </p></li>
+<li class="listitem"><p>si qualsevol versió dels paquets inclosos als mitjans d'instal·lació estan a la rèplica (tant en una rèplica de paquets normals, en una rèplica de seguretat o a les actualitzacions estables («stable-updates»). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Tingueu en compte que l'últim punt vol dir que, encara que no trieu fer servir una rèplica de xarxa, alguns paquets encara es descarregaran des d'Internet si hi ha actualitzacions de seguretat o estables («stable-updates») disponibles i aquests serveis s'han configurat. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Seleccionar una rèplica de xarxa</h5></div></div></div>
+<p>Tret que hàgiu optat per no fer servir una rèplica de xarxa, se vos presentarà una llista de rèpliques de xarxa basada en la selecció de país feta durant la instal·lació. Seleccionar l'opció predeterminada sol ésser una bona opció. </p>
+<p>El valor per defecte és deb.debian.org, que no és un mirall en si, sinó que redirigirà cal a un mirall que hauria d'estar actualitzat i ser ràpid. Aquests miralls suporten TLS (protocol https) i IPv6. Aquest servei és mantingut per l'equip d'Administradors de Sistema de Debian (en anglès «Debian System Administration» o DSA). </p>
+<p>La rèplica també es pot especificar manualment seleccionant <span class="quote">«<span class="quote">escriure la informació manualment</span>»</span>. Heu d'especificar el nom del servidor de la rèplica i un número de port opcional. Això cal que sigui una URL base, és a dir, quan s'especifica una adreça IPv6 cal posar-la a l'interior de claudàtors, per exemple <span class="quote">«<span class="quote">[2001:db8::1]</span>»</span>. </p>
+<p>Si el vostre ordinador forma part d'una xarxa que només fa servir IPv6 (que no és el més probable per a la majoria d'usuaris), fer servir el servidor predeterminat per al vostre país no funcionarà correctament. Totes les rèpliques de la llista són accessibles amb IPv4, però només algunes ho son mitjançant IPv6. Com que la connectivitat de cada rèplica canvia amb el temps, aquesta informació no està disponible per a l'instal·lador. En el cas que no sigui possible connectar mitjançant IPv6 amb la rèplica del vostre país, podeu seleccionar altres rèpliques o bé seleccionar l'opció <span class="quote">«<span class="quote">escriure la informació manualment</span>»</span>. Podeu especificar <span class="quote">«<span class="quote">ftp.ipv6.debian.org</span>»</span> com a nom de la rèplica, que és àlies per una rèplica accessible mitjançant IPv6, tot i què probablement no és la més ràpida. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Selecció i instal·lació de programari</h4></div></div></div>
+<p>Al llarg del procés d'instal·lació, tindreu l'oportunitat de seleccionar programari addicional per a instal·lar. En comptes d'escollir paquets de programari individualment d'entre els <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    que hi ha disponibles, aquesta fase del procés d'instal·lació es centra en seleccionar i instal·lar col·leccions predefinides de programes per configurar de forma ràpida el vostre ordinador per fer tasques diverses. </p>
+<p>Aquestes tasques representen de forma aproximada un nombre de feines o coses diferents que podeu voler fer amb el vostre ordinador, com <span class="quote">«<span class="quote">Entorn d'escriptori</span>»</span>, <span class="quote">«<span class="quote">Servidor Web</span>»</span> o <span class="quote">«<span class="quote">Servidor SSH</span>»</span><a href="#ftn.id3233" class="footnote" name="id3233"><sup class="footnote">[12]</sup></a>. La <a class="xref" href="apds02.html" title="D.2. Espai requerit per a les tasques">Secció D.2, «Espai requerit per a les tasques»</a> llista els requeriments d'espai de les tasques disponibles. </p>
+<p>Algunes tasques poden estar preseleccionades basant-se en les característiques de l'ordinador on esteu instal·lant. Si no esteu d'acord amb aquestes seleccions, podeu desseleccionar les tasques. Fins i tot podeu optar per no instal·lar cap tasca en aquest punt. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Suggeriment]" src="images/tip.png"></td>
+<th align="left">Suggeriment</th>
+</tr>
+<tr><td align="left" valign="top"><p>En la interfície d'usuari estàndard de l'instal·lador, podeu emprar la barra espaiadora per a canviar l'estat de selecció d'una tasca. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>L'opció <span class="quote">«<span class="quote">Entorn d'escriptori</span>»</span> instal·larà un entorn d'escriptori gràfic. </p>
+<p>L'opció predeterminada per a <code class="classname">debian-installer</code> instal·la l'escriptori <span class="phrase">Gnome</span> . És possible seleccionar una altra opció d'escriptori en el procés d'instal·lació. També podeu instal·lar més d'un entorn d'escriptori, però algunes opcions no es poden instal·lar simultàniament. </p>
+<p>Adoneu-vos-en que tan sols funcionarà si els paquets que calen per a l'entorn d'escriptori desitjat estan disponibles. Instal·lar així qualsevol dels entorns d'escriptori disponibles hauria d'anar bé si esteu usant una imatge de DVD o qualsevol altre mètode d'instal·lació amb una rèplica de xarxa. </p>
+</td></tr>
+</table></div>
+<p>Les diferents tasques de servidor instal·laran el programari més o menys d'aquesta manera. Servidor web: <code class="classname">apache2</code>; Servidor SSH: <code class="classname">openssh</code>. </p>
+<p>La tasca <span class="quote">«<span class="quote">Eines estàndard de sistema</span>»</span> instal·larà tots els paquets que tinguen prioritat <span class="quote">«<span class="quote">estàndard</span>»</span>. Açò inclou moltes utilitats comunes que es solen trobar a qualsevol sistema Linux o Unix. Hauríeu de mantenir seleccionada aquesta tasca excepte si sabeu el que feu i voleu un sistema realment mínim. </p>
+<p>Si durant la selecció d'idioma heu escollit una configuració d'usos locals («locale») predeterminat diferent de <span class="quote">«<span class="quote">C</span>»</span>, <span class="command"><strong>tasksel</strong></span> comprovarà si hi ha tasques de localització definides per a aquests usos locals i provarà d'instal·lar automàticament els paquets de localització rellevants. Açò inclou, per exemple, els paquets que continguen llistes de paraules o tipus de lletra especials per al vostre idioma. Si heu seleccionat un entorn d'escriptori, també n'instal·larà els paquets de localització apropiats (si n'hi ha). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>A partir de Debian Trixie, el <code class="classname">debian-installer</code> permet instal·lar directament Debian Pure Blends. Hi ha un ítem <span class="quote">«<span class="quote">Trieu un Debian Blend per instal·lar</span>»</span> al capdavall de la llista de tasques que permet que aparegui un diàleg d'opcions addicional, després que hagi acabat el <span class="command"><strong>tasksel</strong></span>. </p>
+<p>En aquest diàleg (<span class="command"><strong>blendsel</strong></span>), es pot escollir un «blend» per instal·lar, igual com a la selecció de tasques. </p>
+<p>Vegeu <a class="ulink" href="https://www.debian.org/blends" target="_top">el web de Debian</a> per a més informació sobre els Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>Una vegada seleccionades les tasques desitjades, premeu el botó <span class="guibutton">Continua</span>. En aquest punt, l'<span class="command"><strong>apt</strong></span> instal·larà els paquets necessaris per a les tasques seleccionades. Si algun programa en particular necessita més informació per part de l'usuari, aquesta es sol·licitarà durant el procés d'instal·lació. </p>
+<p>Heu de ser conscients que, especialment, la tasca d'escriptori és molt gran. Sobretot si esteu instal·lant amb una imatge de CD netinst en combinació amb una rèplica pels paquets que no es trobin al netinst, l'instal·lador podria descarregar molts paquets des de la xarxa. Si teniu una connexió a Internet relativament lenta, pot trigar molt de temps. No es podrà cancel·lar la instal·lació de paquets una vegada s'hagi començat. </p>
+<p>Inclús quan els paquets estan inclosos a la imatge d'instal·lació, l'instal·lador pot ser que encara els descarregue de la rèplica si la versió que hi ha disponible és més recent que la inclosa a la imatge. Si esteu instal·lant la distribució «stable», açò pot passar després del llançament d'una revisió (una actualització de la distribució estable original); si esteu instal·lant la distribució «testing» açò passarà si esteu utilitzant una imatge vella. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Com fer el sistema arrencable</h3></div></div></div>
+<p>Si esteu instal·lant una estació de treball sense disc, arrencar des del disc local és, evidentment, una opció sense sentit i s'ometrà aquest pas. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Detecció d'altres sistemes operatius</h4></div></div></div>
+<p>Previ a la instal·lació del carregador d'arrencada l'instal·lador intentarà detectar d'altres sistemes operatius instal·lats a la màquina. Si detecta un sistema operatiu suportat se us informarà en el pas d'instal·lació del carregador d'arrencada i l'ordinador es configurarà per arrencar-lo addicionalment a Debian. </p>
+<p>Recordeu que l'arrencada de múltiples sistemes operatius en una sola màquina continua sent una qüestió de màgia negra. El suport automàtic de detecció i configuració dels carregadors d'arrencada per arrencar d'altres sistemes operatius varia en funció de l'arquitectura i inclús subarquitectura. Si no us funciona hauríeu de cercar més informació a la documentació del gestor d'arrencada. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3281"></a>6.3.7.2. Instal·lació del carregador d'arrencada <span class="command"><strong>grub</strong></span> al dispositiu</h4></div></div></div>
+<p>El carregador d'arrencada de amd64 s'anomena <span class="quote">«<span class="quote">grub</span>»</span>. El «grub» és un carregador d'arrencada robust i flexible i una bona opció tant per als usuaris nouvinguts com per als experimentats. </p>
+<p>El «grub» s'instal·larà per defecte a la partició UEFI o al registre d'arrencada del disc principal, on agafarà el control del procés d'arrencada. Si ho preferiu, el podeu instal·lar a un altre lloc. Per a més informació vegeu el manual del «grub». </p>
+<p>Si no voleu instal·lar el «grub», utilitzeu el botó <span class="guibutton">Vés enrere</span> per tornar al menú principal i des d'allà seleccioneu el carregador d'arrencada que voleu utilitzar. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Continuar sense el carregador d'arrencada</h4></div></div></div>
+<p>Aquesta opció es pot utilitzar per finalitzar la instal·lació tot i no instal·lar un carregador d'arrencada, ja sigui perquè l'arquitectura/subarquitectura no en proporciona cap, o perquè no us és necessari (p. ex. utilitzareu el carregador d'arrencada existent). </p>
+<p>Si preteneu configurar manualment el carregador d'arrencada, hauríeu de comprovar el nom del nucli instal·lat a <code class="filename">/target/boot</code>. També hauríeu de comprovar si hi ha el fitxer <em class="firstterm">initrd</em> i, si és el cas, probablement indicar-li al carregador d'arrencada. Informació addicional que us farà falta correspon al disc i partició que heu seleccionat anteriorment pel sistema de fitxers <code class="filename">/</code> i, en el cas d'escollir instal·lar el <code class="filename">/boot</code> en una partició separada, el sistema de fitxers <code class="filename">/boot</code>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Finalització de la instal·lació</h3></div></div></div>
+<p>Aquest és l'últim punt en el procés d'instal·lació durant el qual l'instal·lador farà tasques d'última hora. Principalment, netejar el que ha deixat el <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Configuració del rellotge del sistema</h4></div></div></div>
+<p>L'instal·lador pot preguntar-vos si el rellotge està en UTC. Normalment aquesta pregunta s'evita si és possible i l'instal·lador intenta resoldre si el rellotge està en UTC basant-se en paràmetres com altres sistemes operatius instal·lats. </p>
+<p>En mode expert sempre podreu escollir si el rellotge està en UTC o no. <span class="phrase"> Els sistemes que (també) tenen Windows normalment estan configurats a hora local. Si voleu arrencada dual, seleccioneu hora local en comptes d'UTC.</span> </p>
+<p>En aquest punt el <code class="classname">debian-installer</code> també intentarà fixar l'hora actual al rellotge de l'ordinador. Això es farà utilitzant UTC o l'hora local, depenent de l'opció seleccionada. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Arrencada del sistema</h4></div></div></div>
+<p>Se us indicarà que extragueu el mitjà d'instal·lació (CD, llapis USB, etc.) que heu fet servir per arrencar l'instal·lador. Després d'això el sistema arrencarà el nou sistema Debian. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Resolució de problemes</h3></div></div></div>
+<p>Els components llistats en aquesta secció no estan normalment involucrats en el procès d'instal·lació, però esperen en segon pla per ajudar a l'usuari si es produeix algun error. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Desar els registres de la instal·lació</h4></div></div></div>
+<p>Si la instal·lació resulta reeixida, els fitxers de registre creats durant el procés d'instal·lació es desaran automàticament a <code class="filename">/var/log/installer/</code> en el nou sistema Debian. </p>
+<p>Si elegiu <span class="guimenuitem">Desa els registres de depuració</span> des del menú principal, podreu desar els fitxers de registre en un llapis USB, xarxa, disc dur o altres medis. Això pot ser útil si trobeu problemes fatals durant la instal·lació i desitgeu estudiar els registres en un altre sistema, o adjuntar-los a un informe d'instal·lació. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Utilització de l'intèrpret d'ordres i visualització dels fitxers de registre</h4></div></div></div>
+<p>Hi ha diversos mètodes que podeu utilitzar per obtenir un intèrpret d'ordres mentre executeu l'instal·lador. En la majoria de sistemes, i si no esteu instal·lant sobre consola sèrie, el més fàcil és canviar a la segona <span class="emphasis"><em>consola virtual</em></span> prement <span class="keycap"><strong>Alt Esquerra</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3328" class="footnote" name="id3328"><sup class="footnote">[13]</sup></a> (en un teclat Mac, <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Utilitzeu <span class="keycap"><strong>Alt Esquerra</strong></span>+<span class="keycap"><strong>F1</strong></span> per tornar a l'instal·lador. </p>
+<p>Per a l'instal·lador gràfic vegeu també <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Utilitzar l'instal·lador gràfic">Secció 6.1.1, «Utilitzar l'instal·lador gràfic»</a>. </p>
+<p>Si no podeu canviar de consola, també teniu l'opció <span class="guimenuitem">Executa un intèrpret d'ordres</span> al menú principal, que serveix precisament per a iniciar un intèrpret d'ordres. Podeu tornar al menú principal des de la major part dels quadres de diàleg emprant el botó <span class="guibutton">Vés enrere</span> una o més vegades. Introduïu <strong class="userinput"><code>exit</code></strong> per tancar l'intèrpret i tornar a l'instal·lador. </p>
+<p>En aquest moment heu arrencat des del disc RAM, per tant el conjunt d'utilitats Linux que teniu disponibles és limitat. Podeu veure els programes a que hi ha amb l'ordre <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> o bé teclejant <span class="command"><strong>help</strong></span>. L'intèrpret d'ordres és un clon de Bourne shell anomenat <span class="command"><strong>ash</strong></span> i disposa d'algunes característiques molt pràctiques, com l'autocompleció i l'historial. </p>
+<p>Per editar i veure fitxers, utilitzeu l'editor de text <span class="command"><strong>nano</strong></span>. Podeu trobar els fitxers de registre del sistema d'instal·lació al directori <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Encara que des d'un intèrpret podeu fer pràcticament qualsevol cosa que les ordres us permetin, aquesta opció està disponible només per si alguna cosa surt malament o per a depuració. </p>
+<p>Fer coses manualment des de l'intèrpret pot interferir en el procés d'instal·lació, i això pot produir errors o acabar en una instal·lació incompleta. En particular, hauríeu de deixar sempre que sigui l'instal·lador qui activi la partició d'intercanvi i no fer-ho vosaltres manualment. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Instal·lació a través de la consola de xarxa</h3></div></div></div>
+<p>Un dels components més interessants és <em class="firstterm">network-console</em>. Permet realitzar una bona part de la instal·lació per xarxa, via SSH. L'ús de la xarxa implica que haureu de seguir els primers passos de la instal·lació des de la consola, almenys fins a tenir configurada la xarxa (tot i que podeu automatitzar també aquesta part, <a class="xref" href="ch04s06.html" title="4.6. Instal·lació automàtica">Secció 4.6, «Instal·lació automàtica»</a>). </p>
+<p>Aquest component no es carrega al menú principal de la instal·lació predeterminada; s'ha de fer explícitament. Si esteu instal·lant des d'un mitjà òptic, haureu d'arrencar amb prioritat mitjana o bé triar <span class="guimenuitem">Carrega components de l'instal·lador des d'un mitjà òptic</span> al menú principal d'instal·lació, i seleccionar <span class="guimenuitem">network-console: Continua la instal·lació remotament utilitzant SSH</span> a la llista de components addicionals. Si la càrrega acaba correctament s'indicarà amb una nova entrada al menú amb el títol <span class="guimenuitem">Continua la instal·lació remotament utilitzant SSH</span>. </p>
+<p><span class="phrase">Després de seleccionar aquesta nova entrada, haureu</span> d'introduir una contrasenya nova, que s'utilitzarà per connectar al sistema d'instal·lació i per a la seva confirmació. Això és tot. A continuació veureu una pantalla d'entrada que us instruirà a entrar remotament com a usuari <span class="emphasis"><em>installer</em></span> i la contrasenya que acabeu de proporcionar. Un altre detall important que s'ha de tenir en compte en aquest punt és l'empremta digital del sistema. Caldrà transferir-la de manera segura a la persona encarregada de continuar amb la instal·lació remota. </p>
+<p>Si decidiu continuar la instal·lació localment, sempre podeu prémer <span class="keycap"><strong>Intro</strong></span>, que us tornarà al menú principal, on novament podreu seleccionar un altre component. </p>
+<p>Tornem ara a l'altra banda del cable. En primer lloc, és necessari que configureu el vostre terminal per a UTF-8, ja que aquesta és la codificació que utilitza el sistema d'instal·lació. Si no ho feu, la instal·lació remota encara serà possible, però segurament certs diàlegs o caràcters no es visualitzaran correctament. Establir una connexió amb el sistema d'instal·lació és tan fàcil com teclejar: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>ordinador_a_instal·lar</code></em></code></strong>
+</pre></div>
+<p> On <em class="replaceable"><code>ordinador_a_instal·lar</code></em> és el nom o l'adreça IP de l'ordinador que s'està instal·lant. Abans de fer l'entrada de debò, es mostrarà l'empremta digital del sistema remot, i haureu de confirmar que és correcta. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>El servidor <span class="command"><strong>ssh</strong></span> de l'instal·lador no envia paquets «keep-alive» (“mantén-te viu” en anglès) en la seva configuració predeterminada. En principi una connexió al sistema que s'està instal·lant hauria de mantenir-se oberta indefinidament. Tanmateix, en certes situacions — depenent de la configuració de la xarxa local — és possible que es perdi la connexió després d'un cert període d'inactivitat. Un cas típic en què això pot passar és quan hi ha algun tipus de NAT («Network Address Translation», traducció de l'adreça de xarxa) entre el client i el sistema que s'està instal·lant. Depenent del punt de la instal·lació en què es perdi la connexió, podreu continuar o no després de tornar a connectar. </p>
+<p>Podeu evitar aquest tipus de desconnexions afegint l'opció <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>valor</code></em></code></strong> quan comenceu la connexió <span class="command"><strong>ssh</strong></span>, o afegint la mateixa opció al fitxer de configuració de l'<span class="command"><strong>ssh</strong></span>. Fixeu-vos, però, que en alguns casos afegir aquesta opció també pot <span class="emphasis"><em>causar</em></span> la pèrdua de la connexió (per exemple, si els paquets «keep-alive» (“mantén-te viu” en anglès) s'envien durant un breu tall de la xarxa, del qual <span class="command"><strong>ssh</strong></span> s'hauria recuperat altrament), així que només s'hauria d'utilitzar quan sigui necessari. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Si instal·leu molts ordinadors alhora i, casualment tenen la mateixa adreça IP o el mateix nom, <span class="command"><strong>ssh</strong></span> rebutjarà la connexió. El problema és que hi haurà empremtes digitals diferents per a un mateix identificador, fet que normalment s'interpreta com un atac. Si esteu segurs que no és el cas, esborreu la línia corresponent del fitxer <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3390" class="footnote" name="id3390"><sup class="footnote">[14]</sup></a> i torneu a intentar-ho. </p></td></tr>
+</table></div>
+<p>Després d'entrar, veureu la pantalla inicial, des d'on teniu dues possibilitats anomenades <span class="guimenuitem">Inicia el menú</span> i <span class="guimenuitem">Inicia un intèrpret d'ordres</span>. La primera us durà al menú principal de l'instal·lador, on podreu continuar la instal·lació normalment. L'altra, iniciarà un intèrpret d'ordres des del que podreu examinar, i potser arreglar, el sistema remot. Només hauríeu de començar una sessió SSH per al menú d'instal·lació, però podeu iniciar més intèrprets d'ordres. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avís]" src="images/warning.png"></td>
+<th align="left">Avís</th>
+</tr>
+<tr><td align="left" valign="top"><p>Després d'iniciar la instal·lació remotament sobre SSH, no hauríeu de tornar a la sessió que hi ha a la consola local. Podria corrompre's la base de dades que manté la configuració del nou sistema. Això pot provocar alhora problemes al sistema instal·lat, o fins i tot que la instal·lació no finalitzi correctament. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2582" class="footnote"><p><a href="#id2582" class="para"><sup class="para">[4] </sup></a> En termes tècnics: en cas que hi hagi múltiples usos locals («locales») per l'idioma amb diferents codis de país.</p></div>
+<div id="ftn.id2590" class="footnote"><p><a href="#id2590" class="para"><sup class="para">[5] </sup></a> Amb la prioritat mitjana i baixa sempre podreu escollir el vostre «locale» preferit entre aquells disponibles per a l'idioma escollit (si n'hi ha més d'un).</p></div>
+<div id="ftn.id2596" class="footnote"><p><a href="#id2596" class="para"><sup class="para">[6] </sup></a> Els «locales» tradicionals són aquells que no empren UTF-8, sinó un dels estàndards més antics per a la codificació de caràcters com ISO 8859-1 (emprat pels idiomes de l'Europa occidental) o EUC-JP (emprat pel Japonés).</p></div>
+<div id="ftn.id2776" class="footnote"><p><a href="#id2776" class="para"><sup class="para">[7] </sup></a> L'instal·lador xifrarà el grup de volums LVM utilitzant una clau AES de 256 bits, i aprofitant el suport per a <span class="quote">«<span class="quote">dm-crypt</span>»</span> del nucli.</p></div>
+<div id="ftn.id2870" class="footnote"><p><a href="#id2870" class="para"><sup class="para">[8] </sup></a> Per ser honests, podeu construir un dispositiu de discs múltiples (MD) fins i tot a partir de particions en un mateix dispositiu físic, però això no us aportarà cap benefici. </p></div>
+<div id="ftn.id3113" class="footnote"><p><a href="#id3113" class="para"><sup class="para">[9] </sup></a> Utilitzar una contrasenya com a clau significa en aquest moment que la partició es prepararà utilitzant <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3128" class="footnote"><p><a href="#id3128" class="para"><sup class="para">[10] </sup></a> Es creu que els de les agències amb tres lletres poden recuperar les dades inclòs després de vàries reescriptures a mitjans magnetoòptics.</p></div>
+<div id="ftn.id3171" class="footnote"><p><a href="#id3171" class="para"><sup class="para">[11] </sup></a> Fixeu-vos que el programa que realment instal·la els paquets és <span class="command"><strong>dpkg</strong></span>. Tanmateix, aquesta és una eina de més baix nivell. L'<span class="command"><strong>apt</strong></span> és una eina de més alt nivell que invoca <span class="command"><strong>dpkg</strong></span> com correspon. Permet obtenir paquets del mitjà d'instal·lació, de la xarxa, o de qualsevol altre lloc. També facilita la instal·lació automàtica de les anomenades dependències, altres paquets que fan falta per a que el que estigueu instal·lant funcioni correctament. </p></div>
+<div id="ftn.id3233" class="footnote"><p><a href="#id3233" class="para"><sup class="para">[12] </sup></a> Hauríeu de saber que per mostrar aquesta llista, l'instal·lador tan sols executa el programa <span class="command"><strong>tasksel</strong></span>. Es pot executar en qualsevol moment després de la instal·lació per instal·lar (o esborrar) més paquets, o podeu utilitzar eines més acurades com l'<span class="command"><strong>aptitude</strong></span>. Si esteu buscant un paquet específic, executeu <strong class="userinput"><code>aptitude install <em class="replaceable"><code>paquet</code></em></code></strong>, on <em class="replaceable"><code>paquet</code></em> és el nom del paquet que us interessa.</p></div>
+<div id="ftn.id3328" class="footnote"><p><a href="#id3328" class="para"><sup class="para">[13] </sup></a>És a dir: premeu la tecla <span class="keycap"><strong>Alt</strong></span> que hi ha a la part esquerra de la <span class="keycap"><strong>barra espaiadora</strong></span> i la tecla de funció <span class="keycap"><strong>F2</strong></span> al mateix temps.</p></div>
+<div id="ftn.id3390" class="footnote"><p><a href="#id3390" class="para"><sup class="para">[14] </sup></a> L'ordre següent esborrarà una entrada existent corresponent a un ordinador: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>nom</code></em>|<em class="replaceable"><code>adreça IP</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Introducció als elements </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Carregar microprogramari no inclòs a l'instal·lador</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

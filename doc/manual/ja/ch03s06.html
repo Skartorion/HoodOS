@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. インストール前に行うハードウェア・OS の設定</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch03.html" title="第3章 Debian GNU/Linux のインストール前に">
+<link rel="prev" href="ch03s05.html" title="3.5. マルチブートシステムでの事前パーティション分割">
+<link rel="next" href="ch04.html" title="第4章 システムインストールメディアの入手">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. インストール前に行うハードウェア・OS の設定</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第3章 Debian GNU/Linux のインストール前に</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. インストール前に行うハードウェア・OS の設定</h2></div></div></div>
+<p>この節では、Debian のインストールに先立って必要となるハードウェアの設定について見ていきます。通常この作業では、システムの BIOS/UEFI/システム用ファームウェアの設定をチェックし、場合によってはその設定を変更することになります。<span class="quote">「<span class="quote">BIOS/UEFI</span>」</span> や<span class="quote">「<span class="quote">システムファームウェア</span>」</span>は、ハードウェアが利用する中核的なソフトウェアで、電源投入後のブートプロセスの間に起動される、最も重要なものです。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. BIOS/UEFI 設定メニューの起動</h3></div></div></div>
+<p>BIOS/UEFI はマシンのブートに必要となる基本的機能を提供し、OS がハードウェアにアクセスできるようにするものです。これからインストールしようとしているマシンでも、BIOS/UEFI を設定できるようなメニューがついていると思います。BIOS/UEFI 設定メニューに入るには、コンピュータの電源を入れてからキーを (一つまたは組み合わせて) 押しておく必要があります。多いのは <span class="keycap"><strong>Delete</strong></span> や <span class="keycap"><strong>F2</strong></span> キーですが、製造者によっては別のキーを使うこともあります。通常はコンピュータの起動時にどのキーを押して設定画面に入るのか指示するメッセージが表示されるでしょう。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. ブートデバイスの選択</h3></div></div></div>
+<p>BIOS/UEFI 設定メニューで起動可能な OS をどのデバイスから順に探すのか選択できるようになっています。通常、内蔵ハードドライブや CD/DVD-ROM ドライブ、USB メモリや外付け USB ハードディスクのような USB 大容量デバイスが選択できるでしょう。いまのシステムでは PXE 経由でネットワークからの起動ができるようになっているものもよくあります。 </p>
+<p>選択したインストール用メディア (CD/DVD ROM、USB メモリ、ネットワーク経由) によりますが、適切な起動デバイスが有効になっていなければここで有効化してください。 </p>
+<p>ほとんどの BIOS/UEFI で、システム起動時に起動メニューを呼び出してコンピュータがそのセッションでどのデバイスから起動するか選べるようになっています。これが可能な場合は、通常システム起動時に <span class="quote">「<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>」</span> のような短いメッセージを BIOS/UEFI が表示します。実際にこのメニューに入るために使うキーはシステムにより様々ですが、よく使われるキーは <span class="keycap"><strong>F12</strong></span> や <span class="keycap"><strong>F11</strong></span>、<span class="keycap"><strong>F8</strong></span> があります。このメニューからデバイスを選択した場合は BIOS/UEFI のデフォルトの順は変更されません。つまり、内蔵ハードディスクを通常第一の起動デバイスに設定している状態で USB メモリから一度だけ起動することができます。 </p>
+<p>BIOS/UEFI がその時限りの起動デバイス選択メニューを提供していない場合は、BIOS/UEFI の設定を変更して <code class="classname">debian-installer</code> を起動するデバイスを第一の起動デバイスにする必要があります。 </p>
+<p>残念ながら一部のコンピュータには BIOS/UEFI の動作がおかしいものがあるかもしれません。BIOS/UEFI 設定メニューにしかるべきオプションがあって USB メモリが第一の起動デバイスに選択されていても USB メモリからの <code class="classname">debian-installer</code> の起動ができないかもしれません。こういったシステムの一部では USB メモリを起動メディアとして使うことができません。BIOS/UEFI 設定のデバイスタイプをデフォルトの <span class="quote">「<span class="quote">USB ハードディスク</span>」</span>や <span class="quote">「<span class="quote">USB メモリ</span>」</span> から <span class="quote">「<span class="quote">USB ZIP</span>」</span> や <span class="quote">「<span class="quote">USB CDROM</span>」</span> に変更することにより BIOS を騙して USB メモリから起動することができるものもあります。<span class="phrase">特に isohybrid インストールイメージを USB メモリで使う場合 (<a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. ハイブリッド CD/DVD イメージを使った USB メモリの準備">「ハイブリッド CD/DVD イメージを使った USB メモリの準備」</a> 参照)、USB ハードディスクモードで USB メモリから起動しない BIOS では、デバイスタイプを <span class="quote">「<span class="quote">USB CDROM</span>」</span> に変更すると起動できることがあります。</span>BIOS/UEFI で <span class="quote">「<span class="quote">USB legacy support</span>」</span> を有効にする必要があるかもしれません。 </p>
+<p>BIOS/UEFI を操作して USB メモリから直接起動することができない場合でも、まだ USB メモリにコピーした ISO を使うという選択があります。<a class="xref" href="ch04s04.html" title="4.4. ハードディスク起動ファイルの準備">「ハードディスク起動ファイルの準備」</a> を使って <code class="classname">debian-installer</code> を起動し、インストーラの ISO イメージを探してハードドライブを走査した後で USB デバイスを選択し、インストール用イメージを選びます。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. UEFI ファームウェアを利用しているシステム</h3></div></div></div>
+<p>UEFI (<span class="quote">「<span class="quote">Unified Extensible Firmware Interface</span>」</span>) は新しい種類のシステムファームウェアで、現代的なシステムの多くで採用され、- 他の用途もありますが - 伝統的な PC BIOS の置き換えを意図しています。 </p>
+<p>現在 UEFI を採用しているほとんどの PC システムでファームウェアのいわゆる<span class="quote">「<span class="quote">互換性サポートモジュール</span>」</span> (CSM、Compatibility Support Module) を備えています。これは伝統的な PC BIOS として全く同一のインターフェイスをオペレーティングシステムに提供するため、伝統的な PC BIOS 向けに書かれたソフトウェアを変更せずそのまま使えます。UEFI は完全な後方互換性を維持せず古い PC BIOS をいつか完全に置き換えることを意図していますが、UEFI を採用していながら CSM を備えていないシステムも既に多数存在します。 </p>
+<p>UEFI を備えたシステムでオペレーティングシステムをインストールする際に留意しておくべきことがいくつかあります。ファームウェアがオペレーティングシステムを読み込む方法が BIOS (や UEFI の CSM モード) とネイティブ UEFI とでは根本的に異なります。第一に大きな違いはハードディスクのパーティションをハードディスクに記録する方法です。伝統的な BIOS と UEFI の CSM モードでは DOS パーティションテーブルを利用しますがネイティブ UEFI では<span class="quote">「<span class="quote">GUID パーティションテーブル</span>」</span> (GPT、GUID Partition Table) と呼ばれる、異なるパーティション方式を採用しています。1つのディスクで現実的な目的に利用できるのは2つのうちの1つだけであり、そのため1つのディスクで異なるオペレーティングシステムのマルチブートを用意する場合は同じ種類のパーティションテーブルをその全オペレーティングシステムで使わないといけません。GPT を採用したディスクからのブートはネイティブ UEFI モードでのみ可能ですが、ハードディスク容量増大により GPT の採用がますます一般的になっています。これは伝統的な DOS パーティションテーブルでは容量が約2テラバイト以上のディスクには対応できないのに対して GPT では圧倒的に大容量のディスクに対応できるからです。BIOS (や UEFI の CSM モード) とネイティブ UEFI との他の大きな違いとしてブートコードを保存する位置とそのコードの形式があり、そのため異なるシステムでは異なるブートローダが必要です。 </p>
+<p>UEFI システムの CSM で <code class="classname">debian-installer</code> をブートする場合には後者が重要になります。これは <code class="classname">debian-installer</code> が BIOS から起動されたのかネイティブ UEFI システムから起動されたのか確認して対応するブートローダをインストールするためです。通常これは単純にうまく機能しますが、マルチブート環境では問題が起きる可能性があります。一部の UEFI システムで CSM を利用した場合、脱着可能機器のデフォルトのブートモードが、ハードディスクからブートしたときに実際に利用されるものとは異なる可能性があるためです。そのため、別のインストール済みオペレーティングシステムをハードディスクからブートする際に利用するモードとは異なるモードでインストーラを USB メモリからブートした場合、適切でないブートローダがインストールされ、インストール完了後にシステムがブート不可能になるかもしれません。システムによってはブートデバイスをファームウェアのブートメニューから選択する際に各デバイスについて別個の選択を提示し、CSM からブートするのかネイティブ UEFI モードからブートするのかユーザが選択できるようにしています。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. セキュアブート</h3></div></div></div>
+<p>UEFI に関連する他の話題としてはいわゆる <span class="quote">「<span class="quote">セキュアブート</span>」</span>機構があります。セキュアブートというのは UEFI 実装の機能で、暗号的に特定の鍵により署名済みのコードの読み込み、実行だけをファームウェアに許可します。結果として (潜在的に悪意のある) 署名されていないあるいは未知の鍵により署名されたブートコードを全て阻止します。現実的にはセキュアブートを採用しているほとんどの UEFI システムでデフォルトで受け付ける鍵は Windows ブートローダの署名に利用されている Microsoft の鍵だけです。Debian は <span class="quote">「<span class="quote">shim</span>」</span> という Microsoft により署名されたブートローダを同梱しているので、セキュアブートが有効化されているシステムでも正しく動作するはずです。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Windows の<span class="quote">「<span class="quote">高速起動</span>」</span>/<span class="quote">「<span class="quote">高速スタートアップ</span>」</span>機能の無効化</h3></div></div></div>
+<p>Windows は (Windows 8 では <span class="quote">「<span class="quote">高速起動</span>」</span>、Windows 10 では<span class="quote">「<span class="quote">高速スタートアップ</span>」</span>と呼ばれる) システム起動にかかる時間を短縮する機能を提供しています。技術的には、この機能を有効化すると Windows はシャットダウンを指示したときに実際のシャットダウンやその後の実際のコールドブートを行わず、代わりにディスクへの部分サスペンドのようなことを行い<span class="quote">「<span class="quote">ブート</span>」</span>時間を短縮します。Windows がそのマシンの唯一のオペレーティングシステムである限りこれは問題にはなりませんが、Windows と同一のファイルシステムに別のオペレーティングシステムがアクセスするデュアルブート環境では問題となりデータ消失の可能性があります。その場合、<span class="quote">「<span class="quote">ブート</span>」</span>後にはファイルシステムの実際の状態が Windows がそうであると信じている状態とは異なる可能性があり、そのファイルシステムへの書き込みアクセスがさらに起きるとファイルシステムの破損を引き起こす可能性があります。したがって、デュアルブート環境でファイルシステムの破損を避けるためには<span class="quote">「<span class="quote">高速起動</span>」</span>/<span class="quote">「<span class="quote">高速スタートアップ</span>」</span>機能を Windows 内で無効化する必要があります。 </p>
+<p>さらに、ユーザが以前無効にしていても、その後 Windows Update 機構が (時々) 自動でこの機能を再度有効化することが知られています。この設定を定期的に再チェックすることをお勧めします。 </p>
+<p>別のオペレーティングシステムや <code class="classname">debian-installer</code> のブートを選択するための UEFI 設定へのアクセスが許可されていても<span class="quote">「<span class="quote">高速スタートアップ</span>」</span>を無効化する必要があるかもしれません。一部の UEFI システムにはキーボードコントローラーやUSBハードウェアを初期化しないことによって<span class="quote">「<span class="quote">ブート</span>」</span>時間を短縮しているファームウェアがあります。その場合は Windows をブートしてこの機能を無効化し、ブート順を変更できるようにする必要があります。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. 気をつけるべきハードウェアの問題</h3></div></div></div>
+<p><b>USB BIOS サポートとキーボード. </b>PS/2 形式のキーボードがなく、USB のものだけ場合、ある種の非常に古い PC では、ブートローダーメニューでキーボードを使用するため、BIOS 設定で legacy keyboard emulation を有効にする必要があります。が、今日のシステムでは問題になりません。ブートローダーメニューでキーボードが使用できない場合、マザーボードのマニュアルを調べて、<span class="quote">「<span class="quote">Legacy keyboard emulation</span>」</span> や <span class="quote">「<span class="quote">USB keyboard support</span>」</span> といった BIOS 設定に入ってください。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. マルチブートシステムでの事前パーティション分割 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 第4章 システムインストールメディアの入手</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

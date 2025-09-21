@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Configurarea sistemului pentru a utiliza poșta electronică</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch08.html" title="Cap. 8. Pașii următori și unde să mergeți de aici">
+<link rel="prev" href="ch08s03.html" title="8.3. Lectură și informații suplimentare">
+<link rel="next" href="ch08s05.html" title="8.5. Compilarea unui nou nucleu">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Configurarea sistemului pentru a utiliza poșta electronică</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 8. Pașii următori și unde să mergeți de aici</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Configurarea sistemului pentru a utiliza poșta electronică</h2></div></div></div>
+<p>Astăzi, poșta electronică este o parte importantă a vieții multor oameni. Deoarece există multe opțiuni cu privire la modul de configurare și pentru că este important să fie configurată corect pentru unele instrumente Debian, vom încerca să acoperim elementele de bază în această secțiune. </p>
+<p>Există trei funcții principale care alcătuiesc un sistem de poștă electronică. Mai întâi este <em class="firstterm">Agentul utilizatorului de e-mail</em> („Mail User Agent”: MUA), care este programul pe care un utilizator îl folosește de fapt pentru a compune și a citi corespondența. Apoi, există <em class="firstterm">Agentul de transfer de e-mail</em> („Mail Transfer Agent”: MTA) care se ocupă de transportul mesajelor de la un calculator la altul. Și în ultimul rând este <em class="firstterm">Agentul de livrare a corespondenței</em> („Mail Delivery Agent”: MDA) care se ocupă de livrarea corespondenței primite în căsuța poștală a utilizatorului. </p>
+<p>Aceste trei funcții pot fi îndeplinite prin programe separate, dar pot fi și combinate în unul sau două programe. De asemenea, este posibil ca diferite programe să gestioneze aceste funcții pentru diferite tipuri de corespondență. </p>
+<p>În sistemele Linux și Unix, <span class="command"><strong>mutt</strong></span> este, din punct de vedere istoric, un MUA foarte popular. La fel ca majoritatea programelor tradiționale Linux, este bazat pe text. Este adesea folosit în combinație cu <span class="command"><strong>exim</strong></span> sau <span class="command"><strong>sendmail</strong></span> ca MTA și <span class="command"><strong>procmail</strong></span> ca MDA. </p>
+<p>Odată cu popularitatea tot mai mare a mediilor de birou grafice, utilizarea programelor de poștă electronică grafice precum <span class="command"><strong>evolution</strong></span> din GNOME, <span class="command"><strong>kmail</strong></span> din KDE sau <span class="command"><strong>thunderbird</strong></span> de la Mozilla a devenit din ce în ce mai populară. Aceste programe combină funcția unui MUA, MTA și MDA, dar pot fi — și adesea sunt — folosite în combinație cu instrumentele tradiționale Linux. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Configurația de poștă electronică implicită</h3></div></div></div>
+<p>Chiar dacă intenționați să utilizați un program de poștă electronică grafic, ar fi util să aveți un MTA/MDA tradițional instalat și configurat corect pe sistemul dumneavoastră Debian GNU/Linux. Motivul este că diverse instrumente care rulează pe sistem<a href="#ftn.id4262" class="footnote" name="id4262"><sup class="footnote">[16]</sup></a> să poată trimite notificări importante prin e-mail pentru a informa administratorul de sistem despre probleme sau modificări (potențiale). </p>
+<p>Pentru aceasta puteți instala <code class="classname">exim4</code> și <code class="classname">mutt</code> cu <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> este o combinație MTA/MDA care este relativ mică, dar foarte flexibilă. În mod implicit, acesta va fi configurat să gestioneze numai corespondența locală a sistemului, iar mesajele adresate administratorului de sistem (contul root) vor fi livrate în contul de utilizator obișnuit creat în timpul instalării<a href="#ftn.id4273" class="footnote" name="id4273"><sup class="footnote">[17]</sup></a>. </p>
+<p>Când mesajele de sistem sunt livrate, acestea sunt adăugate într-un fișier în <code class="filename">/var/mail/<em class="replaceable"><code>nume-cont</code></em></code>. Mesajele pot fi citite folosind <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Trimiterea de corespondență în afara sistemului</h3></div></div></div>
+<p>După cum am menționat mai devreme, sistemul Debian instalat este configurat doar pentru a gestiona corespondența locală din sistem, nu pentru a trimite mesaje altora sau pentru a primi mesaje de la alții. </p>
+<p>Dacă doriți ca <code class="classname">exim4</code> să se ocupe de corespondența externă, vă rugăm să consultați următoarea subsecțiune pentru opțiunile de configurare bazice disponibile. Asigurați-vă că testați că mesajele pot fi trimise și primite corect. </p>
+<p>Dacă intenționați să utilizați un program de poștă electronică grafic și să utilizați serverul de poștă electronică al furnizorului dumneavoastră de servicii de internet (ISP) sau al firmei la care lucrați, nu este nevoie să configurați <code class="classname">exim4</code> pentru gestionarea corespondenței externe. Trebuie doar să configurați programul de poștă electronică grafic preferat pentru a utiliza serverele corecte pentru a trimite și primi mesaje (cum să o faceți, este în afara domeniului de aplicare al acestui manual). </p>
+<p>Cu toate acestea, în acest caz, poate fi necesar să configurați utilități individuale pentru a trimite corect mesajele. Un astfel de instrument este <span class="command"><strong>reportbug</strong></span>, un program care facilitează trimiterea de rapoarte de erori pentru pachetele Debian. În mod implicit, se așteaptă să poată folosi <code class="classname">exim4</code> pentru a trimite rapoarte de eroare. </p>
+<p>Pentru a configura corect <span class="command"><strong>reportbug</strong></span> pentru a utiliza un server de poștă electronică extern, rulați comanda <span class="command"><strong>reportbug --configure</strong></span> și răspundeți <span class="quote">„<span class="quote">nu</span>”</span> la întrebarea dacă un MTA este disponibil. Apoi vi se va cere să utilizați serverul SMTP pentru a trimite rapoarte de erori. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Configurarea agentului de transport de corespondență Exim4</h3></div></div></div>
+<p>Dacă doriți ca sistemul dvs. să gestioneze și mesajele externe, va trebui să reconfigurați pachetul <code class="classname">exim4</code><a href="#ftn.id4298" class="footnote" name="id4298"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>După ce ați introdus această comandă (ca root), veți fi întrebat dacă doriți să împărțiți configurația în fișiere mici. Dacă nu sunteți sigur, selectați opțiunea implicită. </p>
+<p>În continuare, vi se vor prezenta mai multe scenarii comune. Alege-l pe cel care seamănă cel mai mult cu nevoile tale. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">sit de internet</span></dt>
+<dd><p>Sistemul dvs. este conectat la o rețea și corespondența dvs. este trimisă și primită direct folosind SMTP. În următoarele ecrane vi se vor pune câteva întrebări de bază, cum ar fi numele de poștă electronică al mașinii dvs. sau o listă de domenii pentru care acceptați sau transmiteți mesaje. </p></dd>
+<dt><span class="term">mesaje trimise prin „smart host”</span></dt>
+<dd>
+<p>În acest scenariu, mesajele trimise sunt redirecționate către o altă mașină, numită <span class="quote">„<span class="quote">smarthost</span>”</span>, care se ocupă de trimiterea mesajului la destinație. De asemenea, <span class="emphasis"><em>smarthost</em></span> stochează de obicei mesajele primite adresate calculatorului dvs., astfel încât nu trebuie să fiți permanent conectat la Internet. Aceasta înseamnă, de asemenea, că trebuie să vă descărcați corespondența de la <span class="emphasis"><em>smarthost</em></span> prin programe precum «fetchmail». </p>
+<p>În multe cazuri, <span class="emphasis"><em>smarthost</em></span> va fi serverul de poștă electronică al ISP-ului tău, ceea ce face ca această opțiune să fie foarte potrivită pentru utilizatorii „dial-up” (conexiune prin modem). Poate fi, de asemenea, un server de poștă electronică al firmei la care lucrați sau chiar un alt sistem din propria rețea. </p>
+</dd>
+<dt><span class="term">mesaje trimise prin „smart host”; fără mesaje locale</span></dt>
+<dd><p>Această opțiune este practic aceeași cu cea anterioară, cu excepția faptului că sistemul nu va fi configurat pentru a gestiona corespondența pentru un domeniu local de poștă electronică. Mesajele din sistemul propriu-zis (de exemplu, pentru administratorul de sistem) vor fi gestionate în continuare. </p></dd>
+<dt><span class="term">doar mesaje locale</span></dt>
+<dd><p>Aceasta este opțiunea cu care este configurat implicit sistemul dumneavoastră. </p></dd>
+<dt><span class="term">nu se configurează acum</span></dt>
+<dd><p>Alegeți această opțiune dacă sunteți absolut convins că știți ce faceți. Acest lucru vă va lăsa cu un sistem de poștă electronică neconfigurat — până nu îl configurați, nu veți putea trimite sau primi niciun mesaj și este posibil să pierdeți câteva mesaje importante de la utilitățile sistemului dumneavoastră (precum <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span> sau <span class="command"><strong>rkhunter</strong></span>). </p></dd>
+</dl></div>
+<p>Dacă niciunul dintre aceste scenarii nu se potrivește nevoilor dvs. sau dacă aveți nevoie de o configurare mai fină, va trebui să editați fișierele de configurare din directorul <code class="filename">/etc/exim4</code> după finalizarea instalării. Mai multe informații despre <code class="classname">exim4</code> pot fi găsite în <code class="filename">/usr/share/doc/exim4</code>; fișierul <code class="filename">README.Debian.gz</code> conține mai multe detalii despre configurarea <code class="classname">exim4</code> și explică unde puteți găsi documentație suplimentară. </p>
+<p>Rețineți că trimiterea de mesaje direct pe Internet atunci când nu aveți un nume de domeniu oficial poate duce la respingerea mesajelor dvs. din cauza măsurilor anti-spam pe serverele de primire. Este de preferat să utilizați serverul de poștă electronică al ISP-ului dumneavoastră. Dacă totuși doriți să trimiteți mesaje direct, este posibil să doriți să utilizați o adresă de poștă electronică diferită de cea generată în mod implicit. Dacă utilizați <code class="classname">exim4</code> ca MTA, acest lucru este posibil prin adăugarea unei intrări în fișierul <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4262" class="footnote"><p><a href="#id4262" class="para"><sup class="para">[16] </sup></a>Exemple sunt: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id4273" class="footnote"><p><a href="#id4273" class="para"><sup class="para">[17] </sup></a> Redirecționarea mesajelor pentru root către contul de utilizator obișnuit este configurată în fișierul <code class="filename">/etc/aliases</code>. Dacă nu a fost creat niciun cont de utilizator obișnuit, mesajele vor fi bineînțeles livrate către contul root. </p></div>
+<div id="ftn.id4298" class="footnote"><p><a href="#id4298" class="para"><sup class="para">[18] </sup></a>Desigur, puteți de asemenea elimina <code class="classname">exim4</code> și să-l înlocuiți cu un MTA/MDA alternativ. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Lectură și informații suplimentare </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Compilarea unui nou nucleu</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

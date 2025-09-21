@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Programe de partiționare în Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apc.html" title="Anexa C. Partiționarea pentru Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Numele dispozitivelor în Linux">
+<link rel="next" href="apd.html" title="Anexa D. Informații diverse">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Programe de partiționare în Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa C. Partiționarea pentru Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Programe de partiționare în Debian</h2></div></div></div>
+<p>Mai multe varietăți de programe de partiționare au fost adaptate de dezvoltatorii Debian pentru a lucra pe diferite tipuri de discuri dure/solide și arhitecturi de calculator. Mai jos este o listă a programelor aplicabile pentru arhitectura dvs. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Instrumentul de partiționare recomandat în Debian. Acest „cuțit elvețian (briceag)” poate, de asemenea, să redimensioneze partițiile, să creeze sisteme de fișiere <span class="phrase"> (<span class="quote">„<span class="quote">formatear</span>”</span> în limbajul Windows)</span> și să le atribuie punctelor de montare. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Instrumentul original (inițial) din Linux de partiționare a discurilor, bun pentru un guru. </p>
+<p>Fiți atenți dacă aveți partiții FreeBSD existente pe mașina dvs. Nucleele de instalare includ suport pentru aceste partiții, dar modul în care <span class="command"><strong>fdisk</strong></span> le reprezintă (sau nu) poate face ca numele dispozitivelor să difere. Consultați <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Rețetarul Linux+FreeBSD</a> (Linux+FreeBSD HOWTO). </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Un instrument de partiționare a discurilor simplu de utilizat, pe ecran complet pentru noi, ceilalți. </p>
+<p>Rețineți că instrumentul <span class="command"><strong>cfdisk</strong></span> nu înțelege deloc partițiile FreeBSD și, din nou, numele dispozitivelor pot diferi ca urmare. </p>
+</dd>
+</dl></div>
+<p>Unul dintre aceste programe va fi rulat implicit atunci când selectați <span class="guimenuitem">Partiționează discuri</span> (sau similar). Este posibil să folosiți un alt instrument de partiționare din linia de comandă pe VT2, dar acest lucru nu este recomandat. </p>
+<p>Nu uitați să marcați partiția de pornire ca <span class="quote">„<span class="quote">Bootable</span>”</span> (aptă pentru a fi pornită). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5273"></a>C.5.1. Partiționarea pentru <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Dacă utilizați un disc dur/solid nou (sau doriți să ștergeți întreaga tabelă de partiții a discului), trebuie creată o nouă tabelă de partiții. <span class="quote">„<span class="quote">Partiționarea ghidată</span>”</span> face acest lucru automat, dar când partiționați manual, mutați selecția la intrarea din partea de sus a discului și apăsați <span class="keycap"><strong>Enter</strong></span>. Aceasta va crea o nouă tabelă de partiții pe acel disc. În modul expert, vi se va cere apoi tipul tabelei de partiții. Implicit pentru sistemele bazate pe UEFI este <span class="quote">„<span class="quote">gpt</span>”</span>, în timp ce pentru lumea BIOS mai veche, valoarea implicită este <span class="quote">„<span class="quote">msdos</span>”</span>. Într-o instalare cu prioritate standard, aceste valori implicite vor fi utilizate automat. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Când a fost selectată o tabelă de partiții cu tipul <span class="quote">„<span class="quote">gpt</span>”</span> (implicit pentru sistemele UEFI), un spațiu liber de 1 Mo va fi creat automat la începutul discului. Acesta este destinat și necesar pentru a încorpora încărcătorul de pornire GRUB2. </p></td></tr>
+</table></div>
+<p>Dacă aveți un alt sistem de operare existent, cum ar Windows și doriți să păstrați acel sistem de operare în timp ce instalați Debian, poate fi necesar să-i redimensionați partiția pentru a elibera spațiu pentru instalarea Debian. Programul de instalare acceptă redimensionarea sistemelor de fișiere FAT și NTFS; când ajungeți la pasul de partiționare al programului de instalare, selectați opțiunea <span class="guimenuitem">Manual</span> și apoi pur și simplu selectați o partiție existentă și modificați dimensiunea acesteia. </p>
+<p>În timp ce sistemele UEFI moderne nu au astfel de limitări enumerate mai jos, vechiul BIOS al calculatorului adaugă, în general, constrângeri suplimentare pentru partiționarea discului. Există o limitare a câte partiții <span class="quote">„<span class="quote">primare</span>”</span> și <span class="quote">„<span class="quote">logice</span>”</span> poate conține o unitate. </p>
+<p>Pe un astfel de sistem vechi de BIOS, partițiile <span class="quote">„<span class="quote">Primare</span>”</span> sunt schema originală de partiționare pentru discurile PC. Cu toate acestea, pot fi doar patru de acest tip. Pentru a depăși această limitare, au fost inventate partițiile <span class="quote">„<span class="quote">extinse</span>”</span> și <span class="quote">„<span class="quote">logice</span>”</span>. Stabilind una dintre partițiile primare ca o partiție extinsă, puteți subdiviza tot spațiul alocat acelei partiții în partiții logice. Puteți crea până la 60 de partiții logice pentru fiecare partiție extinsă; cu toate acestea, puteți avea doar o partiție extinsă pe disc. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Numele dispozitivelor în Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> Anexa D. Informații diverse</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

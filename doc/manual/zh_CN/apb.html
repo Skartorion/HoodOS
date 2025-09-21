@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>附录 B. 使用预置自动进行安装</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="prev" href="apas05.html" title="A.5. 末了…">
+<link rel="next" href="apbs01.html" title="B.1. 介绍">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">附录 B. 使用预置自动进行安装</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apas05.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center"> </th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs01.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="appendix">
+<div class="titlepage"><div><div><h1 class="title">
+<a name="appendix-preseed"></a>附录 B. 使用预置自动进行安装</h1></div></div></div>
+<div class="toc">
+<p><b>目录</b></p>
+<dl class="toc">
+<dt><span class="sect1"><a href="apbs01.html">B.1. 介绍</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs01.html#preseed-methods">B.1.1. 预置方法</a></span></dt>
+<dt><span class="sect2"><a href="apbs01.html#preseed-limitations">B.1.2. 限制</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs02.html">B.2. 使用预置</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs02.html#preseed-loading">B.2.1. 加载预置文件</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-bootparms">B.2.2. 使用引导参数预置问题的答案</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-auto">B.2.3. auto 模式</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-aliases">B.2.4. 预置中有用的别名</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-bootparms-examples">B.2.5. 引导提示预置的例子</a></span></dt>
+<dt><span class="sect2"><a href="apbs02.html#preseed-dhcp">B.2.6. 使用 DHCP 服务器指定预置文件</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs03.html">B.3. 创建预置文件</a></span></dt>
+<dt><span class="sect1"><a href="apbs04.html">B.4. 预置文件的内容(trixie)</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs04.html#preseed-l10n">B.4.1. 本地化</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-speech">B.4.2. 语音合成</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-network">B.4.3. 网络设置</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-network-console">B.4.4. 网络控制台</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-mirror">B.4.5. 镜像设置</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-account">B.4.6. 帐号设置</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-time">B.4.7. 时钟与时区设置</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-partman">B.4.8. 分区</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-base-installer">B.4.9. 基本系统安装</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-apt">B.4.10. 设置 apt</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-pkgsel">B.4.11. 选择软件包</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-bootloader">B.4.12. 安装 bootloader</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-finish">B.4.13. 完成安装</a></span></dt>
+<dt><span class="sect2"><a href="apbs04.html#preseed-other">B.4.14. 预置其他的软件包</a></span></dt>
+</dl></dd>
+<dt><span class="sect1"><a href="apbs05.html">B.5. 高级选项</a></span></dt>
+<dd><dl>
+<dt><span class="sect2"><a href="apbs05.html#preseed-hooks">B.5.1. 安装过程中运行用户命令</a></span></dt>
+<dt><span class="sect2"><a href="apbs05.html#preseed-seenflag">B.5.2. 使用预置修改默认值</a></span></dt>
+<dt><span class="sect2"><a href="apbs05.html#preseed-chainload">B.5.3. 预置文件链</a></span></dt>
+</dl></dd>
+</dl>
+</div>
+<p>本附录说明如何预置 <code class="classname">debian-installer</code> 中提问的答案，让安装过程自动化。 </p>
+<p>本附录使用的配置片段还放在预置例子文件 <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span> 里面。 </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apas05.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"> </td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs01.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">A.5. 末了… </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> B.1. 介绍</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

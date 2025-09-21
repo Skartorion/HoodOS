@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian - partitioneringsprogrammer</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Appendiks C. Partitionering for Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Enhedsnavne i Linux">
+<link rel="next" href="apd.html" title="Appendiks D. Diverse forklaringer">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian - partitioneringsprogrammer</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks C. Partitionering for Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian - partitioneringsprogrammer</h2></div></div></div>
+<p>Flere variationer af partitioneringsprogrammer er blevet tilpasset af Debian-udviklere til at fungere på forskellige typer af harddiske og computerarkitekturer. Her følger en liste over programmer, som er egnede for din arkitektur. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Anbefalet partitioneringsværktøj i Debian. Denne schweitzerkniv kan også ændre størrelse på partitioner, oprette filsystemer <span class="phrase"> (<span class="quote">“<span class="quote">formatere</span>”</span> i Windows speak)</span> og tildele dem til monteringspunkter. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Det originale Linux-diskpartitioneringsprogram, godt for guruer. </p>
+<p>Vær forsigtig hvis du har eksisterende FreeBSD-partitioner på din maskine. Installationskernerne inkluderer understøttelse for disse partitioner, men den måde som <span class="command"><strong>fdisk</strong></span> repræsenterer dem (eller ej) kan gøre at enhedsnavnene er forskellige. Se <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Et simpelt fuldskærms diskpartitioneringsprogram for resten af os. </p>
+<p>Bemærk at <span class="command"><strong>cfdisk</strong></span> overhovedet ikke forstår FreeBSD-partitioner, og, igen, enhedsnavne kan være forskellige som et resultat heraf. </p>
+</dd>
+</dl></div>
+<p>Et af disse programmer vil blive kørt som standard når du vælger <span class="guimenuitem">Partitionsdiske</span> (eller lignende). Det kan være muligt at bruge et andet partitioneringsværktøj fra kommandolinjen på VT2, men dette anbefales ikke. </p>
+<p>Husk at markere din opstartspartition som <span class="quote">“<span class="quote">Bootable</span>”</span>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4671"></a>C.5.1. Partitionering for <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Hvis du bruger en ny harddisk (eller ønsker at rydde hele partitionstabellen for din disk), så skal en ny partitionstabel oprettes. Den <span class="quote">“<span class="quote">Guidede partitionering</span>”</span> gør dette automatisk, men under manuel partitionering, flyt markeringen på topniveau-elementet for disken og tryk på <span class="keycap"><strong>Enter</strong></span>. Det vil oprette en ny partitionstabel på den disk. I eksperttilstand, vil du blive spurgt om partitionstabellens type. Standarden for UEFI-baserede systemer er <span class="quote">“<span class="quote">gpt</span>”</span>, mens standardværdien i den ældre BIOS-verden er <span class="quote">“<span class="quote">msdos</span>”</span>. I en installation med standardprioritet vil disse standarder blive anvendt automatisk. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Når en partitionstabel med typen <span class="quote">“<span class="quote">gpt</span>”</span> blev valgt (standarden for UEFI-systemer), vil 1 MB ledig plads automatisk blive oprettet i begyndelsen af disken. Dette er med vilje og krævet for at indlejre GRUB2-opstartsindlæseren. </p></td></tr>
+</table></div>
+<p>If you have an existing other operating system such as Windows and you want to preserve that operating system while installing Debian, you may need to resize its partition to free up space for the Debian installation. The installer supports resizing of both FAT and NTFS filesystems; when you get to the installer's partitioning step, select the option <span class="guimenuitem">Manual</span> and then simply select an existing partition and change its size. </p>
+<p>While modern UEFI systems don't have such limitations as listed below, the old PC BIOS generally adds additional constraints for disk partitioning. There is a limit to how many <span class="quote">“<span class="quote">primary</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions a drive can contain. </p>
+<p>On such old PC BIOS system, <span class="quote">“<span class="quote">primary</span>”</span> partitions are the original partitioning scheme for PC disks. However, there can only be four of them. To get past this limitation, <span class="quote">“<span class="quote">extended</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions were invented. By setting one of your primary partitions as an extended partition, you can subdivide all the space allocated to that partition into logical partitions. You can create up to 60 logical partitions per extended partition; however, you can only have one extended partition per drive. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Enhedsnavne i Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> Appendiks D. Diverse forklaringer</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

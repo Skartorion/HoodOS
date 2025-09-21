@@ -1,0 +1,658 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Obsah souboru s přednastavením (pro trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apb.html" title="Příloha B. Automatizování instalací pomocí přednastavení">
+<link rel="prev" href="apbs03.html" title="B.3. Vytvoření souboru s přednastavením">
+<link rel="next" href="apbs05.html" title="B.5. Pokročilé možnosti">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Obsah souboru s přednastavením (pro trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha B. Automatizování instalací pomocí přednastavení</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Obsah souboru s přednastavením (pro trixie)</h2></div></div></div>
+<p>Útržky konfigurace použité v této části jsou také dostupné jako samostatný soubor na <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Tento příklad je založen na instalaci pro architekturu Intel x86. Jestliže instalujete na jinou architekturu, nemusí některá nastavení odpovídat těm uvedeným (výběr klávesnice, instalace zavaděče) a budete je muset nahradit adekvátními hodnotami. </p>
+<p>Podrobnosti o tom, jak jednotlivé komponenty instalačního systému pracují, naleznete v kapitole <a class="xref" href="ch06s03.html" title="6.3. Použití jednotlivých komponent">6.3 – „Použití jednotlivých komponent“</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Lokalizace</h3></div></div></div>
+<p>Nastavení lokalizačních proměnných bude fungovat pouze v případě, když používáte přednastavení přes initrd, nebo pomocí zaváděcích parametrů jádra. U ostatních způsobů se totiž soubor s přednastavením nahraje až po zobrazení těchto otázek. Výjimkou je automatický režim (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Automatický režim">B.2.3 – „Automatický režim“</a>), který odsune otázky ohledně lokalizace na později a umožní je tak přednastavit všemi známými způsoby. </p>
+<p>Místní prostření (locale) slouží k současnému zadání jazyka i země. Například pomocí zaváděcího parametru jádra můžete zadat <strong class="userinput"><code>locale=<em class="replaceable"><code>cs_CZ.UTF-8</code></em></code></strong>. </p>
+<p>Although this method is very easy to use, it does not allow preseeding of all possible combinations of language, country and locale<a href="#ftn.id4307" class="footnote" name="id4307"><sup class="footnote">[19]</sup></a>. So alternatively the values can be preseeded individually. Language and country can also be specified as boot parameters. </p>
+<div class="informalexample"><pre class="screen"># Přednastavením locale se automaticky nastaví jazyk, země a locale.
+d-i debian-installer/locale string cs_CZ.UTF-8
+
+# Pro větší pružnost je též možno nastavit hodnoty samostatně.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# Volitelně můžete zadat další locale, která se mají vygenerovat.
+#d-i localechooser/supported-locales multiselect cs_CZ.UTF-8, en_US.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Nastavení klávesnice se skládá z výběru klávesové mapy a přepínače mezi zvolenou mapou a US variantou. Během instalace jsou dostupné pouze základní klávesové mapy. Ostatní dostupné varianty naleznete až v nainstalovaném systému příkazem <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Výběr klávesnice.
+d-i keyboard-configuration/xkb-keymap select cz
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Nastavení klávesnice můžete přeskočit nastavením proměnné <code class="classname">keymap</code> na hodnotu <strong class="userinput"><code>skip-config</code></strong>. Tím se zachová výchozí klávesová mapa jádra. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Speech synthesis</h3></div></div></div>
+<p>When installing with software speech synthesis (i.e. <code class="literal">speakup.synth=soft</code> passed on the kernel command line), the sound board and the voice to be used can be preseeded. </p>
+<p>Since speech synthesis is started very early, this can only be preseeded from initrd or the kernel command line. </p>
+<p>Preseeding <code class="literal">espeakup/voice</code> also enables configuring the installed system with speech accessibility features. This takes effect even if software speech synthesis was not actually enabled inside the installer. </p>
+<div class="informalexample"><pre class="screen"># Which ALSA card to be used for software speech.
+# Can be a number from 0, or an ID as seen in
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Which espeak-ng voice to be used
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Nastavení sítě</h3></div></div></div>
+<p>Of course, preseeding the network configuration won't work if you're loading your preconfiguration file from the network. But it's great when you're booting from optical disc or USB stick. If you are loading preconfiguration files from the network, you can pass network config parameters by using kernel boot parameters. </p>
+<p>Potřebujete-li při zavádění ze sítě vybrat konkrétní síťové rozhraní ještě před nahráním souboru s přednastavením, použijte zaváděcí parametr <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Přestože přednastavení síťování není běžně dostupné při přednastavení ze sítě (tj. při použití <span class="quote">„<span class="quote">preseed/url</span>“</span>), můžete to obejít následujícím hackem (např. pokud chcete síťovému rozhraní nastavit statickou adresu). Hack spočívá ve vynucení opětovné konfigurace sítě po načtení souboru s přednastavením. Stačí vytvořit skript pro <span class="quote">„<span class="quote">preseed/run</span>“</span> obsahující následující příkazy: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Pro nastavení sítě lze využít následující proměnné: </p>
+<div class="informalexample"><pre class="screen"># Disable network configuration entirely. This is useful for cdrom
+# installations on non-networked devices where the network questions,
+# warning and long timeouts are a nuisance.
+#d-i netcfg/enable boolean false
+
+# netcfg will choose an interface that has link if possible. This makes it
+# skip displaying a list if there is more than one interface.
+d-i netcfg/choose_interface select auto
+
+# To pick a particular interface instead:
+#d-i netcfg/choose_interface select eth1
+
+# To set a different link detection timeout (default is 3 seconds).
+# Values are interpreted as seconds.
+#d-i netcfg/link_wait_timeout string 10
+
+# If you have a slow dhcp server and the installer times out waiting for
+# it, this might be useful.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Automatic network configuration is the default.
+# If you prefer to configure the network manually, uncomment this line and
+# the static network configuration below.
+#d-i netcfg/disable_autoconfig boolean true
+
+# If you want the preconfiguration file to work on systems both with and
+# without a dhcp server, uncomment these lines and the static network
+# configuration below.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Static network configuration.
+#
+# IPv4 example
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6 example
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Any hostname and domain names assigned from dhcp take precedence over
+# values set here. However, setting the values still prevents the questions
+# from being shown, even if values come from dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# If you want to force a hostname, regardless of what either the DHCP
+# server returns or what the reverse DNS entry for the IP is, uncomment
+# and adjust the following line.
+#d-i netcfg/hostname string somehost
+
+# Disable that annoying WEP key dialog.
+d-i netcfg/wireless_wep string
+# The wacky dhcp hostname that some ISPs use as a password of sorts.
+#d-i netcfg/dhcp_hostname string radish
+
+# If you want to completely disable firmware lookup (i.e. not use firmware
+# files or packages that might be available on installation images):
+#d-i hw-detect/firmware-lookup string never
+
+# If non-free firmware is needed for the network or other hardware, you can
+# configure the installer to always try to load it, without prompting. Or
+# change to false to disable asking.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Pokud není proměnná <code class="classname">netcfg/get_netmask</code> přednastavená, <span class="command"><strong>netcfg</strong></span> si síťovou masku dopočítá automaticky. Pro plně automatické instalace musíte v takovém případě nastavit proměnnou jako <code class="literal">seen</code>, aby instalace nečekala na potvrzení spočítané masky. Obdobně je možné nepřednastavovat proměnnou <code class="classname">netcfg/get_gateway</code> a nechat <span class="command"><strong>netcfg</strong></span>, aby automaticky automaticky odhadl adresu brány. Jako speciální případ je možné nastavit proměnnou <code class="classname">netcfg/get_gateway</code> na hodnotu <span class="quote">„<span class="quote">none</span>“</span>, což znamená, že se brána nemá použít vůbec. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Síťová konzole</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Následující nastavení se hodí v situacích, kdy chcete instalovat
+# vzdáleně přes SSH pomocí komponenty network-console.
+# Toto přednastavení má smysl pouze pokud plánujete dokončit
+# instalaci ručně.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>More information related to network-console can be found in <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Installation over network-console">6.3.10 – „Installation over network-console“</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Nastavení zrcadla</h3></div></div></div>
+<p>V závislosti na způsobu instalace můžete zrcadlo použít pro stažení dodatečných komponent instalačního systému, stažení základního systému a pro nastavení souboru <code class="filename">/etc/apt/sources.list</code>. </p>
+<p>Parametr <code class="classname">mirror/suite</code> určuje verzi instalovaného systému. </p>
+<p>Parametr <code class="classname">mirror/udeb/suite</code> určuje verzi Debianu, ze které se stáhnou dodatečné komponenty instalačního systému. Nastavení této proměnné má smysl pouze v případě, že komponenty stahujete ze sítě a potřebujete, aby odpovídaly verzi initrd, který se používá pro instalaci. Instalační systém obvykle zvolí správnou hodnotu, takže by neměl být důvod tuto proměnnou měnit. </p>
+<div class="informalexample"><pre class="screen"># Mirror protocol:
+# If you select ftp, the mirror/country string does not need to be set.
+# Default value for the mirror protocol: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string ftp.cz.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Suite to install.
+#d-i mirror/suite string testing
+# Suite to use for loading installer components (optional).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Nastavení účtů</h3></div></div></div>
+<p>Instalační systém umožňuje přednastavit jak heslo uživatele root, tak jméno a heslo prvního běžného uživatele systému. Heslo můžete zadat buď v nešifrované podobě, nebo jako crypt(3) <span class="emphasis"><em>hash</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Přednastavení hesel není bezpečné, protože kdokoliv s přístupem k souboru s přednastavením si tato hesla může přečíst. Z pohledu bezpečnosti je použití hashů lepší, ovšem vzhledem k možným útokům hrubou silou je třeba zvolit silný algoritmus jako SHA-256 nebo SHA512. Dřívější hashovací algoritmy jako DES a MD5 jsou považovány za slabé. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Přeskočí vytvoření účtu pro roota (běžný uživatel bude moci použít
+# sudo).
+#d-i passwd/root-login boolean false
+# Volitelně přeskočí vytvoření běžného uživatelského účtu.
+#d-i passwd/make-user boolean false
+
+# Rootovo heslo v čitelném tvaru
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# nebo šifrované pomocí crypt(3) hashe.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Vytvoření účtu běžného uživatele.
+#d-i passwd/user-fullname string Jan Novak
+#d-i passwd/username string jan
+# Heslo běžného uživatele v čitelném tvaru
+#d-i passwd/user-password password nebezpecne
+#d-i passwd/user-password-again password nebezpecne
+# nebo šifrované pomocí crypt(3) hashe.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Nastaví UID běžného uživatele (jinak se použije výchozí hodnota).
+#d-i passwd/user-uid string 1010
+
+# Uživatelský účet bude automaticky přidán do několika standardních
+# skupin. Chcete-li to změnit, zadejte seznam požadovaných skupin.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Do proměnných <code class="classname">passwd/root-password-crypted</code> a <code class="classname">passwd/user-password-crypted</code> můžete jako hodnotu zadat znak vykřičník <span class="quote">„<span class="quote">!</span>“</span>, což znamená, že daný účet bude zakázán. To se může hodit například pro účet root, což ovšem předpokládá, že máte nastavenu nějakou jinou možnost, jak počítač spravovat (například pomocí <span class="command"><strong>sudo</strong></span> nebo autentizace přes SSH klíče). </p>
+<p>SHA-512 hash hesla můžete vygenerovat následujícím příkazem (z balíku <code class="classname">whois</code>): </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Nastavení hodin a časového pásma</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Určuje, zda jsou hardwarové hodiny nastaveny na UTC.
+d-i clock-setup/utc boolean true
+
+# Proměnnou můžete nastavit na libovolnou platnou hodnotu $TZ;
+# Seznam časových pásem naleznete v /usr/share/zoneinfo/.
+d-i time/zone string Europe/Prague
+
+# Určuje, zda se mají při instalaci nastavit hodiny pomocí NTP.
+d-i clock-setup/ntp boolean true
+# NTP server, který se má použít. Výchozí hodnota je většinou
+# dostačující.
+#d-i clock-setup/ntp-server string tak.cesnet.cz
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Rozdělení disku</h3></div></div></div>
+<p>Dělení disku je víceméně omezeno možnostmi, které nabízí <code class="classname">partman-auto</code>. Můžete zvolit rozdělení buď stávajícího volného místa, nebo celého disku. Rozvržení oblastí můžete určit pomocí předdefinovaného schematu, vlastního schematu ze souboru nebo schematu obsaženém v souboru s přednastavením. </p>
+<p>Přednastavení pokročilejších konfigurací s RAIDem, LVM a šifrováním je sice podporováno, ale ne s takovými možnostmi, jako při ručním dělení. </p>
+<p>Příklady níže ukazují jen základní použití schemat. Podrobnější informace naleznete v souborech <code class="filename">partman-auto-recipe.txt</code> a <code class="filename">partman-auto-raid-recipe.txt</code>, které jsou součástí balíku <code class="classname">debian-installer</code>. Oba soubory jsou též dostupné ze <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top">zdrojového repositáře <code class="classname">debian-installer</code></a>. Poznamenejme, že podporovaná funkcionalita se může mezi jednotlivými vydáními lišit. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Označení disků závisí na pořadí, ve kterém jsou nahrány jejich ovladače. Jestliže se v systému nachází více disků, tak se ubezpečte, že jste vybrali ten správný. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Příklad dělení disku</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># If the system has free space you can choose to only partition that space.
+# This is only honoured if partman-auto/method (below) is not set.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Alternatively, you may specify a disk to partition. If the system has only
+# one disk the installer will default to using that, but otherwise the device
+# name must be given in traditional, non-devfs format (so e.g. /dev/sda
+# and not e.g. /dev/discs/disc0/disc).
+# For example, to use the first SCSI/SATA hard disk:
+#d-i partman-auto/disk string /dev/sda
+# In addition, you'll need to specify the method to use.
+# The presently available methods are:
+# - regular: use the usual partition types for your architecture
+# - lvm:     use LVM to partition the disk
+# - crypto:  use LVM within an encrypted partition
+d-i partman-auto/method string lvm
+
+# You can define the amount of space that will be used for the LVM volume
+# group. It can either be a size with its unit (eg. 20 GB), a percentage of
+# free space or the 'max' keyword.
+d-i partman-auto-lvm/guided_size string max
+
+# If one of the disks that are going to be automatically partitioned
+# contains an old LVM configuration, the user will normally receive a
+# warning. This can be preseeded away...
+d-i partman-lvm/device_remove_lvm boolean true
+# The same applies to pre-existing software RAID array:
+d-i partman-md/device_remove_md boolean true
+# And the same goes for the confirmation to write the lvm partitions.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# You can choose one of the predefined partitioning recipes:
+# - atomic: all files in one partition
+# - home:   separate /home partition
+# - multi:  separate /home, /var, and /tmp partitions
+# - server: separate /var and /srv partitions; swap limitted to 1G
+# - small_disk: scheme dedicated to small harddrives (under 10GB)
+d-i partman-auto/choose_recipe select atomic
+
+# Or provide a recipe of your own...
+# If you have a way to get a recipe file into the d-i environment, you can
+# just point at it.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# If not, you can put an entire recipe into the preconfiguration file in one
+# (logical) line. This example creates a small /boot partition, suitable
+# swap, and uses the rest of the space for the root partition:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# The full recipe format is documented in the file partman-auto-recipe.txt
+# included in the 'debian-installer' package or available from D-I source
+# repository. This also documents how to specify settings such as file
+# system labels, volume group names and which physical devices to include
+# in a volume group.
+
+## Partitioning for EFI
+# If your system needs an EFI partition you could add something like
+# this to the recipe above, as the first element in the recipe:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# The fragment above is for the amd64 architecture; the details may be
+# different on other architectures. The 'partman-auto' package in the
+# D-I source repository may have an example you can follow.
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Force UEFI booting ('BIOS compatibility' will be lost). Default: false.
+#d-i partman-efi/non_efi_system boolean true
+# Ensure the partition table is GPT - this is required for EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# When disk encryption is enabled, skip wiping the partitions beforehand.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Rozdělení při použití RAIDu</h4></div></div></div>
+<p>Pomocí přednastavení též můžete nastavit oblasti na polích softwarového RAIDu. Podporovány jsou RAID úrovně 0, 1, 5, 6 a 10, vytváření degradovaných polí a určení rezervních zařízení. </p>
+<p>Používáte-li RAID 1, můžete podle části <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Instalace zavaděče">B.4.12 – „Instalace zavaděče“</a> přednastavit grub, aby se nainstaloval do všech zařízení v poli použitých. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>U tohoto typu automatického rozdělení se dá velice lehce něco pokazit. Navíc se jedná o komponentu, kterou vývojáři <code class="classname">debian-installer</code> testují relativně málo. Odpovědnost za správné zapsání návodu pro rozdělení (aby dával smysl a nevytvářel konflikty) nese uživatel. V případě problémů zkontrolujte <code class="filename">/var/log/syslog</code>. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Metoda by měla být nastavena na "raid".
+#d-i partman-auto/method string raid
+# Zadejte disky k rozdělení. Na všech bude nakonec stejné rozložení,
+# takže to bude fungovat pouze pokud mají disky stejnou velikost.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+# Dále musíte zadat fyzické oblasti, které se mají použít.
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Na závěr musíte zadat, jakým způsobem se mají dříve definované oblasti
+# použít v nastavení RAIDu. Důležité je použít správná čísla logických
+# oblastí. Podporovány jsou RAID úrovně 0, 1, 5, 6 a 10; zařízení jsou
+# oddělena pomocí "#".
+# Parametry jsou:
+# &lt;typraidu&gt; &lt;početzařízení&gt; &lt;početrezerv&gt; &lt;typss&gt; &lt;přípbod&gt; \
+#          &lt;zařízení&gt; &lt;rezervnízařízení&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Více informací naleznete v souboru partman-auto-recipe.txt dostupném
+# v balíku "debian-installer" nebo ve zdrojovém repositáři D-I.
+
+# Toto zajistí, že se partman nebude při rozdělování ptát na potvrzení.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Způsob připojení oblastí</h4></div></div></div>
+<p>Souborové systémy se obvykle připojují pomocí jedinečného univerzálního identifikátoru, tzv. UUID. To umožňuje korektní připojení oblastí i v případech, kdy se změní jejich jména zařízení. UUID jsou dlouhé a špatně se čtou, takže pokud si budete přát, může instalátor připojit souborové systémy pomocí tradičních jmen zařízení, nebo pomocí názvů oblastí, které jim přidělíte. Zvolíte-li připojení pomocí názvů oblastí, budou oblasti bez nastaveného názvu připojeny pomocí UUID. </p>
+<p>Zařízení se stabilními jmény, jako např. logické svazky LVM, budou místo UUID nadále používat připojení pomocí tradičních jmen zařízení. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Tradiční jména zařízení se mohou měnit v závislosti na pořadí, ve kterém jádro při zavádění zařízení objeví. To může způsobit připojení chybného souborového systému. Podobný problém existuje v případě použití názvů oblastí, protože při zapojení dalšího disku (i externího) mohou použité názvy oblastí kolidovat a tím pádem není zaručeno, která oblast se připojí. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Výchozí je připojování pomocí UUID, ale můžete zvolit též "traditional"
+# pro použití tradičních jmen zařízení, nebo "label" pro použití názvů
+# oblastí (se záchytnou možností použití UUID).
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Instalace základního systému</h3></div></div></div>
+<p>V této fázi instalace se toho moc nastavit nedá. Jediné otázky se týkají instalace jádra. </p>
+<div class="informalexample"><pre class="screen"># Nastaví APT, aby implicitně neinstaloval doporučené balíky. Použití
+# této volby může znamenat instalaci nekompletního systému a měli by
+# ji používat pouze zkušení uživatelé.
+#d-i base-installer/install-recommends boolean false
+
+# (Meta) balík jádra, který se má nainstalovat; nechcete-li instalovat
+# žádné jádro, zadejte "none".
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Nastavení APT</h3></div></div></div>
+<p>Nastavení souboru <code class="filename">/etc/apt/sources.list</code> a několika základních parametrů je plně řízeno typem instalace a dříve zodpovězenými otázkami. Volitelně můžete přidat další (lokální) archivy. </p>
+<div class="informalexample"><pre class="screen"># Choose, if you want to scan additional installation media
+# (default: false).
+d-i apt-setup/cdrom/set-first boolean false
+# You can choose to install non-free firmware.
+#d-i apt-setup/non-free-firmware boolean true
+# You can choose to install non-free and contrib software.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Uncomment the following line, if you don't want to have the sources.list
+# entry for a DVD/BD installation image active in the installed system
+# (entries for netinst or CD images will be disabled anyway, regardless of
+# this setting).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Uncomment this if you don't want to use a network mirror.
+#d-i apt-setup/use_mirror boolean false
+# Select which update services to use; define the mirrors to be used.
+# Values shown below are the normal defaults.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Additional repositories, local[0-9] available
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Enable deb-src lines
+#d-i apt-setup/local0/source boolean true
+# URL to the public key of the local repository; you must provide a key or
+# apt will complain about the unauthenticated repository and so the
+# sources.list line will be left commented out.
+#d-i apt-setup/local0/key string http://local.server/key
+# or one can provide it in-line by base64 encoding the contents of the
+# key file (with `base64 -w0`) and specifying it thus:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# The content of the key file is checked to see if it appears to be ASCII-armoured.
+# If so it will be saved with an ".asc" extension, otherwise it gets a '.gpg' extension.
+# "keybox database" format is currently not supported. (see generators/60local in apt-setup's source)
+
+# By default the installer requires that repositories be authenticated
+# using a known gpg key. This setting can be used to disable that
+# authentication. Warning: Insecure, not recommended.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Uncomment this to add multiarch configuration for i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Výběr balíků</h3></div></div></div>
+<p>Můžete nainstalovat libovolnou kombinaci dostupných úloh. V době psaní to zahrnuje: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (standardní unixové nástroje) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (grafické prostředí) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (prostředí Gnome) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (prostředí XFCE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (prostředí KDE Plasma) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (prostředí Cinnamon) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (prostředí MATE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (prostředí LXDE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (webový server) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH server) </p></li>
+</ul></div>
+<p>Instalaci úloh můžete vynechat a instalovat balíky nějakou jinou cestou. Úlohu <strong class="userinput"><code>standard</code></strong> však doporučujeme instalovat vždy. </p>
+<p>Or if you don't want the tasksel dialog to be shown at all, preseed <code class="classname">pkgsel/run_tasksel</code> (no packages are installed via tasksel in that case). </p>
+<p>Chcete-li kromě balíků v úlohách instalovat také nějaké samostatné balíky, můžete použít parametr <code class="classname">pkgsel/include</code>. Hodnotou parametru je čárkami nebo mezerami oddělený seznam, takže jej můžete jednoduše použít i na příkazové řádce jádra. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Or choose to not get the tasksel dialog displayed at all (and don't install
+# any packages):
+#d-i pkgsel/run_tasksel boolean false
+
+# Individual additional packages to install
+#d-i pkgsel/include string openssh-server build-essential
+# Whether to upgrade packages after debootstrap.
+# Allowed values: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# You can choose, if your system will report back on what software you have
+# installed, and what software you use. The default is not to report back,
+# but sending reports helps the project determine what software is most
+# popular and should be included on the first DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Instalace zavaděče</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub is the boot loader (for x86).</span>
+
+# This is fairly safe to set, it makes grub install automatically to the UEFI
+# partition/boot record if no other operating system is detected on the machine.
+d-i grub-installer/only_debian boolean true
+
+# This one makes grub-installer install to the UEFI partition/boot record, if
+# it also finds some other OS, which is less safe as it might not be able to
+# boot that other OS.
+d-i grub-installer/with_other_os boolean true
+
+# Due notably to potential USB sticks, the location of the primary drive can
+# not be determined safely in general, so this needs to be specified:
+#d-i grub-installer/bootdev  string /dev/sda
+# To install to the primary device (assuming it is not a USB stick):
+#d-i grub-installer/bootdev  string default
+
+# Alternatively, if you want to install to a location other than the UEFI
+# parition/boot record, uncomment and edit these lines:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# To install grub to multiple disks:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Optional password for grub, either in clear text
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# or encrypted using an MD5 hash, see grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Use the following option to add additional boot parameters for the
+# installed system (if supported by the bootloader installer).
+# Note: options passed to the installer will be added automatically.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>MD5 hash hesla pro <code class="classname">grub</code> můžete získat buď příkazem <span class="command"><strong>grub-md5-crypt</strong></span>, nebo příkazem uvedeným v příkladu v části <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Nastavení účtů">B.4.6 – „Nastavení účtů“</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Dokončení instalace</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># During installations from serial console, the regular virtual consoles
+# (VT1-VT6) are normally disabled in /etc/inittab. Uncomment the next
+# line to prevent this.
+#d-i finish-install/keep-consoles boolean true
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+
+# This will prevent the installer from ejecting the disc during the reboot,
+# which is useful in some situations.
+#d-i cdrom-detect/eject boolean false
+
+# This is how to make the installer shutdown when finished, but not
+# reboot into the installed system.
+#d-i debian-installer/exit/halt boolean true
+# This will power off the machine instead of just halting it.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Přednastavení ostatních balíků</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Je možné, že se objeví další otázky v závislosti na tom, jaký
+# software nainstalujete, nebo podle toho, co se během instalace
+# pokazí. Seznam všech možných otázek během instalace získáte
+# příkazy:
+#   debconf-get-selections --installer &gt; soubor
+#   debconf-get-selections &gt;&gt; soubor
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4307" class="footnote"><p><a href="#id4307" class="para"><sup class="para">[19] </sup></a> Preseeding <code class="literal">locale</code> to <strong class="userinput"><code>en_NL</code></strong> would for example result in <code class="literal">en_US.UTF-8</code> as default locale for the installed system. If e.g. <code class="literal">en_GB.UTF-8</code> is preferred instead, the values will need to be preseeded individually. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Vytvoření souboru s přednastavením </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Pokročilé možnosti</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

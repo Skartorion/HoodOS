@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Параметры загрузки</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Глава 5. Загрузка системы установки">
+<link rel="prev" href="ch05s02.html" title="5.2. Лёгкость управления">
+<link rel="next" href="ch05s04.html" title="5.4. Диагностика проблем процесса установки">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Параметры загрузки</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 5. Загрузка системы установки</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Параметры загрузки</h2></div></div></div>
+<p>Параметры загрузки — это параметры ядра Linux, которые обычно используются для того, чтобы указать присутствующие периферийные устройства. В большинстве случаев ядро может определить периферийные устройства автоматически. Однако, иногда вы должны немного помочь ядру. </p>
+<p>Если вы в первый раз загружаете систему, попробуйте параметры загрузки по умолчанию (то есть не пытайтесь их изменять) и посмотрите, корректно ли всё работает. Скорее всего, так оно и будет. Если нет, вы сможете позже перезагрузиться и поискать специальные параметры, которые помогут системе определить аппаратуру вашего компьютера. </p>
+<p>Информацию о многих параметрах загрузки можно найти в <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, где можно найти советы советы и по нераспознанному оборудованию. В этом разделе содержатся только краткие сведения о наиболее важных параметрах. Некоторые распространённые ошибки включены ниже в <a class="xref" href="ch05s04.html" title="5.4. Диагностика проблем процесса установки">Раздел 5.4, «Диагностика проблем процесса установки»</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Boot serial console</h3></div></div></div>
+<p>If you are booting with a serial console, generally the kernel will autodetect this. If you have a videocard (framebuffer) and a keyboard also attached to the computer which you wish to boot via serial console, you may have to pass the <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> argument to the kernel, where <em class="replaceable"><code>device</code></em> is a serial device of the target, which is usually something like <code class="filename">ttyS0</code>. </p>
+<p>Вам может потребоваться указать параметры последовательного порта, такие как скорость и чётность, например <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; другие возможные скорости: 57600 или 115200. Проверьте, что указали этот параметр после <span class="quote">«<span class="quote">---</span>»</span>, так как он копируется в настройку системного загрузчика (bootloader) устанавливаемой системы (если это поддерживается программой установки для системного загрузчика). </p>
+<p>Чтобы тип терминала точно совпал с типом эмулятора терминала, запускаемого программой установки, можно добавить параметр <strong class="userinput"><code>TERM=<em class="replaceable"><code>тип</code></em></code></strong>. Заметим, что программа установки поддерживает только следующие типы терминалов: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> и <code class="literal">dumb</code>. По умолчанию для последовательного порта в <code class="classname">debian-installer</code> используется <strong class="userinput"><code>vt102</code></strong>. Если вы используете консоль IPMI или виртуальную среду, например QEMU/KVM, которая сама не производит преобразование между типами терминалов, то можете запустить её внутри сеанса <span class="command"><strong>screen</strong></span>. При этом выполняется преобразование в тип терминала <code class="literal">screen</code>, который очень похож на <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Параметры программы установки Debian</h3></div></div></div>
+<p>Система установки анализирует некоторые дополнительные параметры загрузки<a href="#ftn.id2057" class="footnote" name="id2057"><sup class="footnote">[3]</sup></a>, что может быть полезно. </p>
+<p>Некоторые параметры имеют <span class="quote">«<span class="quote">сокращённую форму записи</span>»</span>, что помогает избежать ограничений параметров командной строки ядра и облегчает ввод параметров. Если у параметра есть сокращённая форма, то она даётся в скобках после (обычной) длинной формы. В примерах руководства также используется сокращённая форма. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Этот параметр задаёт низший приоритет отображаемых сообщений. </p>
+<p>Значение по умолчанию равно <strong class="userinput"><code>priority=high</code></strong>. Это означает, что будут показаны сообщения с высоким и с критическим приоритетами, а сообщения со средним и низким приоритетами будут пропущены. В случае возникновения проблем, программа установки подстраивает значение приоритета. </p>
+<p>Если вы добавите <strong class="userinput"><code>priority=medium</code></strong> в качестве параметра загрузки, то увидите меню программы установки и получите больший контроль над установкой. При использовании <strong class="userinput"><code>priority=low</code></strong> показываются все сообщения (эквивалентно методу загрузки <span class="emphasis"><em>expert</em></span>). Если указать <strong class="userinput"><code>priority=critical</code></strong>, то система установки будет показывать только критические сообщения и попробует всё сделать правильно самостоятельно. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Этот параметр загрузки контролирует тип пользовательского интерфейса, используемого программой установки. Возможные на текущий момент значения параметра: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> По умолчанию выбран тип <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. Для установки через консоль на последовательном порту наиболее предпочтителен <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong>. Некоторые специализированные установочные носители могут предлагать ограниченный список интерфейсов, но <strong class="userinput"><code>newt</code></strong> и <strong class="userinput"><code>text</code></strong> доступны в большинстве из них. На архитектурах, для которых есть поддержка, используется графический интерфейс программы установки <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Присвоение этому загрузочному параметру значения 2 приводит к более подробному протоколированию процесса загрузки программы установки. Значение 3 приводит к запуску интерпретатора командной строки в наиболее важных точках процесса загрузки. (Завершение работы с интерпретатором приводит к продолжению процесса загрузки.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Значение по умолчанию.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Подробней чем обычно.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Много отладочной информации.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>В различных точках процесса загрузки будет вызван интерпретатор командной строки, чтобы разрешить детальную отладку. При выходе из интерпретатора загрузка продолжится. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Используется для указания программе установки отправлять сообщения протокола кроме локального файла ещё и удалённой службе syslog на указанный узел и порт. Если не задано, то портом по умолчанию является стандартный 514-й порт syslog. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Используется для указания программе установки выставить для lowmem больший уровень, чем это рассчитывается по умолчанию исходя из количества доступной памяти. Возможные значения 1 и 2. Смотрите также <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Определение доступной памяти / режим с малым потреблением памяти">Раздел 6.3.1.1, «Определение доступной памяти / режим с малым потреблением памяти»</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Указывает программе установки не запускать интерактивную оболочку на tty2 и tty3. Полезно при автоматизированной установке, где ограничена физическая безопасность. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Чтобы предложить установку на нескольких языках на некоторых архитектурах используется фрейм-буфер ядра. Если работа через фрейм-буфер вызывает проблемы на вашей системе, можно выключить его параметром <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Симптомы проблемы — сообщения об ошибках bterm или bogl, пустой экран или замирание на несколько минут в начале установки. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>A theme determines how the user interface of the installer looks (colors, icons, etc.). Which themes are available may differ per frontend. Currently both the newt and gtk frontend have (apart from the default look) only one additional theme named <span class="quote">«<span class="quote">dark</span>»</span> theme, which was designed for visually impaired users. Set this theme by booting with <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (there is also the keyboard shortcut <strong class="userinput"><code>d</code></strong> for this in the boot menu). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>По умолчанию, <code class="classname">debian-installer</code> автоматически пытается настроить сеть через IPv6 autoconfiguration и DHCP. Если получение адреса прошло успешно, у вас не будет шанса пересмотреть и изменить полученные настройки. Вы сможете настроить сеть вручную только в случае ошибок при получении параметров автоматически. </p>
+<p>Если в вашей локальной сети есть маршрутизатор IPv6 или DHCP сервер, но вы не хотите их использовать, потому что они, например, даёт неправильные ответы, то можете указать параметр <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong>, чтобы отключить настройку сети (v4 и v6) и ввести информацию вручную. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Установите в <strong class="userinput"><code>false</code></strong>, чтобы избежать запуска служб PCMCIA, если это вызывает проблемы. Особенно полезно для некоторых ноутбуков. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Задайте url для загрузки файла с настройками и использования автоматической установки. Смотрите <a class="xref" href="ch04s06.html" title="4.6. Автоматическая установка">Раздел 4.6, «Автоматическая установка»</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Укажите путь к файлу для загрузки настроек автоматической установки. Смотрите <a class="xref" href="ch04s06.html" title="4.6. Автоматическая установка">Раздел 4.6, «Автоматическая установка»</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Установка в <strong class="userinput"><code>true</code></strong> включает отображение всех вопросов, даже для которых есть автоматизированный ответ. Может оказаться полезным при отладке или тестировании файла ответов. Заметим, что это не действует на параметры, указанные в приглашении к загрузке, для работы с ними используется специальный синтаксис. Смотрите <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Использование автоматической установки для изменения значений по умолчанию">Раздел B.5.2, «Использование автоматической установки для изменения значений по умолчанию»</a>. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Отложить вопросы, которые обычно задаются перед автоматической установкой, которые можно задать после настройки сети. Подробней об автоматизации установки смотрите в <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Автоматический режим">Раздел B.2.3, «Автоматический режим»</a>. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>При установке с консоли на последовательном порту обычные виртуальные консоли (VT1-VT6) выключаются в <code class="filename">/etc/inittab</code>. Если установить в значение <strong class="userinput"><code>true</code></strong>, то этого не случится. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>By default, before rebooting, <code class="classname">debian-installer</code> automatically ejects the optical media used during the installation. This can be unnecessary if the system does not automatically boot off such media. In some cases it may even be undesirable, for example if the optical drive cannot reinsert the media itself and the user is not there to do it manually. Many slot loading, slim-line, and caddy style drives cannot reload media automatically. </p>
+<p>Чтобы запретить автоматическое извлечение задайте значение <strong class="userinput"><code>false</code></strong>, но проверьте, что система не загружается автоматически с компакт-диска после начальной установки. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Если назначить данному параметру значение <strong class="userinput"><code>false</code></strong>, то это отключит в системе управления пакетами установку <span class="quote">«<span class="quote">Рекомендуемых</span>»</span> пакетов, как во время установки так и в установленной системе. </p>
+<p>Заметим, что этот параметр позволяет получить более отточенную систему, но это также может привести к отсутствию некоторых возможностей, которые вы рассчитывали получить. Для получения дополнительных возможностей вы можете установить некоторые рекомендуемые пакеты вручную. Поэтому этот параметр должен использоваться только очень опытными пользователями. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>По умолчанию программа установки требует, чтобы репозитории аутентифицировались с помощью известного ключа gpg. Установка в <strong class="userinput"><code>true</code></strong> выключает данную аутентификацию. <span class="bold"><strong>Предупреждение: это небезопасно, рекомендуется не делать этого.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Установка в <strong class="userinput"><code>true</code></strong> активирует режим восстановления, вместо обычного режима установки. Смотрите <a class="xref" href="ch08s06.html" title="8.6. Восстановление неработающей системы">Раздел 8.6, «Восстановление неработающей системы»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Использование параметров загрузки для ответов на вопросы</h3></div></div></div>
+<p>За некоторым исключением, в приглашении к загрузке можно задать любые значения ответов на вопросы установки, хотя это полезно только в специфических случаях. Описание как это делать можно найти в <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Использование параметров загрузки для автоматизации">Раздел B.2.2, «Использование параметров загрузки для автоматизации»</a>. Некоторые специальные примеры даны ниже. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Есть два способа указать язык, страну и локаль, используемую при установки и в установленной системе. </p>
+<p>Первый и самый простой — передать только параметр <code class="literal">locale</code>. Для языка и страны будет использовано вычисленное значение. Например, вы можете использовать <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> для выбора немецкого языка и Швейцарии в качестве страны (в установленной системе по умолчанию будет использована локаль <code class="literal">de_CH.UTF-8</code> ). Этот способ имеет ограничения по комбинациям языка, страны и локали. </p>
+<p>Второй, более гибкий способ — отдельно указать <code class="literal">язык</code> и <code class="literal">страну</code>. В этом случае <code class="literal">locale</code> можно задать дополнительно для выбора специфичной локали по умолчанию для установленной системы. Пример: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Может использоваться для автоматической загрузки компонент программы установки, которые не загружаются по умолчанию. В качестве примеров дополнительных полезных компонент, можно привести <code class="classname">openssh-client-udeb</code> (для того, чтобы во время установки можно было использовать команду <span class="command"><strong>scp</strong></span>)<span class="phrase"> и <code class="classname">ppp-udeb</code> (на настройки PPPoE)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Установите в <strong class="userinput"><code>true</code></strong>, если хотите выключить IPv6 autoconfiguration и DHCP и задать настройки сети статически. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>По умолчанию, программа установки использует протокол http для загрузки файлов с серверов-зеркал Debian, и изменить его на ftp невозможно при установке с обычным приоритетом. Установив этот параметр равным <strong class="userinput"><code>ftp</code></strong>, вы можете заставить программу установки использовать этот протокол. Заметим, что вы не сможете выбрать сервер-зеркало ftp из списка, вам придётся вводить имя вручную. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Может быть использована для выбора задач, которых нет в списке выбора в программе установки, например задача <code class="literal">kde-desktop</code>. Подробней смотрите в <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Выбор и установка программного обеспечения">Раздел 6.3.6.2, «Выбор и установка программного обеспечения»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Передача параметров модулям ядра</h3></div></div></div>
+<p>Если драйверы встроены в ядро, вы можете передать им параметры как это описано в документации к ядру. Если же драйверы собраны как модули и так как модули ядра загружаются немного по-другому чем при загрузке установленной системы, невозможно передать параметры модулям обычным способом. Вместо этого вам нужно использовать специальный синтаксис, распознаваемый программой установки, которая сохраняет эти параметры в нужные конфигурационные файлы, для того чтобы использовать их при загрузке модуля. Параметры также будут автоматически включены в конфигурацию установленной системы. </p>
+<p>Заметим, что теперь редко требуется указывать параметры модулям. В большинстве случаев ядро способно само определить имеющееся оборудование в системе и настроить его правильно. Однако иногда всё ещё может потребоваться установка параметров вручную. </p>
+<p>Синтаксис установки параметров модулей: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>имя_модуля</code></em>.<em class="replaceable"><code>имя_параметра</code></em>=<em class="replaceable"><code>значение</code></em>
+</pre></div>
+<p> Если требуется передать несколько параметров одному или разным модулям, то выражение повторяют. Например, чтобы указать старым сетевым картам 3Com использовать BNC (коаксиальный) разъём и IRQ 10, вы должны написать: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Внесение модулей ядра в чёрный список</h3></div></div></div>
+<p>Иногда бывает необходимо внести модуль в чёрный список, чтобы предотвратить его автоматическую загрузку ядром и udev. Одной из причин для этого может быть то, что этот модуль неправильно работает с вашим оборудованием. Также, иногда ядро имеет два разных драйвера для одного устройства. Это может приводить к неправильной работе устройства при конфликте драйверов, или если сперва загружается неправильный драйвер. </p>
+<p>Чтобы внести модуль в чёрный список используйте следующий синтаксис: <strong class="userinput"><code><em class="replaceable"><code>module_name</code></em>.blacklist=yes</code></strong>. Это поместит модуль в чёрный список в файле <code class="filename">/etc/modprobe.d/blacklist.local</code> на время установки и в установленной системе. </p>
+<p>Заметим, что модуль всё ещё может загружаться самой системой установки. Чтобы этого избежать, запустите установку в экспертном режиме и снимите выделение с модуля в списке модулей, отображаемого во время шага обнаружения оборудования. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2057" class="footnote"><p><a href="#id2057" class="para"><sup class="para">[3] </sup></a> Текущие ядра (2.6.9 и новее) позволяют использовать 32 параметра в командной строке и 32 переменные среды. Если это количество превышено, то ядро попадает в режим паники. Также есть ограничение на 255 символов на всю длину командной строки, всё что свыше просто обрезается. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Лёгкость управления </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Диагностика проблем процесса установки</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Configuració del vostre sistema per utilitzar el correu electrònic</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Capítol 8. Següents passos i per on seguir">
+<link rel="prev" href="ch08s03.html" title="8.3. Lectura i informació addicional">
+<link rel="next" href="ch08s05.html" title="8.5. Compilar un nou nucli">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Configuració del vostre sistema per utilitzar el correu electrònic</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 8. Següents passos i per on seguir</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Configuració del vostre sistema per utilitzar el correu electrònic</h2></div></div></div>
+<p>Avui en dia, el correu electrònic és una part important de la vida de la gent. Com que hi ha moltes formes de configurar-lo, i que fer-ho és important per algunes utilitats de Debian, provarem de cobrir les parts més bàsiques en aquesta secció. </p>
+<p>Un sistema de correu té tres components bàsics pel seu funcionament. En primer lloc tenim l'<em class="firstterm">Agent de correu d'usuari</em> (MUA) que s'utilitza per escriure i llegir els correus. Després tenim l'<em class="firstterm">agent de transferència de correu</em> (MTA) que s'encarrega de la transferència dels missatges des d'un ordinador a un altre. I per acabar tenim l'<em class="firstterm">agent de lliurament de correu</em> (MDA) que s'encarrega de lliurar el correu entrant a la safata d'entrada de l'usuari. </p>
+<p>Aquestes tres funcions les poden dur a terme programes separats, però també es poden combinar en un o dos programes. També és possible tenir un tractament diferent d'aquestes funcions pels diferents tipus de correu. </p>
+<p>A Linux i als sistemes Unix el <span class="command"><strong>mutt</strong></span> històricament ha estat un MUA molt conegut. Com la major part dels programes de Linux tradicionals, està basat en text. Sovint s'utilitza en combinació amb l'<span class="command"><strong>exim</strong></span> o el <span class="command"><strong>sendmail</strong></span> com a MTA i el <span class="command"><strong>procmail</strong></span> com a MDA. </p>
+<p>Amb l'increment de popularitat dels entorns gràfics d'escriptori, l'ús de programes de correu electrònic gràfics com l'<span class="command"><strong>evolution</strong></span> de GNOME, el <span class="command"><strong>kmail</strong></span> de KDE, o el <span class="command"><strong>thunderbird</strong></span> de Mozilla s'ha fet més popular. Aquests programes combinen les funcions de MUA, MTA i MDA, però poden — i sovint — també s'utilitzen en combinació amb les eines de Linux tradicionals. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Configuració predeterminada del correu electrònic</h3></div></div></div>
+<p>Encara que esteu pensant d'utilitzar un programa gràfic pel correu, seria útil que també tingueu correctament instal·lat i configurat al vostre sistema un MTA/MDA tradicional al vostre sistema Debian GNU/Linux. La raó és que algunes utilitats importants al sistema<a href="#ftn.id3669" class="footnote" name="id3669"><sup class="footnote">[16]</sup></a> poden enviar informacions importants per correu per informar a l'administrador del sistema de problemes (en potència) o de canvis. </p>
+<p>Per això podeu instal·lar <code class="classname">exim4</code> i el <code class="classname">mutt</code> amb <span class="command"><strong>apt install exim4 mutt</strong></span>. L'<code class="classname">exim4</code> és una combinació de MTA/MDA que és relativament menuda i però molt flexible. Per defecte tan sols es configurarà per que tracte amb el correu local del mateix sistema i els correus que van dirigits a l'administrador del sistema (al compte root) els lliurà al compte d'usuari que es va generar a la instal·lació<a href="#ftn.id3680" class="footnote" name="id3680"><sup class="footnote">[17]</sup></a>. </p>
+<p>Quan els correus del sistema es reparteixen, s'afegeixen a un fitxer que és a <code class="filename">/var/mail/<em class="replaceable"><code>nom_del_compte</code></em></code>. Els correus es poden llegir utilitzant el <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Enviar correus fora del sistema</h3></div></div></div>
+<p>Com s'ha dit abans, l'instal·lador de Debian està configurat per tractar amb el correu local del sistema, no per enviar correu a altres ni per rebren d'altres. </p>
+<p>Si preferiríeu que l'<code class="classname">exim4</code> controle el correu extern, adreceu-vos a la subsecció següent per veure les opcions bàsiques de configuració que hi ha la vostre abast. Assegureu-vos de comprovar que el correu s'envia i es rep correctament. </p>
+<p>Si esteu provant d'utilitzar un programa gràfic per al correu i utilitzeu el servidor de correu del vostre proveïdor de serveis Internet (ISP) o de la vostra empresa, no necessiteu configurar l'<code class="classname">exim4</code> per a que es faci càrrec del correu electrònic. Tan sols configureu el vostre programa de correu gràfic favorit per que utilitze els servidors correctes i envie i reba el correu (el com fer-ho està fora de l'abast d'aquest manual). </p>
+<p>Per altra banda, en eixe cas potser necessitaríeu configurar les utilitats de forma individual per enviar correus. Una d'aquestes utilitats és el <span class="command"><strong>reportbug</strong></span>, un programa que facilita l'enviament d'informes d'error contra els paquets de Debian. Per defecte espera poder utilitzar l'<code class="classname">exim4</code> per enviar els informes d'error. </p>
+<p>Per configurar correctament el <span class="command"><strong>reportbug</strong></span> per a que utilitze un servidor de correu extern, executeu l'ordre <span class="command"><strong>reportbug --configure</strong></span> i responeu <span class="quote">«<span class="quote">no</span>»</span> a la pregunta de si teniu un MTA a l'abast. Haureu de preguntar quin és el servidor SMTP que podeu utilitzar per enviar informes d'error. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Configuració de l'agent de transport de correu Exim4</h3></div></div></div>
+<p>Si voleu que el vostre sistema també es faça càrrec del correu extern, necessitareu reconfigurar el paquet <code class="classname">exim4</code><a href="#ftn.id3705" class="footnote" name="id3705"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Després d'executar eixa ordre (com a «root»), haureu de respondre si voleu dividir la configuració en fitxers menuts. Si no esteu segurs, seleccioneu l'opció predeterminada. </p>
+<p>A continuació es mostraran alguns escenaris comuns per al correu. Escolliu el que més s'aprope a les vostres necessitats. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">lloc d'internet</span></dt>
+<dd><p>El vostre sistema està connectat a una xarxa i el vostre correu s'envia i es rep directament amb SMTP. A les pantalles següents us faran unes poques preguntes, com el nom del correu de la vostra màquina, o una llista de dominis pels quals acceptar o reenviar correu. </p></dd>
+<dt><span class="term">correu enviat a través de l'smarthost</span></dt>
+<dd>
+<p>En aquest escenari el vostre correu sortint es reenvia a un altra màquina, que es diu un <span class="quote">«<span class="quote">smarthost</span>»</span>, que mira d'enviar els missatges a la seva destinació. L'smarthost normalment també emmagatzema el correu entrant al vostre ordinador, de forma que no necessitareu estar permanentment en línia. Això vol dir també que haureu de descarregar el vostre correu des de l'smarthost amb programes del tipus fetchmail. </p>
+<p>En moltes ocasions l'smarthost serà el servidor de correu del vostre ISP, que és una opció molt vàlida per a usuaris que fan ús del marcatge. També podria ser un servidor de correu d'empresa o inclús un altre sistema a la vostra xarxa. </p>
+</dd>
+<dt><span class="term">enviament a través de l'smarthost; no hi ha correu local</span></dt>
+<dd><p>Aquesta opció és bàsicament la mateixa que l'anterior excepte que el sistema no es configurarà per a que gestione el correu per al domini de correu local. El correu del sistema mateix (p.ex. per l'administrador del sistema) encara es gestionarà. </p></dd>
+<dt><span class="term">només enviament local</span></dt>
+<dd><p>Aquesta és l'opció que està configurada per defecte al vostre sistema. </p></dd>
+<dt><span class="term">no el configures ara mateix</span></dt>
+<dd><p>Escolliu aquesta si esteu absolutament convençuts de que sabeu el que esteu fent. Açò deixarà el vostre sistema amb el correu sense configurar — fins que el configureu, no podreu enviar o rebre cap correu i estareu perdent alguns missatges importants de les utilitats del vostre sistema. </p></dd>
+</dl></div>
+<p>Si cap d'aquests escenaris s'ajusta a les vostres necessitats, o si necessiteu una configuració més acurada, haureu d'editar els fitxers de configuració que hi ha al directori <code class="filename">/etc/exim4</code> després de completar la instal·lació. Podeu trobar més informació de l'<code class="classname">exim4</code> a <code class="filename">/usr/share/doc/exim4</code>; el fitxer <code class="filename">README.Debian.gz</code> conté alguns detalls per a la configuració de l'<code class="classname">exim4</code> i explica on trobar documentació addicional. </p>
+<p>Adoneu-vos que enviar directament correu a Internet quan no disposeu d'un domini oficial, pot resultar en que el vostre correu sigui rebutjat com a mesura contra el correu brossa als servidors que el reben. És preferible fer ús del servidor de correu del vostre ISP. Si encara voleu enviar correu de forma directa, podriu utilitzar una adreça de correu diferent a la que es genera per defecte. Si utilitzeu com MTA l'<code class="classname">exim4</code>, açò és possible afegint una entrada a l' <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3669" class="footnote"><p><a href="#id3669" class="para"><sup class="para">[16] </sup></a>Alguns exemples són: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3680" class="footnote"><p><a href="#id3680" class="para"><sup class="para">[17] </sup></a> El reenviament de correu pel «root» a un dels comptes d'usuari s'ha configurat a l'<code class="filename">/etc/aliases</code>. Si no hi ha cap compte d'usuari normal preparat, aleshores el correu s'enviarà al compte del «root» mateix.</p></div>
+<div id="ftn.id3705" class="footnote"><p><a href="#id3705" class="para"><sup class="para">[18] </sup></a>Per suposat, també podeu esborrar l'<code class="classname">exim4</code> i reemplaçar-lo per qualsevol MTA/MDA alternatiu.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Lectura i informació addicional </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Compilar un nou nucli</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Jak nainstalovat Debian GNU/Linux ze stávajícího unixového/linuxového systému</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apd.html" title="Příloha D. Co se jinam nevešlo">
+<link rel="prev" href="apds02.html" title="D.2. Místo potřebné pro úlohy">
+<link rel="next" href="apds04.html" title="D.4. Jak nainstalovat Debian GNU/Linux přes paralelní port (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Jak nainstalovat Debian GNU/Linux ze stávajícího unixového/linuxového systému</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha D. Co se jinam nevešlo</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Jak nainstalovat Debian GNU/Linux ze stávajícího unixového/linuxového systému</h2></div></div></div>
+<p>Tato kapitola se, na rozdíl od zbytku příručky, nezabývá oficiálním instalačním programem, ale popisuje instalaci Debianu ze stávajícího unixového nebo linuxového systému. Tuto kapitolu si vyžádali uživatelé přecházející z distribucí Red Hat, Mandriva a SUSE. Předpokládáme zde jisté znalosti s používáním *nixových příkazů a pohybem v souborovém systému. V této sekci platí, že příkazy uvozené promptem <code class="prompt">$</code> zadáváte ve svém stávajícím systému, zatímco příkazy uvozené <code class="prompt">#</code> se spouští v <em class="firstterm">chroot</em>ovaném prostředí. </p>
+<p>Až si Debian GNU/Linux vyladíte k obrazu svému, můžete do něj převést stávající uživatelská data a plynule přejít k nové distribuci bez zbytečných prostojů. Tento druh instalace je též vhodný pro systémy s podivným hardwarem, který jinak není podporován instalačními médii. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Protože se z velké části jedná o ruční postup, měli byste mít na paměti, že spoustu věcí, které běžně řeší instalační program sám, nyní budete muset provádět sami. To také klade větší nároky na znalosti Debianu a unixových systémů obecně. Následující návod řeší pouze základní nastavení systému, je možné, že bude potřeba provést další kroky. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4931"></a>D.3.1. Přípravné práce</h3></div></div></div>
+<p>With your current *nix partitioning tools, repartition the hard drive as needed, creating at least one filesystem plus swap. You need around 647MB of space available for a console only install, or about 2635MB if you plan to install X (more if you intend to install desktop environments like GNOME or KDE Plasma). </p>
+<p>Na nových oddílech vytvořte souborové systémy. Například souborový systém ext3 na oblasti <code class="filename">/dev/sda6</code> vytvoříte příkazem: </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> (Ve zbytku návodu budeme předpokládat, že kořenový oddíl je <code class="filename">/dev/sda6</code>.) Jestliže chcete vytvořit systém ext2, vynechejte parametr <strong class="userinput"><code>-j</code></strong>. </p>
+<p>Inicializujte a aktivujte odkládací oddíl (nezapomeňte změnit číslo oblasti podle skutečnosti): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Připojte budoucí kořenovou oblast (<code class="filename">/</code>) do adresáře <code class="filename">/mnt/debinst</code>. Na jméně přípojného adresáře nezáleží. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>If you want to have parts of the filesystem (e.g. /usr) mounted on separate partitions, you will need to create and mount these directories manually before proceeding with the next stage. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4953"></a>D.3.2. Instalace balíku <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span> je program, kterým se v Debianu instaluje základní systém. Má minimum závislostí (pouze <code class="classname">/bin/sh</code>, <span class="command"><strong>ar</strong></span>, <span class="command"><strong>wget</strong></span> a základní unixové/linuxové nástroje<a href="#ftn.id4961" class="footnote" name="id4961"><sup class="footnote">[20]</sup></a>), takže se dá použít na téměř libovolném systému. Pokud ještě <span class="command"><strong>wget</strong></span> a <span class="command"><strong>ar</strong></span> nemáte, nainstalujte si je. </p>
+<p>Poslední možností je ruční instalace. Vytvořte si pracovní adresář, do kterého později balík rozbalíte: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> Z <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> poolu</a> si stáhněte balík <span class="command"><strong>debootstrap</strong></span> pro svou architekturu, uložte jej do pracovního adresáře a vybalte z něj potřebné soubory. K instalaci souborů musíte mít rootovská práva. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /cesta-k-pracovnimu-adresari/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4976"></a>D.3.3. Spuštění <span class="command"><strong>debootstrap</strong></span>u</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span> si umí stáhnout potřebné soubory přímo z archivu Debianu. Aby se soubory nestahovaly přes půl Zeměkoule, nahraďte v ukázce server <strong class="userinput"><code>ftp.cz.debian.org/debian</code></strong> nějakým bližším. Seznam zrcadel naleznete v <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>If you have a trixie Debian GNU/Linux installation image mounted at <code class="filename">/cdrom</code>, you could substitute a file URL instead of the http URL: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>V ukázkovém příkazu <span class="command"><strong>debootstrap</strong></span> nahraďte <em class="replaceable"><code>ARCH</code></em> jedním z následujících: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.cz.debian.org/debian
+</pre></div>
+<p> Pokud se cílová architektura liší od hostitelské, měli byste přidat ještě parametr <strong class="userinput"><code>--foreign</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4998"></a>D.3.4. Nastavení základního systému</h3></div></div></div>
+<p>V adresáři <code class="filename">/mnt/debinst</code> teď máte opravdový, i když minimální, systém Debian. Nastal čas se do něj přesunout: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Pokud se cílová architektura liší od hostitelské, budete ale nejprve muset do nového systému nakopírovat qemu-user-static: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> V novém systému možná budete muset nastavit definici terminálu tak, aby byla kompatibilní se základním systémem Debianu: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Abyste mohli použít některé hodnoty proměnné TERM, budete možná muset nainstalovat balík <code class="classname">ncurses-term</code>. </p>
+<p>Jestliže se cílová architektura liší od hostitelské, musíte dokončit druhou fázi nastavení: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5013"></a>D.3.4.1. Vytvoření souborů zařízení</h4></div></div></div>
+<p>Adresář <code class="filename">/dev</code> nyní obsahuje několik základních souborů zařízení, avšak pro další instalaci může být zapotřebí dalších zařízení. Další postup závisí na různých faktorech, jako je typ hostitelského systému, zda hodláte použít modulární jádro a zda chcete soubory zařízení v novém systému spravovat staticky nebo dynamicky (například pomocí <code class="classname">udev</code>). </p>
+<p>Několik možných postupů: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>V chrootu vytvořte základní sadu statických souborů zařízení příkazy: </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Pomocí příkazu <span class="command"><strong>MAKEDEV</strong></span> ručně vytvořte pouze ty soubory zařízení, které potřebujete. </p></li>
+<li class="listitem"><p>Do instalovaného systému připojte adresář <code class="filename">/dev</code> z hostitelského systému (parametr <strong class="userinput"><code>bind</code></strong> příkazu <span class="command"><strong>mount</strong></span>). S touto možností byste však měli být opatrní, protože některé balíky při instalaci vytvářejí nová zařízení, což nemusí být to, co chcete, aby se promítlo do hostitelského systému. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5032"></a>D.3.4.2. Připojení oblastí</h4></div></div></div>
+<p>You need to create <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Here is a sample you can modify to suit: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Use <strong class="userinput"><code>mount -a</code></strong> to mount all the file systems you have specified in your <code class="filename">/etc/fstab</code>, or, to mount file systems individually, use: </p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p> Current Debian systems have mountpoints for removable media under <code class="filename">/media</code>, but keep compatibility symlinks in <code class="filename">/</code>. Create these as as needed, for example: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> You can mount the proc file system multiple times and to arbitrary locations, though <code class="filename">/proc</code> is customary. If you didn't use <strong class="userinput"><code>mount -a</code></strong>, be sure to mount proc before continuing: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Příkaz <strong class="userinput"><code>ls /proc</code></strong> by nyní měl vypsat neprázdný adresář. Pokud by se tak nestalo, stále byste měli být schopni připojit <code class="filename">proc</code> z vnějšku chrootu: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5057"></a>D.3.4.3. Nastavení časového pásma</h4></div></div></div>
+<p>Nastavením třetího řádku v souboru <code class="filename">/etc/adjtime</code> na hodnotu <span class="quote">„<span class="quote">LOCAL</span>“</span> resp. <span class="quote">„<span class="quote">UTC</span>“</span> systému říkáte, zda má hardwarové hodiny počítače interpretovat jako místní čas, resp. jako čas v UTC. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Příklad souboru souboru <code class="filename">/etc/adjtime</code>: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Své časové pásmo můžete nastavit příkazem: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5070"></a>D.3.4.4. Nastavení sítě</h4></div></div></div>
+<p>To configure networking, edit <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> and <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Here are some simple examples from <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# The loopback interface isn't really required any longer, but can be used
+# if needed.
+#
+# auto lo
+# iface lo inet loopback
+
+# To use dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# An example static IP setup: (network, broadcast and gateway are optional)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Enter your nameserver(s) and search directives in <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> A simple example <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Enter your system's host name (2 to 63 characters): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> And a basic <code class="filename">/etc/hosts</code> with IPv6 support: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> If you have multiple network cards, you should arrange the names of driver modules in the <code class="filename">/etc/modules</code> file into the desired order. Then during boot, each card will be associated with the interface name (eth0, eth1, etc.) that you expect. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5094"></a>D.3.4.5. Nastavení APT</h4></div></div></div>
+<p>Debootstrap sice vytvořil základní soubor <code class="filename">/etc/apt/sources.list</code>, který umožní instalaci dalších balíků, ale je možné, že budete chtít přidat další zdroje, například pro bezpečnostní aktualizace, nebo pro zdrojové balíky: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.cz.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Po úpravách seznamu zdrojů nezapomeňte spustit příkaz <strong class="userinput"><code>apt update</code></strong>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5101"></a>D.3.4.6. Nastavení místního prostředí a klávesnice</h4></div></div></div>
+<p>Aby se s vámi systém bavil v jiném jazyce než je angličtina, musíte nainstalovat a nastavit balík pro podporu národních prostředí. V současnosti se doporučuje použít prostředí v kódování UTF-8. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Pokud je to potřeba, můžete nakonfigurovat klávesnici: </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Klávesnici nemůžete nastavit v chrootu, změna se projeví až po příštím restartu. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5109"></a>D.3.5. Instalace jádra</h3></div></div></div>
+<p>Jestliže budete chtít tento systém i zavádět (na 99% ano), musíte si nainstalovat jádro (a možná zavaděč). Následujícím příkazem zjistíte dostupná připravená jádra: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Poté balík s vybraným jádrem nainstalujte. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-atd</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5118"></a>D.3.6. Nastavení zavaděče</h3></div></div></div>
+<p>Abyste mohli zavádět svůj Debian GNU/Linux, nastavte v zavaděči, aby nahrál instalované jádro s novou kořenovou oblastí. <span class="command"><strong>debootstrap</strong></span> sám o sobě zavaděč neinstaluje, takže jej budete muset doinstalovat zvlášť (např. pomocí <span class="command"><strong>apt</strong></span> uvnitř chrootovaného prostředí). </p>
+<p>Check <strong class="userinput"><code>info grub</code></strong> for instructions on setting up the bootloader. If you are keeping the system you used to install Debian, just add an entry for the Debian install to your existing grub2 <code class="filename">grub.cfg</code>. </p>
+<p>Instalace a nastavení <code class="classname">grub2</code> není složitější než spuštění: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> Druhý příkaz nainstaluje <span class="command"><strong>grub2</strong></span> (v tomto případě do hlavního zaváděcího záznamu (MBR) disku <code class="literal">sda</code>). Poslední příkaz vytvoří rozumný a funkční konfigurační soubor <code class="filename">/boot/grub/grub.cfg</code>. </p>
+<p>Note that this assumes that a <code class="filename">/dev/sda</code> device file has been created. There are alternative methods to install <span class="command"><strong>grub2</strong></span>, but those are outside the scope of this appendix. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5137"></a>D.3.7. Vzdálený přístup: Instalace SSH a nastavení přístupu</h3></div></div></div>
+<p>Pokud se do systému můžete přihlásit přes konzoli, můžete tento krok přeskočit. Jestliže však má být počítač dostupný přes síť, měli byste nainstalovat SSH a nastavit přístup. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Uživatel root má implicitně zakázané přihlášení pomocí hesla. Pokud mu chcete povolit přístup pomocí hesla tak, jako to bývalo běžné dříve, musíte mu nastavit heslo a povolit přihlášení pomocí hesla: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> kde musíte povolit volbu </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> Přístup můžete moderněji nastavit také přidáním ssh klíče do seznamu autorizovaných klíčů uživatele root: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Poslední možností je dát přístup běžnému uživateli: </p>
+<div class="informalexample"><pre class="screen"># adduser franta
+# passwd franta
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5150"></a>D.3.8. Závěrečné kroky</h3></div></div></div>
+<p>Jak již bylo řečeno dříve, nainstalovaný systém bude poměrně jednoduchý. Chcete-li z něj udělat systém o něco vyspělejší, doinstalujte alespoň balíky s prioritou <span class="quote">„<span class="quote">standardní</span>“</span>: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Nic vám samozřejmě nebrání nainstalovat jednotlivé balíky pomocí <span class="command"><strong>apt</strong></span>. </p>
+<p>Po instalaci zůstanou stažené .deb soubory v adresáři <code class="filename">/var/cache/apt/archives/</code>. Nějaké místo můžete uvolnit jejich smazáním: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4961" class="footnote"><p><a href="#id4961" class="para"><sup class="para">[20] </sup></a> Sem patří GNU core utilities a příkazy typu <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> a <span class="command"><strong>gzip</strong></span>.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Místo potřebné pro úlohy </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Jak nainstalovat Debian GNU/Linux přes paralelní port (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

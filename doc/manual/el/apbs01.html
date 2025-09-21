@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. Εισαγωγή</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)">
+<link rel="prev" href="apb.html" title="Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)">
+<link rel="next" href="apbs02.html" title="B.2. Χρησιμοποιώντας preseeding">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. Εισαγωγή</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. Εισαγωγή</h2></div></div></div>
+<p>Το preseeding δίνει έναν τρόπο να ορίσετε απαντήσεις σε ερωτήσεις χωρίς να πρέπει να τις εισάγετε με το χέρι κατά την εκτέλεση της εγκατάστασης. Αυτό κάνει εφικτή την πλήρη αυτοματοποίηση των περισσότερων τύπων εγκατάστασης, προσφέροντας ακόμα και κάποια γνωρίσματα που δεν είναι διαθέσιμα στιςσυνηθισμένες εγκαταστάσεις. </p>
+<p>Δεν είναι απαραίτητο το preseeding. Αν χρησιμοποιήσετε ένα κενό αρχείο προρυθμίσεων, ο εγκαταστάτης θα συμπεριφερθεί όπως θα συμπεριφερόταν σε μια συνηθισμένη εγκατάσταση με το χέρι. Κάθε ερώτηση που θα έχετε προρυθμίσει (αν το κάνετε σωστά) θα τροποποιεί την εγκατάσταση με κάποιο τρόπο σε σχέση με αυτή τη βασική μορφή. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. Μέθοδοι προρύθμισης</h3></div></div></div>
+<p>Υπάρχουν τρεις μέθοδοι που μπορούν να χρησιμοποιηθούν για preseeding: <em class="firstterm">initrd</em>, <em class="firstterm">αρχείο</em> και <em class="firstterm">δίκτυο</em>. Προρύθμιση με initrd θα δουλέψει για οποιαδήποτε μέθοδο εγκατάστασης και υποστηρίζει την προρύθμιση περισσοτέρων παραμέτρων αλλά απαιτεί και την μεγαλύτερη προετοιμασία. Προρύθμιση με αρχείο και δίκτυο μπορούν να χρησιμοποιηθούν η κάθε μία με διαφορετικές μεθόδους εγκατάστασης. </p>
+<p>Ο ακόλουθος πίνακας δείχνει ποιες μέθοδοι για preseeding μπορούν να χρησιμοποιηθούν και με ποιες μεθόδους εγκατάστασης. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Μέθοδος εγκατάστασης</th>
+<th>initrd</th>
+<th>αρχείο</th>
+<th>δίκτυο</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>ναι</td>
+<td>ναι</td>
+<td>ναι<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>εκκίνηση από δίκτυο</td>
+<td>ναι</td>
+<td>όχι</td>
+<td>ναι</td>
+</tr>
+<tr>
+<td>hd-μέσο <span class="phrase">(συμπεριλαμβάνει usb-stick)</span>
+</td>
+<td>ναι</td>
+<td>ναι</td>
+<td>yes<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>αλλά μόνο αν έχετε δικτυακή πρόσβαση και ρυθμίστε το <code class="literal">preseed/url</code> κατάλληλα </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>Μια σημαντική διαφορά μεταξύ των μεθόδων preseeding είναι το σημείο στο οποίο γίνεται η φόρτωση και η επεξεργασία του αρχείου προρυθμίσεων. Για προρύθμιση με initrd αυτό είναι ακριβώς στην αρχή της εγκατάστασης, πριν γίνει  καν η πρώτη ερώτηση. Η προρύθμιση από την γραμμή εντολών του πυρήνα γίνεται ακριβώς μετά. Είναι, συνεπώς, δυνατόν να υπερκεράσετε το σύνολο ρυθμίσεων στην μνήμη initrd επεξεργαζόμενοι την γραμμή εντολών του πυρήνα (είτε στις ρυθμίσεις του φορτωτή εκκίνησης είτε με το χέρι κατά την εκκίνηση για φορτωτές εκκίνησης που το επιτρέπουν). Για προρύθμιση με αρχείο αυτό το σημείο είναι μετά την φόρτωση της εικόνας του μέσου εγκατάστασης. Για προρύθμιση με δίκτυο αυτό γίνεται μόνο μετά την ρύθμιση του  δικτύου. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Σημαντικό]" src="images/important.png"></td>
+<th align="left">Σημαντικό</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Προφανώς, οποιεσδήποτε ερωτήσεις έχουν υποστεί επεξεργασία πριν την φόρτωση του αρχείου προρυθμίσεων, δεν μπορούν να προρυθμιστούν (αυτό θα περιλαμβάνει ερωτήσεις που εμφανίζονται μόνο σε μεσαία ή χαμηλότερη προτεραιότητα, όπως η πρώτη φορά ανίχνευσης υλικού). Ένας όχι τόσο βολικός τρόπος να αποφύγετε αυτές τις ερωτήσεις από το να γίνιυν είναι να τις προρυθμίσετε μέσω των παραμέτρων εκκίνησης, όπως περιγράφεται στην ενότητα <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Χρήση παραμέτρων εκκίνησης για την προρύθμιση ερωτήσεων">Τμήμα B.2.2, «Χρήση παραμέτρων εκκίνησης για την προρύθμιση ερωτήσεων»</a>. </p>
+<p>Για να αποφύγετε εύκολα τις ερωτήσεις που κανονικά θα εμφανίζονταν πριν την εκτέλεση της προρύθμισης, μπορείτε να ξεκινήσετε τον εγκαταστάτη σε κατάσταση <span class="quote">«<span class="quote">auto</span>»</span>. Αυτό αναβάλει ερωτήσεις που θα γίνονταν συνήθως πολύ νωρίς για την διαδικασία προρύθμισης (με άλλα λόγια επιλογή γλώσσας, χώρας και πληκτρολογίου) μέχρι την στιγμή ενεργοποίησης του δικτύου, επιτρέποντας έτσι την προρύθμισή τους. Εκτελεί επίσης την εγκατάσταση με προτεραιότητα κρίσιμη, κάτι που επιτρέπει την αποφυγή πολλών μη σημαντικών ερωτήσεων. Δείτε την ενότητα <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Αυτόματη Κατάσταση (auto)">Τμήμα B.2.3, «Αυτόματη Κατάσταση (auto)»</a> για λεπτομέρειες. </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. Περιορισμοί</h3></div></div></div>
+<p>Αν και οι περισσότερες ερωτήσεις που χρησιμοποιοιούνται από τον <code class="classname">debian-installer</code> μπορούν να προρυθμιστούν μ' αυτήν την μέθοδο, υπάρχουν μερικές αξιοσημείωτες εξαιρέσεις. Θα πρέπει να (επανα)διαμερίσετε έναν ολόκληρο δίσκο ή να χρησιμοποιήσετε τον διαθέσιμο ελεύθερο χώρο σε έναν δίσκο. Δεν είναι δυνατόν να χρησιμοποιήσετε υπάρχουσες κατατμήσεις. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> B.2. Χρησιμοποιώντας preseeding</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

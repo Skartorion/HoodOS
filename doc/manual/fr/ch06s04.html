@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Télécharger des microprogrammes (firmware) manquants</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Chapitre 6. Comment utiliser l'installateur Debian ?">
+<link rel="prev" href="ch06s03.html" title="6.3. Utilisation des composants">
+<link rel="next" href="ch06s05.html" title="6.5. Personnalisation">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Télécharger des microprogrammes (<span class="emphasis"><em>firmware</em></span>) manquants</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 6. Comment utiliser l'installateur Debian ?</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Télécharger des microprogrammes (<span class="emphasis"><em>firmware</em></span>) manquants</h2></div></div></div>
+<p>Certains périphériques exigent des microprogrammes pour fonctionner. Voyez la <a class="xref" href="ch02s02.html" title="2.2. Périphériques demandant des microprogrammes (firmware)">Section 2.2, « Périphériques demandant des microprogrammes (<span class="emphasis"><em>firmware</em></span>) »</a>. Dans la plupart des cas, le périphérique ne fonctionnera pas si le microprogramme n'est pas disponible. Parfois, les fonctionnalités de base ne sont pas affectées par l'absence du microprogramme et seules les fonctionnalités avancées exigent sa présence. </p>
+<p>À partir de Debian GNU/Linux 12.0, et conformément à la <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Résolution générale de 2022 à propos des microprogrammes non libres</a>, les images d'installation officielles (dont l'image d'installation par le réseau <span class="emphasis"><em>netinst</em></span>) peuvent inclure des paquets de microprogrammes non libres. Malgré cela, certains microprogrammes pourraient encore manquer. Par exemple, ils ne sont pas inclus dans les fichiers pour l'amorçage par le réseau (<span class="emphasis"><em>netboot</em></span>). </p>
+<p>Quand un pilote de périphérique demande un microprogramme qui n'est pas disponible, l'installateur debian affiche un écran qui propose de télécharger le microprogramme. Si cette option est choisie, les fichiers du microprogramme ou les paquets contenant ce microprogramme seront cherchés sur les périphériques disponibles. Une fois trouvé, le microprogramme sera placé au bon endroit, (<code class="filename">/lib/firmware</code>), et le module du pilote sera rechargé. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>Quels périphériques sont examinés et quels systèmes de fichiers sont reconnus, cela dépend de l'architecture, de la méthode d'installation et aussi du moment dans le processus d'installation. Pendant les premières étapes de ce processus, il est probable que le microprogramme sera correctement chargé depuis une clé USB avec un système de fichiers FAT. <span class="phrase">Sur les architectures i386 et amd64, les microprogrammes peuvent être chargés sur des cartes SD ou MMC.</span> </p></td></tr>
+</table></div>
+<p>Il est possible d'éviter l'étape du chargement d'un microprogramme si l'on sait que le périphérique fonctionnera sans microprogramme ou que le périphérique n'est pas nécessaire pendant l'installation. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3479"></a>6.4.1. Préparer le support</h3></div></div></div>
+<p>La méthode la plus commune pour télécharger ces microprogrammes consiste à les placer sur un support amovible comme une clé USB. Les fichiers du microprogramme ou le paquet les contenant doivent être dans le répertoire racine ou dans un répertoire nommé <code class="filename">/firmware</code> du système de fichiers utilisé (partition de disque dur, clé USB). Il est recommandé d'utiliser le système de fichiers FAT car ce système sera certainement reconnu dans les premières étapes du processus d'installation. </p>
+<p>Des archives (<span class="emphasis"><em>tarballs</em></span> ou fichiers zip) contenant les paquets pour les microprogrammes les plus courants et leur métadonnées nécessaires pour leur détection par l'installateur (le répertoire <code class="filename">dep11</code>) sont disponibles sur </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Il suffit de télécharger la bonne version des fichiers et de les placer sur le système de fichiers du support. </p>
+<p>Il est aussi possible de copier sur le support des microprogrammes sous forme de simple fichier. Ces fichiers peuvent être pris, par exemple, sur un système déjà installé ou donnés par un vendeur de matériel. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3491"></a>6.4.2. Microprogrammes et système installé</h3></div></div></div>
+<p>Tout microprogramme chargé pendant l'installation est copié automatiquement sur le système installé. Dans la plupart des cas, le périphérique qui demandait le microprogramme fonctionnera correctement une fois la machine relancée sur le nouveau système installé. Cependant, si le système installé utilise une autre version du noyau que celle utilisée par l'installateur, il existe un risque léger que le microprogramme ne puisse être chargé, à cause de la différence des versions. </p>
+<p>Si le microprogramme chargé était sous forme de paquet, l'installateur debian installera aussi ce paquet dans le nouveau système installé et ajoutera automatiquement la section <span class="emphasis"><em>non-free-firmware</em></span> de l'archive debian dans le fichier <code class="filename">sources.list</code> d'apt. Ainsi, le microprogramme sera automatiquement mis à jour quand une nouvelle version apparaîtra. </p>
+<p>Si l'étape de chargement du microprogramme a été sautée pendant l'installation, le périphérique ne fonctionnera pas correctement sur le système installé. Il faudra installer le microprogramme <span class="emphasis"><em>manuellement</em></span>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>Quand le microprogramme provient de simples fichiers, une fois copié sur le système installé, il <span class="emphasis"><em>ne</em></span> sera <span class="emphasis"><em>pas</em></span> automatiquement mis à jour, sauf s'il existe un paquet correspondant à ce microprogramme et que ce paquet est installé quand l'installation est terminée. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Finaliser le système installé</h3></div></div></div>
+<p>En fonction du mode d'installation, il est possible que la nécessité d'un microprogramme n'ait pas été détectée, que ce microprogramme n'était pas disponible ou qu'il ne se soit pas installé comme il faut au moment de l'installation. Dans certains cas, une installation, même réussie, peut aboutir à un écran noir ou un affichage défectueux lors du redémarrage. Si cela arrivait, il est possible d'essayer quelques contournements : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Passer l'option <code class="code">nomodeset</code> à la ligne de commande du noyau. Cela peut aider à démarrer dans un mode dégradé d'affichage (<span class="quote">« <span class="quote">fallback graphics</span> »</span>).</p></li>
+<li class="listitem"><p>Utiliser la combinaison <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> pour basculer sur le terminal virtuel VT2. Cela peut permettre de se connecter quand même.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Utilisation des composants </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Personnalisation</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.1. Zavedení instalátoru na 64-bit PC</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="ch05.html" title="Kapitola 5. Zavedení instalačního systému">
+<link rel="prev" href="ch05.html" title="Kapitola 5. Zavedení instalačního systému">
+<link rel="next" href="ch05s02.html" title="5.2. Zpřístupnění">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.1. Zavedení instalátoru na <span class="phrase">64-bit PC</span>
+</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Kapitola 5. Zavedení instalačního systému</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s02.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id1748"></a>5.1. Zavedení instalátoru na <span class="phrase">64-bit PC</span>
+</h2></div></div></div>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Máte-li na svém počítači jiné operační systémy, které chcete zachovat (tzv. duální zavádění), měli byste se <span class="emphasis"><em>před</em></span> zavedením instalačního systému ujistit, že jsou tyto operační systémy skutečně vypnuté a ne jen uspané. Instalace nového operačního systému může narušit stav uspaného operačního systému (což může po jeho probuzení vést k nestabilitě systému nebo i ztrátě dat). </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Informace o zavedení grafického instalátoru naleznete v kapitole <a class="xref" href="ch05s01.html#graphical" title="5.1.6. Grafický instalátor">5.1.6 – „Grafický instalátor“</a>. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-boot-x86"></a>5.1.1. Zavedení z USB <span class="quote">„<span class="quote">klíčenky</span>“</span>
+</h3></div></div></div>
+<p>If your computer will boot from USB, this will probably be the easiest route for installation. Assuming you have prepared everything from <span class="phrase"><a class="xref" href="ch03s06.html#boot-dev-select-x86" title="3.6.2. Výběr zaváděcího zařízení">3.6.2 – „Výběr zaváděcího zařízení“</a></span> and <a class="xref" href="ch04s03.html" title="4.3. Příprava souborů pro zavedení z USB zařízení">4.3 – „Příprava souborů pro zavedení z USB zařízení“</a>, just plug your USB stick into some free USB connector and reboot the computer. The system should boot up, and unless you have used the flexible way to build the stick and not enabled it, you should be presented with a graphical boot menu (on hardware that supports it). Here you can select various installer options, or just hit <span class="keycap"><strong>Enter</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1765"></a>5.1.2. Booting from optical disc (CD/DVD)</h3></div></div></div>
+<p>If you have a set of optical discs, and your machine supports booting directly off those, great! Simply <span class="phrase"> configure your system for booting off an optical disc as described in <a class="xref" href="ch03s06.html#boot-dev-select-x86" title="3.6.2. Výběr zaváděcího zařízení">3.6.2 – „Výběr zaváděcího zařízení“</a>, </span> insert the disc, reboot, and proceed to the next chapter. </p>
+<p>Note that certain optical drives may require special drivers, and thus be inaccessible in the early installation stages. If it turns out the standard way of booting off an optical disc doesn't work for your hardware, revisit this chapter and read about alternate kernels and installation methods which may work for you. </p>
+<p>Even if you cannot boot from optical disc, you can probably install the Debian system components and any packages you want from such disc. Simply boot using a different medium and when it's time to install the operating system, base system, and any additional packages, point the installation system at the optical drive. </p>
+<p>Pokud máte problémy se zaváděním, prostudujte si <a class="xref" href="ch05s04.html" title="5.4. Problémy s instalačním systémem">5.4 – „Problémy s instalačním systémem“</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-initrd"></a>5.1.3. Booting from Linux using <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>Pro zavedení instalátoru z pevného disku musíte nejprve stáhnout potřebné soubory a umístit je podle kapitoly <a class="xref" href="ch04s04.html" title="4.4. Příprava souborů pro zavedení z pevného disku">4.4 – „Příprava souborů pro zavedení z pevného disku“</a>. </p>
+<p>For <span class="command"><strong>GRUB2</strong></span>, you will need to configure two essential things in <code class="filename">/boot/grub/grub.cfg</code>: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>to load the <code class="filename">initrd.gz</code> installer at boot time; </p></li>
+<li class="listitem"><p>have the <code class="filename">vmlinuz</code> kernel use a RAM disk as its root partition. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>An entry for the installer would be for example: </p>
+<div class="informalexample"><pre class="screen">menuentry 'Instalace Debianu' {
+insmod part_msdos
+insmod ext2
+set root='(hd0,msdos1)'
+linux /boot/newinstall/vmlinuz
+initrd /boot/newinstall/initrd.gz
+}
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-tftp-x86"></a>5.1.4. Zavedení z TFTP</h3></div></div></div>
+<p>Zavedení se sítě vyžaduje síťové připojení, funkční TFTP server a nejspíš i DHCP, RARP nebo BOOTP server pro automatické nastavení sítě. </p>
+<p>Nastavení zavádění ze sítě je popsáno v <a class="xref" href="ch04s05.html" title="4.5. Příprava souborů pro zavedení ze sítě pomocí TFTP">4.5 – „Příprava souborů pro zavedení ze sítě pomocí TFTP“</a>. </p>
+<p>Na architektuře amd64 existuje několik možností zavedení z TFTP. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1798"></a>5.1.4.1. Síťová karta s podporou PXE</h4></div></div></div>
+<p>It could be that your Network Interface Card or Motherboard provides PXE boot functionality. This is a <span class="trademark">Intel</span>™ re-implementation of TFTP boot. If so, you may be able to configure your BIOS/UEFI to boot from the network. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1802"></a>5.1.4.2. Síťová karta s bootROM</h4></div></div></div>
+<p>Je možné, že vaše síťová karta nabízí možnost zavedení z TFTP. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1805"></a>5.1.4.3. Etherboot</h4></div></div></div>
+<p>Projekt <a class="ulink" href="http://www.etherboot.org" target="_top">Etherboot</a> nabízí kromě zaváděcích disket také paměti do síťových karet, které umí zavádět z TFTP. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-screen"></a>5.1.5. Zaváděcí obrazovka</h3></div></div></div>
+<p>Při zavádění instalačního programu se objeví grafická obrazovka s logem Debianu a nabídkou: </p>
+<div class="informalexample"><pre class="screen">Debian GNU/Linux installer boot menu
+
+Graphical install
+Install
+Advanced options                            &gt;
+Accessible dark contrast installer menu     &gt;
+Help
+Install with speech synthesis
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Tato obrazovka může vypadat trošku jinak podle toho, zda se systém zavede v režimu BIOS nebo v režimu UEFI, ale nabídka možností zůstává stejná. </p></td></tr>
+</table></div>
+<p>V závislosti na zvoleném způsobu instalace nemusí být dostupná možnost grafické instalace (<span class="quote">„<span class="quote">Graphical install</span>“</span>). Obrazy pro duální architektury navíc obsahují položky pro 64 bitové varianty, což téměř zdvojnásobuje počet položek v nabídce. </p>
+<p>Pro běžnou instalaci vyberte šipkami buď položku <span class="quote">„<span class="quote">Install</span>“</span> (instalace v textovém režimu), nebo <span class="quote">„<span class="quote">Graphical install</span>“</span> (instalace v grafickém režimu) a potvrďte klávesou <span class="keycap"><strong>Enter</strong></span>. Na položku se také můžete dostat stiskem prvního zvýrazněného písmena. </p>
+<p>Položka <span class="quote">„<span class="quote">Advanced options</span>“</span> otevře další nabídku, kde si můžete zvolit pokročilé způsoby instalace, jako je expertní režim, záchranný režim a automatizovaná instalace. </p>
+<p>If you wish or need to add any boot parameters for either the installer or the kernel, press <span class="keycap"><strong>Tab</strong></span> (BIOS boot), or <span class="keycap"><strong>e</strong></span> then <span class="keycap"><strong>down arrow</strong></span> three times then <span class="keycap"><strong>end</strong></span>, to edit the <span class="quote">„<span class="quote">linux</span>“</span> line of the boot entry (UEFI boot). This will bring the boot command for the selected menu entry and allow you to edit it to suit your needs. Note that the keyboard layout at this point is still QWERTY. The help screens (see below) list some common possible options. Press <span class="keycap"><strong>Enter</strong></span> (BIOS boot) or <span class="keycap"><strong>F10</strong></span> (UEFI boot) to boot the installer with your options; pressing <span class="keycap"><strong>Esc</strong></span> will return you to the boot menu and undo any changes you made. </p>
+<p>Položka <span class="quote">„<span class="quote">Help</span>“</span> zobrazí první obrazovku nápovědy se stručným přehledem nápovědných obrazovek. Zde se můžete porozhlédnout po nápovědě, která se skrývá pod klávesami <span class="keycap"><strong>F1</strong></span> až <span class="keycap"><strong>F10</strong></span>, nebo můžete stisknout <span class="keycap"><strong>Enter</strong></span> a zavést systém s výchozími hodnotami. Ze stránek nápovědy se můžete vrátit zpět do hlavní nabídky příkazem <span class="quote">„<span class="quote">menu</span>“</span>. Příkazy můžete zadat do příkazového řádku, který se nachází na každé nápovědné obrazovce: </p>
+<div class="informalexample"><pre class="screen">
+Press F1 for the help index, or ENTER to boot:
+</pre></div>
+<p> Za příkazem pro zavedení instalace (výchozí je <strong class="userinput"><code>install</code></strong>) můžete zadat volitelné parametry, které jsou popsány v nápovědě. Celý řádek by tedy vypadal třeba takto: <strong class="userinput"><code>install nomodeset</code></strong>. Jestliže stisknete pouze <span class="keycap"><strong>Enter</strong></span>, je to stejné, jako kdyby jste zadali <strong class="userinput"><code>install</code></strong> bez dalších parametrů. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Klávesnice se nyní chová podle standardního rozložení americké angličtiny, což by v našich krajích neměl být problém, protože základní rozložení je až na prohozené Y/Z stejné, liší se pouze horní řada a pomocné znaky, které bývají na klávesnicích předtištěny v obou variantách. Horší to mají třeba Francouzi s jejich rozložením AZERTY — v takovém případě snad pomůže článek z Wikipedie zabývající se <a class="ulink" href="https://en.wikipedia.org/wiki/Keyboard_layout#United_States" target="_top">US rozložením</a>. </p></td></tr>
+</table></div>
+<p>
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Instalujete-li na systému, který má v BIOSu nastaveno použití sériové konzole, je možné že neuvidíte grafickou část obrazovky a někdy dokonce ani zaváděcí nabídku. To stejné vás může potkat v případech, kdy instalujete přes zařízení pro vzdálenou správu, jež nabízí textové rozhraní k VGA konzoli (např. Compaq <span class="quote">„<span class="quote">integrated Lights Out</span>“</span> (iLO), nebo HP <span class="quote">„<span class="quote">Integrated Remote Assistant</span>“</span> (IRA)). </p>
+<p>Můžete se pokusit naslepo stisknout klávesu <span class="keycap"><strong>Esc</strong></span>, a přepnout se na textovou zaváděcí výzvu, případně stisknout <span class="quote">„<span class="quote">H</span>“</span> a následně <span class="keycap"><strong>Enter</strong></span>, což by vás mělo přepnout na (textovou) obrazovku s nápovědou popsanou výše. Zde by už mělo fungovat echo, tj. znaky, které na klávesnici napíšete, by měly být normálně vidět na řádku se zaváděcí výzvou. Chcete-li instalačnímu systému zakázat použití grafického framebufferu ve zbytku instalace, přidejte na řádek parametr <strong class="userinput"><code>vga=normal nomodeset</code></strong>. </p>
+</td></tr>
+</table></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="graphical"></a>5.1.6. Grafický instalátor</h3></div></div></div>
+<p>Grafická verze instalačního systému je dostupná pouze na několika architekturách, kam patří i <span class="phrase">64-bit PC</span>. Funkcionalita grafického instalátoru je shodná s textovou verzí, protože se jedná o stejné programy, liší se pouze vzhled. </p>
+<p>I když je funkcionalita stejná, přesto přináší grafická verze několik výhod. Tou hlavní je, že podporuje více jazyků, konkrétně ty, jejichž znaková sada se nedá zobrazit v textovém rozhraní <span class="quote">„<span class="quote">newt</span>“</span>. Grafické rozhraní také zlepšuje použitelnost tím, že můžete volitelně používat myš a že je v některých případech zobrazeno více otázek na jediné obrazovce (typicky zadání hesla a jeho ověření). </p>
+<p>The graphical installer is available with all CD/DVD images and with the hd-media installation method. To boot the graphical installer simply select the relevant option from the boot menu. Expert and rescue mode for the graphical installer can be selected from the <span class="quote">„<span class="quote">Advanced options</span>“</span> menu. The previously used boot methods <strong class="userinput"><code>installgui</code></strong>, <strong class="userinput"><code>expertgui</code></strong> and <strong class="userinput"><code>rescuegui</code></strong> can still be used from the boot prompt which is shown after selecting the <span class="quote">„<span class="quote">Help</span>“</span> option in the boot menu. </p>
+<p>Při startu grafického instalátoru můžete používat zaváděcí parametry stejně, jako u textové verze. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Grafický instalátor vyžaduje pro běh mnohem více paměti než textová verze: 810MB. Pokud instalace zjistí nedostatek paměti, automaticky se přepne do textového rozhraní <span class="quote">„<span class="quote">newt</span>“</span>. </p>
+<p>Máte-li však méně paměti než 780MB, je možné, že se grafická instalace vůbec nezavede, zatímco textová verze může stále fungovat. Pro počítače s minimem dostupné paměti je doporučeno použít rovnou textovou verzi. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s02.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Kapitola 5. Zavedení instalačního systému </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> 5.2. Zpřístupnění</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

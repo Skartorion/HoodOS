@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Brug af individuelle komponenter</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Kapitel 6. Brug af Debian-installationsprogrammet">
+<link rel="prev" href="ch06s02.html" title="6.2. Introduktion til komponenter">
+<link rel="next" href="ch06s04.html" title="6.4. Indlæsning af manglende firmware">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Brug af individuelle komponenter</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 6. Brug af Debian-installationsprogrammet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Brug af individuelle komponenter</h2></div></div></div>
+<p>I det her afsnit vil vi beskrive hver installationskomponent i detaljer. Komponenterne er blevet grupperet i stadier, som bør være kendte for brugerne. De præsenteres i den rækkefølge de kommer frem under installationen. Bemærk at ikke alle moduler vil blive brugt for hver installation; hvilke moduler som rent faktisk bliver brugt afhænger af den brugte installationsmetode og dit udstyr. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Konfiguration af Debians installationsprogram og udstyr</h3></div></div></div>
+<p>Lad os antage at Debian-installationsprogrammet er startet op og du møder programmets første skærm. På det her tidspunkt er mulighederne i <code class="classname">debian-installer</code> stadig ret så begrænset. Den ved ikke meget om dit udstyr, hvilket sprog eller den opgave den skal udføre. Du skal dog ikke bekymre dig, <code class="classname">debian-installer</code> er ret så smart, den kan automatisk undersøge dit udstyr, lokalisere resten af sine komponenter og opgradere sig selv til et brugbart installationssystem. Du skal dog stadig hjælpe <code class="classname">debian-installer</code> med lidt information som systemet ikke selv kan bestemme automatisk (såsom valg af dit sprog, tastaturlayout og ønsket netværksspejl). </p>
+<p>Du vil bemærk at <code class="classname">debian-installer</code> gennemfører <em class="firstterm">udstyrdetektering</em> flere gange under det her trin. Første gang er målrettet det udstyr som skal bruges til at indlæse installationskomponenter f.eks. dit cd-rom-drev eller netværkskort). Da ikke alle drivere nødvendigvis er tilgængelige under denne første kørsel, så skal udstyrsdetektering køres igen senere i processen. </p>
+<p>Under udstyrsdetektering så kontrollerer <code class="classname">debian-installer</code> om nogle af driverne for udstyrsenhederne i dit system kræver at firmware indlæses. Hvis firmware er krævet men ikke tilgængelig, så vil en dialog blive vist som tillader at den manglende firmware kan indlæses fra en eksternt medie. Se <a class="xref" href="ch06s04.html" title="6.4. Indlæsning af manglende firmware">Afsnit 6.4, “Indlæsning af manglende firmware”</a> for yderligere detaljer. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Kontroller tilgænglig hukommelse / tilstand for lav hukommelse</h4></div></div></div>
+<p>En af de første ting som <code class="classname">debian-installer</code> udfører er at kontrollere tilgængelig hukommelse. Hvis den tilgænglige hukommelse er begrænset, så vil denne komponent foretage nogle ændringer i installationsprocessen, som forhåbentlig vil give dig mulighed for at installere Debian GNU/Linux på dit system. </p>
+<p>Det første tiltag der udføres for at formindske installationsprogrammets hukommelesforbrug er at deaktivere oversættelser, hvilket betyder at installationen kun kan udføres på engelsk. Du kan selvfølgelig stadig lokaltilpasse det installerede system efter installationen er færdig. </p>
+<p>Hvis dtte ikke er tilstrækkeligt vil installationsprogrammet yderligere formindske hukommelsesforbruget ved kun at indlæse de vigtigste komponenter for at færdiggøre en basisinstallation. Dette reducerer det installerede systems funktionalitet. Du får mulighed for at indlæse yderligere komponenter manuelt, men du skal være opmærksom på, at hver komponent du vælger vil bruge yderligere hukommelse og derfor kan få installationen til at fejle. </p>
+<p>If the installer runs in low memory mode, it is recommended to create a relatively large swap partition (1–2GB). The swap partition will be used as virtual memory and thus increases the amount of memory available to the system. The installer will activate the swap partition as early as possible in the installation process. Note that heavy use of swap will reduce performance of your system and may lead to high disk activity. </p>
+<p>På trods af disse tiltag, er det stadig muligt at dit system fryser, at uventede fejl opstår eller at processer bliver dræbt af kernen fordi systemet løber tør for hukommelse (hvilket resulterer i <span class="quote">“<span class="quote">Out of memory</span>”</span>-meddelelser på VT4 og i systemloggen). </p>
+<p>Det er for eksempel blevet rapporteret at oprettelsen af et stort ext3-filsystem fejler i tilstanden for lav hukommelsesforbrug, når der ikke er tilstrækkelig med swap-plads. Hvis en større swap ikke hjælper, så prøv at oprette filsystemet som ext2 (som er en essentiel del af installationsprogrammet) i stedet for. Det er muligt at ændre en ext2-partition til ext3 efter installationen. </p>
+<p>Det er muligt at tvinge installationsprogrammet til at bruge et højere lowmem-nivea end den som er baseret på tilgængelig hukommelse ved at bruge opstartsparameteren <span class="quote">“<span class="quote">lowmem</span>”</span> som beskrevet i <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametre for Debian-installationsprogrammet">Afsnit 5.3.2, “Parametre for Debian-installationsprogrammet”</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Valg af lokalitetsindstillinger</h4></div></div></div>
+<p>I de fleste tilfælde er det første spørgsmål du bliver stillet valget af lokalitetsindstillinger som skal bruges af både installationsprogrammet og for det installerede system. Lokalitetsindstillingerne består af sprog, land og sprogområder. </p>
+<p>Sproget du vælger vil blive brugt i resten af installationsprocessen, såfremt en oversætning for de forskellige dialoger er tilgængelig. Hvis ingen gyldig oversættelse er tilgængelig for det valgte sprog, vil installationsprogrammet bruge engelsk. </p>
+<p>Den valgte geografiske placering (i det fleste tilfælde et land) vil blive brugt senere i installationsprogrammet for at vælge den korrekte tidszone o get Debian-spejl, som er passende for det land. Sprog og land tilsammen vil bestemme lokaliteten for dit system og vælge det korrekte tastaturlayout. </p>
+<p>Du bliver først spurgt om dit foretrukne sprog. Sprognavnene er vist både på engelsk (venstre side) og med sprogets egen stavning (højre side); navnet til højre vises også i sprogets korrekte skrift. Listen er sorteret efter de engelske navne. Øverst på listen findes et ekstra alternativ som tillader dig at vælge indstillingen <span class="quote">“<span class="quote">C</span>”</span> i stedet for et sprog. Valg af indstillingen <span class="quote">“<span class="quote">C</span>”</span> betyder at installationen fortsætter på engelsk; det installerede system vil ikke have nogen form for lokaltilpasning da pakken <code class="classname">locales</code> ikke bliver installeret. </p>
+<p>Derefter vil du blive spurgt om din geografiske placering. Hvis du valgte et sprog, som anerkendes som officielt sprog i mere end et land<a href="#ftn.id2585" class="footnote" name="id2585"><sup class="footnote">[4]</sup></a>, vil du få vist en liste over kun disse lande. For at vælge et land som ikke findes på listen vælger du <span class="guimenuitem">andet</span> (sidste alternativ). Du får så vist en liste over kontinenter; vælg et kontinent for en liste over relevante lande på det kontinent. </p>
+<p>If the language has only one country associated with it, a list of countries will be displayed for the continent or region the country belongs to, with that country selected as the default. Use the <span class="guibutton">Go Back</span> option to select countries on a different continent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Det er vigtigt at vælge landet hvor du bor eller hvor du er placeret, da det afgør tidszonen, som bliver konfigureret for det installerede system. </p></td></tr>
+</table></div>
+<p>Hvis du valgte en kombination af sprog og land hvor intet sted er defineret og der findes flere steder for sproget, så vil installationsprogrammet lade dig vælge hvilket af disse steder du foretrækker som standardstedet for det installerede system<a href="#ftn.id2593" class="footnote" name="id2593"><sup class="footnote">[5]</sup></a>. I alle andre tilfælde vil et standardsted blive valgt baseret på det valgte sprog og land. </p>
+<p>Ethvert standardsted valgt som beskrevet i det forrige afsnit vil bruge <em class="firstterm">UTF-8</em> som tegnkodning. </p>
+<p>Hvis du installerer ved lav prioritet, så har du mulighed for at vælge yderligere steder, inklusiv såkaldte <span class="quote">“<span class="quote">legacy</span>”</span> (forældede) steder<a href="#ftn.id2599" class="footnote" name="id2599"><sup class="footnote">[6]</sup></a>, til oprettelse for det installerede system; hvis du foretager dette valg vil du blive spurgt om hvilket sted som skal være standard for det installerede system. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Valg af tastatur</h4></div></div></div>
+<p>Tastaturer er ofte tilpassede efter de tegn som bruges i et bestemt sprog. Vælg et layout som gælder for tastaturet du bruger, eller vælg et som ligner det hvis tastaturlayoutet du ønsker ikke findes. Når installationen af systemet er færdig vil du kunne vælge et tastaturlayout fra en bredere skala (kør <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> som root (administrator) efter at du er færdig med installationen). </p>
+<p>Flyt markeringen til tastaturvalget og tryk på <span class="keycap"><strong>Enter</strong></span>. Brug piletasterne for at flytte markeringen — de er på samme plads for alle tastaturlayout på alle nationale sprogs tastaturlayout, så de er uafhængige af tastaturkonfigurationen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. På udkig efter et ISO-aftyk af Debian-installationsprogrammet</h4></div></div></div>
+<p>Når installation udføres med metoden <span class="emphasis"><em>hd-media</em></span> kommer du til et punkt hvor du skal finde og montere iso-aftrykket for Debian-installationsprogrammet for at få fat i resten af installationsfilerne. Komponenten <span class="command"><strong>iso-scan</strong></span> gør præcis det. </p>
+<p>Først monterer <span class="command"><strong>iso-scan</strong></span> automatisk alle blokenheder (eksempelvis partitioner og logiske diskenehder), der har et kendt filsystem på sig og søger sekventielt efter filnavne, der slutter på <code class="filename">.iso</code> (eller <code class="filename">.ISO</code> for den sags skyld). Vær opmærksom på, at det første forsøg kun søger efter filer i rodmappen i første niveau af undermapperne (altså, den finder <code class="filename">/<em class="replaceable"><code>hvadsomhelst</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>hvadsomhelst</code></em>.iso</code>, men ikke <code class="filename">/data/tmp/<em class="replaceable"><code>hvadsomhelst</code></em>.iso</code>). Efter at et iso-aftryk er fundet, kontrollerer <span class="command"><strong>iso-scan</strong></span> dets indhold for at fastslå om aftrykket er et gyldigt Debian-aftryk eller ej. I det første tilfælde er vi færdige, i det andet søger <span class="command"><strong>iso-scan</strong></span> efter et andet aftryk. </p>
+<p>Hvis det tidligere forsøg på at finde et iso-aftryk for installationsprogrammet mislykkedes, vil <span class="command"><strong>iso-scan</strong></span> spørge dig, om du ønsker at udføre en mere gennemgående søgning. Den her fase vil ikke bare kigge på de øverste mapper, men løbe igennem hele filsystemet. </p>
+<p>Hvis <span class="command"><strong>iso-scan</strong></span> ikke finder iso-aftrykket for installationsprogrammet, så genstart tilbage til dit oprindelige operativsystem og kontroller om aftrykket er korrekt navngivet (ender på <code class="filename">.iso</code>), hvis den er placeret på et filsystem, der kan genkendes af <code class="classname">debian-installer</code>, og hvis det ikke er ødelagt (verificer kontrolsummen). Erfarne Unix-brugere kan gøre dette på den anden konsol uden at genstarte. </p>
+<p>Bemærk at partitionen (eller disken) hvor ISO-aftrykket befinder sig på ikke kan genbruges under installationsprocessen, da den vil være i brug af installationsprogrammet. For at omgå dette, og såfremt du har nok systemhukommelse, kan installationsprogrammet kopiere ISO-aftrykket ind i RAM før montering. Dette kontrolleres af debconf-spørgsmålet med lav prioritet <code class="literal">iso-scan/copy_iso_to_ram</code> (det bliver kun stillet såfremt hukommelseskravet er opfyldt). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Konfigurer netværket</h4></div></div></div>
+<p>Når du kommer til det her trin, hvis systemet detekterer at du har mere end en netværksenhed, bliver du spurgt om at vælge hvilken enhed der skal være din <span class="emphasis"><em>primære</em></span> netværksgrænseflade, dvs. den du vil bruge for installationen. De øvrige grænseflader vil ikke blive konfigureret på dette tidspunkt. Du kan konfigurere yderligere grænseflader efter installationen er færdig; se manualsidan <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatisk netværkskonfiguration</h5></div></div></div>
+<p>Som standard forsøger <code class="classname">debian-installer</code> at konfigurere din computeres netværk automatisk så langt som muligt. Hvis den automatiske konfiguration mislykkes, kan det skyldes mange faktorer fra et udtrukket netværkskabel til manglende infrastruktur for automatisk konfiguration. For yderligere forklaring i tilfælde af fejl, så kontroller fejlbeskederne på den fjerde konsol. Uanset hvad så vil du blive spurgt om du ønsker at prøve igen, eller om du ønsker at foretage en manuel opsætning. Undertiden kan netværkstjenesterne brugt til automatisk konfiguration være langsomme i deres svar, så hvis du er sikker på, at alt er i orden, så start den automatiske konfiguration igen. Hvis den automatiske konfiguration fejler i gentagende tilfælde, så kan du vælge at udføre manuel netværksopsætning. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Manuel netværkskonfiguration</h5></div></div></div>
+<p>Den manuelle netværksopsætning vil stille dig et antal spørgsmål om dit netværk, specielt <code class="computeroutput">IP-adresse</code>, <code class="computeroutput">netmaske</code>, <code class="computeroutput">adgangspunkt</code>, <code class="computeroutput">adresser for navneserver</code>, og et <code class="computeroutput">værtsnavn</code>. Hvis du har et trådløst netværkskort, vil du blive anmodt om at angive din <code class="computeroutput">Trådløse ESSID</code> (<span class="quote">“<span class="quote">trådløst netværksnavn</span>”</span>) og en <code class="computeroutput">WEP-nøgle</code> eller <code class="computeroutput">WPA/WPA2-adgangsfrase</code>. Angiv svarene fra <a class="xref" href="ch03s03.html" title="3.3. Information du har brug for">Afsnit 3.3, “Information du har brug for”</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nogle tekniske detaljer du måske, måske ikke, kan bruge: programmet antager at netværkets IP-adresse er bitvis-OG af dit systems IP-adresse og din netmaske. Broadcast-adressen bliver beregnet som bitvis ELLER af dit systems IP-adresse med bitvis negation af netmasken. Programmet vil også gætte dit adgangspunkt. Hvis du ikke kan finde nogle af disse svar, så brug det tilbudte standarder — hvis nødvendigt kan du ændre dem ved at redigere <code class="filename">/etc/network/interfaces</code> når systemet er blevie installeret. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 og IPv6</h5></div></div></div>
+<p>Fra Debian GNU/Linux 7.0 (<span class="quote">“<span class="quote">Wheezy</span>”</span>) og fremad understøtter <code class="classname">debian-installer</code> IPv6 samt også <span class="quote">“<span class="quote">klassisk</span>”</span> IPv4. Alle kombinationer af IPv4 og IPv6 (IPv4-kun, IPv6-kun og dual-stack-konfigurationer) er understøttet. </p>
+<p>Automatisk konfiguration for IPv4 udføres via DHCP (Dynamic Host Configuration Protocol). Automatisk konfiguration for IPv6 understøtter tilstandsfri automatisk konfiguration via brug af NDP (Neighbor Discovery Protocol, inklusiv rekursiv DNS-servertildeling (RDNSS)), tilstandsbærende automatisk konfiguration via DHCPv6 og blandet tilstandsfri/tilstandsbærende automatisk konfiguration (adressekonfiguration via NDP, yderligere parametre via DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Opsætning af brugere og adgangskoder</h3></div></div></div>
+<p>Lige før konfiguration af uret, vil installationsprogrammet give dig mulighed for at opsætte kontoen for <span class="quote">“<span class="quote">root</span>”</span> (administrator) og/eller en konto for den første bruger. Andre brugerkontoer kan oprettes efter installationen er færdig. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Angiv en adgangskode for root (administrator)</h4></div></div></div>
+<p>Kontoen <span class="emphasis"><em>root</em></span> kaldes også for <span class="emphasis"><em>superbruger</em></span>; det er en konto som omgår hele sikkerhedsbeskyttelsen på dit system. Root-kontoen skal kun bruges til at udføre systemadministration, og kun i så kort tid som muligt. </p>
+<p>De adgangskoder som du opretter skal mindst indeholde 6 tegn, og skal bestå af både store og små bogstaver samt specialtegn. Vær ekstra forsigtig når du angiver din adgangskode for root, da det er en meget funktionsrig konto. Undgå ord fra ordbøger eller brug af personlig information, som kan gættes. </p>
+<p>Hvis nogen anmoder dig om at udlevere din adgangskode for root, så vær ekstrem forsigtig. Du skal aldrig give din adgangskode for root til andre, med mindre du administrerer en maskine som har mere end en systemadministrator. </p>
+<p>I tilfælde af at du ikke angiver en adgangskode for administratoren <span class="quote">“<span class="quote">root</span>”</span> her, vil denne konto være deaktiveret men pakken <span class="command"><strong>sudo</strong></span> vil blive installeret senere for at aktivere at administrative opgaver kan udføres på det nye system. Som standard vil den første bruger oprettet på systemet kunne bruge kommandoen <span class="command"><strong>sudo</strong></span> for at blive administrator (root). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Opret en normal bruger</h4></div></div></div>
+<p>Systemet vil spørge dig om du ønsker at oprette en normal brugerkonto på dette tidspunkt. Denne konto skal være dit personlige logind. Du skal <span class="emphasis"><em>ikke</em></span> brug rootkontoen til daglig brug eller som dit personlige logind. </p>
+<p>Hvorfor ikke? En af årsagerne til at undgå at bruge rootbrugeren privilegier er at det er meget nemt at lave uoprettelig skade som root. En anden årsag er at du kan blive lokket til at køre en <span class="emphasis"><em>trojansk hest</em></span> — det er et program som udnytter funktionerne hos din superbruger til at kompromitere dit systems sikkerhed bag om ryggen på dig. Enhver god bog om systemadministration i Unix vil behandle dette emne i flere detaljer — hvis det er nyt for dig, så overvej at læse en sådan bog. </p>
+<p>Du vil blive spurgt om brugerens fulde navne. Derefter vil du blive spurgt om et navn for brugerkontoen; generelt dit første navn eller noget lignende vil være tilstrækkeligt og vil være standarden. Endelig vil du blive anmodt om en adgangskode for denne konto. </p>
+<p>Hvis du på et tidspunkt efter installationen ønsker at oprette en anden konto, så brug kommandoen <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Konfigurer uret og tidszonen</h3></div></div></div>
+<p>Installationsprogrammet vil først forsøge at tilslutte sig en tidsserver på internettet (med protokollen <em class="firstterm">NTP</em>) for at indstille systemtiden korrekt. Hvis dette ikke lykkes vil installationsprogrammet antage at tiden og datoen hentet fra systemuret da installationssystemet blev startet er korrekt. Det er ikke muligt manuelt at angive systemtiden under installationsprocessen. </p>
+<p>Afhængig af stedet valgt tidligere i installationsprocessen så kan der blive vist en liste over tidszoner som er relevante for det sted. Hvis dit sted kun har en tidszone og du udfører en standardinstallation, så vil du ikke blive spurgt om noget og systemet vil antage at tidszonen er korrekt. </p>
+<p>I eksperttilstanden eller ved installation på prioritet mellem, så vil du have den yderligere mulighed for at vælge <span class="quote">“<span class="quote">Coordinated Universal Time</span>”</span> (UTC) som tidszone. </p>
+<p>Hvis du af en eller anden årsag ønsker at bruge en tidszone for det installerede system, som <span class="emphasis"><em>ikke</em></span> svarer til det valgte sted, så er der to muligheder. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Det nemmeste er bare at vælge en anden tidszone efter at installationen er færdig og du er logget ind på dit nye system. Kommandoen for dette er: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternativt kan tidszonen vælges i begyndelsen af installationen ved at sende parameteren <strong class="userinput"><code>time/zone=<em class="replaceable"><code>værdi</code></em></code></strong> når du starter installationssystemet op. Værdien skal selvfølgelig være en gyldig tidszone, for eksempel <strong class="userinput"><code>Europe/London</code></strong> eller <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>For automatiserede installationer kan tidszonen sættes til enhver ønsket værdi med forhåndsindstilling. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Partitionering og valg af monteringspunkt</h3></div></div></div>
+<p>På det her tidspunkt, efter at detektering af udstyr i din computer er blevet kørt den sidste gang, bør <code class="classname">debian-installer</code> være ved sin fulde kraft, tilpasset til brugerens behov og klar til noget arbejde. Præcis som titlen på det her afsnit indikerer er hovedfunktionen for de næste komponenter partitionering af dine diske, oprettelse af filsystemer, tildelning af monteringspunkter og valgfri konfigurering af nærliggende sager som RAID, LVM eller krypterede enheder. </p>
+<p>Hvis du er ukomfortabel med partitionering eller bare vil vide mere om detaljerne, så se <a class="xref" href="apc.html" title="Appendiks C. Partitionering for Debian">Appendiks C, <i>Partitionering for Debian</i></a>. </p>
+<p>Først får du muligheden for automatisk at partitionere enten en hel disk eller ledig plads på et drev. Dette kaldes også for <span class="quote">“<span class="quote">vejledt</span>”</span> partitionering. Hvis du ikke vil partitionere automatisk, så vælg <span class="guimenuitem">Manuelt</span> fra menuen. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Understøttede partitioneringsindstillinger</h4></div></div></div>
+<p>Partitioneringsprogrammet brugt i <code class="classname">debian-installer</code> er ret fleksibelt. Det tillader oprettelse af mange forskellige partitioneringsskemaer, brug af forskellige partitioneringstabeller, filsystemer og avancerede blokenheder. </p>
+<p>Præcis hvilke indstillinger der er tilgængelige afhænger hovedsagelig af arkitekturen, men også af andre faktorer. For eksempel er nogle indstillinger, på systemer med begrænset intern hukommelse, ikke tilgængelige. Standarderne kan også variere. Typen af partitionstabel kan være anderledes for harddiske med stor kapacitet i forhold til mindre harddiske. Nogle indstillinger kan kun ændres når der installeres med mellem eller lav debconf-prioritet; ved højere prioriteter vil fornuftige standarder blive brugt. </p>
+<p>Installationsprogrammet understøtter forskellige former for avanceret partitionering og brug af lagerenheder, som i mange tilfælde kan bruges kombineret. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logisk diskenhedshåndtering (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Program-RAID</em></span>
+  </p>
+<p>Understøttede RAID-niveauer 0, 1, 4, 5, 6 og 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Kryptering</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (eksperimentel) </p>
+<p>Se <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">vores Wiki</a> for information. Understøttelse af multipath er aktuelt kun tilgængelig hvis aktiveret når installationsprogrammet startes op. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>De følgende filsystemer er understøttet. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Filsystemet, der vælges som standard, er i de fleste tilfælde ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (ikke tilgængelig på alle arkitekturer) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (ikke tilgængelig på alle arkitekturer) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (valgfri; ikke tilgængelig på alle arkitekturer) </p>
+<p>Understøttelse for Reiser-filsystemet er ikke længere tilgængelig som standard. Når installationsprogrammet køres ved mellem eller lav debconf-prioritet kan det aktiveres ved at vælge komponenten <code class="classname">partman-reiserfs</code>. Kun version 3 af filsystemet er understøttet. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Eksisterende partitioner vil blive genkendt og det er muligt at tildele monteringspunkter for dem. Det er ikke muligt at oprette nye qnx4-partitioner. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (skrivebeskyttet) </p>
+<p>Eksisterende NTFS-partitioner kan få ny størrelse og det er muligt at tildele monteringspunkter for dem. Det er ikke muligt at oprette nye NTFS-partitioner. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>The partitioner accepts units as power-of-ten (1 MB = 1000 kB = 1000000 B), as well as power-of-two (1 MiB = 1024 kiB = 1048576 B). Unit prefixes are supported until EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Vejledt partitionering</h4></div></div></div>
+<p>Hvis du vælger vejledt partitionering har du tre alternativer: oprette partitioner direkte på harddisken (klassisk metode), oprette dem med logisk diskenhedshåndtering (LVM), eller oprette dem med krypteret LVM<a href="#ftn.id2779" class="footnote" name="id2779"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Alternativet med at anvende (krypteret) LVM er måske ikke tilgængelig på alle arkitekturer. </p></td></tr>
+</table></div>
+<p>Når LVM eller krypteret LVM anvendes vil installationsprogrammet oprette de fleste partitioner inde i en stor partition; fordelen med den her metode er at partitionerne inde i den her store partition nemt kan få ny størrelse senere. I tilfældet med krypteret LVM, vil den store partition ikke være læsbar uden at kende til en speciel nøglefrase, hvilket giver ekstra sikkerhed for dine (personlige) data. </p>
+<p>Når krypteret LVM anvendes, vil installationsprogrammet automatisk slette disken ved at skrive vilkårlige data til den. Dette øger sikkerheden yderligere (og gør det umuligt at se hvilke dele af disken som anvendes og også sikrer at ethvert spor af tidligere installationer er slettet), men det kan dog tage lidt tid afhængig af størrelsen på din disk. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Hvis du vælger partitionering med guide og LVM eller krypteret LVM, vil visse ændringer i partitionstabellen skulle skrives til den valgte disk når LVM er sat op. Disse ændringer sletter effektivt alle data som aktuelt befinder sig på den valgte harddisk og du kan ikke fortryde senere. Dog vil installationsprogrammet spørge om en bekræftelse før disse ændringer skrives til disken. </p></td></tr>
+</table></div>
+<p>Hvis du vælger partitionering med guide <span class="phrase"> (enten klassisk eller med brug af (krypteret) LVM)</span> for en hel disk, vil du først blive spurgt om at vælge disken, du ønsker at bruge. Kontroller at alle dine diske er vist og hvis du har flere diske, sikr dig at du vælger den korrekte. Rækkefølgen de vises kan være forskellig fra hvad du er vant til. Størrelsen på disken kan hjælpe med at identificere dem. </p>
+<p>Alle data på disken du vælger vil gå tabt, men du bliver altid spurgt om at bekræfte alle ændringer før de skrives til disken. <span class="phrase"> Hvis du har valgt den klassiske metode for partitionering, kan du fortryde alle ændringer lige indtil slutningen; når du bruger (krypteret) LVM er dette ikke muligt. </span> </p>
+<p>Next, you will be able to choose from the schemes listed in the table below. All schemes have their pros and cons, some of which are discussed in <a class="xref" href="apc.html" title="Appendiks C. Partitionering for Debian">Appendiks C, <i>Partitionering for Debian</i></a>. If you are unsure, choose the first one. Bear in mind that guided partitioning needs a certain minimal amount of free space to operate with. If you don't give it at least about 3GB of space (depends on chosen scheme), guided partitioning will fail. Also, on small disks you will probably not see all of the schemes mentioned below. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Partitioneringsplan</th>
+<th>Mininumsplads</th>
+<th>Oprettede partitioner</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Alle filer på en partition</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>Separat partition for /home</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>Separate partitioner for /home, /var og /tmp</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Separate /srv and /var partitions; swap limited to 1GB (for server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Scheme especially for small disks</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Hvis du vælger partitionering med guide (krypteret) og LVM vil installationsprogrammet også oprette en separat partition for <code class="filename">/boot</code>. De andre partitioner, inklusive swappartitionen, vil blive oprettet inden i LVM-partitionen. </p>
+<p>Hvis du er startet op i EFI-tilstand så vil der i vejledningen til partitioneringsopsætningen være en yderligere partition, formateret som et FAT32-opstartsparat filsystem, for EFI-opstartsindlæseren. Denne partition er kendt som en EFI System Partition (ESP). Der er også et yderligere menupunkt i formateringsmenuen til manuelt at opsætte en partition som en ESP. </p>
+<p>Efter valg af en plan vil den næste skærm vise dine nye partitionstabel, inklusiv information om hvorvidt og hvordan partitioner vil blive formateret og hvor de vil blive monteret. </p>
+<p>Listen over partitioner kan se ud som den her: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primær    16.4 MB  B f ext2       /boot
+        #2 primær   551.0 MB      swap       swap
+        #3 primær     5.8 GB      ntfs
+           pri/log    8.2 MB      LEDIG PLADS
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primær    15.9 MB      ext3
+        #2 primær   996.0 MB      fat16
+        #3 primær     3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logisk     1.0 GB    f ext3       /var
+        #7 logisk   498.8 MB      ext3
+</pre></div>
+<p> Det her eksempel viser to harddiske som deles op i flere partitioner; første disk har ledig plads. Hver partitionslinje indeholder partitionsnummeret, dets type, størrelse, valgfrie tilvalg, filsystem og monteringspunkt (hvis der findes nogen). Bemærk: Denne specifikke konfiguration kan ikke oprettes med en guidet partitionering, men det viser en mulig variation, som kan opnås med manuel partitionering. </p>
+<p>Dette er slutningen på partitionering med guide. Hvis du er tilfreds med den oprettet partitionstabel, så kan du vælge <span class="guimenuitem">Afslut partitionering og skriv ændringer til disken</span> fra menuen for at implementere den nye partitionstabel (som beskrevet i slutningen af det her afsnit). Hvis du ikke er tilfreds, så kan du vælge <span class="guimenuitem">Fortryd ændringer til partitionerne</span> og køre partitionering med guide igen eller modificere de foreslåede ændringer som beskrevet nedenfor for manuel partitionering. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Manuel partitionering</h4></div></div></div>
+<p>En lignende skærm til den som vist ovenfor vil blive vist hvis du vælger manuel partitionering med undtagelse af at din eksisterende partitionstabel vil blive vist og uden monteringspunkterne. Hvordan du manuelt opsætter din partitionstabel og brugen af partitioner i dit nye Debian-system vil blive dækket i den resterende del af dette afsnit. </p>
+<p>Hvis du vælger en ren disk som hverken har partitioner eller fri plads, så vil du blive spurgt om en ny partitionstabel skal oprettes (dette er krævet så du kan oprette nye partitioner). Derefter bør en ny linje <span class="quote">“<span class="quote">LEDIG PLADS</span>”</span> fremkomme i tabellen under den valgte disk. </p>
+<p>Hvis du vælger en ledig plads, så har du mulighed for at oprette en ny partition. Du skal besvare en række spørgsmål om dens størrelse, type (primær eller logisk), og placering (begyndelsen eller slutningen af den ledige plads). Derefter vil du blive præsenteret for et detaljeret overblik over din nye partition. Hovedindstillingen <span class="guimenuitem">Brug som:</span>, som bestemmer om partitionen skal indeholde et filsystem, eller bruges for swap,<span class="phrase"> program-RAID, LVM, et krypteret filsystem,</span> eller ikke bruges overhovedet. Andre indstillinger inkluderer monteringspunkt, monteringsindstilinger og tilvalg for opstart; hvilke indstililnger der vises afhænger af hvad partitionen skal bruges til. Hvis du ikke kan lide de forudvalgte standarder, så kan du ændre dem til de foretrukne. For eksempel ved at vælge indstillingen <span class="guimenuitem">Brug som:</span>, kan du vælge et andet filsystem for denne partition, inklusive indstillinger for at bruge partitionen som swap,<span class="phrase"> program-RAID, LVM,</span> eller ingen brug. Når du er tilfreds med din nye partition, så vælg <span class="guimenuitem">Færdig med partitionen</span> og du returnerer til <span class="command"><strong>partman</strong></span>s hovedskærm. </p>
+<p>Hvis du beslutter at du ønsker at ændre noget ved din partition, så vælg partitionen, hvilket vil føre dig til menuen for partitionskonfiguration. Det er den samme skærm som bruges når der oprettes en ny partition, så du kan ændre de samme indstillinger. En ting der ikke er så indlysende ved første øjekast er at du kan ændre størrelse på partitionen ved at vælge punktet der viser størrelsen på partitionen. Filsystemer der vides at fungere er fat16, fat32, ext2, ext3 og swap. Denne menu giver dig også mulighed for at slette en partition. </p>
+<p>Vær sikker på, at du opretter mindst to partitioner: en for <span class="emphasis"><em>rod</em></span>filsystemet (som skal monteres som <code class="filename">/</code>) og en for <span class="emphasis"><em>swap</em></span>. Hvis du glemte at montere rodfilsysteme (root), så vil <span class="command"><strong>partman</strong></span> ikke lade dig fortsætte før du retter dette. </p>
+<p>Hvis du starter op i EFI-tilstand men glemmer at vælge og formatere en EFI-opstartspartition, så vil <span class="command"><strong>partman</strong></span> opdage det og forhindre dig i at fortsætte, indtil du har allokeret en. </p>
+<p>Funktionerne i <span class="command"><strong>partman</strong></span> kan udvides med installationsmoduler, men er afhængige af dit systems arkitektur. Så hvis du ikke kan se alle de lovede goder, så kontroller om du har indlæst alle krævede moduler (f.eks. <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> eller <code class="filename">partman-lvm</code>). </p>
+<p>Efter at du er tilfreds med partitioneringen, så vælg <span class="guimenuitem">Afslut partitioneringen og skriv ændringer til disken</span> fra partitioneringsmenuen. Du får præsenteret et referat over ændringerne foretaget på diskene og bedt om at bekræfte at filsystemerne skal oprettes som anmodt om. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Konfiguration af flerdiskenheder (program-RAID)</h4></div></div></div>
+<p>Hvis du har flere end en harddisk<a href="#ftn.id2873" class="footnote" name="id2873"><sup class="footnote">[8]</sup></a> i din computer, kan du bruge <span class="command"><strong>partman-md</strong></span> til at opsætte dine drev for øget ydelse og/eller bedre sikkerhed for dine data. Resultatet kaldes <em class="firstterm">Multidisk Device</em> (eller efter dets mest kende variant <em class="firstterm">program-RAID</em>). </p>
+<p>MD er grundlæggende en samling af partitioner placeret på forskellige diske og kombineret sammen til at udgøre en <span class="emphasis"><em>logisk</em></span> enhed. Denne enhed kan så bruges som en ordinær partition (dvs. i <span class="command"><strong>partman</strong></span> kan du formatere den, tildele et monteringspunkt etc.). </p>
+<p>De fordele du får afhænger af den type af MD-enhed du opretter. I øjeblikket understøttes: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Er hovedsagelig rettet mod ydelse. RAID0 deler alle indgående data op i <em class="firstterm">stripes</em> og distribuerer dem jævnt over alle diske i array'en. Det kan øge hastigheden på læse- og skriveoperationer men når en af diskene går i stykker vil du miste <span class="emphasis"><em>alt</em></span> (dele af informationerne findes fortsat på den friske disk (eller flere), den anden del <span class="emphasis"><em>fandtes</em></span> på den ødelagte disk). </p>
+<p> Typisk brug for RAID0 er en partition for videoredigering. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Er egnet for konfigurationer hvor sikkerhed er kodeordet. Den indeholder flere (sædvanligvis to) lige store partitioner hvor hver partition indeholder de præcis samme data. Det betyder tre ting. For det første, hvis en af dine diske går i stykker, vil du fortsat have data spejlet på de resterende diske. For det andet kan du kun bruge en lille del af den tilgængelige kapacitet (mere specifikt så er det størrelsen på den mindste partition i RAID'en). For det tredje er fillæsningar belastningsudjævnet mellem diskene, hilket kan øge ydelsen på en server, såsom en filserver, som normalt er belastet med flere disklæsninger end skrivninger. </p>
+<p> Du kan endda have en reservedisk i RAID'en som vil overtage pladsen for en ødelagt disk hvis noget går galt. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> er et godt kompromis mellem hastighed, troværdighed og dataredundans. RAID5 deler alle indgående data op i »stripes« og distribuerer dem jævnt på alle undtagen en disk (på samme måde som RAID0). Til forskel fra RAID0 beregner selv RAID5 <em class="firstterm">paritetsinformation</em>, som skrives på den tiloversblevne disk. Paritetsdisken er ikke statisk (det ville blive kaldt for RAID4), men forandres periodevis, så at partitetsinformationen distribueres jævnt over alle diske. Når en af diskene går i stykker, kan den manglende del af informationen beregnes udfra de resterende data og disses paritet. RAID5 skal indeholde mindst tre aktive partitioner. Du kan endda have en reservedisk i RAID'en, som vil overtage pladsen for en ødelagt disk såfremt noget går galt. </p>
+<p> Som du kan se, har RAID5 en troværdighed der ligner den for RAID1, men som tilbyder mindre redundans. På den anden side er den en smule langsommere for skrivninger end RAID0 på grund af beregningerne af paritetsinformation. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Ligner RAID5 udover at den anvender to paritetsdiske i stedet for en. </p>
+<p> En RAID6 kan overleve op til to ødelagte diske. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 kombinerer stripning (som i RAID0) og spejling (som i RAID1). Den skaber <em class="replaceable"><code>n</code></em> kopier af indgående data og distribuerer dem over partitionerne så at ingen af kopierne af de samme data findes på samme disk. Standardvalget for <em class="replaceable"><code>n</code></em> er 2, men det kan stilles til noget andet i eksperttilstand. Antallet af partitioner som anvendes skal være mindst <em class="replaceable"><code>n</code></em>. RAID10 har forskellige layout for distribuering af kopier. Standard er nære kopier. Nære kopier har alle kopier på samme position på alle diskene. Fjerne kopier har kopierne på forskellige positioner på diskene. Positionskopier kopierer stripen, men ikke de individuelle kopier. </p>
+<p> RAID10 kan anvændes for at opnå troværdighed og redundans uden ulempen ved at skulle beregne paritetsinformation. </p>
+</dd>
+</dl></div>
+<p> For at opsummere: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Type</th>
+<th>Minimum antal enheder</th>
+<th>Reservenhed</th>
+<th>Overlever diskfejl?</th>
+<th>Tilgængelig plads</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nej</td>
+<td>nej</td>
+<td>Størrelsen for den mindste partition ganget med antallet af enheder i RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>valgfri</td>
+<td>ja</td>
+<td>Størrelse for den mindste partition i RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>valgfri</td>
+<td>ja</td>
+<td>Størrelse for den mindste partition ganget med (antal enheder i RAID minus en) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>valgfri</td>
+<td>ja</td>
+<td>Størrelsen for den mindste partition ganget med (antal enheder i RAID minus to) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>valgfri</td>
+<td>ja</td>
+<td>Totalen for alle partitioner delt med antallet af delkopier (standard er to) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Hvis du vil vide mere om program-RAID, så kig på <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>For at oprette en MD-enhed skal du markere de partitioner, som den skal indeholde markeret for anvendelse i et RAID. (Det her gør man i <span class="command"><strong>partman</strong></span> i menuen <span class="guimenu">Partitionsindstillinger</span> hvor du bør vælge <span class="guimenu">Anvend som:</span> → <span class="guimenuitem">fysisk diskenhed for RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Sikr dig at systemet kan startes op med partitioneringsplanen som du planlægger. Normalt er det nødvændigt at oprette et separat filsystem for <code class="filename">/boot</code> når man anvender RAID for rodfilsystemet (<code class="filename">/</code>). De fleste opstartsindlæsere <span class="phrase">(inklusive grub)</span> understøtter spejlet (ikke strippet!) RAID1, så hvis man for eksempel anvender RAID5 for <code class="filename">/</code> og RAID1 for <code class="filename">/boot</code> kan det være et alternativ. </p></td></tr>
+</table></div>
+<p>Efter det skal du vælge <span class="guimenuitem">Konfigurer program-RAID</span> fra hovedmenuen i <span class="command"><strong>partman</strong></span>. (Menuen bliver kun vist hvis du markerer mindst en partition for brug som <span class="guimenuitem">fysisk diskenhed for RAID</span>.) På første skærm i <span class="command"><strong>partman-md</strong></span>, vælges bare <span class="guimenuitem">Opret MD-enhed</span>. Du får vist en liste over typer af MD-enheder, hvorfra du skal vælge en (f.eks. RAID1). Det følgende afhænger af den valgte MD-type. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 er enkelt — du får vist listen over tilgængelige RAID-partitioner og din eneste opgave er at vælge partitionerne som udgør MD'en. </p></li>
+<li class="listitem"><p>RAID1 er lidt mere besværlig. Først bliver du spurgt om at indtaste antallet af aktive enheder og antallet af ledige enheder, som skal udgøre MD'en. Derefter skal du vælge fra listen over tilgængelige RAID-partitioner blandt dem som vil være aktive og så dem som vil være ledige. Antallet af valgte partitioner skal svare til antallet angivet tidligere. Du skal ikke bekymre dig om at lave en fejl, f.eks. ved at vælge et andet antal af partitioner, <code class="classname">debian-installer</code> lader dig ikke fortsætte før du har rettet fejltagelsen. </p></li>
+<li class="listitem"><p>RAID5 har en installationsprocedure, der ligner RAID1 med den undtagelse at du skal bruge mindst <span class="emphasis"><em>tre</em></span> aktive partitioner. </p></li>
+<li class="listitem"><p>RAID6 har en lignende installationsprocedure som RAID1 med undtagelse af, at du skal bruge mindst <span class="emphasis"><em>fire</em></span> aktive partitioner. </p></li>
+<li class="listitem"><p>RAID10 har også en lignende installationsprocedure som RAID1 med undtagelse af eksperttilstand. I eksperttilstand vil <code class="classname">debian-installer</code> spørge dig om layouttet. Layouttet har to dele. Den første del er layouttypen. Den er enten <code class="literal">n</code> (for nære kopier), <code class="literal">f</code> (for fjerne kopier) eller <code class="literal">o</code> (for forskydningskopier). Den anden del er antallet af kopier, som skal foretages af data. Der skal være mindst lige så mange aktive enheder at alle kopierne kan distribueres til forskellige diske. </p></li>
+</ul></div>
+<p>Det er fuldt ud muligt at have flere MD-typer på samme tid. For eksempel hvis du har tre 200 GB harddiske dedikeret til MD, hvor hver indeholder to 100 GB partitioner, kan du kombinere de første partitioner på alle tre harddiske til RAID0 (hurtig 300 GB partition for videoredigering) og bruge de andre tre partitioner (2 aktiver og 1 ledig) for RAID1 (ret så troværdig 100 GB partition for <code class="filename">/home</code>). </p>
+<p>Efter at du har konfigureret MD-enhederne efter dine behov kan du vælge <span class="guimenuitem">Afslut</span> i <span class="command"><strong>partman-md</strong></span> for at returnere til <span class="command"><strong>partman</strong></span> for at oprette filsystemer på dine nye MD-enheder og tildele dem de normale attributter såsom monteringspunkter. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Konfiguration af den logiske diskenhedshåndtering (LVM)</h4></div></div></div>
+<p>Hvis du arbejder med computere på systemadministratorniveau eller som en <span class="quote">“<span class="quote">avanceret</span>”</span> bruger, så har du set situationen hvor nogle diskpartitioner (normalt de vigtigste) har pladsmangel, mens nogle andre partitioner har masser af ledig plads og du skal håndtere denne situation ved at flytte rundt på ting, symbolske henvisninger etc. </p>
+<p>For at undgå den beskrevet situation kan du bruge Logical Volume Manager (LVM). Simpelt fortalt så kan du med LVM kombinere dine partitioner (<em class="firstterm">physical volumes</em> i LVM lingo) til at udføre en virtuel disk (såkaldt <em class="firstterm">volume group</em>), som så kan opdeles i virtuelle partitioner (<em class="firstterm">logiske diskenheder</em>). Pointen er at logiske diskenheder (og selvfølgelig underliggende diskenhedsgrupper) kan strække sig over flere fysiske diske. </p>
+<p>Når du nu så indser, at du skal bruge mere plads for din gamle 160 GB <code class="filename">/home</code>-partition, så kan du simpelt tilføje en ny 300 GB disk til computeren, slutte den til din eksisterende diskenhedsgruppe og så ændre størrelse på den logiske diskenhed, som indeholder dit <code class="filename">/home</code>-filsystem og voila — dine brugere har plads igen på deres fornyet 460 GB partition. Dette eksempel er selvfølgelig en smule forenklet. Hvis du ikke har læst det endnu, så se afsnittet <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM-manual</a>. </p>
+<p>LVM-opsætning i <code class="classname">debian-installer</code> er ret så simpel og fuldstændig understøttet inden i <span class="command"><strong>partman</strong></span>. Først skal du markere partitionerne som skal bruges som fysiske diskenheder for LVM. Dette gøres i menuen <span class="guimenu">Partitionindstillinger</span>, hvor du skal vælge <span class="guimenu">Brug som:</span> → <span class="guimenuitem">fysisk diskenhed for LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vær opmærksom: den nye LVM-opsætning vil ødelægge alle data på alle partitioner markeret med en LVM-typekode. Så hvis du allerede har en LVM på nogle af dine diske, og ønsker at installere Debian derudover til den maskine, så vil den (allerede eksisterende) LVM blive fjernet! Det samme gælder for partitioner, der (af en eller anden årsag) er forkert markeret med en LVM-typekode, men indeholder noget andet (såsom en krypteret diskenhed). Du skal fjerne sådanne diske fra systemet, før du udfører en ny LVM-opsætning! </p></td></tr>
+</table></div>
+<p>Når du returnerer til hovedskærmen for <span class="command"><strong>partman</strong></span>, så vil du se en ny indstilling <span class="guimenuitem">Konfigurer Logical Volume Manager</span>. Når du vælger den, vil du først blive spurgt om at bekræfte igangværende ændringer til partitionstabellen (hvis nogen) og derefter vil LVM-konfigurationsmenuen blive vist. Over menuen vises et resume af LVM-konfigurationen. Menuen er kontekstafhængig og viser kun gyldige handlinger. De mulige handlinger er: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Vis konfigurationsdetaljer</span>: Viser LVM-enhedsstruktur, navne og størrelser for logiske diskenheder og mere </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Opret diskenhedsgruppe</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Opret logisk diskenhed</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Slet diskenhedsgruppe</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Slet logisk diskenhed</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Udvid diskenhedsgruppe</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Reducer diskenhedsgruppe</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Afslut</span>: returner til hovedskærmen for <span class="command"><strong>partman</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Brug indstillingerne i den menu til først at oprette en diskenhedsgruppe og så oprette dine logiske diskenheder inden i den. </p>
+<p>Efter du returnerer til hovedskærmen for <span class="command"><strong>partman</strong></span>, vil oprettede logiske diskenheder blive vist på samme måde som ordinære partitioner (og du skal opfatte dem som sådanne). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Konfigurer krypterede diskenheder</h4></div></div></div>
+<p><code class="classname">debian-installer</code> giver mulighed for at opsætte krypterede partitioner. Hver fil du skriver til sådan en partition gemmes øjeblikkelig til enheder i krypteret form. Adgang til de krypterede data tildeles kun efter indtastning af <em class="firstterm">adgangsfrasen</em> brugt da den krypterede partition blev oprettet. Denne funktion er nyttig til at beskytte sensitive data i tilfælde af, at din bærbare eller harddisk bliver stjålet. Tyven for måske fysisk adgang til harddisken, men uden den korrekt adgangsfrase vil dataene på harddisken ligne vilkårlige tegn. </p>
+<p>De to vigtigste partitioner at kryptere er: Hjemmemappen, hvor dine private data befinder sig og swap-partitionen, hvor sensitive data måske er lagret midlertidigt. Selvfølgelig er der intet der forhindrer dig i at kryptere andre partitioner. For eksempel <code class="filename">/var</code> hvor databaseservere, postservere eller printservere lagrer deres data, eller <code class="filename">/tmp</code> som bruges af diverse programmer til at lagre potentielt interessante midlertidige filer. Nogle folk ønsker endda at kryptere hele deres system. Generelt er den eneste undtagelse er partitionen <code class="filename">/boot</code>, som skal forblive ukrypteret, da der i øjeblikket ikke er nogen måde at indlæse kernen på fra en krypteret partition. (GRUB kan nu gøre dette, men <code class="classname">debian-installer</code> mangler i øjeblikket understøttelse for krypteret <code class="filename">/boot</code>. Opsætningen er derfor dækket i et <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separat dokument</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Bemærk venligst at ydelsen fra krypterede partitioner vil være mindre end hvis der ikke er anvendt kryptering, da dataene skal dekrypterets og krypteres for hver læs og skriv. Ydelsesbelastningen afhænger af din CPU-hastighed, valgte krypteringsalgoritme og nøglelængde. </p></td></tr>
+</table></div>
+<p>For at bruge kryptering, så skal du oprette en ny partition ved at vælge ledig plads i hovedpartitioneringsmenuen. En anden mulighed er, at vælge en eksisterende partition (f.eks. en normal partition, en LVM logisk diskenhed eller en RAID-diskenhed). I menuen for <span class="guimenu">Partitionsindstillinger</span> skal du vælge <span class="guimenuitem">fysisk diskenhed for kryptering</span> ved indstillingen <span class="guimenu">Brug som:</span>. Menuen vil så ændre sig og inkludere flere kryptografiske indstillingsmuligheder for partitionen. </p>
+<p>Krypteringsmetoden understøttet af <code class="classname">debian-installer</code> er <em class="firstterm">dm-crypt</em> (inkluderet i nyere Linuxkerner, som kan være vært for LVM fysiske diskenheder). </p>
+<p>Lad os kigge på de tilgængelige indstillinger, når du vælger kryptering via <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Som altid: Hvis i tvivl, så brug standarderne, da de er valgt med omhu med tanke på sikkerhed. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Kryptering: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Denne indstilling giver dig mulighed for at vælge krypteringsalgoritmen (<em class="firstterm">cipher</em>), som vil blive brugt til at kryptere dataene på partitionen. <code class="classname">debian-installer</code> understøtter i øjeblikket de følgende blokkrypteringsalgoritmer: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> og <em class="firstterm">twofish</em>. Det er udover omfanget af dette dokument at diskutere kvaliteten af disse forskellige algoritmer, det kan dog være en hjælp til beslutningen at vide at i 2000 blev <span class="emphasis"><em>AES</em></span> valgt af American National Institute of Standards and Technology som standardalgoritmen til kryptering for beskyttelse af ømtålelig information i det 21. århundrede. </p></dd>
+<dt><span class="term">Nøglestørrelse: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Her kan du angive længden af krypteringsnøglen. Med en større nøglestørrelse, forbedres krypteringen. På den anden side, kan en øgning af længden af nøglen have en negativ indflydelse på ydelsen. Tilgængelige nøglestørrelser afhænger af krypteringsalgorimen. </p></dd>
+<dt><span class="term">IV-algoritme: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">Initialisationsvektoren</em> eller <em class="firstterm">IV</em>-algortimen bruges i kryptografi til at sikre, at den samme krypteringsalgoritme brugt på de samme <em class="firstterm">ren tekst</em>-data med den samme nøgle altid laver en unik <em class="firstterm">krypteringsalgoritmetekst</em>. Ideen er at forhindre angriberen i at udlede information fra gentagne mønstre i de krypterede data. </p>
+<p>Fra de tilbudte alternativer, er standarden <strong class="userinput"><code>xts-plain64</code></strong> i øjeblikekt den mindst sårbare over for kendte angreb. Brug kun de andre alternativer, når du skal sikre kompatibilitet med nogle tidligere installerede systemer, som ikke kan anvende de nyere algoritmer. </p>
+</dd>
+<dt><span class="term">Krypteringsnøgle: <strong class="userinput"><code>Adgangsfrase</code></strong></span></dt>
+<dd>
+<p>Her kan du vælge typen for krypteringsnøglen for denne partition. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Adgangsfrase</span></dt>
+<dd><p>Krypteringsnøglen vil blive beregnet<a href="#ftn.id3116" class="footnote" name="id3116"><sup class="footnote">[9]</sup></a> på grundlag en adgangsfrase, som du vil kunne indtaste senere i processen. </p></dd>
+<dt><span class="term">Vilkårlig nøgle</span></dt>
+<dd>
+<p>En ny krypteringsnøgle vil blive oprettet fra vilkårlige data hver gang, du forsøger at starte den krypterede partition. Med andre ord: ved hver nedlukning vil indholdet af partitionen blive tabt, da nøglen slettes fra hukommelsen. (Du kan selvfølgelig forsøge at gætte nøglen med et brute force-angreb, men med mindre, at der er en ukendt svaghed i krypteringsalgoritmen, så kan det ikke opnås i vores livstid.) </p>
+<p>Vilkårlige nøgler er nyttige for swappartitioner, da du ikke skal huske adgangsfrasen eller slette ømtålelig information fra swappartitionen, før du lukker computeren ned. Det betyder dog også, at du <span class="emphasis"><em>ikke</em></span> vil kunne bruge funktionaliteten <span class="quote">“<span class="quote">suspend-to-disk</span>”</span> (sæt disken i dvale) tilbudt af nyere Linuxkerner, da det vil være umuligt (under en efterfølgende opstart) at gendanne data skrevet til swappartitionen. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Slet data: <strong class="userinput"><code>ja</code></strong></span></dt>
+<dd><p>Bestemmer om indholdet af denne partition skal overskrives med vilkårlige data før opsætning af krypteringen. Dette anbefales, fordi det ellers kan være muligt for en angriber at udlede hvilke dele af en partition, der er i brug og hvilke der ikke er. Derudover vil det være sværere at gendanne eventuelle overskydende data fra tidligere installationer <a href="#ftn.id3131" class="footnote" name="id3131"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Efter du har valgt de ønskede parametre for dine krypterede partitioner, returner tilbage til hovedpartitioneringsmenuen. Der bør nu være et nyt menupunkt kaldt <span class="guimenu">Konfigurer krypterede diskenheder</span>. Efter valg af denne vil du blive bedt om at bekræfte sletningen af data på partitioner markeret for sletning og muligvis andre handlinger såsom skrivning af en ny partitionstabel. For store partitioner kan dette tage noget tid. </p>
+<p>Derefter vil du blive anmodt om at indtaste en adgangsfrase for partitioner konfigureret til at bruge en. Gode adgangsfraser bør være længere end 8 tegn, være en blanding af bogstaver, tal og andre tegn og bør ikke indeholde gængse ord fra ordbøger eller information nemt associeret med dig (såsom fødselsdatoer, hobbyer, kælenavne, navne på familiemedlemmer eller pårørende etc.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Før du indtaster en adgangsfrase skal du sikre dig, at dit tastatur er konfigureret korrekt og opretter de forventede tegn. Hvis du er usikker, så kan du skifte til den anden virtuelle konsol og indtaste lidt tekst på prompten. Dette sikrer, at du ikke bliver overrasket senere, f.eks. ved at forsøge at indtaste en adgangsfrase med et qwerty-tastaturlayout, når du brugte et azerty-layout under installationen. Denne situation kan skyldes flere ting. Måske skiftede du til et andet tastaturlayout under installationen, eller det valgte tastaturlayout er måske endnu ikke opsat når du indtaster adgangsfrasen for root-filsystemet. </p></td></tr>
+</table></div>
+<p>Hvis du valgte at bruge metoder udover en adgangsfrase til at oprette krypteringsnøgler, så vil de blive oprettet nu. Da kernen måske ikke har indsamlet en tilstrækkelig mængde entropi på dette tidlige stadie af installationen, kan processen tage længere tid. Du kan øge processen ved at oprette entropi: f.eks. ved at trykke på tilfældige taster, eller ved at skifte til skallen på den virtuelle konsol og oprette lidt netværk og disktrafik (hente nogle filer, føde store filer til <code class="filename">/dev/null</code>, etc.). Dette vil blive gentaget for hver partition der skal krypteres. </p>
+<p>Efter returnering til hovedpartitionsmenuen, så vil du se alle krypterede diskenheder som yderligere partitioner, som kan konfigureres på samme måde som ordinære partitioner. Det følgende eksempel viser en diskenhed krypteret via dm-crypt. </p>
+<div class="informalexample"><pre class="screen">
+Encrypted volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Nu er det tid til at tildele monteringspunkter til diskenhederne og valgfrit ændre filsystemtyperne, hvis standarderne ikke passer dig. </p>
+<p>Vær opmærksom på identifikationerne i parentes (<em class="replaceable"><code>sda2_crypt</code></em> i dette tilfælde) og monteringspunkterne du tildelte til hver krypteret diskenhed. Du skal bruge denne information senere, når du opstarter det nye system. Forskellene mellem den ordinære opstartsproces og opstartsprocessen med kryptering involveret vil blive dækket senere i <a class="xref" href="ch07s02.html" title="7.2. Montering af krypterede diskenheder">Afsnit 7.2, “Montering af krypterede diskenheder”</a>. </p>
+<p>Når du er tilfreds med partitionsplanen, så fortsæt med installationen. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Installation af basissystemet</h3></div></div></div>
+<p>Selvom dette trin er det mindst problematiske, så forbruger det en signifikant del af installationen fordi den henter, verificerer og udpakker hele basissystemet. Hvis du har en langsom computer eller netværksforbindelse, så kan det tage noget tid. </p>
+<p>Under installation af basissystemet bliver udpakning af pakkerne og opsætning af beskeder videresendt til <strong class="userinput"><code>tty4</code></strong>. Du kan tilgå denne terminal ved at trykke på <span class="keycap"><strong>Venstre Alt</strong></span>+<span class="keycap"><strong>F4</strong></span>; gå tilbage til installationsprocessen med <span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Udpaknings- og opsætningsbeskederne oprettet under denne fase gemmes også i <code class="filename">/var/log/syslog</code>. Du kan kontrollere dem der, hvis installationen udføres over en seriel konsol. </p>
+<p>Som en del af installationen vil en Linux-kerne blive installeret. På standardprioritet vil installationsprogrammet vælge en som bedst matcher dit udstyr. I lavere prioritetstilstande vil du kunne vælge fra en liste over tilgængelige kerner. </p>
+<p>Når pakker installeres via pakkehåndteringssystemet, så vil det også som standard installere pakker som anbefales af disse pakker. Anbefalede pakker er ikke krævet for den grundlæggende funktionalitet for de valgte programmer, men de forbedrer de programmer og bør, ifølge pakkevedligeholderne, normalt installeres sammen med programmet. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Af tekniske årsager bliver pakker installeret under installationen af grundsystemet installeret uden deres <span class="quote">“<span class="quote">Recommends</span>”</span>. Regel ovenfor træder kun i kraft efter dette punkt i installationsprocessen. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Installation af yderligere programmer</h3></div></div></div>
+<p>På dette tidspunkt har du et brugbart, men begrænset system. De fleste brugere ønsker at installere yderligere programmer på deres system, så det passer til deres behov, og installationsprogrammet giver dig mulighed for dette. Dette trin kan tage længere tid end installation af det grundlæggende system, hvis du har en langsom computer eller netværksforbindelse. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Konfigurer apt</h4></div></div></div>
+<p>Et af værktøjerne brugt til at installere pakker på et Debian GNU/Linux-system er programmet <span class="command"><strong>apt</strong></span>, fra pakken <code class="classname">apt</code><a href="#ftn.id3174" class="footnote" name="id3174"><sup class="footnote">[11]</sup></a>. Andre brugerflader til pakkehåndtering, såsom <span class="command"><strong>aptitude</strong></span> og <span class="command"><strong>synaptic</strong></span>, er også i brug. Disse brugerflader anbefales for nye brugere, da de integerer nogle yderligere funktioner (pakkesøgning og statuskontrol) i en pæn brugerflade. </p>
+<p><span class="command"><strong>apt</strong></span> skal konfigureres så at den ved hvorfra den skal hente pakker. Resultaterne af denne konfiguration skrives til filen <code class="filename">/etc/apt/sources.list</code>. Du kan undersøge og redigere denne fil efter behag når installationen er færdig. </p>
+<p>Hvis du installerer med standardprioritet, så vil installationsprogrammet håndtere konfigurationen automatisk, baseret på installationsmetoden du anvender og muligvis andre valg foretaget tidligere i installationen. I de fleste tilfælde vil installationsprogrammet automatisk tilføje et sikkerhedsspejl og, hvis du installerer en stabil distribution, et spejl for tjenesten <span class="quote">“<span class="quote">stable-updates</span>”</span>. </p>
+<p>If you are installing at a lower priority (e.g. in expert mode), you will be able to make more decisions yourself. You can choose whether or not to use the security and/or stable-updates services, and you can choose to add packages from the <span class="quote">“<span class="quote">contrib</span>”</span>, <span class="quote">“<span class="quote">non-free</span>”</span>, and <span class="quote">“<span class="quote">non-free-firmware</span>”</span> sections of the archive. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Installing from more than one DVD image</h5></div></div></div>
+<p>If you are installing from a DVD image that is part of a larger set, the installer will ask if you want to scan additional installation media. If you have such additional media available, you probably want to do this so the installer can use the packages included on them. </p>
+<p>Hvis du ikke har yderligere installationsmedier, er det ikke et problem: Brug af dem er ikke et krav. Hvis du heller ikke anvender et netværksspejl (som forklaret i det næste afsnit), kan det betyde, at ikke alle pakker tilhørende opgaverne, du vælger i det næste trin af installationen, kan installeres. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Packages are included on DVD images in the order of their popularity. This means that for most uses only the first image of a set is needed and that only very few people actually use any of the packages included on the last images of a set. </p>
+<p>It also means that buying or downloading and burning a full DVD set is just a waste of money as you'll never use most of them. In most cases you are better off getting only the first 1 to 2 DVDs and installing any additional packages you may need from the Internet by using a mirror. </p>
+</td></tr>
+</table></div>
+<p>Hvis du skanner flere installationsmedier, så vil installationsprogrammet prompte dig for at udveksle dem, når det skal bruge pakker fra en anden end den aktuelle i drevet. Bemærk at kun diske, som tilhører det samme sæt bør skannes. Rækkefølgen de skannes betyder reelt ikke noget, men skanning af dem i fortløbende rækkefølge vil reducere risikoen for fejl. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Brug af et netværksspejl</h5></div></div></div>
+<p>Et spørgsmål som vil blive stillet under de fleste installationer er hvorvidt du ønsker at bruge et netværksspejl som kilde for pakker. I de fleste tilfælde bør standardsvaret være okay, men der er nogle undtagelser. </p>
+<p>If you are <span class="emphasis"><em>not</em></span> installing from a DVD image, you really should use a network mirror as otherwise you will end up with only a very minimal system. However, if you have a limited Internet connection it is best <span class="emphasis"><em>not</em></span> to select the <code class="literal">desktop</code> task in the next step of the installation. </p>
+<p>Hvis du installerer fra dvd, bør alle pakker krævet under installatonen være til stede på den første dvd. Brug af et netværksspejl er valgfrit. </p>
+<p>One advantage of adding a network mirror is that updates, that have occurred since the DVD images were created and have been included in a point release, will become available for installation, thus extending the life of your DVD set without compromising the security or stability of the installed system. </p>
+<p>Opsummeret: Valg af et netværksspejl er generelt en god ide, undtagen hvis du ikke har en god internetforbindelse. Hvis den nuværende version af en pakke er tilgængelig fra installationsmediet, så vil installationsprogrammet altid bruge den. Mængden af data som hentes, hvis du vælger et spejl, afhænger derfor af </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>opgaverne du vælger i det næste trin af installationen, </p></li>
+<li class="listitem"><p>hvilke pakker der kræves for disse opgaver, </p></li>
+<li class="listitem"><p>hvilke af disse pakker befinder sig på installationsmediet, du har skannet, og </p></li>
+<li class="listitem"><p>om opdaterede versioner af pakkerne inkluderet på installationsmediet er tilgængelige fra et spejl (enten et normalt pakkespejl, eller et spejl for sikkerhed eller stable-updates). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Bemærk at det sidste punkt betyder at, selv hvis du vælger ikke at bruge et netværksspejl, nogle pakker stadig kan hentes fra internettet, hvis der er en sikkerhedsopdatering eller en opdatering fra stable-updates tilgængelig og disse tjenester er blevet konfigureret. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Vælg et netværksspejl</h5></div></div></div>
+<p>Med mindre at du har valgt ikke at bruge et netværksspejl, så vil du blive præsenteret med en liste over netværksspejl baseret på dit valg af land tidligere i installationsprocessen. Valg af den tilbudte standard er normalt fint. </p>
+<p>Den tilbudte standard er deb.debian.org, der ikke i sig selv er et spejl, men vil omdirigere til et spejl, der bør være opdateret og hurtigt. Disse spejle understøtter TLS (https-protokol) og IPv6. Denne tjeneste er vedligeholdt af Debian System Administration-holdet (DSA). </p>
+<p>Et spejl kan også angives manuelt ved at vælge <span class="quote">“<span class="quote">indtast information manuelt</span>”</span>. Du kan så specificere et værtsnavn for spejlet og et valgfrit portnummer. Dette skal være en URL-basis, d.v.s. når der specificeres en IPv6-adresse, så skal der firkantede parenteser omkring, for eksempel <span class="quote">“<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Hvis din computer befinder sig på et netværk kun med IPv6 (hvilket sandsynligvis ikke er tilfældet for den største del af brugerne), vil brug af standardspejlet for dit land måske ikke fungere. Alle spejlene i listen kan nås via IPv4, men kun nogle af dem kan bruges via IPv6. Da forbindelsen for individuelle spejl kan ændre sig over tid, er denne information ikke tilgængelig i installationsprogrammet. Hvis der ikke er IPv6-forbindelse for standardspejlet for dit land, så kan du enten prøve nogle af de andre spejl, du får tilbudt eller du kan vælge <span class="quote">“<span class="quote">indtast information manuelt</span>”</span>. Du kan så angive <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span> som spejlnavn, som er et alias for et spejl tilgængelig via IPv6, selvom det sandsynligvis ikke vil være det hurtigste. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Valg af og installation af programmer</h4></div></div></div>
+<p>Under installationsprocessen, får du mulighed for at vælge yderligere programmer, der skal installeres. Frem for at udvælge individuelle pakker fra <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    tilgængelige pakker, fokuserer dette trin af installationsprocessen på at vælge og installere prædefinerede samlinger af programmer til hurtigt at opsætte din computer, så den kan udføre forskellige opgaver. </p>
+<p>Disse opgaver repræsenterer løst et antal forskellige job eller områder du ønsker at bruge din computer indenfor, såsom et <span class="quote">“<span class="quote">skrivebordsmiljø</span>”</span>, <span class="quote">“<span class="quote">internetserver</span>”</span>, eller <span class="quote">“<span class="quote">SSH-server</span>”</span><a href="#ftn.id3236" class="footnote" name="id3236"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Diskpladskrævet for opgaver">Afsnit D.2, “Diskpladskrævet for opgaver”</a> viser pladskravet for de tilgængelige opgaver. </p>
+<p>Nogle opgaver kan forhåndsvælges baseret på karakteristika i din computer, når du installerer. Hvis du er uening med disse valg, så kan du fravælge dem. Du kan også vælge slet ikke at installere nogle opgaver på dette tidspunkt. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Vink]" src="images/tip.png"></td>
+<th align="left">Vink</th>
+</tr>
+<tr><td align="left" valign="top"><p>I standardbrugerfladen for installationsprogrammet, kan du bruge mellemrum til at skifte mellem valg af en opgave. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Opgaven <span class="quote">“<span class="quote">skrivebordsmiljø</span>”</span> vil installere et grafisk skrivebordsmiljø. </p>
+<p>Som standard installerer <code class="classname">debian-installer</code> skrivebordsmiløjet <span class="phrase">Gnome</span> . Det er muligt interaktivt at vælge et andet skrivebordsmiljø under installationen. Det er også muligt at installere flere skriveborde, men nogle kombinationer af skriveborde fungerer måske ikke sammen. </p>
+<p>Note that this will only work if the packages needed for the desired desktop environment are actually available. Installing any of the available desktop environments this way should work fine if you are using a DVD image or any other installation method with a network mirror. </p>
+</td></tr>
+</table></div>
+<p>De forskellige serveropgaver vil installere programmer omtrentlig således. internetserver: <code class="classname">apache2</code>; SSH-server: <code class="classname">openssh</code>. </p>
+<p>The <span class="quote">“<span class="quote">Standard system utilities</span>”</span> task will install any package that has a priority <span class="quote">“<span class="quote">standard</span>”</span>. This includes a lot of common utilities that are normally available on any Linux or Unix system. You should leave this task selected unless you know what you are doing and want a really minimal system. </p>
+<p>Hvis der under sprogvalget blev valgt et andet sprog end <span class="quote">“<span class="quote">C</span>”</span>, så vil <span class="command"><strong>tasksel</strong></span> kontrollere om der er oversættelsesopgaver defineret for det sprog og vil automatisk forsøge at installere relevante oversættelsespakker. Dette inkluderer for eksempel pakker, der indeholder ordlister eller specielle skrifttyper for dit sprog. Hvis et skrivebordsmiljø blev valgt, så vil de dertilhørende oversættelsespakker også blive installeret (hvis tilgængelige). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Starting with Debian Trixie, <code class="classname">debian-installer</code> allows to install Debian Pure Blends directly. There is an entry <span class="quote">“<span class="quote">Choose a Debian Blend for installation</span>”</span> at the bottom of the tasks list, which enables an additional choices dialog to appear, after <span class="command"><strong>tasksel</strong></span> has finished. </p>
+<p>In that dialog (<span class="command"><strong>blendsel</strong></span>), you can choose which blend to install, similar to this tasks selection. </p>
+<p>See <a class="ulink" href="https://www.debian.org/blends" target="_top">the Debian website</a> for more information about Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>Når du har valgt dine opgaver, så vælg <span class="guibutton">Continue</span>. På dette tidspunkt, vil <span class="command"><strong>apt</strong></span> installere pakkerne, som er en del af de valgte opgaver. Hvis et bestemt program kræver yderligere information fra brugeren, vil programmet spørge brugeren under denne proces. </p>
+<p>You should be aware that especially the Desktop task is very large. Especially when installing from a netinst CD image in combination with a mirror for packages not on the netinst, the installer may want to retrieve a lot of packages over the network. If you have a relatively slow Internet connection, this can take a long time. There is no option to cancel the installation of packages once it has started. </p>
+<p>Even when packages are included on the installation image, the installer may still retrieve them from the mirror if the version available on the mirror is more recent than the one included on the image. If you are installing the stable distribution, this can happen after a point release (an update of the original stable release); if you are installing the testing distribution this will happen if you are using an older image. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Sikring af at dit system kan startes op</h3></div></div></div>
+<p>Hvis du installerer en diskløs arbejdsstation, er opstart fra den lokale disk af indlysende årsager ikke en meningsfuld valgmulighed, og dette trin vil blive udeladt. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Detektering af andre operativsystemer</h4></div></div></div>
+<p>Før en opstartsindlæser installeres, vil installationsprogrammet forsøge at kigge efter andre operativsystemer, som er installeret på maskinen. Hvis det finder et understøttet operativsystem, vil du blive informeret om dette under opstartsindlæserens installationstrin, og computeren vil blive konfigureret til at starte disse andre operativsystmer udover Debian. </p>
+<p>Bemærk at flere opstartende operativsystemer på en enkel maskine stadig er lidt af en magisk kunstart. Den automatiske understøttelse for detektering og opsætning af opstartsindlæsere til at starte andre operativsystemer varierer per arkitektur og selv per underarkitektur. Hvis det ikke fungerer bør du konsultere din opstartshåndterings dokumentation for yderligere information. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3284"></a>6.3.7.2. Installer opstartsindlæseren <span class="command"><strong>Grub</strong></span> på drevet</h4></div></div></div>
+<p>amd64-opstartsindlæseren kaldes for <span class="quote">“<span class="quote">grub</span>”</span>. Grub er en fleksibel og robust opstartsindlæser og et godt standardvalg for nye brugere og selvfølgelig også gamle brugere. </p>
+<p>Som standard vil grub blive installeret i UEFI-partitionen/Boot Record for det primære drev, hvor det vil tage fuld kontrol over opstartsprocessen. Hvis du foretrækker det, kan du installere grub et andet sted. Se grubs manual for information. </p>
+<p>Hvis du ikke ønsker at installere grub, så brug knappen <span class="guibutton">Go Back</span> til at gå til hovedmenuen, og derfra vælges den opstartsindlæser du ønsker at bruge. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Fortsæt uden opstartsindlæser</h4></div></div></div>
+<p>Denne valgmulighed kan bruges til at færdiggøre installationen selv når ingen opstartsindlæser skal installeres, enten fordi arkitekturen/underarkitekturen ikke tilbyder en, eller fordi ingen er ønsket (f.eks. hvis du vil bruge en eksisterende opstartsindlæser). </p>
+<p>Hvis du planlægger manuelt at konfigurere din opstartsindlæser, så skal du kontrollere navnet for den installerede kerne i <code class="filename">/target/boot</code>. Du bør også kontrollere i mappen for tilstedeværelsen af en <em class="firstterm">initrd</em>; hvis en er til stede, så skal du sandsynligvis instruere din opstartsindlæser i at bruge den. Anden information du skal bruge er disken og partitionen du valgte for dit <code class="filename">/</code>-filsystem og, hvis du vælger at installere <code class="filename">/boot</code> på en separat partition, også dit <code class="filename">/boot</code>-filsystem. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Afslutning af installationen</h3></div></div></div>
+<p>Dette er det sidste trin i Debian-installationsprocessen hvor installationsprogrammet udfører de sidste opgaver. De består hovedsagelig i at rydde op efter <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Indstilling af systemuret</h4></div></div></div>
+<p>Installationsprogrammet spørger dig måske om computerens ur er sat til UTC. Normalt undgås dette spørgsmål om muligt og installationsprogrammet forsøger at finde ud af om uret er sat til UTC baseret på f.eks. hvilke andre operativsystemer som er installeret. </p>
+<p>In expert mode you will always be able to choose whether or not the clock is set to UTC.  <span class="phrase">Systems that (also) run Windows are normally set to local time. If you want to dual-boot, select local time instead of UTC.</span> </p>
+<p>På dette tidspunkt vil <code class="classname">debian-installer</code> også forsøge at gemme den nuværende tid til systemets udstyrsur. Dette vil blive gjort i enten UTC eller lokal tid, afhængig af valget du lige har foretaget. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Genstart systemet</h4></div></div></div>
+<p>Du vil blive anmodt om at fjerne opstartsmediet (cd, USB-drev etc.), som du brugte til at starte installationsprogrammet op med. Derefter vil systemet blive genstartet i dit nye Debian-system. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Problemløsning</h3></div></div></div>
+<p>Komponenterne i dette afsnit er normalt ikke involveret i installationsprocessen, men venter i baggrunden for at hjælpe brugeren i tilfælde af at noget går galt. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Gemme installationsloggene</h4></div></div></div>
+<p>Hvis installationen lykkedes, vil logfilerne oprettet under installationen automatisk blive gemt til <code class="filename">/var/log/installer/</code> på dit nye Debian-system. </p>
+<p>Valg af <span class="guimenuitem">Gem fejlsøgningslogge</span> fra hovedmenuen giver dig mulighed for at gemme logfilerne på et USB-drev, et netværk, en harddisk eller et andet medie. Dette kan være nyttigt, hvis du møder fatale problemer under installationen og ønsker at studere loggene på et andet system eller vedhæfte dem til en installationsrapport. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Brug af skallen og visning af loggene</h4></div></div></div>
+<p>Der er flere metoder, du kan anvende for at få en skal uden at køre en installation. På de fleste systemer, og hvis du ikke installerer over seriel konsol, er den nemmeste metode at skifte til den anden <span class="emphasis"><em>virtuelle konsol</em></span> ved at trykke på <span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3331" class="footnote" name="id3331"><sup class="footnote">[13]</sup></a> (på et Mac-tastatur, <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Brug <span class="keycap"><strong>Venstre Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> for at skifte tilbage til selve installationsprogrammet. </p>
+<p>For det grafiske installationsprogram, se også <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Brug af det grafiske installationsprogram">Afsnit 6.1.1, “Brug af det grafiske installationsprogram”</a>. </p>
+<p>Hvis du ikke kan skifte konsoller, så er der også et punkt <span class="guimenuitem">Kør en skal</span> på hovedmenuen, som kan bruges til at starte en skal. Du kan gå til hovedmenuen fra de fleste dialoger ved at bruge knappen <span class="guibutton">Go Back</span> en eller flere gange. Tast <strong class="userinput"><code>exit</code></strong> for at lukke skallen og returnere til installationsprogrammet. </p>
+<p>På dette tidspunkt er du startet op fra RAM-disk, og der er et begrænset sæt af Unix-redskaber tilgængelige. Du kan se hvilke programmer, som er tilgængelige md kommandoen <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> og ved at indtaste <span class="command"><strong>help</strong></span>. Skallen er en Bourne-skalklon kaldt <span class="command"><strong>ash</strong></span> og den har nogle gode funktioner såsom automatisk fuldførelse og historik. </p>
+<p>For at redigere og vise filer bruges tekstredigeringsprogrammet <span class="command"><strong>nano</strong></span>. Logfiler for installationssystemet kan findes i mappen <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Selvom du grundlæggende kan udføre alt i en skal, som de tilgængelige kommandoer tillader at du gør, så er muligheden for at bruge en skal der reelt kun i tilfælde at, at noget går galt og til at fejlsøge i. </p>
+<p>Udførsel af ting manuelt fra skallen kan komme i konflikt med installationsprocessen og medføre fejl eller en ufuldstændig installation. Du skal specielt være opmærksom på at lade installationsprogrammet aktivere din swappartition og ikke selv gøre dette fra en skal. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installation over network-console</h3></div></div></div>
+<p>En af de mere interessante komponenter er <em class="firstterm">network-console</em>. Det gør, at du kan udføre en stor del af installationen over netværket via SSH. Med brugen af netværket underforstås at du skal udføre de første trin af installationen fra konsollen, i det mindste til punktet for opsætning af netværket. (Du kan dog automatisere denne del med <a class="xref" href="ch04s06.html" title="4.6. Automatisk installation">Afsnit 4.6, “Automatisk installation”</a>.) </p>
+<p>Denne komponent indlæses ikke i hovedinstallationens menu som standard, så du skal eksplicit anmode om den. Hvis du installerer fra et optisk medie, så skal du starte op med mellem prioritet eller starte hovedinstallationens menu og vælge <span class="guimenuitem">Indlæs installationsprogrammets komponenter fra installationsmedie</span> og fra listen over yderligere komponenter vælge <span class="guimenuitem">network-console: Fortsæt installation eksternt med brug af SSH</span>. En succesfuld indlæsning indikeres med et nyt menupunkt kaldt <span class="guimenuitem">Fortsæt installation eksternt med brug af SSH</span>. </p>
+<p><span class="phrase">Efter valg af dette nye punkt, vil</span>  du blive anmodt om en ny adgangskode for forbindelsen til installationssystemet og for dets bekræftelse. Det er det hele. Nu bør du se en skærm, som instruerer dig i at logge ind eksternt som brugeren <span class="emphasis"><em>installer</em></span> med adgangskoden du netop angav. En anden vigtig detalje at bemærke på denne skærm er fingeraftrykket for dette system. Du skal overføre fingeraftrykket sikkert til personen, som vil fortsætte installationen eksternt. </p>
+<p>Skulle du beslutte at fortsætte med installationen lokalt, så kan du altid trykke <span class="keycap"><strong>Enter</strong></span>, som vil føre dig tilbage til hovedmenuen, hvor du kan vælge en anden komponent. </p>
+<p>Skift nu til den anden side af linjen. Som et forhåndskrav skal du konfigurere din terminal for UTF-8-kodning, da det er hvad installationsssytemet anvender. Hvis du ikke gør dette, så vil ekstern installation stadig være mulig, men kan møde mærkelige skærmvisninger, såsom ødelagte dialogkanter eller ulæselige ikke-ascii tegn. Etablering af en forbindelse med installationssystemet er så simpel som at taste: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> hvor <em class="replaceable"><code>install_host</code></em> enten er navnet eller IP-adressen for computeren som der installeres på. Før det faktiske logind vil fingeraftrykket for det ekserne system blive vist og du skal bekræfte, at det er korrekt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Serveren <span class="command"><strong>ssh</strong></span> i installationsprogrammet bruger en standardkonfiguration, som ikke sender hold i live-pakker. I princippet bør en forbindelse til systemet der installeres holdes åben uendeligt. I nogle tilfælde — afhængig af din lokale netværksopsætning — kan forbindelsen blive tabt efter en periode med inaktivitet. Et ofte set tilfælde er, når der er en form for Network Address Translation (NAT) et sted mellem klienten og systemet der installeres. Afhængig af på hvilket tidspunkt i installationen forbindelsen blev tabt, vil du eventuelt kunne genoptage installationen efter ny tilslutning. </p>
+<p>Du kan måske undgå at forbindelsen tabes ved at tilføje indstillingen <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>value</code></em></code></strong> når <span class="command"><strong>ssh</strong></span>-forbindelsen startes, eller ved at tilføje indstillingen i din <span class="command"><strong>ssh</strong></span>-konfigurationsfil. Bemærk dog at i nogle tilfælde vil tilføjelse af denne indstilling også <span class="emphasis"><em>medføre</em></span> at forbindelsen bliver tabt (for eksempel hvis hold i live-pakker sendes under et kort netværksnedbrud, hvorfra <span class="command"><strong>ssh</strong></span> ellers ville have klaret skærene), så den bør kun bruges når krævet. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Hvis du installerer flere computere efter hinanden og de har den samme IP-adresse eller værtsnavn, så vil <span class="command"><strong>ssh</strong></span> nægte at forbinde til sådanne værter. Årsagen er, at de vil have forskellige fingeraftryk, hvilket normalt er et tegn på et spoofing-angreb. Hvis du er sikker på, at dette ikke er tilfældet, så skal du slette den relevante linje fra <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3393" class="footnote" name="id3393"><sup class="footnote">[14]</sup></a> og prøv igen. </p></td></tr>
+</table></div>
+<p>Efter logind vil du blive præsenteret med en opstartsskærm, hvor du har to muligheder kaldt <span class="guimenuitem">Startmenu</span> og <span class="guimenuitem">Startskal</span>. Den første fører dig til hovedmenuen for installationsprogrammet, hvor du kan fortsætte med installationen som normalt. Den følgende starter en skal hvorfra du kan fortsætte med installationen som normalt. Den sidste starter en skal, hvorfra du kan undersøge og eventuelt rette det eksterne system. Du bør kun starte en SSH-session for installationsmenuen, men kan starte flere sessioner for skaller. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Efter du har startet installationen eksternt over SSH, skal du ikke gå tilbage til installationssessionen, der kører på den lokale konsol. Det kan ødelægge databasen som indeholder konfigurationen for det nye system. Dette kan igen medføre en mislykket installation eller problemer med det installerede system. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2585" class="footnote"><p><a href="#id2585" class="para"><sup class="para">[4] </sup></a> Teknisk forklaring: Hvor flere lokaltilpasninger findes for det sprog men med forskellige landekoder. </p></div>
+<div id="ftn.id2593" class="footnote"><p><a href="#id2593" class="para"><sup class="para">[5] </sup></a> Ved mellem og lav prioritet kan du altid vælge dit foretrukne sted fra de tilgængelige for det valgte sprog (hvis der er mere end et). </p></div>
+<div id="ftn.id2599" class="footnote"><p><a href="#id2599" class="para"><sup class="para">[6] </sup></a> Forældede steder er steder som ikke bruger UFT-8, men en af de ældre standarder for tegnkodning såsom ISO 8859-1 (brugt af vesteuropæiske sprog) eller EUC-JP (brugt af japansk). </p></div>
+<div id="ftn.id2779" class="footnote"><p><a href="#id2779" class="para"><sup class="para">[7] </sup></a> Installationsprogrammet vil kryptere LVM-diskenhedsgruppen med en 256-bit AES-nøgle og gøre brug af kernens understøttelse af <span class="quote">“<span class="quote">dm-crypt</span>”</span>. </p></div>
+<div id="ftn.id2873" class="footnote"><p><a href="#id2873" class="para"><sup class="para">[8] </sup></a> Det kan faktisk lade sig gøre at bygge en MD-enhed selv fra partitioner på en enkel fysisk enhed, men det giver dig ingen fordele. </p></div>
+<div id="ftn.id3116" class="footnote"><p><a href="#id3116" class="para"><sup class="para">[9] </sup></a> Brug af en adgangsfrase som nøgle betyder i øjeblikket, at partitionen vil blive opsat under <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3131" class="footnote"><p><a href="#id3131" class="para"><sup class="para">[10] </sup></a> Det antages dog at fyrene fra institutionerne med tre bogstaver kan gendanne data selv efter flere overskrivninger af det magnetoptiske medie. </p></div>
+<div id="ftn.id3174" class="footnote"><p><a href="#id3174" class="para"><sup class="para">[11] </sup></a> Bemærk at programmet som rent faktisk installerer pakkerne kaldes <span class="command"><strong>dpkg</strong></span>. Dette program er dog et værktøj på lavt niveau. <span class="command"><strong>apt</strong></span> er et værktøj på et højere niveau, som vil igangsætte <span class="command"><strong>dpkg</strong></span> hvor det er passende. Det ved, hvordan pakker skal hentes fra dit installationsmedie, netværket eller andre steder. Det kan også automatisk installere andre pakker som er krævet for, at den pakke du ønsker installeret fungerer korrekt. </p></div>
+<div id="ftn.id3236" class="footnote"><p><a href="#id3236" class="para"><sup class="para">[12] </sup></a> Du bør vide, at for at præsentere denne liste så igangsætter installationsprogrammet programmet <span class="command"><strong>tasksel</strong></span>. Det kan køres på et senere tidspunkt efter installationen for at installere yderligere pakker (eller fjerne dem), eller du kan bruge et mere fintunet værktøj såsom <span class="command"><strong>aptitude</strong></span>. Hvis du er på udkig efter en specifik pakke, så kør <strong class="userinput"><code>aptitude install <em class="replaceable"><code>pakke</code></em></code></strong>, efter installationen, hvor <em class="replaceable"><code>pakke</code></em> er navnet på pakken, du er på udkig efter. </p></div>
+<div id="ftn.id3331" class="footnote"><p><a href="#id3331" class="para"><sup class="para">[13] </sup></a> Det vil sige: tryk på tasten <span class="keycap"><strong>Alt</strong></span> på den venstre side af <span class="keycap"><strong>mellemrum</strong></span> og funktionstasten <span class="keycap"><strong>F2</strong></span> på samme tid. </p></div>
+<div id="ftn.id3393" class="footnote"><p><a href="#id3393" class="para"><sup class="para">[14] </sup></a> Den følgende kommando vil fjerne en eksisterende post for en vært: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>værtsnavn</code></em>|<em class="replaceable"><code>IP adresse</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Introduktion til komponenter </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Indlæsning af manglende firmware</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

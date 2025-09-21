@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Mempersiapkan Berkas untuk Boot Jaringan TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Bab 4. Mendapatkan Media Instalasi Sistem">
+<link rel="prev" href="ch04s04.html" title="4.4. Mempersiapkan Berkas untuk Boot Hard Disk">
+<link rel="next" href="ch04s06.html" title="4.6. Instalasi Otomatis">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Mempersiapkan Berkas untuk Boot Jaringan TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 4. Mendapatkan Media Instalasi Sistem</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Mempersiapkan Berkas untuk Boot Jaringan TFTP</h2></div></div></div>
+<p>Jika komputer Anda terhubung ke jaringan area lokal, Anda mungkin dapat mem-boot-nya melalui jaringan dari mesin lain, menggunakan TFTP. Jika Anda bermaksud untuk mem-boot sistem instalasi dari mesin lain, berkas boot harus ditempatkan di lokasi tertentu pada mesin itu, dan mesin dikonfigurasi untuk mendukung boot mesin spesifik Anda. </p>
+<p>Anda perlu menyiapkan sebuah server TFTP, dan untuk banyak mesin, sebuah server DHCP<span class="phrase">, atau server BOOTP</span>. </p>
+<p> <span class="phrase">BOOTP adalah protokol IP yang menginformasikan komputer tentang alamat IP-nya dan di mana di jaringan untuk mendapatkan image boot.</span> DHCP (Dynamic Host Configuration Protocol) adalah ekstensi BOOTP yang lebih fleksibel dan kompatibel ke belakang. Beberapa sistem hanya dapat dikonfigurasi melalui DHCP. </p>
+<p>Trivial Berkas Transfer Protocol (TFTP) digunakan untuk melayani image boot ke klien. Secara teoretis, server apa pun, pada platform apa pun, yang mengimplementasikan protokol ini, dapat digunakan. Dalam contoh di bagian ini, kami akan memberikan perintah untuk SunOS 4.x, SunOS 5.x (alias Solaris), dan GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Untuk server Debian GNU/Linux kami merekomendasikan <code class="classname">tftpd-hpa</code>. Ini ditulis oleh penulis yang sama dengan bootloader <code class="classname">syslinux</code> dan oleh karena itu paling kecil kemungkinannya untuk menyebabkan masalah. Alternatif yang baik adalah <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Menyiapkan server DHCP</h3></div></div></div>
+<p>Salah satu perangkat lunak DHCP server bebas adalah ISC <span class="command"><strong>dhcpd</strong></span>. Untuk Debian GNU/Linux, paket <code class="classname">isc-dhcp-server</code> direkomendasikan. Berikut adalah contoh berkas konfigurasi untuk itu (lihat <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>Dalam contoh ini, ada satu server <em class="replaceable"><code>servername</code></em> yang melakukan semua pekerjaan server DHCP, server TFTP, dan gateway jaringan. Anda hampir pasti perlu mengubah opsi nama domain, serta nama server dan alamat perangkat keras klien. Opsi nama berkas harus berupa <em class="replaceable"><code>filename</code></em> yang akan diambil melalui TFTP. </p>
+<p>Setelah Anda mengedit berkas konfigurasi <span class="command"><strong>dhcpd</strong></span>, jalankan ulang dengan <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2155"></a>4.5.1.1. Mengaktifkan Boot PXE dalam konfigurasi DHCP</h4></div></div></div>
+<p>Berikut adalah contoh lain untuk <code class="filename">dhcp.conf</code> menggunakan metode Pre-boot Execution Environment (PXE) TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# The next paragraph needs to be modified to fit your case
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# the gateway address which can be different
+# (access to the internet for instance)
+  option routers 192.168.1.1;
+# indicate the dns you want to use
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Perhatikan bahwa untuk boot PXE, nama berkas klien <code class="filename">pxelinux.0</code> adalah boot loader, bukan image kernel (lihat <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Pindahkan Image TFTP Ke Tempatnya">Bagian 4.5.4, “Pindahkan Image TFTP Ke Tempatnya”</a> di bawah). </p>
+<p>Jika mesin Anda menggunakan UEFI untuk boot, Anda harus menentukan boot loader yang sesuai untuk mesin UEFI, misalnya </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Menyiapkan server BOOTP</h3></div></div></div>
+<p>Ada dua server BOOTP yang tersedia untuk GNU/Linux. Yang pertama adalah CMU <span class="command"><strong>bootpd</strong></span>. Yang lainnya sebenarnya adalah server DHCP: ISC <span class="command"><strong>dhcpd</strong></span>. Dalam Debian GNU/Linux ini masing-masing ada dalam paket <code class="classname">bootp</code> dan <code class="classname">isc-dhcp-server</code>. </p>
+<p>Untuk menggunakan CMU <span class="command"><strong>bootpd</strong></span>, Anda harus terlebih dahulu menghapus komentar (atau menambahkan) baris yang relevan di <code class="filename">/etc/inetd.conf</code>. Pada Debian GNU/Linux, Anda dapat menjalankan <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, lalu <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> untuk melakukannya. Untuk berjaga-jaga jika server BOOTP Anda tidak berjalan pada Debian, baris yang dimaksud akan terlihat seperti: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Sekarang, Anda harus membuat berkas <code class="filename">/etc/bootptab</code>. Ini memiliki jenis format yang akrab dan cryptic yang sama dengan berkas <code class="filename">printcap</code>, <code class="filename">termcap</code>, dan <code class="filename">disktab</code> BSD lama yang bagus. Lihat halaman manual <code class="filename">bootptab</code> untuk informasi lebih lanjut. Untuk CMU <span class="command"><strong>bootpd</strong></span>, Anda perlu mengetahui alamat perangkat keras (MAC) klien. Berikut adalah contoh <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> Anda perlu mengubah setidaknya opsi <span class="quote">“<span class="quote">ha</span>”</span>, yang menentukan alamat perangkat keras klien. Opsi <span class="quote">“<span class="quote">bf</span>”</span> menentukan berkas yang harus diambil klien melalui TFTP; lihat <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Pindahkan Image TFTP Ke Tempatnya">Bagian 4.5.4, “Pindahkan Image TFTP Ke Tempatnya”</a> untuk lebih jelasnya. </p>
+<p>Sebaliknya, menyiapkan BOOTP dengan ISC <span class="command"><strong>dhcpd</strong></span> sangat mudah, karena memperlakukan klien BOOTP sebagai kasus yang cukup khusus dari klien DHCP. Beberapa arsitektur memerlukan konfigurasi kompleks untuk mem-boot klien melalui BOOTP. Jika milik Anda adalah salah satunya, baca bagian ini <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Menyiapkan server DHCP">Bagian 4.5.1, “Menyiapkan server DHCP”</a>. Jika tidak, Anda mungkin akan bisa lolos hanya dengan menambahkan direktif <strong class="userinput"><code>allow bootp</code></strong> ke blok konfigurasi untuk subnet yang berisi klien di <code class="filename">/etc/dhcp/dhcpd.conf</code>, dan jalankan ulang <span class="command"><strong>dhcpd</strong></span> dengan <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Mengaktifkan Server TFTP</h3></div></div></div>
+<p>Untuk menyiapkan server TFTP, Anda harus terlebih dahulu memastikan bahwa <span class="command"><strong>tftpd</strong></span> diaktifkan. </p>
+<p>Dalam kasus <code class="classname">tftpd-hpa</code> ada dua cara layanan dapat dijalankan. Ini dapat dimulai sesuai permintaan oleh daemon <code class="classname">inetd</code> sistem, atau dapat diatur untuk dijalankan sebagai daemon independen. Yang mana dari metode ini yang digunakan dipilih ketika paket dipasang dan dapat diubah dengan mengonfigurasi ulang paket. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Secara historis, server TFTP menggunakan <code class="filename">/tftpboot</code> sebagai direktori tempat menyajikan image. Namun, paket Debian GNU/Linux dapat menggunakan direktori lain untuk mematuhi <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a>. Misalnya, <code class="classname">tftpd-hpa</code> secara baku menggunakan <code class="filename">/srv/tftp</code>. Anda mungkin harus menyesuaikan contoh konfigurasi di bagian ini. </p></td></tr>
+</table></div>
+<p>Semua alternatif <span class="command"><strong>in.tftpd</strong></span> yang tersedia di Debian harus mencatat permintaan TFTP ke log sistem secara baku. Sebagian dari mereka mendukung argumen <strong class="userinput"><code>-v</code></strong> untuk meningkatkan verbositas. Disarankan untuk memeriksa pesan log ini jika terjadi masalah boot karena merupakan titik awal yang baik untuk mendiagnosis penyebab kesalahan. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Pindahkan Image TFTP Ke Tempatnya</h3></div></div></div>
+<p>Selanjutnya, tempatkan image boot TFTP yang Anda butuhkan, seperti yang ditemukan di <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Di Mana Menemukan Berkas Instalasi">Bagian 4.2.1, “Di Mana Menemukan Berkas Instalasi”</a>, dalam direktori image boot <span class="command"><strong>tftpd</strong></span>. Anda mungkin harus membuat tautan dari berkas itu ke berkas yang <span class="command"><strong>tftpd</strong></span> akan gunakan untuk mem-boot klien tertentu. Sayangnya, nama berkas ditentukan oleh klien TFTP, dan tidak ada standar yang kuat. </p>
+<p>Untuk boot PXE, semua yang Anda butuhkan diatur di tarball <code class="filename">netboot/netboot.tar.gz</code>. Cukup ekstrak tarball ini ke dalam direktori image boot <span class="command"><strong>tftpd</strong></span>. Pastikan server dhcp Anda dikonfigurasi untuk meneruskan <code class="filename">pxelinux.0</code> ke <span class="command"><strong>tftpd</strong></span> sebagai nama berkas untuk boot. Untuk mesin UEFI, Anda harus meneruskan nama image boot EFI yang sesuai (seperti <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Mempersiapkan Berkas untuk Boot Hard Disk </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Instalasi Otomatis</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

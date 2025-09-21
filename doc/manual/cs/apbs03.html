@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Vytvoření souboru s přednastavením</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="apb.html" title="Příloha B. Automatizování instalací pomocí přednastavení">
+<link rel="prev" href="apbs02.html" title="B.2. Použití">
+<link rel="next" href="apbs04.html" title="B.4. Obsah souboru s přednastavením (pro trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Vytvoření souboru s přednastavením</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Příloha B. Automatizování instalací pomocí přednastavení</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Vytvoření souboru s přednastavením</h2></div></div></div>
+<p>Soubor s přednastavením soubor má stejný formát jako používá příkaz <span class="command"><strong>debconf-set-selections</strong></span>. Běžný řádek pak má tvar </p>
+<div class="informalexample"><pre class="screen">&lt;vlastník&gt; &lt;jméno otázky&gt; &lt;typ otázky&gt; &lt;hodnota&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Soubor by měl začínat komentářem <code class="literal">#_preseed_V1</code> </p>
+<p>Při vytváření souboru s přednastavením byste měli mít na paměti několik pravidel. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Mezi typ a hodnotu vkládejte pouze jednu mezeru nebo tabulátor — případné další bílé znaky budou považovány za součást hodnoty. </p></li>
+<li class="listitem"><p>Dlouhý řádek můžete pro lepší čitelnost rozdělit na několik řádků tak, že na konec řádku přidáte znak pro pokračování řádku <span class="quote">„<span class="quote"><code class="literal">\</code></span>“</span> (zpětné lomítko). Je vhodné rozdělit řádek mezi názvem a typem otázky, ne mezi typem a hodnotou. Po spojení řádků bude bílé místo ze začátku/konce řádku spojeno do jediné mezery. </p></li>
+<li class="listitem"><p>Pro debconf proměnné (šablony), které jsou součástí pouze samotného instalačního programu, by měl být vlastník nastaven na <span class="quote">„<span class="quote">d-i</span>“</span>. Pro přednastavení ostatních proměnných používaných během instalace by se měl jako vlastník používat název balíku, který obsahuje příslušnou šablonu. Do debconf databáze v nainstalovaném systému se přenesou pouze proměnné, které mají jako vlastníka nastaveno něco jiného než <span class="quote">„<span class="quote">d-i</span>“</span>. </p></li>
+<li class="listitem"><p>Většina otázek vyžaduje zadání hodnot v angličtině, avšak existují výjimky jako třeba <code class="classname">partman</code>, kde musíte použít přeložené hodnoty. </p></li>
+<li class="listitem"><p>Dále pak některé otázky vyžadují hodnotu formou kódu (a ne text, který se zobrazuje během instalace). </p></li>
+<li class="listitem"><p>Na začátku souboru uveďte <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>A comment consists of a line which <span class="emphasis"><em>starts</em></span> with a hash character (<span class="quote">„<span class="quote"><code class="literal">#</code></span>“</span>) and extends up to the length of that line. </p></li>
+</ul></div>
+<p>Nejjednodušší způsob vytvoření souboru s přednastavením je použít ukázkový soubor z <a class="xref" href="apbs04.html" title="B.4. Obsah souboru s přednastavením (pro trixie)">B.4 – „Obsah souboru s přednastavením (pro trixie)“</a> jako základ a upravit si jej dle potřeb. </p>
+<p>Jiná možnost je provést ruční instalaci a po restartu do nového systému použít příkaz <span class="command"><strong>debconf-get-selections</strong></span> (z balíku <code class="classname">debconf-utils</code>) a uložit databázi debconfu i cdebconfu do jediného souboru: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>soubor</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>soubor</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>soubor</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Tento přístup má tu nevýhodu, že vytvořený soubor bude obsahovat i položky, které by se neměly přednastavovat. Z tohoto pohledu je pro většinu uživatelů vhodnější použití ukázkového souboru. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Tento způsob se spoléhá na fakt, že se na konci instalace uloží databáze cdebconfu do instalovaného systému do souboru <code class="filename">/var/log/installer/cdebconf</code>. Protože tato databáze může obsahovat důvěrné informace, jsou tyto soubory čitelné pouze pro uživatele root. </p>
+<p>Pokud ze systému vyčistíte balík <code class="classname">installation-report</code>, bude smazán také adresář <code class="filename">/var/log/installer</code>. </p>
+</td></tr>
+</table></div>
+<p>Seznam možných hodnot pro otázky můžete zjistit během instalace ze souborů umístěných v adresáři <code class="filename">/var/lib/cdebconf</code> (např. pomocí editoru <span class="command"><strong>nano</strong></span>). Samotné šablony se nachází v souboru <code class="filename">templates.dat</code>, aktuální hodnoty naleznete v souboru <code class="filename">questions.dat</code>. </p>
+<p>Ještě před instalací je vhodné zkontrolovat formát předkonfiguračního souboru příkazem <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Použití </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Obsah souboru s přednastavením (pro trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

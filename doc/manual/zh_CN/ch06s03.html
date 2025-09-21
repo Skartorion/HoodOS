@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. 使用单独的组件</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch06.html" title="第 6 章 使用 Debian 安装程序">
+<link rel="prev" href="ch06s02.html" title="6.2. 组件介绍">
+<link rel="next" href="ch06s04.html" title="6.4. 加载缺失的固件">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. 使用单独的组件</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 6 章 使用 Debian 安装程序</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. 使用单独的组件</h2></div></div></div>
+<p>本节将会描述各个安装组件的细节。组件按用户可以辨别的阶段分组。它们在安装过程中依次出现。要知道，每次安装并不会使用所有的模块；至于哪些模块被用到，取决于安装方法以及使用的硬件。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. 启动 Debian 安装程序与配置硬件</h3></div></div></div>
+<p>假设 Debian 安装程序已经启动，然后您看到了初始画面。此时，<code class="classname">debian-installer</code> 的能力还很有限。它还不了解您的硬件，首选的语言，甚至不知道要执行什么任务。不必担心，因为 <code class="classname">debian-installer</code> 相当聪明，它能自动探测您的硬件，定位其余的组件，并更新自己以具备安装系统的能力。但您仍然要协助 <code class="classname">debian-installer</code>，提供给它不能自动决定的内容(比如选择您首选的语言、键盘布局或网络镜像)。 </p>
+<p>您会留意到 <code class="classname">debian-installer</code> 在本阶段多次执行<em class="firstterm">硬件侦测</em>。第一次明确的目的是那些加载安装组件所需要的硬件(比如，您的 CD-ROM 或者网卡)。在第一次运行的时候并不是所有的驱动程序都就绪，硬件侦测会在后续过程多次重复。 </p>
+<p>在硬件侦测过程中，<code class="classname">debian-installer</code> 会检测系统中是否有硬件驱动程序需要加载固件(firmware)。如果没有找到所需的固件，将会弹出一个对话框让您可以从移动介质加载所缺的固件。参阅 <a class="xref" href="ch06s04.html" title="6.4. 加载缺失的固件">第 6.4 节 “加载缺失的固件”</a> 获得详细信息。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. 检测可用内存/小内存模式</h4></div></div></div>
+<p><code class="classname">debian-installer</code> 首先要做的一件事是检测有效的内存。如果内存有限，该组件将修改后续的安装进程，使您可以将 Debian GNU/Linux 安装到您的系统上。 </p>
+<p>安装程序用于减少内存消耗的第一项措施是关闭翻译，也就是说，安装将只在英文下进行。当然，您在安装完成之后还是可以进行本地化设置。 </p>
+<p>如果还不行，安装程序只加载那些完成基本安装的模块，进一步减少内存消耗。这将减少安装系统的功能。您还有机会手动加载额外的组件，但要留意每个选择的组件都会使用更多的内存，有可能使安装失败。 </p>
+<p>如果安装程序运行在小内存模式下，推荐创建一个相对较大的交换分区(1–2GB)。交换分区会被当作虚拟内存，使系统可用的内存总量增加。安装程序会在安装过程的尽早阶段激活交换分区。注意，过多地使用交换分区会降低系统性能，增加磁盘活动。 </p>
+<p>尽管如此，您的系统还可能冻结，因为系统内存溢出(VT4 和 syslog 上产生 <span class="quote">“<span class="quote">Out of memory</span>”</span> 信息)，出现没有预期的错误，或者进程被内核杀死。 </p>
+<p>例如，有报告称，小内存模式下，当交换分区不够大，创建一个大的 ext3 文件系统会失败。如果大的交换分区也不能解决问题，请建立 ext2 文件系统(它是安装程序的基本组件)代替。安装之后是可以将 ext2 分区改成 ext3。 </p>
+<p>可以通过引导参数 <span class="quote">“<span class="quote">lowmem</span>”</span> 强制安装程序使用比实际内存更高的 lowmem 等级，说明见 <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian 安装程序的参数">第 5.3.2 节 “Debian 安装程序的参数”</a>。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. 选择地区选项</h4></div></div></div>
+<p>大多时候，您遇到的第一个问题是关于地区的选项，将用于安装过程和安装后的系统。地区选项由语言、位置和地区组成。 </p>
+<p>您选择的语言将用于紧接着的安装过程，对话框已经有各种语言翻译的版本。如果选择的语言没有对应翻译的版本，安装将默认使用英文。 </p>
+<p>在之后的安装过程中，所选择的地理位置(多数情况下是国家)还会被用于选择正确的时区和该国对应的 Debian 镜像。语言和国家合起来还有助于确定您系统默认的 locale，以及键盘布局。 </p>
+<p>您将被首先问到首选的语言。语言名称同时以英文(左侧)和该语言(右侧)列出；右侧名称是使用该语言来书写。列表以英文名称排列。在列表的顶端是一个额外的选项，允许您使用 <span class="quote">“<span class="quote">C</span>”</span> locale 替代语言。选择 <span class="quote">“<span class="quote">C</span>”</span> locale 使得安装过程使用英文；安装的系统不再有本地化支持，<code class="classname">locales</code> 软件包也不会安装。 </p>
+<p>接下来将要求您选择地理位置。如果您选择的语言被多个国家作为官方语言<a href="#ftn.id2579" class="footnote" name="id2579"><sup class="footnote">[4]</sup></a>，列表中只列出这些国家。如果想要选择列表之外的国家，选择 <span class="guimenuitem">other</span>(最后一项)。您将看到大洲列表；选择洲之后会看到该大洲上的国家。 </p>
+<p>如果语言只对应一个国家，国家列表只显示该国所属的大洲和地区，并且该国被选中作为默认。使用 <span class="guibutton">Go Back</span> 选项可以选择其他大洲的国家。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>选择您居住的国家和地区非常重要，这将决定您安装好的系统所配置时区。 </p></td></tr>
+</table></div>
+<p>如果您组合的语言和国家没有对应的 locale，而该语言有多个对应的 locale，安装程序允许您从中选择一个默认的 locale 用于安装完成的系统。<a href="#ftn.id2587" class="footnote" name="id2587"><sup class="footnote">[5]</sup></a>。其余情况下，默认会选择基于该语言和国家的 locale。 </p>
+<p>前面章节选择的任何默认 locale 都将使用 <em class="firstterm">UTF-8</em> 作为字符编码。 </p>
+<p>如果您使用 low 优先级安装，您可以选择额外的 locale，包括那些称为<span class="quote">“<span class="quote">传统</span>”</span>的 locale <a href="#ftn.id2593" class="footnote" name="id2593"><sup class="footnote">[6]</sup></a>，用于安装完成的系统；如果这样选择，您将被询问使用哪种 locale 作为安装完成系统中的默认 locale。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. 选择键盘</h4></div></div></div>
+<p>键盘经常按照不同语言使用的字符裁剪。为您使用的键盘选择一个合适布局，如果没有合适的布局，就选择一个近似的。一旦系统安装完毕，您可以从更大范围内选择键盘的布局(在安装完之后以 root 身份执行 <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>)。 </p>
+<p>将高亮显示部分移到您期望键盘选择，然后按下 <span class="keycap"><strong>Enter</strong></span>。用箭头键移到高亮显示 — 它们位于所有国家键盘布局相同的地方，因此独立于键盘配置。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. 寻找 Debian 安装程序 ISO 映像</h4></div></div></div>
+<p>当安装是使用 <span class="emphasis"><em>hd-media</em></span> 方式，将会有一个动作，是寻找和挂载 Debian 安装程序 iso 映像，用于获取其它的安装文件。组件 <span class="command"><strong>iso-scan</strong></span> 正是用来完成此任务。 </p>
+<p>首先，<span class="command"><strong>iso-scan</strong></span> 自动挂载具有已知文件系统的块设备(比如，分区和逻辑卷)，然后顺次搜索文件名结尾是 <code class="filename">.iso</code> (或 <code class="filename">.ISO</code> 之类)。注意，首次只扫描位于根目录的文件，和第一层子目录 (例如，它找到 <code class="filename">/<em class="replaceable"><code>whatever</code></em>.iso</code>，<code class="filename">/data/<em class="replaceable"><code>whatever</code></em>.iso</code>，而不是 <code class="filename">/data/tmp/<em class="replaceable"><code>whatever</code></em>.iso</code>)。在 iso 映象文件找到后，<span class="command"><strong>iso-scan</strong></span> 检查它包含的内容，确定该映象文件是不是有效的 Debian iso 映象。如为前者，任务结束；若是后者，<span class="command"><strong>iso-scan</strong></span> 搜索其它的映象。 </p>
+<p>万一前面尝试寻找 iso 映像失败，<span class="command"><strong>iso-scan</strong></span> 会询问您是否愿意进行完整的搜索。这次不只查看最上级目录，而是真正地贯穿整个文件系统。 </p>
+<p>如果 <span class="command"><strong>iso-scan</strong></span> 找不到安装 iso 映像，请重新启动返回到您以前的操作系统，检查映像文件名是否正确(以 <code class="filename">.iso</code>结尾)，是否放在一个能被 <code class="classname">debian-installer</code> 识别的文件系统上，是否损坏(用 checksum 校验)。有经验的 Unix 用户可以在第二个控制台上完成这些动作，而无需重新启动。 </p>
+<p>注意，作为 ISO 映像主机的分区（或磁盘）不能在安装过程中再次使用，因为它将被安装程序使用。为了绕过这个限制，假设有充足的系统内存，安装程序能够在挂载前将 ISO 映像复制到内存中。这由低优先性的 <code class="literal">iso-scan/copy_iso_to_ram</code> debconf 问题（只在满足内存要求的时候询问）来控制。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. 配置网络</h4></div></div></div>
+<p>进入到这一步，如果系统检测到有多个的网络设备，您将被要求选择哪个设备是<span class="emphasis"><em>主</em></span>网络接口，比如，在安装中使用的那个。其他的网络接口这时不会配置。您可以在安装完毕之后去配置额外的接口；参考 <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span> man 手册。 </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. 自动网络配置</h5></div></div></div>
+<p>默认情况下，<code class="classname">debian-installer</code> 会尽力自动配置您的计算机网络。如果自动配置失败，会有多种因素造成，从没有插好网线到错误的自动配置环境都有。要了解更多的出错原因，请检查第四控制台上的信息。不管是什么情况，都会要求您再试一次，或者让您选择手动设置。有时用于网络自动配置的网络服务器响应比较慢，假如您确信都配置正确，可以简单地再重新进行一次自动配置。要是自动配置还是失败，您可以换成手动网络设置方式。 </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. 手动网络配置</h5></div></div></div>
+<p>手动配置网络会依次询问一些网络问题，特别是 <code class="computeroutput">IP 地址(IP address)</code>、<code class="computeroutput">网络掩码(Netmask)</code>、<code class="computeroutput">网关(Gateway)</code>、<code class="computeroutput">域名服务器地址(Name server addresses)</code>，以及<code class="computeroutput">主机名(Hostname)</code>。另外，如果您有无线网卡，会被要求提供<code class="computeroutput">Wireless ESSID</code> (<span class="quote">“<span class="quote">无线网络名</span>”</span>) 和 <code class="computeroutput"> WEP 密钥(WEP key)</code> 或者 <code class="computeroutput">WPA/WPA2 密码(WPA/WPA2 passphrase)</code>。填写答案 <a class="xref" href="ch03s03.html" title="3.3. 一些有用的信息">第 3.3 节 “一些有用的信息”</a>。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>您也许需要将一些技术细节放在手边：程序假定网络 IP 地址是您系统的 IP 地址和网络掩码按位与。默认的广播地址是通过您系统的 IP 地址和按位反网络掩码按位或计算得来。它也会猜测您的网关。如果您不能回答这些问题，让系统猜测 — 如果需要，在系统安装完毕之后，通过编辑 <code class="filename">/etc/network/interfaces</code> 文件进行修改。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 和 IPv6</h5></div></div></div>
+<p>从 Debian GNU/Linux 7.0 (<span class="quote">“<span class="quote">Wheezy</span>”</span>) 以后，<code class="classname">debian-installer</code> 将同时支持 IPv6 和 <span class="quote">“<span class="quote">经典的</span>”</span> IPv4。IPv4 与 IPv6 的各种组合(仅 IPv4、仅 IPv6 和双栈 dual-stack 配置)都将被支持。 </p>
+<p>IPv4 通过 DHCP (Dynamic Host Configuration Protocol)进行自动配置。自动配置 IPv6 使用 NDP (Neighbor Discovery Protocol，包括 recursive DNS server (RDNSS) 设置) 支持无状态自动配置，有状态自动配置通过 DHCPv6 和混合自动配置(地址配置使用 NDP，额外参数使用 DHCPv6)。 </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. 设置用户和密码</h3></div></div></div>
+<p>在设置时钟之前，安装程序允许您创建 <span class="quote">“<span class="quote">root</span>”</span> 帐号和/或第一个用户帐号。其他的用户帐号可以在安装完成之后创建。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. 设置 root 密码</h4></div></div></div>
+<p><span class="emphasis"><em>root</em></span> 帐户也被称为<span class="emphasis"><em>超级用户</em></span>；系统中的所有的安全防护措施对以该身份登录的都是无效的。root 帐户应该仅用来进行系统管理，而且使用时间应该尽可能短。 </p>
+<p>您所创建的任何密码都应该包含至少 6 个字符，同时包含大小写字母，并且最好带有标点符号等特殊字符。因为超级用户具有最高权限，因此在您设置 root 密码时尤其需要小心。请避免采用能够在字典中查到的单词或者很容易猜测的个人信息。 </p>
+<p>如果他人向您索取您的 root 密码，也需要特别谨慎。除非您所管理的系统有多位管理员，否则通常不应该将超级用户密码交给别人。 </p>
+<p>在这里没有为 <span class="quote">“<span class="quote">root</span>”</span> 用户指定密码的情况下，这个账户会被禁止，但 <span class="command"><strong>sudo</strong></span> 软件包将被安装，后面在新的系统上允许执行管理任务。默认系统上新建的第一个用户使用 <span class="command"><strong>sudo</strong></span> 命令变成根用户。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. 创建一个普通用户</h4></div></div></div>
+<p>系统会询问您现在是否希望创建一个普通帐户。您将使用该帐户进行日常登录操作。切记，平时<span class="emphasis"><em>不要</em></span>使用 root 帐户登录或者将其作为个人帐号使用。 </p>
+<p>为什么呢？避免使用 root 特权帐户的一个原因是，它很容易对系统造成无法挽回的破坏。另一个原因是，您有可能被恶意诱使运行<span class="emphasis"><em>特洛伊木马</em></span>程序 — 这是一种利用超级用户权限在您未知的情况下损害系统安全的程序。任何合格的 Unix 系统管理书籍中都会涉及到这一主题 — 如果您不是很了解这方面的内容，建议找一本进行学习。 </p>
+<p>您首先会被要求输入用户的全名。然后要求输入用户帐号名；通常您的名字或者类似的便满足要求，并为缺省值。最后，您将要求输入该帐号的密码。 </p>
+<p>如果在安装完毕后还希望建立其它新帐户，请使用 <span class="command"><strong>adduser</strong></span> 命令。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. 配置时钟和时区</h3></div></div></div>
+<p>安装程序首先尝试连接互联网上的时间服务器 (使用 <em class="firstterm">NTP</em> 协议) 来校准系统时间。如果没有成功，安装程序假设启动时获得的时间和日期是正确的。在安装过程中没法手动对系统时间进行设置。 </p>
+<p>基于安装过程前面所选择的地理位置，您将看到系统只列出与其地点相关的时区列表。如果该地只对应一个时区并且是默认安装，那么系统就不会询问而直接使用该时区。 </p>
+<p>expert 模式或者使用 medium 优先级安装，您可以通过额外的选项选择 <span class="quote">“<span class="quote">Coordinated Universal Time</span>”</span> (UTC) 作为时区。 </p>
+<p>如果出于某些因素您<span class="emphasis"><em>不想</em></span>设置时区为所选择的地点，这里有两个选项。 </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>最简单的方法，是在安装完成后重新启动，进入新系统，选择一个不同的时区。该命令为： </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>另外一种方法是，时区可以在安装启动后的安装程序最初阶段通过传入参数 <strong class="userinput"><code>time/zone=<em class="replaceable"><code>value</code></em></code></strong> 进行设置。其中的 value 当然要求是一个有效的时区，例如 <strong class="userinput"><code>Europe/London</code></strong> 或 <strong class="userinput"><code>UTC</code></strong>。 </p></li>
+</ol></div>
+<p>自动安装可以通过预置设置任何所需的时区。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. 分区与选择挂载点</h3></div></div></div>
+<p>现在，经过最后的硬件检测，<code class="classname">debian-installer</code> 应该准备就绪，按照用户定制，进行实质性的工作。正如本节标题指明，接下来组件的主要任务是为您的硬盘分区、创建文件系统、安排挂载点，还可以选择为 RAID、LVM 或加密设备这组选项进行配置。 </p>
+<p>要是您对分区还有心存疑虑，或者只是想多了解一些细节，请参阅 <a class="xref" href="apc.html" title="附录 C. 为 Debian 准备分区">附录 C, <i>为 Debian 准备分区</i></a>。 </p>
+<p>首先，您可以选择对整块硬盘或是其上的空闲空间进行自动分区。这也被称为<span class="quote">“<span class="quote">导引式(guided)</span>”</span>分区。如果不想使用自动分区，也可以从菜单中选择 <span class="guimenuitem">Manual</span> 手动分区。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. 支持的分区选项</h4></div></div></div>
+<p><code class="classname">debian-installer</code> 里面使用的 paritioner 近乎万能。它可以采用不同的分区表、文件系统和高级块设备创建多种分区方案。 </p>
+<p>具体可以使用哪些选项主要取决于体系架构，一些其他的因素也对此有影响。例如，有的系统上内存大小限制了一些选项的使用。默认值也会相应变化。比如大容量的硬盘比小容量的硬盘默认使用的分区表就不同。一些选项只能在使用 medium 或 low 优先级安装下改变；高优先级下会采用默认值。 </p>
+<p>安装程序支持多种高级分区和存储设备，很多情况下可以组合使用。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>逻辑卷管理(LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Software RAID</em></span>
+  </p>
+<p>支持 RAID levels 0, 1, 4, 5, 6 和 10。 </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>加密</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimental) </p>
+<p>参考<a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">我们的 Wiki</a> 了解更多信息。对于 multipath 只在安装程序启动时打开才支持。 </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>支持下列的文件系统。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>多数情况下默认的文件系统选择的是 ext4。 </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (并不是所有架构都支持) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (并不是所有架构都支持) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (选项；并不是所有架构都支持) </p>
+<p>默认情况下 Reiser 文件系统不再支持。安装程序运行在 medium 或 low 优先级下时，可以通过选择 <code class="classname">partman-reiserfs</code> 组件打开。只支持文件系统版本 3。 </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>识别已存在的分区并挂载它们。不可以创建新的 qnx4 分区。 </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (只读) </p>
+<p>已存在的 NTFS 分区可以调整大小，并挂载它们。不能创建新的 NTFS 分区。 </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>分区工具支持基于 10 的幂的单位（1 MB = 1000 kB = 1000000 B），也支持基于 2 的幂的单位（1 MiB = 1024 kiB = 1048576 B）。单位前缀支持到 EB/EiB（exabyte/exbibyte）。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. 导引式分区</h4></div></div></div>
+<p>f如果您选择导引式分区，可以有三种选择：直接在硬盘上创建分区（经典方式），或者使用逻辑卷管理(LVM)来创建，或者使用加密 LVM 来创建。<a href="#ftn.id2773" class="footnote" name="id2773"><sup class="footnote">[7]</sup></a>。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>(加密) LVM 的选项并不是在所有体系下都可用。 </p></td></tr>
+</table></div>
+<p>使用 LVM 或加密 LVM，安装程序将在一个大分区上创建很多分区；这种方式的优点在于该大分区内的分区以后改变尺寸相对比较容易。如果没有一个特殊的密码，加密 LVM 的大分区将无法读取，对您的(私有)数据提供了额外的安全性。 </p>
+<p>使用加密 LVM 时，安装程序将随机写入数据自动清除磁盘。这提升了安全性(使得无法获知磁盘的哪一部分被使用，并使此前的安装轨迹被清除)，根据磁盘的大小会耗费一些时间。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>假如您用导引式分区选择 LVM 或加密 LVM，在 LVM 建立的时候，分区表中的一些变更需要写入到所选的磁盘。这些变更会删除当前硬盘上的数据，以后将无法撤销。当然，安装程序会在写入磁盘之前让您确认。 </p></td></tr>
+</table></div>
+<p>假如用导引式分区<span class="phrase">(经典方式或(加密)LVM)</span>选择整个磁盘，您会首先被要求选取将要使用的磁盘。检查一下是否所有的磁盘都被列出，如果有多个磁盘，并确认所选的是真正要使用的那块。排列的次序可能与以前的不同，但磁盘的尺寸将会协助您辨别它们。 </p>
+<p>所选磁盘上的所有数据将会丢失，但总会在写入磁盘前提示您进行确认。<span class="phrase">如果选择的是经典分区方式，您可以在整个过程中撤销任何修改；但使用(加密) LVM 方式则不能撤销。</span> </p>
+<p>Next, you will be able to choose from the schemes listed in the table below. All schemes have their pros and cons, some of which are discussed in <a class="xref" href="apc.html" title="附录 C. 为 Debian 准备分区">附录 C, <i>为 Debian 准备分区</i></a>. If you are unsure, choose the first one. Bear in mind that guided partitioning needs a certain minimal amount of free space to operate with. If you don't give it at least about 3GB of space (depends on chosen scheme), guided partitioning will fail. Also, on small disks you will probably not see all of the schemes mentioned below. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>分区方式</th>
+<th>所需最小空间</th>
+<th>所新建的分区</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>所有文件在同一分区</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>建立 /home 分区</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>分别建立 /home、/var 和 /tmp 分区</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Separate /srv and /var partitions; swap limited to 1GB (for server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Scheme especially for small disks</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>如果您选择使用(加密) LVM 导引式分区，安装程序还会创建一个单独的 <code class="filename">/boot</code> 分区。其他的分区，除了交换分区，都会建在 LVM 分区之内。 </p>
+<p>倘若您在 EFI 模式引导，然后再引导的分区设置，那么就会有一个额外的分区，该分区格式化为 FAT32 可引导文件系统，用于 EFI 引导程序。这个分区是 EFI 系统分区（ESP）。同时，格式化菜单里也会增加一项，可以手动把某个分区作为 ESP。 </p>
+<p>在选定了分区方式后的下一个界面，您会看到关于自己分区的一张表格，上面标明了分区是否将被格式化，将以何种方式格式化，以及它们将被挂载到哪里的相关信息。 </p>
+<p>分区表格的格式如下：</p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      FREE SPACE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p> 本例中有两块 硬盘，它们分别被分割成了几个分区。第一块硬盘上还有些空闲空间。表中每行列出了分区编号、类型、大小、选项标志、文件系统和挂载点(如果有的话)。注意：导引式分区方式不能创建这些特殊的设置，但使用手动方式分区的结果会有所不同。 </p>
+<p>接下来，导引式分区就要完成了。如果您对上面生成的分区信息表感到满意，那么请在菜单中选择 <span class="guimenuitem">Finish partitioning and write changes to disk</span> 一项来创建新分区表(本节末将会对此进行解释)。如果您认为分区设置不如愿，那么可以选择 <span class="guimenuitem">Undo changes to partitions</span>，然后再次运行导引式分区，或者按照下面的介绍进行手动分区。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. 手动分区</h4></div></div></div>
+<p>如果您选择手动分区的话，它的界面和上面介绍的导引式分区大体上相同。不同之处在于，界面上显示的是您当前的分区列表，而且其中并没有挂载点的信息。关于如何手动设置您的分区表，以及新安装的 Debian 系统将如何使用这些分区，将会在本节的后面谈到。 </p>
+<p>倘若您选用的是一块全新的硬盘，它还没有被分过区，上面也没有空闲空间。那么系统会要求新建一个分区表(只有这样，您才能创建新的分区)。分区表建好之后，在被选中的磁盘条目下出现一个新行，上面写着 <span class="quote">“<span class="quote">FREE SPACE</span>”</span>。 </p>
+<p>如果您选中了某块空闲空间，那么就可以在上面建新分区了。接下来需要回答一系列简短的问题，它们会就分区大小、类型(主分区还是逻辑分区)、以及分区的位置(在空闲空间的开始部分还是在结束部分)向您询问。回答完毕，您会看到一个新分区的小结。主要设置是 <span class="guimenuitem">Use as:</span>，它决定一个分区上是否会有文件系统，或被用作交换分区<span class="phrase">、软 RAID、LVM 和加密文件系统</span>，或者根本就放着不用。其他的设置包括挂载点、挂载选项和启动标识；这些是否显示由分区的使用方式决定。如果您不喜欢预选的缺省设置的话，尽可按照自己的喜好更改。比如说，选中 <span class="guimenuitem">Use as:</span> 选项，然后您可以让这个分区改用其他的文件系统，把它用作交换分区<span class="phrase">、软 RAID、LVM</span>，或者根本就放着不用。一旦您对新分区的设置感到满意了，就可以选择 <span class="guimenuitem">Done setting up the partition</span>，然后退回到 <span class="command"><strong>partman</strong></span> 的主界面。 </p>
+<p>若是您希望修改分区的设置，只要选中该分区，分区的配置菜单就会出现在您的面前。由于这个界面和新建分区时使用的界面是相同的，所以您可以像以前那样修改那些设置项。有一件事，可能第一眼看不大出来，就是您还可以通过选中显示分区大小的项目来调整分区的大小。已知适用的文件系统至少有 fat16、fat32、ext2、ext3 和 swap。在这个菜单中，您还可以删除分区。 </p>
+<p>请确保至少分出两个分区：其中一个作为 <span class="emphasis"><em>root</em></span> 文件系统(它必须挂载到 <code class="filename">/</code>)，另一个用于 <span class="emphasis"><em>swap</em></span>。若是您忘记了挂载根(root)文件系统的话，<span class="command"><strong>partman</strong></span> 会拒绝让您继续下面的步骤，直到您纠正了这个错误。 </p>
+<p>如果在 EFI 模式引导，但忘记选择并格式化一个 EFI 系统分区，那么 <span class="command"><strong>partman</strong></span> 会察觉这一点，不让您继续操作，直到划分出这样一个分区。 </p>
+<p>由于 <span class="command"><strong>partman</strong></span> 的功能是通过安装本套件的各模块功能得以延伸和扩展的，但是具体又因您系统的体系架构而有所区别。因此，如果您发现安装的实际情况与我们所言不符，缺少了某些功能特性，那么请检查一下，确保已加载了所有必须的模块(比如，<code class="filename">partman-ext3</code>、<code class="filename">partman-xfs</code> 或者 <code class="filename">partman-lvm</code>)。 </p>
+<p>在您对分区设置感到满意后，就可以选择分区菜单中的 <span class="guimenuitem">Finish partitioning and write changes to disk</span> 一项。在这之后，会出现一个清单，它列出了即将在硬盘上进行的所有操作。此时，安装程序会让您确认是否就照此分区。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. 配置多磁盘设备(软 RAID)</h4></div></div></div>
+<p>如果您的计算机上有多个硬盘<a href="#ftn.id2867" class="footnote" name="id2867"><sup class="footnote">[8]</sup></a>，可以用 <span class="command"><strong>partman-md</strong></span> 配置硬盘以提升效能和/或更好的数据可靠性。这种结果称为<em class="firstterm">多磁盘设备(Multidisk Device)</em>(或者更流行的 <em class="firstterm">软 RAID</em>)。 </p>
+<p>MD 本质上是一束位于部分磁盘上的分区，组合在一起形成一个<span class="emphasis"><em>逻辑</em></span>设备。该设备可以像正常的分区一样使用(比如可以用 <span class="command"><strong>partman</strong></span> 格式化，分配挂载点，等等)。 </p>
+<p>得到什么样的好处取决于您创建的 MD 类型。当前支持的类型有：</p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> 它的主要目标是效能。RAID0 将进来的数据分割成 <em class="firstterm">stripes</em> 然后平均分配到组里面的每个硬盘上。这样可以提升读/写操作速度，但是一旦其中的一个硬盘损坏，您将丢失<span class="emphasis"><em>一切</em></span>(部分信息在好盘上，其他的<span class="emphasis"><em>曾经</em></span>在坏盘上)。</p>
+<p> 典型的 RAID0 案例是应用在视频编辑的分区。</p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> 适用于可靠性作为优先考虑的场合。它由多个(通常两个)相同尺寸的分区组成，每个分区容纳相同的数据。这意味着三件事。第一，如果其中的一个损坏，您仍然有数据镜像在其余的磁盘上。第二，您只能使用现有容量中的碎片(更准确的说，它是 RAID 中尺寸最小的磁盘分区)。第三，文件读取在磁盘间负载平衡，这可以提升服务器的性能，如文件服务器，它倾向于读的负载大于写。</p>
+<p> 可选择的是，您可以用备用的磁盘放在组中，用于顶替事故中损坏的磁盘。</p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> 这是一个速度、可靠性和数据冗余都不错的折衷方案。RAID5 将进来的数据分割成 strips (类似于RAID0)，但只平均分配到一个磁盘上。与 RAID0 不同，RAID5 还会计算<em class="firstterm">奇偶校验</em>信息，这将会写入其他磁盘。奇偶检验磁盘不是静态的(那被称为 RAID4)，会周期性的修改，所以奇偶校验信息平均分配到所有磁盘。当其中的一个磁盘损坏，丢失信息的部分可以从其他数据以及奇偶校验计算出来。RAID5 最少需要三个活动的分区。作为选项，您可以用备用的磁盘放在组中，用于顶替事故中损坏的磁盘。</p>
+<p> 如您所见，RAID5 近于 RAID1 的可靠性并具有较少冗余。另一方面，它只比 RAID0 在写入的时候慢，这是因为要计算校验信息。</p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> 它与 RAID5 近似，但使用两个校验设备而不是一个。</p>
+<p> RAID6 阵列可以容忍两个磁盘损坏。</p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 组合了 striping (如 RAID0) 和 mirroring (如 RAID1)。它创建输入数据的 <em class="replaceable"><code>n</code></em> 个拷贝，并将它们分配到不同的分区，使得相同数据的拷贝不会放在相同的的设备上。默认的 <em class="replaceable"><code>n</code></em> 值为 2，但可以在专家模式(export mode)下进行设置。分区数至少是 <em class="replaceable"><code>n</code></em>。RAID10 有不同的分配拷贝布局(layout)。默认为 near copies。near copies 有所有磁盘上相同 offset 的所有拷贝。far copies 有磁盘上不同 offset 的拷贝。offset copies 复制 stripe，而不是整个拷贝。</p>
+<p> RAID10 能可靠且冗余地存储，而没有计算校验的缺点。</p>
+</dd>
+</dl></div>
+<p> 总结： </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>类型</th>
+<th>最少设备</th>
+<th>备用设备</th>
+<th>幸免于磁盘损坏？</th>
+<th>可用空间</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>否</td>
+<td>否</td>
+<td>容量为最小分区乘以 RAID 设备数</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>可选</td>
+<td>是</td>
+<td>容量为 RAID 最小分区</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>可选</td>
+<td>是</td>
+<td>容量为最小分区乘以(RAID 设备数量减一) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>可选</td>
+<td>是</td>
+<td>容量为最小分区乘以(RAID 设备数量减二) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>可选</td>
+<td>是</td>
+<td>所有的分区数除以 chunk 拷贝数(默认为二) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>如果您想真正全面了解软 RAID，看一下 <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>。 </p>
+<p>为了创建 MD 设备，您需要将期望的分区标记为供 RAID 使用。(通过 <span class="guimenu">Partition settings</span> 菜单的 <span class="command"><strong>partman</strong></span> 完成，您应该选择 <span class="guimenu">Use as:</span> → <span class="guimenuitem">physical volume for RAID</span>。) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>请确保系统可以从您规划的分区引导。当使用 RAID 作为根（<code class="filename">/</code>）文件系统时，通常需要创建一个单独的文件系统给 <code class="filename">/boot</code>。多数的 boot loaders <span class="phrase">（包括 grub）</span> 支持 mirrored（而非 striped！）RAID1，所以例如使用 RAID5 给 <code class="filename">/</code> 同时 RAID1 给 <code class="filename">/boot</code> 是一种方式。 </p></td></tr>
+</table></div>
+<p>下一步，您应该从 <span class="command"><strong>partman</strong></span> 主菜单选择 <span class="guimenuitem">Configure software RAID</span>。(菜单只会在您用 <span class="guimenuitem">physical volume for RAID</span> 标记了至少一个分区时出现。)在 <span class="command"><strong>partman-md</strong></span> 第一个画面选择 <span class="guimenuitem">Create MD device</span>。您将看到被支持的 MD 设备列表，您应从其中选择一项(如 RAID1)。后续操作会根据您选择的 MD 类型而定。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 是简单的 — 您会看到可用的 RAID 分区，然后您的任务仅是选择那些想要组成 MD 的分区。 </p></li>
+<li class="listitem"><p>RAID1 需要一些技巧。首先，您将要求输入组成 MD 的活动设备和备用设备数量。其次，您需要从 RAID 可用分区列表中选择哪些是活动分区，哪些是备用的。选择的分区总数必须与之前提供的数目相同。别担心，如果您出错选择了不一样的分区数，<code class="classname">debian-installer</code> 将不会允许您继续下去，直到纠正错误。 </p></li>
+<li class="listitem"><p>RAID5 的配置过程类似于 RAID1，只是您至少需要<span class="emphasis"><em>三个</em></span>活动分区。 </p></li>
+<li class="listitem"><p>RAID6 的配置过程类似于 RAID1，只是您至少需要<span class="emphasis"><em>四个</em></span>活动分区。 </p></li>
+<li class="listitem"><p>RAID10 除了专家(export mode)模式之外也和 RAID1 的设置过程相似。在专家模式下，<code class="classname">debian-installer</code> 将询问您布局(layout)。布局由两部分组成。第一个部分是布局类型。可以是 <code class="literal">n</code> (对应 near copies)、<code class="literal">f</code> (对应 far copies) 或 <code class="literal">o</code> (对应 offset copies)。第二部分是组成数据的拷贝数。这些活动设备必须是让所有的拷贝可以分布到不同磁盘。 </p></li>
+</ul></div>
+<p>完美的解决方案或许是同时使用不同的 MD 类型。例如，您有三块 200 GB 的硬盘打算用于 MD，每块包含两个 100 GB 的分区，您可以将三块硬盘上的第一组分区组成 RAID0 (高速的 300 GB 视频编辑分区)，其余的三个分区(2 个活动 1 个备用)用于 RAID1 (相当可靠的 100 GB 分区用于 <code class="filename">/home</code>)。 </p>
+<p>按您需要配置 MD 设备之后，您可以 <span class="guimenuitem">Finish</span> <span class="command"><strong>partman-md</strong></span> 返回到 <span class="command"><strong>partman</strong></span>，去创建文件系统到您的新 MD 设备，并分配挂载点这样的属性。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. 配置逻辑卷管理(LVM)</h4></div></div></div>
+<p>如果您做计算机系统管理员工作或者<span class="quote">“<span class="quote">高级</span>”</span>用户，一定遇到过磁盘分区(经常是最重要的那个)空间不足，同时其他的分区却不能平衡使用，然后不得不靠移到或符号链接等方法来折腾。 </p>
+<p>为了避免上面描述的情况，您可以采用逻辑卷管理(LVM)。简而言之，使用 LVM 可以组合您的分区(<em class="firstterm">物理卷(physical volumes)</em>，LVM 术语)形成一个虚拟盘(称为<em class="firstterm">卷组(volume group)</em>)，它可以被分割成虚拟分区(<em class="firstterm">逻辑卷(logical volumes)</em>)。逻辑卷(当然底层是卷组)的亮点在于它可以跨越多个物理磁盘。 </p>
+<p>当您认觉得需要更多的空间给已有的 160 GB 的 <code class="filename">/home</code> 分区时，只需加一个新的 300GB 磁盘到计算机，添加进已经存在的卷组，然后为 <code class="filename">/home</code> 分区的逻辑卷重新设置尺寸，瞧 — 您的用户在更新的 460GB 分区上又有了空间。这个例子当然过于简单。如果您还还没有读过，应该查阅 <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>。 </p>
+<p><code class="classname">debian-installer</code> 中的 LVM 设置很简单，并且在<span class="command"><strong>partman</strong></span> 中被完全支持。首先，对于 LVM 必须将使用的分区标记为物理卷。这在 <span class="guimenu">Partition settings</span> 菜单里完成，在那里应该选择 <span class="guimenu">Use as:</span> → <span class="guimenuitem">physical volume for LVM</span>。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>注意：新的 LVM 设置将损坏由 LVM 类型编码标记的所有分区。所以，如果如果在您的一些盘上已经有 LVM 了，并想要另外安装 Debian 在那台机器上，那么旧的（已经存在的）LVM 将被擦除！有些分区（由于任何原因）被错误地标记了 LVM 类型编码，但包含了一些不同的（像加密的卷），这对它们也很重要。在执行新的 LVM 设置前，需要从系统中删除这样的盘！ </p></td></tr>
+</table></div>
+<p>当您返回 <span class="command"><strong>partman</strong></span> 主界面，将看到一个新选项 <span class="guimenuitem">Configure the Logical Volume Manager</span>。选择它，首先会被要求确认修改分区表(如果有的话)，然后 LVM 配置菜单才显示出来。菜单上部显示了 LVM 配置的小结。菜单项本身是与内容相关，只显示可用的操作。可能的操作有： </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Display configuration details</span>: 显示 LVM 设备结构，名称和逻辑卷尺寸等 </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Create volume group</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Create logical volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Delete volume group</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Delete logical volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Extend volume group</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Reduce volume group</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Finish</span>: 返回 <span class="command"><strong>partman</strong></span> 主界面 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>使用该菜单内的选项首先创建卷组，然后在里面创建逻辑卷。 </p>
+<p>返回到 <span class="command"><strong>partman</strong></span> 的主界面之后，可以看到新建的逻辑卷与其他普通的分区一样(您也应该这样对待它们)。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. 配置加密卷</h4></div></div></div>
+<p><code class="classname">debian-installer</code> 允许您建立加密分区。写入该分区的每个文件都立即存为加密形式。只有在输入 <em class="firstterm">passphrase</em> 通过认证之后才能访问加密后的数据，口令是在加密分区创建时设置的。该特性用于保护您被盗的便携机或硬盘上的敏感数据。盗贼或许可以访问硬盘，但是没有正确的口令，硬盘上的数据看起来就像是随机的字符。 </p>
+<p>有两个需要加密的重要分区：home 分区，驻留您的私人数据，以及交换分区，敏感的数据在操作时会临时保存在这里。当然，这不影响您加密任何其他的分区。例如，数据库服务器、邮件服务器或打印服务器上用来保存数据的 <code class="filename">/var</code>。或者 /tmp，很多程序用来保存临时文件。有些人或许需要加密整个系统。通常这里唯一的例外是，<code class="filename">/boot</code> 分区必须保持未加密，这是因为以前没有办法从加密分区加载内核。（GRUB 现在可以这样做了，但 <code class="classname">debian-installer</code> 当前缺少对加密的 <code class="filename">/boot</code> 的内在支持。这样，设置在 <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separate document</a>中覆盖。） </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>请注意，加密分区的性能将低于未加密的状态，这是由于数据在每次读写时都要进行加密和解密。性能将与您的 CPU 速度、选择的加密算法和密钥长度紧密相关。 </p></td></tr>
+</table></div>
+<p>为了使用加密，您必须在主分区菜单选择空闲的空间创建一个新分区。另一种是使用现有的分区(例如，普通的分区、一个 LVM 逻辑卷或者 RAID 卷)。在 <span class="guimenu">Partition setting</span> 菜单，您需要选择 <span class="guimenuitem">physical volume for encryption</span>，其位于 <span class="guimenu">Use as:</span> 选项。菜单将包含分区的加密选项。 </p>
+<p>由 <code class="classname">debian-installer</code> 支持的加密方法是 <em class="firstterm">dm-crypt</em>（包括在较新的 Linux 内科中，能够作为 LVM 物理卷的主机）。 </p>
+<p>让我们来看看通过<strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong> 选择加密方法后的可用选项。一般规律：如果不能确定，就使用默认项，因为它们是经过审慎的安全考虑的选择。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Encryption: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>该选项让您选择加密算法(<em class="firstterm">cipher</em>)，它用来加密分区上的数据。<code class="classname">debian-installer</code> 当前支持以下 block ciphers：<em class="firstterm">aes</em>、<em class="firstterm">blowfish</em>、<em class="firstterm">serpent</em> 和 <em class="firstterm">twofish</em>。讨论这些算法的质量超出了本文的范畴，但是，您应该知道，在 2000 年，<span class="emphasis"><em>AES</em></span> 被 American National Institute of Standards and Technology 选择作为标准的加密算法，用于保护 21 世纪的敏感信息。 </p></dd>
+<dt><span class="term">Key size: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>这里您可以指定密钥长度。使用较长的密钥，加密的能力自然得到提升。另一方面，增加长度自然会降低性能。cipher 决定可用的密钥长度。 </p></dd>
+<dt><span class="term">IV algorithm: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">Initialization Vector</em> 或 <em class="firstterm">IV</em> 算法是确保加密过程中用同一个密钥对于同一 <em class="firstterm">clear text</em> 将产生惟一的 <em class="firstterm">cipher text</em>。用于防止攻击者根据加密数据中的重复模板推断信息。 </p>
+<p>与其替代者比较，默认的 <strong class="userinput"><code>xts-plain64</code></strong> 是当前已知的具有最少的攻击漏洞。您只有在需要保持与以前安装的系统兼容，而它们无法使用新的算法时，才使用其他的算法。 </p>
+</dd>
+<dt><span class="term">Encryption key: <strong class="userinput"><code>Passphrase</code></strong></span></dt>
+<dd>
+<p>这里您可以为分区选择所使用的加密密钥类型。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Passphrase</span></dt>
+<dd><p>加密密钥将基于 passphrase 计算<a href="#ftn.id3109" class="footnote" name="id3109"><sup class="footnote">[9]</sup></a>，使用时要求输入。 </p></dd>
+<dt><span class="term">Random key</span></dt>
+<dd>
+<p>当您每次使用加密分区的时候，会从随机数据中生成一个新的加密密钥。换句话说：每次关机驻留在内存里面的密钥删除以后分区上的内容将丢失。(当然，您会猜想该密钥将面临暴力破解，但是除非加密算法中有未知的弱点，这辈子也不会被攻破。) </p>
+<p>随机密钥用于交换分区，这样您就不必为记住 passphrase 或关机前清除交换分区上的敏感信息而费神。然而，这也意味着您将<span class="emphasis"><em>无法</em></span>使用新 Linux 内核提供的 <span class="quote">“<span class="quote">suspend-to-disk</span>”</span> 功能，因为它将无法(在下次启动时)恢复写入到交换分区的数据。 </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Erase data: <strong class="userinput"><code>yes</code></strong></span></dt>
+<dd><p>决定在建立加密前是否使用随机数据覆盖分区内容。推荐这种方式，否则攻击者将会发现分区的哪些部分使用而哪些没有使用。另外，这将使安装前的内容很难恢复<a href="#ftn.id3124" class="footnote" name="id3124"><sup class="footnote">[10]</sup></a>。 </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>当您选择好加密分区参数之后，返回分区主菜单。现在会有一个新的菜单项 <span class="guimenu">Configure encrypted volumes</span>。选择它，您会被要求确认删除所标记分区上的数据，以及写新分区表等动作。对于大的分区，这会花一些时间。 </p>
+<p>接下来，您会被要求输入 passphrase 用于配置的分区。好的口令应该长于 8 个字符，并混合字母、数字和其他字符，而不应该是普通词典中的单词或者容易与您相关的信息(比如生日、爱好、宠物的名字、以及家里其他成员的名字，等等)。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>在输入任何 passphrase 之前，您应该确定键盘配置正确可以输入所需要的字符。如果您不能肯定，可以切换到第二虚拟控制台，在提示符下敲一些文字。这能保证您以后不必惊慌失措，例如，想要使用 qwerty 键盘输入的 passphrase，而在安装时却使用的是 azerty 布局。造成的原因有多种。也许是您在安装过程中改变了键盘布局，或者是所选择的键盘布局未能正确建立，而且是在为根文件系统输入 passphrase 的时候。 </p></td></tr>
+</table></div>
+<p>如果您选择 passphrase 之外的方法创建加密密钥，它们现在就会生成。因为内核在安装的早期阶段还没有足够的熵，过程会长一些。您可以产生一些熵以加快速度：例如，随机的按下一些键，或者切换到第二虚拟控制台的 shell 产生一些网络或磁盘的动作(下载一些文件，将一些大文件送到 <code class="filename">/dev/null</code> 等等)。这个过程在每个要加密的分区重复进行。 </p>
+<p>返回主分区菜单后，您将看到所有的加密卷作为额外的分区，它们可以像其他的普通分区一样配置。下面例子中显示了通过 dm-crypt 加密的卷。</p>
+<div class="informalexample"><pre class="screen">
+Encrypted volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> 现在可以给卷设置挂载点，如果默认的文件系统类型对您不合适，可以进行修改。 </p>
+<p>要留意括号里的标识(本例中 <em class="replaceable"><code>sda2_crypt</code></em>) 和您为每个加密卷所设置的加载点。启动新系统的时候您会需要该信息。关于普通引导过程和使用加密后引导过程之间的差异，将在后面的 <a class="xref" href="ch07s02.html" title="7.2. 挂载加密的卷">第 7.2 节 “挂载加密的卷”</a> 说明。 </p>
+<p>当您满意分区之后，可以继续安装过程。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. 安装基本系统</h3></div></div></div>
+<p>尽管这一阶段少有问题，但却需要大量时间用于整个基本系统的下载、校验和解包。如果您用较慢的计算机或网络，这要花费好一会儿时间。 </p>
+<p>在基本系统安装期间，软件包解包和配置信息会输出到 <strong class="userinput"><code>tty4</code></strong>。您可以通过按下<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> 访问该终端；按下<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> 返回主安装进程。 </p>
+<p>在安装程序通过串口控制台执行的情况下，基本系统安装时解包/配置信息保存在 <code class="filename">/var/log/syslog</code>。 </p>
+<p>作为安装的一部分，Linux 内核也要安装。在默认的优先级下，安装程序会选择一个与您硬件最匹配的内核。在较低的优先级下，您可以从列表中选择一个有效的内核。 </p>
+<p>在使用包管理系统安装软件包时，将默认安装那些软件包推荐的软件包。这些推荐的软件包并不影响要安装软件包的核心功能，但可以增强其功能。从软件包维护人员的角度看，正常情况下应该安装这些软件。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>由于技术的原因，安装基本系统时所安装的软件包并不会安装对应的<span class="quote">“<span class="quote">推荐软件包</span>”</span>。上面提到的原则只适用于之后的安装过程。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. 安装额外的软件</h3></div></div></div>
+<p>现在，您拥有了一个可用但有限的系统。大多数用户会安装额外的软件，并根据他们的需求进行调整，安装程序允许您这么做。如果您的计算机或网络比较慢，这一步或许比安装基本系统还要花时间。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. 配置 apt</h4></div></div></div>
+<p>在 Debian GNU/Linux 系统上，<span class="command"><strong>apt</strong></span> 是用来安装软件包的一个程序，它被包含在 <code class="classname">apt</code> 软件包中<a href="#ftn.id3167" class="footnote" name="id3167"><sup class="footnote">[11]</sup></a>。其他的包管理前端程序，像 <span class="command"><strong>aptitude</strong></span> 和 <span class="command"><strong>synaptic</strong></span> 也在使用。这些前端软件推荐给新用户使用，因为它们在良好的用户界面下集成了一些其他特性(搜索包与状态检验)。 </p>
+<p>您必须设置 <span class="command"><strong>apt</strong></span>，使它明白该从哪里获取软件包。设置的结果写入到 <code class="filename">/etc/apt/sources.list</code> 文件里面，安装完成后您可以检查并编辑成自己喜欢的地方。 </p>
+<p>如果您在默认优先级下进行安装，安装程序会自动处理大部分配置，它是根据您使用的安装方法以及在安装开始时所做的选择。大多数情况下安装程序会自动加上安全镜像，而且如果您安装的是稳定版，还会加上 <span class="quote">“<span class="quote">stable-updates</span>”</span> 服务的镜像。 </p>
+<p>如果您采用较低的优先级安装（比如专家模式），就要自己做更多的决定。您可以选择是否使用安全更新、或者 stable-updates 更新服务，并可以选择添加软件仓库中 <span class="quote">“<span class="quote">contrib</span>”</span>、<span class="quote">“<span class="quote">non-free</span>”</span> 和<span class="quote">“<span class="quote">non-free-firmware</span>”</span> 分区的软件包。 </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. 从多个 DVD 映像来安装</h5></div></div></div>
+<p>假如从 DVD 映像来安装，而它只属于所要安装程序的一部分，安装程序会询问您是否需要检测其它的安装介质。如果您手头有这样的介质，检测后安装程序就可以使用它们里面的软件包了。 </p>
+<p>假如您没有这些介质，也没关系：它们不是必须的。如果您也不使用网络镜像(下节说明)，意味着下一步中选择的任务里面并非所有的软件包都会安装。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>DVD 映像中包含的软件包按照流行程度排列次序。也就是说，一组映像里面的第一个映像是最常用的软件，而最后一个映像包含的是很少有人用到的软件。 </p>
+<p>这也意味着购买或者下载刻录所有 DVD 是一种浪费，因为大部分光盘您根本不会用到。多数情况下，只需要使用前 1 到 2 张 DVD，然后从网络镜像安装其他要用的软件包。 </p>
+</td></tr>
+</table></div>
+<p>如果您检测了多个安装介质，在需要的映像当前不在驱动器中时，安装程序会提示您换盘。注意，只有同属于一个套件的光盘需要检测。检测的次序并不是非常重要，但按照次序来可以降低出错的几率。 </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. 使用网络镜像</h5></div></div></div>
+<p>多数安装下会有一个问题被问到，是否需要使用网络镜像作为软件包的源。多数情况下默认答案会很好，但还是有一些例外。 </p>
+<p>如果<span class="emphasis"><em>没有</em></span>使用 DVD 映像，您就应该使用网络镜像，否则只能得到一个有限的系统。然而，假如您有互联网连接限制，在安装过程的下一步最好<span class="emphasis"><em>不要</em></span>选择 <code class="literal">desktop</code> 任务。 </p>
+<p>如果您从 DVD 安装，安装过程中需要的软件包都应该在第一张 DVD 映像里面。网络镜像的使用是一个选项。 </p>
+<p>添加网络镜像的优势在于有些内容已经更新，而 DVD 映像只是在版本发布时创建，所以可以安装已经更新的内容，确保了系统的安全性和稳定性。 </p>
+<p>总结：除非您不具备良好的互联网连接，选择网络镜像通常是一个好主意。如果安装介质上有软件包当前的版本，安装程序总会从这里安装。如果您选择了镜像，需要下载的数据量取决于 </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>安装下一步选择的任务， </p></li>
+<li class="listitem"><p>这些任务所需的软件包， </p></li>
+<li class="listitem"><p>已检测的安装介质上的软件包，并且 </p></li>
+<li class="listitem"><p>安装介质上的软件包在网络镜像里面是否有更新版本(普通软件包的网络镜像，或者安全或稳定更新的镜像)。 </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>注意，最后一点意味着，即使您没有选择使用网络镜像，如果配置了安全检测服务，并且软件包有安全更新或稳定更新，仍然会从互联网下载更新后的软件包。 </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. 选择网络镜像</h5></div></div></div>
+<p>除非选择不使用网络镜像，根据前面的安装步骤中您选择的国家，会显示网络镜像的列表。通常选择默认的就行。 </p>
+<p>默认的是 deb.debian.org，这不是镜像自身，但将会重定向最新与最快的镜像。这些镜像支持 TLS （https 协议）和 IPv6。这个服务由 Debian 系统管理（DSA）团队维护。 </p>
+<p>可以通过选择 <span class="quote">“<span class="quote">enter information manually</span>”</span> 来说动指定镜像。可以指定镜像主机名称和可选的端口号。这实际上必须基于 URL ，也就是当指定 IPv6 地址时，必须添加方括号将它包起来，例如 <span class="quote">“<span class="quote">[2001:db8::1]</span>”</span>。 </p>
+<p>如果您的计算机处于仅有 IPv6 的网络(大多数用户不会遇到这种情况)，使用所属国家默认的镜像可能无法正常工作。列出的网络镜像全部可以使用 IPv4 访问，但只有其中的某些可以通过 IPv6 访问。由于个别镜像连接的状况会不断更新，此信息可能在安装程序里面失效。如果还没有 IPv6 连接到所在国家的默认镜像，您可以试试其他的镜像，或者选择<span class="quote">“<span class="quote">手动输入信息</span>”</span>选项。您可以指定 <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span> 作为镜像名，这是 IPv6 上的一个镜像别名，它有可能不是速度最快的哪个。 </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. 选择和安装软件</h4></div></div></div>
+<p>安装过程中，您有机会选择安装额外的软件包。不像从 <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    个软件包里面里面选择单独的软件包，这一阶段安装过程着眼于安装一组预先定义的软件包，来快速建立您的计算机应对各种任务。 </p>
+<p>任务松散地代表了您要在计算机上从事的一系列工作，比如<span class="quote">“<span class="quote">桌面环境</span>”</span>、<span class="quote">“<span class="quote">Web 服务器</span>”</span>或者<span class="quote">“<span class="quote">SSH 服务器</span>”</span><a href="#ftn.id3229" class="footnote" name="id3229"><sup class="footnote">[12]</sup></a>。<a class="xref" href="apds02.html" title="D.2. 各软件集所需的磁盘空间">第 D.2 节 “各软件集所需的磁盘空间”</a> 列出了各种任务所需的空间。 </p>
+<p>注意，根据所安装计算机的特征，有些任务被预先选择。如果您不需要它们，可以取消这些任务。此时甚至可以不选中任何任务。 </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[提示]" src="images/tip.png"></td>
+<th align="left">提示</th>
+</tr>
+<tr><td align="left" valign="top"><p>在安装程序的标准用户界面下，您可以使用空格键切换任务的选择。 </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><span class="quote">“<span class="quote">Desktop environment</span>”</span> 任务将安装图形桌面环境。 </p>
+<p>默认 <code class="classname">debian-installer</code> 安装 <span class="phrase">Gnome</span>  桌面环境。能够在安装过程中交互地选择不同的桌面环境。还能够安装多个桌面，但一些桌面的组合可能不能同时安装。 </p>
+<p>注意，这只在该桌面环境对应的软件包可以获得的情况下有效。假如您使用 DVD 映像或其他通过网络映像的安装方法，安装任何可用的桌面环境时这种方法应该有效工作。 </p>
+</td></tr>
+</table></div>
+<p>各种服务器任务大致安装的软件如下。Web 服务器：<code class="classname">apache2</code>；SSH 服务器： <code class="classname">openssh</code>。 </p>
+<p><span class="quote">“<span class="quote">Standard system utilities</span>”</span> 任务会安装具有 <span class="quote">“<span class="quote">standard</span>”</span> 优先级的软件包。这包括很多在任何 Linux 和 Unix 系统上常用的工具。除非清楚自己的目的并需要一个最小化的系统，您应该让该任务选中。 </p>
+<p>选择语言的时候，如果默认的 locale 不是 <span class="quote">“<span class="quote">C</span>”</span>，<span class="command"><strong>tasksel</strong></span> 会检查该 locale 是否有对应的本地化任务，然后自动安装相应的本地化软件包。这里面包含诸如对应语言的词汇列表或特殊字体的软件包。假如选择了桌面环境，(如果存在)还会安装该桌面对应的本地化软件包。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Starting with Debian Trixie, <code class="classname">debian-installer</code> allows to install Debian Pure Blends directly. There is an entry <span class="quote">“<span class="quote">Choose a Debian Blend for installation</span>”</span> at the bottom of the tasks list, which enables an additional choices dialog to appear, after <span class="command"><strong>tasksel</strong></span> has finished. </p>
+<p>In that dialog (<span class="command"><strong>blendsel</strong></span>), you can choose which blend to install, similar to this tasks selection. </p>
+<p>See <a class="ulink" href="https://www.debian.org/blends" target="_top">the Debian website</a> for more information about Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>一旦您确定了任务，请选择 <span class="guibutton">Continue</span>。此时，<span class="command"><strong>apt</strong></span> 将安装选中任务的软件包。假如某个程序需要用户输入信息，它将提示您指定。 </p>
+<p>您应当清楚安装桌面的任务非常巨大。特别是当使用网络安装 CD 映像，同时通过网络镜像安装网络安装 CD 上没有的软件包时，安装程序将通过网络下载大量的软件包。如果您的互联网接入较慢，这将花很长时间。一旦启动，安装软件包过程将无法取消。 </p>
+<p>如果镜像服务器上的软件包版本更新，即使旧版本在安装映像上存在，安装程序还是会从镜像上获取这些软件包。如果您安装的是稳定版，这会出现在次版本发布之后（主稳定版本的更新）；如果您安装的是测试版本，这会出现在使用旧映像安装时。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. 创建启动系统</h3></div></div></div>
+<p>如果您是安装无盘工作站，显然，从本机启动是没有意义的选项，这一步可以跳过。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. 检测其他的操作系统</h4></div></div></div>
+<p>在 boot loader 安装之前，安装程序会试着侦测已经安装到计算机上的其他操作系统。如果它找到支持的操作系统，您将在启动 boot loader 安装步骤里得到提示。与 Debian 一起，计算机也将配置为可以启动其他操作系统。 </p>
+<p>注意，从单机上启动多个操作系统仍然是黑色艺术。自动支持检测和设置 boot loader 启动其他操作系统，会依系统甚至是子系统而变化。如果它不能工作，您应该参考启动管理器的文档了解更多信息。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3277"></a>6.3.7.2. 在驱动器上 <span class="command"><strong>Grub</strong></span> 安装引导程序</h4></div></div></div>
+<p>amd64 上的引导程序被称为 <span class="quote">“<span class="quote">grub</span>”</span>。Grub 是个灵活和稳定的 boot loader，它对新手和老手都是一个不错的缺省选择。 </p>
+<p>缺省情况下，grub 会被装在UEFI分区/主盘的引导块上，它将会完全主宰引导过程。如果喜欢的话可以装在其它地方。若要全面和完整的信息，请参阅 grub 的手册。 </p>
+<p>如果您并不想安装 grub，请使用 <span class="guibutton">Go Back</span> 按钮回到主菜单，并从中选择您想要使用的任何 bootloader。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. 不使用 boot loader 继续进行</h4></div></div></div>
+<p>该选项用于即使没有安装 boot loader 时完成安装，这种情况要么是体系/子体系不支持，要么是因为不想要（比如，使用现有的 boot loader）。 </p>
+<p>如果您打算手动设置 bootloader，需要检测安装的内核，它位于 <code class="filename">/target/boot</code>。您还需要检测 <em class="firstterm">initrd</em> 存在的目录；如果有，也许需要指导 bootloader 使用它。其他需要的信息，包括您为 <code class="filename">/</code> 文件系统选择的磁盘和分区，并且，如果您打算安装 <code class="filename">/boot</code> 到一个独立的分区，还需要 <code class="filename">/boot</code> 文件系统。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. 完成安装</h3></div></div></div>
+<p>这是在您 Debian 安装过程的最后一步。在这最后的几分钟工作里，主要进行一些 <code class="classname">debian-installer</code> 之后的清理。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. 设置系统时钟</h4></div></div></div>
+<p>安装程序可能会询问是否计算机的时钟设置为 UTC。通常会尽量避免这个问题，而且安装程序依据是否有其他系统已经安装这类事情，来决定时钟要不要设为 UTC。 </p>
+<p>在 expert 模式下，您总是可以选择时钟是否设为 UTC。 <span class="phrase">(还要)运行 Windows 的系统通常设为本地时间。如果您需要多重引导，请选择本地时间而不是 GMT。</span> </p>
+<p>此时，<code class="classname">debian-installer</code> 将保存当前的时间到系统的硬件时钟。它可以是 UTC 或者本地时间，这取决于刚才的选择。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. 重新启动系统</h4></div></div></div>
+<p>您会被提示拿出用于安装启动的媒介(CD、U 盘等)。之后，系统会启动到您的新 Debian 系统。 </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. 故障处理</h3></div></div></div>
+<p>这里的组件通常不在安装进程之内，但会在后台待命，以帮助用户遇到麻烦时处理问题。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. 保存安装记录</h4></div></div></div>
+<p>如果安装成功，安装过程中创建的记录文件，会被自动保存在您的新 Debian 系统上的 <code class="filename">/var/log/installer/</code>。 </p>
+<p>从主菜单上选择 <span class="guimenuitem">Save debug logs</span>，允许您将记录文件保存到 U 盘上、网络、硬盘或其他介质。这可用于安装过程中遭遇严重错误的时，您想在其它系统上研究记录，或者用于报告的附件。 </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. 使用 Shell 查看记录</h4></div></div></div>
+<p>安装过程中您可以使用多种方法获得一个 shell。多数系统上，如果您不是通过串口控制台安装，最简单的方法是按下<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> 切换到第二个<span class="emphasis"><em>虚拟控制台</em></span><a href="#ftn.id3324" class="footnote" name="id3324"><sup class="footnote">[13]</sup></a>（在 Mac 键盘上，是 <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>）。用<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> 可以切换回安装程序。 </p>
+<p>对于图形安装程序，请参阅 <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. 使用图形安装程序">第 6.1.1 节 “使用图形安装程序”</a>。 </p>
+<p>如果您无法切换控制台，还可以在主菜单上执行 <span class="guimenuitem">Execute a Shell</span> 选项，它可以启动一个 shell。您可以使用一次或多次 <span class="guibutton">Go Back</span> 按钮从大多数对话框返回主菜单。键入 <strong class="userinput"><code>exit</code></strong> 关闭 shell 并回到安装程序。 </p>
+<p>因为这时您是从 RAM 盘启动，只有有限的 Unix 工具可以使用。您可以通过命令 <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> 和键入 <span class="command"><strong>help</strong></span> 查看哪些程序可以使用。其 shell 称为 <span class="command"><strong>ash</strong></span>，是 Bourne shell 的克隆，有一些如自动完成与历史纪录这样的好特性。 </p>
+<p>要编辑和查看文件，请使用文本编辑器 <span class="command"><strong>nano</strong></span>。安装系统的日志可以在 <code class="filename">/var/log</code> 目录找到。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>虽然在 shell 里面您可以用存在的命令做任何事情，但 shell 真正的用途只是遇到问题时进行调试。 </p>
+<p>在 shell 里面手动操作可能会影响安装过程，造成错误或无法完成安装。特别是，您应该让安装程序激活交换分区，而不是在 shell 里面自己动手。 </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. 通过网络控制台（network-console）安装</h3></div></div></div>
+<p>更好玩的一个组件是<em class="firstterm">network-console</em>。它可以让您使用 SSH 通过网络完成大部分安装工作。使用网络也就是您要用控制台完成第一阶段，或者至少先建立网络。(您可以使用 <a class="xref" href="ch04s06.html" title="4.6. 自动化安装">第 4.6 节 “自动化安装”</a> 做这部分工作。) </p>
+<p>该组件默认不会加载到安装主菜单，因此必须单独指定。如果使用光盘介质，您需要使用 medium 优先级或者打开安装主菜单并选择 <span class="guimenuitem">Load installer components from installation media</span>，在额外的组件列表里面选择 <span class="guimenuitem">network-console: Continue installation remotely using SSH</span>。加载成功后会出现一个新的菜单项，名为 <span class="guimenuitem">Continue installation remotely using SSH</span>。 </p>
+<p><span class="phrase">选择新菜单项之后，您</span> 会被问到新密码，以及确认密码用于连接到安装系统。这些就够了。现在您应该看到一个画面，提示使用 <span class="emphasis"><em>installer</em></span> 用户名和刚才您提供的密码登录。另外一个屏幕上需留意的重要细节，是该系统的 fingerprint。您需要安全地传输该 fingerprint 给那些要继续远程安装的人。 </p>
+<p>当您决定继续本地安装时，不断地按 <span class="keycap"><strong>Enter</strong></span>，就可以返回主菜单，之后可以选择其他的组件。 </p>
+<p>现在转到网线的另一端。有一个先决条件，您需要配置您的终端使用 UTF-8 编码，因为安装系统使用这种编码。如果不这样做，远程安装也可以进行，但是您可能看到奇怪的显示，比如破碎的对话框边界，或者不可读的非 ASCII 字符。与安装系统建立连接只需键入: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> 其中 <em class="replaceable"><code>install_host</code></em> 是安装计算机的名字或 IP 地址。正式登录之前，会显示远程系统的 fingerprint，您需要确认是否正确。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>安装程序中的 <span class="command"><strong>ssh</strong></span> 服务器使用的是默认的配置，并不发送 keep-alive 包。原则上，已安装系统的连接应该无限期的保持打开。但是，某些情况下 — 由您的局域网设置决定 — 一段时间的不活动，连接将会断开。这种情况常发生在客户端和系统上安装有 Network Address Translation (NAT) 的地方。基于连接在安装过程中的哪一点断开，您在连接之后可能继续，也可能无法继续安装过程。 </p>
+<p>您可以通过在启动 <span class="command"><strong>ssh</strong></span> 连接时添加 <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>value</code></em></code></strong> 选项来避免断开，或者把它加到 <span class="command"><strong>ssh</strong></span> 的配置文件里面。注意，某些情况下添加该选项反而会<span class="emphasis"><em>造成</em></span>断开(例如，如果 keep-alive 包在网络故障(brief network outage)期间送出，<span class="command"><strong>ssh</strong></span> 将会恢复)，因此它只在需要的时候采用。 </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>如果您依次安装多台计算机，他们碰巧使用相同的 IP 地址或主机名，那么 <span class="command"><strong>ssh</strong></span> 将拒绝连接。造成的原因是它具有不同的 fingerprint，这通常是欺骗攻击的标志。如果您确信不是那种情况，需要删除 <code class="filename">~/.ssh/known_hosts</code> 里面相关的行<a href="#ftn.id3386" class="footnote" name="id3386"><sup class="footnote">[14]</sup></a>，再重新来过。 </p></td></tr>
+</table></div>
+<p>登录之后您将看到一个初始画面，显示有两个可能，<span class="guimenuitem">Start menu</span> 和 <span class="guimenuitem">Start shell</span>。前一个将带您到安装主菜单，那么您可以像普通方式一样安装。后一个打开一个 shell，您可以检查修复远程的系统。在安装菜单只能打开一个 SSH 会话，但 shell 可以打开多个。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>使用 SSH 开始远程安装之后，您不该返回本地控制台运行的安装会话。这将破坏新系统配置的数据库。结果可能导致安装失败或者安装完成的系统出现问题。 </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2579" class="footnote"><p><a href="#id2579" class="para"><sup class="para">[4] </sup></a> 科技术语：一种语言针对不同国家代码有多个不同 locale 存在。</p></div>
+<div id="ftn.id2587" class="footnote"><p><a href="#id2587" class="para"><sup class="para">[5] </sup></a> 在 medium 和 low 优先级下，如果该语言有多个对应的 locale，您总是可以选择所需要的那个 locale。</p></div>
+<div id="ftn.id2593" class="footnote"><p><a href="#id2593" class="para"><sup class="para">[6] </sup></a> 传统 locale 是那些没有使用 UTF-8 的 locale，它们使用旧的字符编码标准，比如 ISO 8859-1 (西欧语言) 或 EUC-JP (日语)。</p></div>
+<div id="ftn.id2773" class="footnote"><p><a href="#id2773" class="para"><sup class="para">[7] </sup></a> 安装程序将使用 256 位的 AES 密钥来加密 LVM 卷组，并使用内核的 <span class="quote">“<span class="quote">dm-crypt</span>”</span> 支持。</p></div>
+<div id="ftn.id2867" class="footnote"><p><a href="#id2867" class="para"><sup class="para">[8] </sup></a> 其实，您可以从单个物理硬盘上不同分区创建 MD 设备，但这样做不会给您带来任何好处。</p></div>
+<div id="ftn.id3109" class="footnote"><p><a href="#id3109" class="para"><sup class="para">[9] </sup></a> 使用 passphrase 作为密钥意味着建立分区是使用 <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>。</p></div>
+<div id="ftn.id3124" class="footnote"><p><a href="#id3124" class="para"><sup class="para">[10] </sup></a>据信那些三个缩写字母部门的家伙可以恢复经过多次覆盖的磁记录设备上的数据。</p></div>
+<div id="ftn.id3167" class="footnote"><p><a href="#id3167" class="para"><sup class="para">[11] </sup></a> 其实，真正用来安装软件包的程序是 <span class="command"><strong>dpkg</strong></span>。但这是一个比较底层的工具。<span class="command"><strong>apt</strong></span> 是一个高级工具，它可以在适当的时候调用 <span class="command"><strong>dpkg</strong></span>。它知道从您的安装介质、网络或其它地方获取软件包。它还可以在安装某个软件包时自动安装所需的其它软件包。</p></div>
+<div id="ftn.id3229" class="footnote"><p><a href="#id3229" class="para"><sup class="para">[12] </sup></a> 您应该知道，呈现这个列表，安装程序仅仅是执行 <span class="command"><strong>tasksel</strong></span> 程序。它可以在安装之后的任何时间安装(或删除)其他软件包，或者使用更精致的工具，例如 <span class="command"><strong>aptitude</strong></span>。如果您需要一个特定的软件包，在安装之后，只须执行 <strong class="userinput"><code>aptitude install <em class="replaceable"><code>package</code></em></code></strong>，其中 <em class="replaceable"><code>package</code></em> 是您需要的软件包名。</p></div>
+<div id="ftn.id3324" class="footnote"><p><a href="#id3324" class="para"><sup class="para">[13] </sup></a>就是：按下位于<span class="keycap"><strong>空格键</strong></span>左手边的 <span class="keycap"><strong>Alt</strong></span> 键，同时按下 <span class="keycap"><strong>F2</strong></span> 功能键。</p></div>
+<div id="ftn.id3386" class="footnote"><p><a href="#id3386" class="para"><sup class="para">[14] </sup></a> 下面的命令将删除一个主机的已有记录: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>hostname</code></em>|<em class="replaceable"><code>IP address</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. 组件介绍 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. 加载缺失的固件</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

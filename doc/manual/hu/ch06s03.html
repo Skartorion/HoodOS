@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Az egyes összetevők használata</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch06.html" title="6. fejezet - A Debian Telepítő használata">
+<link rel="prev" href="ch06s02.html" title="6.2. Összetevők bemutatása">
+<link rel="next" href="ch06s04.html" title="6.4. Hiányzó firmware betöltése">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Az egyes összetevők használata</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">6. fejezet - A Debian Telepítő használata</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Az egyes összetevők használata</h2></div></div></div>
+<p>E szakaszban részletesen leírjuk az egyes telepítő összetevőket. Ezeket további világos szakaszokra bontjuk. A bemutatás a megjelenés sorrendjében történik. Természetesen nem minden modul szerepel minden telepítésben; ez a telepítő módtól és hardvertől függ. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. A Debian Telepítő és a hardver konfiguráció beállítása</h3></div></div></div>
+<p>Tegyük fel, hogy a Debian Telepítő elindult és az 1. képernyőt látod. Ekkor a <code class="classname">debian-installer</code> képességei még korlátozottak. Nem tud sokat a hardverről, nyelvről és az elvégzendő feladatokról. Ne aggódj. Mivel a <code class="classname">debian-installer</code> elég okos, önműködően fel tudja ismerni a hardvert, meghatározni a további összetevők helyét és egy jó telepítő rendszerré frissíteni magát. Természetesen meg kell adni a <code class="classname">debian-installer</code> számára az automatikusan fel nem ismerhető dolgokat (például nyelv, kívánt billentyű-kiosztás vagy hálózati tükör). </p>
+<p>Látod majd, hogy a <code class="classname">debian-installer</code> több <em class="firstterm">hardver felismerés</em> műveletet végez. Először a telepítő összetevők betöltéséhez szükségeseket keresi (például CD-ROM vagy hálózati kártya). Mivel még nem minden meghajtó érhető el, a hardver felismerés későbbi megismétlése szükséges. </p>
+<p>A hardver felismerés során a <code class="classname">debian-installer</code> ellenőrzi, hogy a hardver eszközeid meghajtóinak bármelyike igényeli-e firmware betöltését. Ha van olyan firmware, amire szükség lenne, de nem érhető el, egy párbeszéd fog megjelenni, melynél lehetőség van a hiányzó firmware betöltésére eltávolítható adathordozóról. További részleteket itt találsz: <a class="xref" href="ch06s04.html" title="6.4. Hiányzó firmware betöltése">6.4. szakasz - Hiányzó firmware betöltése</a>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Elérhető memória ellenőrzése / alacsony memória mód</h4></div></div></div>
+<p>A <code class="classname">debian-installer</code> 1. tetteinek egyike az elérhető memória ellenőrzése. Ha szűkös, ez az összetevő olyan módosításokat végez a telepítő folyamatban, melyekkel remélhetőleg még így is lehetővé teszi a Debian GNU/Linux telepítését e gépen. </p>
+<p>A telepítő először a fordításokat dobja el, amely azt jelenti, hogy ilyenkor a telepítés csak angolul végezhető el. Természetesen a telepítés végeztével egyszerűen beállítható a saját nyelv. </p>
+<p>Ha ez kevés, csak az alap telepítéshez kellő összetevőket tölti be. Ez csökkenteni fogja a telepítő rendszer képességeit. Lehetőség lesz további összetevők betöltésére, de minden ilyen összetevő további memóriát fog felhasználni, így meghiúsíthatja a telepítést. </p>
+<p>Ha a telepítő alacsony memóriamódban fut, javasolt egy viszonylag nagy swap partíciót létrehozni (1–2 GB). A swap partíció virtuális memóriaként fog működni, így növeli a rendszer számára elérhető memória mennyiségét. A telepítő a lehető legkorábban aktiválja a swap partíciót a telepítési folyamat során. Vedd figyelembe, hogy a swap intenzív használata csökkentheti a rendszer teljesítményét és magas lemezaktivitást okozhat. </p>
+<p>Ezen intézkedések ellenére még mindig előfordulhat a rendszer fagyása, váratlan hibák, vagy hogy egyes folyamatokat a kernel megöl, mert kifogy a memória (ami <span class="quote">„<span class="quote">Out of memory</span>”</span> üzenet ad a VT4 virtuális terminálon és a syslog fájlban). </p>
+<p>Például ismert, hogy egy nagy ext3 fájlrendszer létrehozása meghiúsulhat alacsony memória módban, ha nincs elég cserehely. Ha nagyobb cserehely sem segít, próbálkozz ext2 fájlrendszerrel (ez a telepítő nélkülözhetetlen összetevője). A telepítés után az ext2 ext3 partícióra módosítható. </p>
+<p>Lehetséges a telepítőt magasabb lowmem érték használatára kényszeríteni, mint ami a rendelkezésre álló memória alapján jogos lenne. Ehhez használd a <span class="quote">„<span class="quote">lowmem</span>”</span> indító paramétert az <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian Telepítő Paraméterek">5.3.2. szakasz - Debian Telepítő Paraméterek</a> által leírt módon. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. A helyi beállítási lehetőségek kiválasztása</h4></div></div></div>
+<p>Az esetek túlnyomó részében az első kérdések a helyi beállításokról szólnak, melyeket mind a telepítéskor, mind a telepített rendszeren használni szeretnél. A helyi beállítási lehetőségek a nyelvből, országból és területi beállításokból állnak. </p>
+<p>Innentől a választott nyelven szól majd a telepítés, feltéve, ha a különböző párbeszédek fordításai elérhetők. Ha nincs fordítás a választott nyelven, a telepítő az angolt használja. </p>
+<p>A választott földrajzi hely (általában ország) alapján ajánl majd a telepítő alap időzónát és Debian tükröt. A nyelv és ország együtt képezi majd alapját az alap helyi beállításoknak és segít a megfelelő billentyűzet kiosztás kiválasztásában. </p>
+<p>Először az elsődleges nyelvet kell kiválasztanod. A nyelvek nevei angolul (balra) és az adott nyelven (jobbra) is megjelennek; a jobb oldali nevek a nyelvnek megfelelő írással is megjelennek. A sorrend az angol nevekre épül. A lista tetején a <span class="quote">„<span class="quote">C</span>”</span> beállítás is választható egy nyelv helyett. A <span class="quote">„<span class="quote">C</span>”</span> a telepítő esetében angolt ad; ekkor a friss rendszer még nem fog helyi beállításokat támogatni, mert a <code class="classname">locales</code> nem kerül telepítésre. </p>
+<p>Ezután a földrajzi helyedet kell kiválasztanod. Ha olyan nyelvet választottál, ami több országnak is hivatalos nyelve<a href="#ftn.id2600" class="footnote" name="id2600"><sup class="footnote">[4]</sup></a>, akkor egy olyan listából kell választanod, ami csak ezeket az országokat mutatja. Ha olyan országot szeretnél választani, ami nincs e listában, válaszd a <span class="guimenuitem">Más</span> lehetőséget (ez az utolsó opció). Ekkor a földrészek listája jelenik meg, ebből egyet választva az ezen a földrészen található országok listáját kapod. </p>
+<p>Ha a nyelvhez csak egy ország társítható, akkor megjelenik egy lista az országot magába foglaló kontinens vagy régió országairól, és az az ország lesz alapértelmezettként kiválasztva. Használd a <span class="guibutton">Go Back</span> opciót, hogy más kontinens országaiból választhass. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Fontos, hogy azt az országot válaszd ki, ahol laksz, vagy ahol éppen vagy, mert ez határozza meg az időzóna beállítást a telepített rendszeren. </p></td></tr>
+</table></div>
+<p>Ha olyan nyelv-ország kombinációt választasz, amihez nincs alapértelmezett helyi beállítás, és az adott nyelvez több helyi beállítás is létezik, akkor a telepítő engedi, hogy válassz ezek közül<a href="#ftn.id2608" class="footnote" name="id2608"><sup class="footnote">[5]</sup></a>. Minden más esetben egy alap helyi beállítás kerül kiválasztásra az adott nyelv és ország alapján. </p>
+<p>Bármilyen helyi beállítás, ami az előző bekezdésben leírtak szerint lett kiválasztva, <em class="firstterm">UTF-8</em> karakter kódolást fog használni. </p>
+<p>Ha alacsony elsőbbséggel telepítesz, lehetőséged lesz további helyi beállítások kiválasztására, többek között úgynevezett <span class="quote">„<span class="quote">legacy</span>”</span> beállításra<a href="#ftn.id2614" class="footnote" name="id2614"><sup class="footnote">[6]</sup></a>. Ha így teszel, akkor a telepítő megkérdezi majd, melyik helyi beállítás legyen az alapértelmezett a telepített rendszeren. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Billentyűzet választása</h4></div></div></div>
+<p>A billentyűzetek gyakran egy nyelvre vannak szabva. Válassz egy kiosztást, mely megfelel a használt billentyűzetednek, vagy egy hasonlót, ha nincs pont a kívánt. A telepítés után szélesebb választékból lehet majd választani (akkor futtasd majd a <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> parancsot rendszergazdaként). </p>
+<p>Vidd a kijelölést a kívánt billentyűzetre és üsd le az <span class="keycap"><strong>Enter</strong></span> billentyűt. Használd a nyíl billentyűket — ezek minden nemzeti nyelvű billentyűzeten azonos helyen vannak, így függetlenek a billentyűzet beállításától. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. A Debian Telepítő ISO kép keresése</h4></div></div></div>
+<p>Ha <span class="emphasis"><em>hd-media</em></span> móddal telepítesz, akkor eljön az a pillanat, amikor meg kell találnod a Debian Telepítő ISO kép helyét és csatolnod kell azt a további telepítő fájlok elérése érdekében. Az <span class="command"><strong>iso-scan</strong></span> összetevő pontosan ezt biztosítja. </p>
+<p>Először az <span class="command"><strong>iso-scan</strong></span> automatikusan csatolja az összes blokk eszközt (pl. partíciókat és logikai köteteket), amelyeken valamilyen ismert fájlrendszer található, és sorban keresi azokat a fájlneveket, amelyek <code class="filename">.iso</code> (vagy <code class="filename">.ISO</code>) végződéssel rendelkeznek. Figyelj arra, hogy az első próbálkozás csak a gyökérkönyvtárban és az első szintű almappákban lévő fájlokat vizsgálja (vagyis megtalálja az <code class="filename">/<em class="replaceable"><code>akármi</code></em>.iso</code> és a <code class="filename">/data/<em class="replaceable"><code>akármi</code></em>.iso</code> fájlokat, de nem találja meg a <code class="filename">/data/tmp/<em class="replaceable"><code>akármi</code></em>.iso</code> fájlt). Miután talált egy iso képfájlt, az <span class="command"><strong>iso-scan</strong></span> ellenőrzi a tartalmát, hogy megállapítsa, az kép érvényes Debian iso kép-e vagy sem. Ha igen, akkor készen vagyunk, ha nem, az <span class="command"><strong>iso-scan</strong></span> keres egy másik képet. </p>
+<p>Ha e próbánál nem talált ISO képet, az <span class="command"><strong>iso-scan</strong></span> megkérdi, végezzen-e átfogóbb keresést. Ekkor már az egész fájlrendszert átnézi. </p>
+<p>Ha az <span class="command"><strong>iso-scan</strong></span> nem lel ISO képet, akár az előző rendszer indításával is ellenőrizhető, hogy a kép neve megfelelő-e (<code class="filename">.iso</code> végű), a <code class="classname">debian-installer</code> számára átnézhető fájlrendszeren van-e és nem sérült-e (igazold az ellenőrző összeget). A haladó felhasználók meg tudják ezt tenni újraindítás nélkül is a második konzolon. </p>
+<p>Vedd figyelembe, hogy az a partíció (vagy lemez), amelyen az ISO kép található, nem használható újra a telepítési folyamat alatt, mivel azt a telepítő fogja használni. Ennek elkerülésére, és ha elegendő rendszer memória áll rendelkezésre, a telepítő képes az ISO képet a RAM-ba másolni, mielőtt csatolná. Ezt a folyamatot az alacsony prioritású <code class="literal">iso-scan/copy_iso_to_ram</code> debconf kérdés vezérli (csak akkor kérdezi meg, ha a memóriaigény teljesül). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Hálózat beállítása</h4></div></div></div>
+<p>E lépéshez érve, ha a rendszer több hálózati eszközt talál, kiválasztható, melyik legyen az <span class="emphasis"><em>elsődleges</em></span> hálózati csatoló, azaz, melyet a telepítéskor használnál. A többi csatoló ekkor még nem kerül beállításra. Ezek a telepítés után is beállíthatók; lásd az <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span> kézikönyv oldalt. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatikus hálózat beállítás</h5></div></div></div>
+<p>Alapból a <code class="classname">debian-installer</code> önműködően megpróbálja beállítani a gép számára a hálózatot, amennyire csak tudja. Ha ezt nem tudja megtenni, annak számos oka lehet, például be nem dugott hálózati kábel, vagy hiányzó infrastruktúra az automatikus beállításhoz. Hiba esetén részleteket a negyedik konzolon levő hibaüzenetekben találsz. Minden esetben megkérdi, akarod-e újrapróbálni vagy kézzel beállítani. Időnként az automatikus beállításhoz használt hálózati szolgáltatások lassan válaszolnak, így ha tudod, hogy ehhez minden működik, próbáld újra. Ha továbbra is sikertelen az automatikus beállítás, akkor válaszd a kézi beállítást. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Kézi hálózat beállítás</h5></div></div></div>
+<p>A kézi hálózat beállítás feltesz pár kérdést a hálózatról, ezek főleg az <code class="computeroutput">IP cím</code>, <code class="computeroutput">Hálózati maszk</code>, <code class="computeroutput">Átjáró</code>, <code class="computeroutput">Név-kiszolgáló címek</code> és egy <code class="computeroutput">Gépnév</code>. Továbbá dróttalan hálózati csatoló esetén a <code class="computeroutput">Drótnélküli ESSID</code> (<span class="quote">„<span class="quote">drótnélküli hálózat név</span>”</span>) és egy <code class="computeroutput">WEP kulcs</code> vagy <code class="computeroutput">WPA/WPA2 jelmondat</code> kérdés is szerepel. Válaszolj a <a class="xref" href="ch03s03.html" title="3.3. A szükséges információk">3.3. szakasz - A szükséges információk</a> szerint. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Néhány technikai részlet, amit hasznosnak találhatsz: a program feltételezi, hogy a hálózat IP címe a rendszer IP címe és a hálózati maszk közti bit-szintű ÉS művelet (AND). Az alapértelmezett broadcast cím a rendszer IP címe és a hálózati maszk bit-szintű negáltja közti bit-szintű VAGY művelet (OR). Az átjárót is megpróbálja kitalálni. Ha e beállítási lehetőségek valamelyikére nem tudod a választ, használd a rendszer által feltételezett alapértékeket — ha kell, telepítés után is módosíthatók a <code class="filename">/etc/network/interfaces</code> szerkesztésével. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 és IPv6</h5></div></div></div>
+<p>A Debian GNU/Linux 7.0-tól (<span class="quote">„<span class="quote">Wheezy</span>”</span>) kezdve a <code class="classname">debian-installer</code> támogatja az IPv6-ot is a <span class="quote">„<span class="quote">klasszikus</span>”</span> IPv4 mellett. Az IPv4 és IPv6 minden kombinációja támogatott (csak IPv4, csak IPv6, és kettős protokollcsomag(dual-stack) beállítás). </p>
+<p>Az IPv4 automatikus beállítása DHCP-n (Dinamikus Állomáskonfiguráló Protokoll - Dynamic Host Configuration Protocol) keresztül történik. Az IPv6 automatikus beállítása támogatja az állapot nélküli automatikus beállítást NDP (Szomszéd Felderítő Protokoll, ezen belül Rekurzív DNS Kiszolgáló (RDNSS) hozzárendelés) használatával, állapottal rendelkező automatikus beállítást DHCPv6-tal, és vegyes állapot nélküli/állapottal rendelkező automatikus beállítást (cím beállítás NDP-vel, további beállítások DHCPv6-tal). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Felhasználók és jelszavaik felvétele</h3></div></div></div>
+<p>Közvetlenül az óra beállítása előtt a telepítő lehetőséget ad a <span class="quote">„<span class="quote">root</span>”</span> fiók és/vagy az első felhasználói fiók létrehozására. További felhasználói fiókokat a telepítés befejezése után is létrehozhatsz. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. A root jelszó beállítása</h4></div></div></div>
+<p>A <span class="emphasis"><em>root</em></span> fiók szokásos másik neve <span class="emphasis"><em>super-user</em></span>; e bejelentkezés átlépi a rendszer alapvető biztonsági védelmét. A root hozzáférést csak a rendszer adminisztrációjára szabad használni és még ekkor is csak a lehető legrövidebb ideig. </p>
+<p>A létrehozott jelszavak legalább 6 karakterből álljanak és tartalmazzanak nagy- és kisbetűket és központozási karaktereket is. Kiemelten figyelj a root jelszóra, mivel ez egy rendkívül erős hozzáférés, itt még erősebb legyen a jelszó. Kerüld a szótári szavakat vagy kitalálható személyes adatok használatát. </p>
+<p>Ha bárki bármikor azt állítja, hogy a root jelszavadra van szüksége, légy szélsőségesen bizalmatlan. Normális esetben soha ne add ki a root jelszót, kivéve, ha egy gépet másokkal felügyelsz. </p>
+<p>Ha itt nem adsz meg jelszót a <span class="quote">„<span class="quote">root</span>”</span> felhasználónak, akkor ez a fiók le lesz tiltva, de a <span class="command"><strong>sudo</strong></span> csomag később telepítésre kerül, hogy lehetővé tegye az adminisztratív feladatok végrehajtását az új rendszeren. Alapértelmezés szerint az elsőként létrehozott felhasználó jogosult lesz a <span class="command"><strong>sudo</strong></span> parancs használatára, hogy root legyen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Egy szokásos felhasználó létrehozása</h4></div></div></div>
+<p>A rendszer kér egy normál felhasználó létrehozására. E hozzáférés lesz valószínűleg az elsődleges személyes bejelentkezésed. <span class="emphasis"><em>Tilos</em></span> a root fiók használata a napi munkára vagy személyes bejelentkezésre. </p>
+<p>Miért tiltott ez? Nos, az egyik ok a root előjogok használatának kerülésére az, hogy nagyon könnyű javíthatatlan hibát okozni root felhasználóként. Egy másik fontos ok, hogy <span class="emphasis"><em>trójai</em></span> programok futtatásába futhatsz — ez egy program, mely a super-user jogod adta erővel hátad mögött lerombolja a rendszer biztonságát. Minden jó könyv a unixos rendszer-adminisztrációról részletesen taglalja e témát — fontold meg, hogy elolvasol egyet, ha ez új neked. </p>
+<p>Először a felhasználó teljes nevét kell megadni. Ezután a felhasználó fiókjának nevét; általában egy saját névből vett ékezet nélküli szó vagy hasonló megfelel és ez lesz az alap. Végül meg kell adni az e felhasználói fiókhoz tartozó jelszót. </p>
+<p>Ha a telepítés után bármikor létrehoznál egy fiókot, használd az <span class="command"><strong>adduser</strong></span> parancsot. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Óra és Időzóna beállítása</h3></div></div></div>
+<p>A telepítő először megpróbál csatlakozni egy időszerverhez az interneten (az <em class="firstterm">NTP</em> protokoll segítségével), hogy pontosan beállítsa a rendszeridőt. Ha ez nem sikerül, akkor a telepítő azt az időpontot és dátumot tekinti helyesnek, amit a rendszeróra mutatott a telepítőrendszer indításakor. A telepítés során nincs lehetőség kézzel beállítani a rendszeridőt. </p>
+<p>A telepítő folyamat elején választott helytől függően az ennek megfelelő időzónák listája jelenik meg. Ha az adott helyhez csak egy időzóna tartozik, és alap telepítést végzel, a rendszer nem kérdez semmit és ezt az időzónát feltételezi. </p>
+<p>Szakértő módban, vagy ha közepes elsőbbséggel telepítesz, lehetőséged lesz továbbá <span class="quote">„<span class="quote">Coordinated Universal Time</span>”</span> (UTC) beállítására időzónának. </p>
+<p>Ha valamilyen okból olyan időzónát szeretnél beállítani a telepített rendszeren, ami <span class="emphasis"><em>nem</em></span> egyezik a kiválasztott hellyel, két lehetőség van. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>A legegyszerűbb, hogy a telepítés végezte és újraindítás után beállítod az eltérő időzónát. A parancs a következő: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternatívaként a telepítés legelején is beállítható az időzóna, mégpedig a <strong class="userinput"><code>time/zone=<em class="replaceable"><code>érték</code></em></code></strong> megadásával a telepítőrendszer indításakor. Az érték természetesen legyen valós időzóna, például <strong class="userinput"><code>Europe/London</code></strong> vagy <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Automatizált telepítések esetén az időzóna tetszőleges értékre beállítható preseeding (előkonfigurációs fájl) segítségével. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Particionálás és csatolási pont választás</h3></div></div></div>
+<p>Most, a hardver érzékelés utolsó futása után, a <code class="classname">debian-installer</code> teljes erejében rendelkezésre áll a felhasználó igényeire szabva és kész az igazi munkára. Ahogy a szakasz címe jelzi, a most következő pár összetevő fő feladata a lemezek particionálása, a megfelelő fájlrendszerek létrehozása, csatolási pontok hozzárendelése és opcionálisan további hasonló lehetőségek, mint például RAID, LVM, vagy titkosított eszközök beállítása. </p>
+<p>Ha bizonytalan vagy a particionálással kapcsolatban, vagy több részletre vagy kíváncsi, lásd a <a class="xref" href="apc.html" title="C. függelék - Particionálás a Debian számára">C. függelék - <i>Particionálás a Debian számára</i></a> részt. </p>
+<p>Lehetőség van az automata particionálásra akár az egész meghajtón, akár a meghajtón lévő szabad területen. Ezt <span class="quote">„<span class="quote">irányított</span>”</span> particionálásnak is hívjuk. Ha a particionálást magad végeznéd, válaszd a <span class="guimenuitem">Kézi</span> pontot a menüből. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Támogatott particionálási lehetőségek</h4></div></div></div>
+<p>A <code class="classname">debian-installer</code> által használt particionáló meglehetősen sokszínű. Számos különféle particionáló séma létrehozását engedi, különböző partíciós táblákkal, fájlrendszerekkel és haladó blokk eszközökkel. </p>
+<p>Hogy pontosan mely lehetőségek érhetők el, az főleg az architektúrán, de sok máson is múlik. Például korlátozott belső memóriájú rendszereken néhány funkció esetleg nem érhető el. Az alapértelmezett beállítások is eltérhetnek. Így például az alapból használt partíciós tábla típus más lehet nagy kapacitású merevlemezeknél, mint kisebbeknél. Némely lehetőség csak közepes vagy alacsony debconf elsőbbségnél változtatható; magasabb elsőbbségnél értelmes alapértékek kerülnek beállításra. </p>
+<p>A telepítő különböző haladó particionáló módokat és tárolóeszközöket is támogat, amiket gyakran együtt is lehet használni. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logikai Kötet Kezelő (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Szoftveres RAID</em></span>
+  </p>
+<p>Támogatott RAID szintek: 0, 1, 4, 5, 6 és 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Titkosítás</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Többutas (Multipath)</em></span> (kísérleti) </p>
+<p>Lásd a <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">Wiki oldalunkat</a> információért. Többutas (multipath) támogatás jelenleg csak akkor érhető el, ha a telepítő indításakor engedélyezve lett. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>A következő fájlrendszerek támogatottak. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>A legtöbb esetben az alapértelmezetten kiválasztott fájlrendszer az ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (nem minden architektúrán érhető el) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (nem minden architektúrán érhető el) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (választható; nem minden architektúrán érhető el) </p>
+<p>Alapból a Reiser fájlrendszer már nem támogatott. Ha a telepítő közepes, vagy alacsony debconf elsőbbséggel fut, a <code class="classname">partman-reiserfs</code> összetevő kiválasztásával engedélyezhető. A fájlrendszernek csak a hármas verziója támogatott. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>A már létező partíciók felismerésre kerülnek, és csatolópontokat lehet hozzájuk rendelni. Nem lehetséges új qnx4 partíciókat létrehozni. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (csak olvasható) </p>
+<p>A létező NTFS partíciók átméretezhetők, és csatolópontok rendelhetők hozzájuk. Nem lehetséges új NTFS partíciókat létrehozni. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>A partícionáló elfogadja a tízes hatványú (1 MB = 1000 kB = 1000000 B), valamint a kettes hatványú (1 MiB = 1024 kiB = 1048576 B) mértékegységeket is. Az egységprefixek támogatottak egészen az EB/EiB (exabyte/exbibyte) szintig. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Irányított Particionálás</h4></div></div></div>
+<p>Irányított particionálás esetén 3 lehetőség van: partíciók közvetlen létrehozása a lemezen (klasszikus mód), létrehozás Logikai kötet kezelő (LVM) használatával vagy titkosított LVM használata<a href="#ftn.id2794" class="footnote" name="id2794"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nem minden architektúrán lehetséges (titkosított) LVM használata. </p></td></tr>
+</table></div>
+<p>LVM vagy titkosított LVM használatakor a telepítő a legtöbb partíciót egy nagy partícióban hozza létre; ennek előnye, hogy így könnyen átméretezhetők. Titkosított LVM esetén a nagy partíció csak egy különleges kulcs kifejezéssel lesz olvasható, mely az összes (személyes) adat különleges biztonságát nyújtja. </p>
+<p>Titkosított LVM használatakor a telepítő véletlen adatok írásával automatikusan törli a lemezt. Ez tovább növeli a biztonságot (így lehetetlen lesz megmondani, a lemez mely része használt és a korábbi telepítések nyomait is törli), de a lemez méretétől függően eltart egy ideig. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Irányított particionálás esetén LVM vagy titkosított LVM használatával, mindenképp módosul a partíciós tábla, amit ki kell írni a lemezre az LVM beállításakor. Ez tényleg törli az adott merevlemez összes adatát, és visszavonhatatlan. Természetesen a telepítő e módosítások megerősítését kéri, mielőtt lemezre írná őket. </p></td></tr>
+</table></div>
+<p>Irányított particionálásnál<span class="phrase"> (akár klasszikus akár (titkosított) LVM)</span> egy egész lemezre, először ki kell választani a használni kívánt lemezt. Ellenőrizd, hogy a gép minden lemezét látod, több lemez esetén válaszd ki a kívántat. Felsorolásuk sorrendje eltérhet attól, amit megszoktál. A mutatott méretek is segíthetnek azonosítani őket. </p>
+<p>A kijelölt lemez minden adata a legutolsó kérdés után elvész majd, de a telepítő minden esetben kéri a változások megerősítését lemezre írásuk előtt. <span class="phrase"> Klasszikus módú particionáláskor a módosítások e művelet legvégéig visszavonhatók; (titkosított) LVM használatakor ez nem lehetséges. </span> </p>
+<p>Ezután ki tudsz választani a lenti táblázatban felsorolt sémák közül. Mindegyik sémának megvan a maga előnye és hátránya, amelyek közül néhányat a <a class="xref" href="apc.html" title="C. függelék - Particionálás a Debian számára">C. függelék - <i>Particionálás a Debian számára</i></a> rész tárgyal. Ha nem vagy biztos a dolgodban, válaszd az elsőt. Ne feledd, hogy az irányított particionálásnak bizonyos minimális mennyiségű szabad területre van szüksége a működéshez. Ha nem adsz neki legalább kb. 3GB helyet (a választott sémától függően), az irányított particionálás sikertelen lesz. Továbbá, ha kicsi a lemez, valószínűleg nem fogod látni az összes alább említett sémát. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Particionáló séma</th>
+<th>Minimum hely</th>
+<th>Létrehozott partíciók</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Minden fájl egy partíción</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, csere</td>
+</tr>
+<tr>
+<td>Önálló /home partíció</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, csere </td>
+</tr>
+<tr>
+<td>Önálló /home, /var és /tmp partíció</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, csere </td>
+</tr>
+<tr>
+<td>Külön /srv és /var partíciók; swap 1GB-ra korlátozva (szerverhez)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Séma kifejezetten kis lemezekhez</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, csere</td>
+</tr>
+</tbody>
+</table></div>
+<p>Irányított particionáláskor (titkosított) LVM használatával, a telepítő önálló <code class="filename">/boot</code> partíciót is készít. A többi, a csere partícióval együtt, az LVM partíción belül jön létre. </p>
+<p>Ha EFI módban indítottad a rendszert, akkor az irányított partícióbeállításban lesz egy további partíció, amely FAT32 indítható fájlrendszerként lesz formázva az EFI boot loader számára. Ezt a partíciót EFI rendszerpartíciónak (ESP) nevezik. A formázási menüben van egy további menüpont is, amivel manuálisan beállítható egy partíció ESP-ként. </p>
+<p>Egy séma választása után, a következő képernyő bemutatja az új partíciós táblát, benne a leendő formázási és csatolási információkat. </p>
+<p>A partíciók listája ilyesmi: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 elsődleges   16.4 MB  B f ext2       /boot
+        #2 elsődleges  551.0 MB      swap       csere
+        #3 elsődleges    5.8 GB      ntfs
+           pri/log    8.2 MB      SZABAD HELY
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 elsődleges   15.9 MB      ext3
+        #2 elsődleges  996.0 MB      fat16
+        #3 elsődleges    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logikai       1.0 GB    f ext3       /var
+        #7 logikai     498.8 MB      ext3
+</pre></div>
+<p> E példa 2 merevlemezt mutat eltérő partíciókra osztva; az 1. lemezen van egy kis szabad hely. Egy partíció sor részei: partíció sorszám, típus, méret, opcionális kapcsolók, fájlrendszer és csatolási pont (ha van). Megjegyzés: pontosan e beállítás nem jöhet létre irányított particionálással, de egy kézi particionálással létrehozható lehetséges változatot mutat. </p>
+<p>Itt zárul az irányított particionálás. Ha elégedett vagy az ajánlott partíciós táblával, válaszd a <span class="guimenuitem">Particionálás lezárása és a változások lemezre írása</span> pontot a menüből az új partíciós tábla rögzítéséhez (leírva e szakasz végén). Módosításhoz válaszd a <span class="guimenuitem">Partíciók módosításainak visszavonása</span> pontot és futtasd újra a particionálót vagy módosítsd a javasolt változtatásokat az alább írt kézi particionálás szerint. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Kézi Particionálás</h4></div></div></div>
+<p>A fentihez hasonló képernyő jelenik meg kézi particionáláskor, de ekkor a létező partíciós táblát mutatja csatolási pontok nélkül. A partíciós tábla kézi beállítását és a partíciók Debian rendszer általi használatát tárgyaljuk e szakasz további részeiben. </p>
+<p>Partíciókat vagy szabad helyet nem tartalmazó lemeznél új partíciós tábla létrehozása is kiválasztható (ez szükséges lehet, mert adott esetben csak így hozhatók létre új partíciók). Ekkor egy <span class="quote">„<span class="quote">SZABAD HELY</span>”</span> sor jelenik meg a választott lemezen. </p>
+<p>Szabad hely választásakor új partíció létrehozására nyílik mód. Meg kell adni méretüket, típusukat (elsődleges vagy logikai), és az elhelyezkedésüket (az üres hely elején, vagy végén). Ezután egy áttekintést kapsz az új partícióról. A fő beállítás a <span class="guimenuitem">Használat módja:</span>, ami megadja, hogy a partíció tartalmaz-e majd fájlrendszert, vagy cserehelyként lesz használva,<span class="phrase"> szoftver RAID, LVM, titkosított fájlrendszer lesz-e rajta,</span> vagy mellőzve lesz. Más lehetőségek, például csatolási pont, csatolási opciók és indító zászló; ezek a partíció használatának módjától függően jelennek meg. Az elő-választott alapok tetszőlegesen módosíthatók. Például a <span class="guimenuitem">Használat módja:</span> kiválasztásával eltérő fájlrendszer is választható e partícióhoz ideértve a csere,<span class="phrase"> szoftver RAID, LVM használatát</span>, vagy mellőzést. Ha elfogadod a beállításokat, válaszd a <span class="guimenuitem">Partíció beállítása kész</span> pontot és visszatérsz a <span class="command"><strong>partman</strong></span> fő képernyőjéhez. </p>
+<p>Egy partíció módosításához egyszerűen válaszd ki azt, ez a partíció beállító menübe visz. Ez azonos az új partíció létrehozásakor kapott menüvel, így azonos lehetőségek állíthatók be. Egy csodálatos lehetőség, melyre talán elsőre sokan nem is gondolnak, hogy a partíciók át is méretezhetők a méretüket író elem kiválasztásával. Ez sok fájlrendszeren működhet, a at16, fat32, ext2, ext3 és csere-partíciókon biztosan működik. E menüvel törölhető is egy-egy partíció. </p>
+<p>Legalább 2 partíciót hozz létre: az egyik a <span class="emphasis"><em>gyökér</em></span> fájlrendszer (csatolási pontja <code class="filename">/</code>) és egy a <span class="emphasis"><em>csere</em></span>. A <span class="command"><strong>partman</strong></span> figyelmeztet a gyökér fájlrendszer csatolására, és nem enged tovább amíg ezt meg nem teszed. </p>
+<p>Ha EFI módban indítasz, de elfelejtesz kiválasztani és formázni egy EFI rendszerpartíciót, a <span class="command"><strong>partman</strong></span> észreveszi ezt, és nem engedi, hogy folytasd, amíg nem rendelsz hozzá egyet. </p>
+<p>A <span class="command"><strong>partman</strong></span> képességei egyes telepítő modulokkal bővülnek, de ez architektúra-függő. Ha nem látod az összes várt lehetőséget, ellenőrizd, be van-e töltve minden szükséges modul (például <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> vagy <code class="filename">partman-lvm</code>). </p>
+<p>Ha megfelel a particionálás, válaszd a <span class="guimenuitem">Particionálás lezárása és változások lemezre írása</span> pontot a particionáló menüből. Ez összefoglalja a lemezeken végzett módosításokat és kéri a fájlrendszerek kért módon történő létrehozásának megerősítését. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Több-lemezes eszköz beállítása (szoftver RAID)</h4></div></div></div>
+<p>Több merevlemez esetén<a href="#ftn.id2888" class="footnote" name="id2888"><sup class="footnote">[8]</sup></a> az <span class="command"><strong>partman-md</strong></span> segítségével a meghajtók nagyobb teljesítményre és/vagy az adatok nagyobb biztonságára is beállíthatók. Ennek neve <em class="firstterm">Több-lemezes eszköz</em> (vagy legnépszerűbb változata után <em class="firstterm">szoftver RAID</em>). </p>
+<p>Az MD alapvetően eltérő lemezeken lévő partíciók egy <span class="emphasis"><em>logikai</em></span> eszközzé való összefogása. Ez az eszköz egy sima partícióként használható (például a <span class="command"><strong>partman</strong></span> programban formázható, csatolható, és így tovább). </p>
+<p>Az előny a létrehozott MD eszköz típusától függ. A jelenleg támogatottak: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Főleg teljesítményt növel. Az adatokat <em class="firstterm">sáv</em> (stripes) részekre osztja és egyenlően elosztja a tömbben lévő egyes lemezeken. Ez megnöveli az írás/olvasás műveletek sebességét, de ha egy lemez tönkremegy, <span class="emphasis"><em>minden</em></span> elvész (az adatok egy része még mindig a jó lemezen van, más része a tönkrement lemezen <span class="emphasis"><em>volt</em></span>). </p>
+<p> Tipikus felhasználás a mozgókép szerkesztés. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Használható az elsődlegesen megbízhatósági célú telepítéseknél. Több (általában 2) egyenlő méretű partícióból áll, ahol minden partíció ugyanazt tartalmazza. Ez lényegében 3 dolgot takar. 1: Ha egy lemez tönkremegy, az adatok a többi lemezen megvannak. 2: Az elérhető kapacitás csak egy része használható (a legkisebb partíció mérete a RAID tömbben). 3: A fájl olvasások a lemezek közt elosztottak, ami megnöveli a teljesítményt olyan kiszolgálón, például tipikus fájl-kiszolgálón, mely lényegesen többször olvassa, mint írja a lemezeket. </p>
+<p> Lehet tartalék lemez is a tömbben, mely átveszi egy másik helyét hiba esetén. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> A sebesség, megbízhatóság és redundáns adatok közti jó egyezség. Az adatokat sávokra (stripes) vágja és egyenlően elosztja 1 kivételével minden eszközön (RAID0 tömbhöz hasonló). A RAID0 tömbbel ellentétben a RAID5 <em class="firstterm">paritás</em> adatot is számol, melyet a maradék lemezre ír. A paritás lemez nem mindig ugyanaz (mint a RAID4 esetén), hanem periodikusan változik, így a paritás adat egyenlően kerül minden lemezre. Egy lemez kiesésekor a hiányzó adatok maradék adatból és paritásból kerülnek kiszámolásra. A RAID5 legalább 3 aktív partíciót igényel. Itt is lehet tartalék lemez. </p>
+<p> Amint látható, a RAID5 a RAID1 tömbhöz hasonlóan megbízható és kevésbé redundáns. Viszont kicsit lassabb íráskor, mint a RAID0 a paritás számolása miatt. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Hasonló a RAID5-höz, de ez 2 paritás eszközt használ. </p>
+<p> A RAID6 tömb akár két lemez meghibásodást is túlél. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> A RAID10 egyesíti a sávozást (mint a RAID0) és a tükrözést (mint a RAID1). A bejövő adatokból <em class="replaceable"><code>n</code></em> darab másolatot készít, amiket eloszt a partíciók között úgy, hogy ugyanazon adatnak két másolata sosincs egyazon lemezen. Az <em class="replaceable"><code>n</code></em> alapértéke 2, de szakértő módban más értékre is állítható. A használt partíciók számának legalább <em class="replaceable"><code>n</code></em>-nek kell lennie. A RAID10 különböző módszereket használ a másolatok szétosztására. Alapból közeli másolatokat (near copy) használ. Ilyenkor minden másolat azonos eltolással (offset) kezdődik minden lemezen. Távoli másolatok esetén különböző eltolással kezdődnek a másolatok a különböző lemezeken. Az offset másolatok pedig az egyes sávokat másolják, nem pedig a másolatokat. </p>
+<p> A RAID10-zel megbízhatóság és redundancia érhető el a paritás számolás hátránya nélkül. </p>
+</dd>
+</dl></div>
+<p> Összefoglalva: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Típus</th>
+<th>Legkisebb eszköz-szám</th>
+<th>Tartalék eszköz</th>
+<th>Túlél lemez hibát?</th>
+<th>Elérhető hely</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nincs</td>
+<td>nincs</td>
+<td>A legkisebb partíció mérete szorozva a RAID tömbben lévő eszközök számával</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>választható</td>
+<td>igen</td>
+<td>A RAID tömbben lévő legkisebb partíció mérete</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>választható</td>
+<td>igen</td>
+<td>A legkisebb partíció mérete szorozva ezzel: (a RAID tömbben lévő eszközök száma mínusz egy) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>választható</td>
+<td>igen</td>
+<td>A legkisebb partíció mérete szorozva ezzel: (a RAID tömbben lévő eszközök száma mínusz kettő) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>választható</td>
+<td>igen</td>
+<td>Az összes partíció száma osztva a töredék másolatok (chunk copy) számával (alapból kettő) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Teljes leírás a szoftver RAID tömbről itt: <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Szoftver RAID HOGYAN</a>. </p>
+<p>Egy MD eszköz létrehozásához a kívánt partíciókat ki kell jelölni. (A <span class="command"><strong>partman</strong></span> <span class="guimenu">Partíció beállítások</span>) menüben válaszd a <span class="guimenu">Használat módja:</span> → <span class="guimenuitem">RAID fizikai kötet</span> pontot.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Győződj meg róla, hogy a rendszer elindítható a tervezett partíciós sémával. Általában szükséges külön fájlrendszert létrehozni a(z) <code class="filename">/boot</code> számára, ha a gyökér (<code class="filename">/</code>) fájlrendszerhez RAID-et használsz. A legtöbb boot loader <span class="phrase">(beleértve a grub-ot is)</span> támogatja a tükrözött (nem csíkozott!) RAID1-et, így például a <code class="filename">/</code> számára RAID5 és a <code class="filename">/boot</code> számára RAID1 használata egy lehetőség lehet. </p></td></tr>
+</table></div>
+<p>Most jön a <span class="guimenuitem">Szoftver RAID beállítása</span> a fő <span class="command"><strong>partman</strong></span> menüből. (E menü csak legalább egy partíció <span class="guimenuitem">Fizikai RAID kötet</span> kijelölése után jelenik meg.) Az <span class="command"><strong>partman-md</strong></span> első képernyőjén egyszerűen válaszd az <span class="guimenuitem">MD eszköz létrehozása</span> pontot. Megjelenik a támogatott MD eszközök listája, melyből egy választható (például RAID1). A következők a választott MD típustól függenek. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>A RAID0 egyszerű — megjelenik a RAID számára elérhető partíciók listája, és az egyetlen feladat a leendő MD-t alkotó partíciók kijelölése. </p></li>
+<li class="listitem"><p>A RAID1 kicsit trükkösebb. Először meg kell adni a leendő MD-t adó aktív és tartalék eszközök számát. Ezután ki kell jelölni a RAID számára elérhető partíciók listájából az aktív és tartalék partíciókat. A kijelölt partíciók számának egyeznie kell az előbb megadott számmal. Ne aggódj! A <code class="classname">debian-installer</code> figyelmeztet hiba esetén, és nem enged továbblépni, amíg ki nem javítod. </p></li>
+<li class="listitem"><p>A RAID5 beállítása hasonló, mint a RAID1-é, de legalább <span class="emphasis"><em>három</em></span> aktív partíciót kell megadni. </p></li>
+<li class="listitem"><p>A RAID6 beállítása hasonló, mint a RAID1-é, de legalább <span class="emphasis"><em>négy</em></span> aktív partíciót kell megadni. </p></li>
+<li class="listitem"><p>A RAID10 beállítása is hasonló, mint a RAID1-é, kivéve szakértő módban. Szakértő módban a <code class="classname">debian-installer</code> bekéri a felépítést. A felépítésnek két része van. Az első rész a felépítés típusa. Ez vagy <code class="literal">n</code> (közeli másolatok (near copies)), <code class="literal">f</code> (távoli másolatok (far copies)), vagy <code class="literal">o</code> (offset copies). A második rész a másolatok száma. Legalább ennyi aktív eszköznek kell lennie, hogy minden másolat külön lemezre kerülhessen. </p></li>
+</ul></div>
+<p>Eltérő MD-k is lehetnek egyszerre. Például 3 darab 200 GB méretű merevlemez esetén, melyek mindegyike 2 darab 100 GB méretű partíciót tartalmaz, mindhárom lemez első partíciója RAID0 tömbbe köthető (gyors, 300 GB méretű mozgókép szerkesztő partíció) a többi (2 aktív és 1 tartalék) RAID1 tömbre használható (igen megbízható 100 GB méretű <code class="filename">/home</code> partíció). </p>
+<p>Az MD eszközök beállítása után a <span class="guimenuitem">Befejezés:</span> <span class="command"><strong>partman-md</strong></span> visszatér a <span class="command"><strong>partman</strong></span> programra fájlrendszerek létrehozására az új MD eszközökön és a szokásos attribútumok, például csatolási pontok társítására. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Logikai Kötet Kezelő (LVM) beállítása</h4></div></div></div>
+<p>Ha rendszer-adminisztrátorként vagy <span class="quote">„<span class="quote">haladó</span>”</span> felhasználóként dolgozol gépekkel, biztos láttál már olyan helyzetet, ahol egy partíció a lemezen (általában a legfontosabb) kifogyott, míg egy másik alig volt használatban és a helyzetet átmozgatással, jelképes láncok (symlinking) létrehozásával és így tovább kellett kezelni. </p>
+<p>Az ilyen helyzet elkerülésére használható a Logikai Kötet Kezelő (LVM). Ezzel a partíciók (<em class="firstterm">fizikai kötetek</em> az LVM nyelven) virtuális lemezekké (<em class="firstterm">kötet-csoport</em>) köthetők, melyek virtuális partíciókra oszthatók (<em class="firstterm">logikai kötetek</em>). A logikai kötetek (és természetesen kötet csoportok) akár több fizikai lemez közt is átnyúlhatnak. </p>
+<p>Így, ha például kiderül, hogy több hely kell egy régi 160 GB méretű <code class="filename">/home</code> partícióhoz, egyszerűen hozzáadhatsz egy új 300 GB méretű lemezt a géphez, beteheted egy létező kötet-csoportba majd átméretezheted a <code class="filename">/home</code> partíciót tartalmazó logikai kötetet és íme — a felhasználóknak ismét van helye a megújult, immár 460 GB méretű partíción. E példa természetesen egy kissé túlegyszerűsített. Ha még nem olvastad, lásd az <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOGYAN</a> leírást. </p>
+<p>A <code class="classname">debian-installer</code> LVM beállítása egyszerű és a <span class="command"><strong>partman</strong></span> teljes egészében támogatja. Először ki kell jelölni az LVM számára fizikai kötetként használt egy vagy több partíciót. Ez a <span class="guimenu">Partíció beállítások</span> menüben tehető, itt válaszd a <span class="guimenu">Használat módja:</span> → <span class="guimenuitem">LVM fizikai kötet</span> pontot. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>Figyelj: az új LVM beállítás törölni fog minden adatot az összes olyan partíción, amely LVM típusú kóddal van megjelölve. Szóval, ha már van LVM-ed valamelyik lemezen, és szeretnéd a Debiant telepíteni arra a gépre, a régi (már meglévő) LVM el fog veszni! Ugyanez vonatkozik azokra a partíciókra is, amelyek (bármilyen okból) félrevezetően LVM típusú kóddal vannak megjelölve, de valami mást tartalmaznak (például egy titkosított kötetet). El kell távolítanod az ilyen lemezeket a rendszerből, mielőtt új LVM beállítást hajtasz végre! </p></td></tr>
+</table></div>
+<p>A fő <span class="command"><strong>partman</strong></span> képernyőre visszatérve megjelenik egy új, <span class="guimenuitem">Logikai kötet-kezelő beállítása</span> lehetőség. Ezt kiválasztva, először a partíciós tábla eddigi módosításait kell megerősíteni (ha voltak), majd megjelenik az LVM beállító menü. A menü felett az LVM beállítás összefoglalója látható. A menü helyzet-érzékeny és csak a lehetséges műveleteket mutatja. A lehetséges műveletek: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Beállítás részleteinek kiírása</span>: mutatja az LVM eszköz struktúrát, a logikai kötetek neveit, méreteit és egyebeket </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Kötet csoport létrehozása</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logikai kötet létrehozása</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Kötet csoport törlése</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logikai kötet törlése</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Kötet csoport bővítése</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Kötet csoport csökkentése</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Vége</span>: visszatér a fő <span class="command"><strong>partman</strong></span> képernyőhöz </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Használd e menüt először egy kötet csoport, majd azon belül a logikai kötetek létrehozására. </p>
+<p>A fő <span class="command"><strong>partman</strong></span> képernyőhöz való visszatérés után, minden létrehozott logikai kötet megjelenik hasonlóan a rendes partíciókhoz (és úgy is kezelhetők). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Titkosított kötetek beállítása</h4></div></div></div>
+<p>A <code class="classname">debian-installer</code> lehetővé teszi titkosított kötetek beállítását. Az ilyen partíciókra írt fájlok mentése az eszközre azonnal titkosított formában történik. A titkosított adatokhoz való hozzáférés csak a titkosított partíció létrehozásakor használt <em class="firstterm">jelmondat</em> megadásával lehetséges. E képesség jól használható az érzékeny adatok védelmére a laptop vagy merevlemez ellopásakor. Bár a tolvaj fizikai hozzáférést szerez a merevlemezhez, a helyes jelmondat ismerete nélkül, a merevlemezen lévő adatok véletlen karaktereknek tűnnek. </p>
+<p>A két legfontosabb partíció, amit érdemes titkosítani: a home partíció, ahol a személyes adataid vannak, és a swap partíció, ahol az érzékeny adatok ideiglenesen tárolódhatnak a működés során. Természetesen semmi sem akadályoz meg abban, hogy más partíciókat is titkosíts, ha az számodra fontos. Például a <code class="filename">/var</code> partíciót, ahol adatbázis-, levelező- vagy nyomtatószerverek tárolják az adataikat vagy a <code class="filename">/tmp</code> könyvtárat, amit különféle programok használnak ideiglenes fájlok tárolására – ezek akár érzékeny információkat is tartalmazhatnak. Általában az egyetlen kivétel a <code class="filename">/boot</code> partíció, amit nem lehet titkosítani, mert történelmileg nem volt mód a kernelt titkosított partícióról betölteni. (A GRUB már képes erre, de a(z) <code class="classname">debian-installer</code> jelenleg nem támogatja natívan a titkosított <code class="filename">/boot</code>-ot. Ezért a beállítást egy <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">külön dokumentum</a> tárgyalja.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>A titkosított partíciók teljesítménye kisebb, mert az adatok titkosítását minden olvasáskor vagy íráskor végre kell hajtani vagy fel kell oldani. A csökkenés a CPU sebességén, a választott titkosítási módon és a kulcs hosszán múlik. </p></td></tr>
+</table></div>
+<p>Titkosítás használatához létre kell hozni egy új partíciót szabad hely választással a fő particionáló menüben. A másik lehetőség létező partíció választása (például sima partíció, LVM logikai kötet vagy RAID kötet). A <span class="guimenu">Partíció beállítás</span> menüben válaszd a <span class="guimenuitem">fizikai kötet titkosításhoz</span> pontot a <span class="guimenu">Használat módja:</span> opciónál. A menü ekkor módosul és különböző titkosító lehetőségeket ad a partícióhoz. </p>
+<p>A(z) <code class="classname">debian-installer</code> által támogatott titkosítási módszer a <em class="firstterm">dm-crypt</em> (ami az újabb Linux kernelekben található, és képes LVM fizikai köteteket kezelni). </p>
+<p>Nézzük meg a lehetőségeket, amikor a <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong> segítségével választod a titkosítást. Mint mindig: ha bizonytalan vagy, használd az alapértelmezett beállításokat, mert ezeket gondosan, biztonsági szempontokat figyelembe véve választották ki. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Titkosítás: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>E lehetőséggel választható a titkosító algoritmus (<em class="firstterm">cipher</em>), mely a partíción lévő adatok titkosítására lesz használva. A <code class="classname">debian-installer</code> jelenleg az alábbi blokk titkosításokat támogatja: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em>, és <em class="firstterm">twofish</em>. Túlmutat e dokumentum célján ezen algoritmusok minőségének megvitatása, de segítheti a döntést annak ismerete, hogy 2000-ben az American National Institute of Standards and Technology az <span class="emphasis"><em>AES</em></span>-t választotta, mint szabvány titkosító algoritmus érzékeny adatok védelmére a XXI. században. </p></dd>
+<dt><span class="term">Kulcs méret: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Itt lehet megadni a titkosító kulcs hosszát. A nagyobb kulcs növeli a titkosítás erejét. Másrészt a kulcs hosszának növelése negatívan hat a teljesítményre. Az elérhető kulcs méretek a titkosítástól függenek. </p></dd>
+<dt><span class="term">IV algoritmus: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>Az <em class="firstterm">Inicializáló Vektor</em> vagy <em class="firstterm">IV</em> algoritmus biztosítja, hogy egy titkosítás alkalmazása ugyanarra a <em class="firstterm">sima szöveg</em> adatra egyazon kulccsal eredménye mindig egyedi <em class="firstterm">titkosított szöveg</em> legyen. Célja az ismétlődő adatok általi törés megakadályozása. </p>
+<p>Az adott lehetőség közül az alap <strong class="userinput"><code>xts-plain64</code></strong> jelenleg kevésbé érzékeny az ismert támadásokra. Csak akkor használj mást, ha korábban telepített rendszerrel való kompatibilitás kell, ami nem ismeri az újabb algoritmusokat. </p>
+</dd>
+<dt><span class="term">Titkosító kulcs: <strong class="userinput"><code>Jelmondat</code></strong></span></dt>
+<dd>
+<p>Itt állítható be a titkosító kulcs e partícióhoz. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Jelmondat</span></dt>
+<dd><p>A titkosító kulcs kiszámításra kerül<a href="#ftn.id3131" class="footnote" name="id3131"><sup class="footnote">[9]</sup></a> jelmondat alapján, mely e folyamat folyatásában adható meg. </p></dd>
+<dt><span class="term">Véletlen kulcs</span></dt>
+<dd>
+<p>Egy új titkosító kulcs készül véletlen adatokból a titkosított partíció minden bekapcsolásakor. Más szavakkal: a partíció tartalma számunkra minden kikapcsolásakor elvész, mert a kulcs törlődik a memóriából. (Természetesen, megpróbálhatod kitalálni a kulcsot nyers erő támadással, de a titkosító algoritmus ismeretlen gyengesége nélkül ez nem lehetséges a mi életünkben.) </p>
+<p>A véletlen kulcsok igen jók csere partíciókhoz, mert nem kell jelmondatot megjegyezni és érzékeny adatokat törölni a csere partícióról a gép leállítása előtt. E módszerrel viszont <span class="emphasis"><em>nem</em></span> használható az újabb Linux kernelek által nyújtott <span class="quote">„<span class="quote">felfüggesztés-a-lemezre</span>”</span>, mert így lehetetlen lesz (egy azt követő indítás alatt) a csere partícióra a felfüggesztéskor írt adatok visszaállítása. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Adatok törlése: <strong class="userinput"><code>igen</code></strong></span></dt>
+<dd><p>Biztosítja, hogy e partíció adatai felülírassanak véletlen adatokkal a titkosítás beállítása előtt. Ez megnehezíti egy támadónak a korábban használt rész meghatározását. Ezen felül, így nehezebb visszaállítani a korábbi adatokat<a href="#ftn.id3146" class="footnote" name="id3146"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>A kívánt paraméterek kiválasztása után a titkosított partíciókhoz, lépj vissza a fő particionáló menübe. Egy új, <span class="guimenu">Titkosított kötetek beállítása</span> elem keletkezik. Kiválasztva meg kell erősíteni az adatok törlését az arra jelölt partíciókon és talán más műveleteket, mint egy új partíciós tábla írását. A nagy partíciókon ez eltart egy ideig. </p>
+<p>Most meg kell adni egy jelmondatot az ehhez állított partíciókhoz. A jó jelmondat több, mint 8 karakter, betűk, arab számok és más karakterek keveréke és nem tartalmaz általános szótári szót vagy könnyen hozzád a felhasználóhoz köthető adatot (mint születésnapok, hobbik, kedvencek nevei, rokonok nevei és így tovább). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>Jelmondat megadása előtt, győződj meg a billentyűzet helyes beállításáról és, hogy a várt karaktereket adja. Kétség esetén a 2. virtuális konzolra kell váltani és kipróbálni a billentyűket. Ezzel elkerülhetők a későbbi meglepetések, például jelszó gépelése qwerty billentyű-kiosztással a telepítőben használt azerty esetén. Az ilyen helyzetnek több oka lehet. Talán más billentyű-kiosztásra váltottál a telepítés folyamán, vagy a választott billentyű-kiosztás még nincs beállítva a jelmondat megadásakor a gyökér fájlrendszer számára. </p></td></tr>
+</table></div>
+<p>Ha nem jelmondat módot választottál a titkosító kulcs létrehozásához, az most készül majd. Mivel a kernel számára talán még nincs elég összegyűjthető entrópia a telepítés e korai szakaszában, a folyamat lassú lehet. Ez felgyorsítható az entrópia növelésével: például véletlen billentyűk leütésével vagy a 2. virtuális konzolon lévő héjra váltással és hálózati és lemez forgalom generálásával (fájlok letöltése, nagy fájlok megetetése a <code class="filename">/dev/null</code> eszközzel és így tovább). Ez minden titkosítandó partíciónál megismételhető. </p>
+<p>Miután visszatérsz a fő partícionáló menübe, az összes titkosított kötet külön partícióként fog megjelenni, és ugyanúgy beállíthatók, mint a hagyományos partíciók. Az alábbi példa egy dm-crypt-tel titkosított kötetet mutat: </p>
+<div class="informalexample"><pre class="screen">
+Titkosított kötet (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Most jött el az ideje, hogy csatolási pontokat rendelj a kötetekhez, és ha az alapértelmezett fájlrendszer típusok nem megfelelőek számodra, akkor azokat is megváltoztathatod. </p>
+<p>Figyelj oda a zárójelben lévő azonosítókra (ebben az esetben <em class="replaceable"><code>sda2_crypt</code></em>) és a titkosított kötetekhez rendelt csatolási pontokra. Erre az információra szükséged lesz később, amikor az új rendszert indítod. Az átlagos indítási folyamat és a titkosítást is tartalmazó indítási folyamat közötti különbségeket később tárgyaljuk a(z) <a class="xref" href="ch07s02.html" title="7.2. Titkosított kötetek csatolása">7.2. szakasz - Titkosított kötetek csatolása</a> részben. </p>
+<p>Ha a partíciós séma megfelel, folyatható a telepítés. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Az alaprendszer telepítése</h3></div></div></div>
+<p>Bár e lépés a legkevésbé problémás, ez a telepítés legjelentősebb része, mert ez végzi a teljes alaprendszer letöltését, ellenőrzését és kibontását. Lassú gép vagy hálózati kapcsolat esetén eltart egy kis ideig. </p>
+<p>Az alaprendszer telepítése során, a csomag kicsomagoló és beállító üzenetek a <strong class="userinput"><code>tty4</code></strong> terminálra kerülnek. Ez a <span class="keycap"><strong>Bal Alt</strong></span>+<span class="keycap"><strong>F4</strong></span>; leütésével érhető el, a fő telepítő folyamathoz visszatéréshez a <span class="keycap"><strong>Bal Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> használható. </p>
+<p>Az alaprendszer telepítésekor keletkező kibontó/beállító üzenetek a <code class="filename">/var/log/syslog</code> fájlba kerülnek. Itt mindig mód van ellenőrzésükre, ha a telepítés soros konzolon át történik. </p>
+<p>A telepítés részeként a Linux kernel is települ. Alap elsőbbségben a telepítő a géphez illő legjobbat választja. Alacsonyabb elsőbbségi módokban az elérhető kernelek egy listából választhatók. </p>
+<p>Amikor a csomagokat a csomagkezelő rendszer telepíti, az ezen csomagok által javasolt többi csomag is alapból telepítésre kerül. A javasolt csomagok nem szükségesek szigorúan véve a kiválasztott szoftver működéséhez, de javítanak az adott szoftveren, és a csomagkarbantartók szerint együtt telepítendők az eredeti szoftverrel. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Technikai okokból az alaprendszer telepítése során a csomagok az <span class="quote">„<span class="quote">Ajánlott</span>”</span> csomagjaik nélkül kerülnek telepítésre. Ez a szabály csak a telepítés e pontja után lép életbe. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. További szoftverek telepítése</h3></div></div></div>
+<p>Az alaprendszer telepítése után, egy tökéletesen használható, de korlátozott rendszered van. A legtöbb felhasználó további szoftvereket akar adni a rendszerhez, hogy beállítsa igényeihez és a telepítő ezt is lehetővé teszi. Ez a szakasz tovább tarthat, mint az alaprendszer telepítése lassú gép vagy hálózat esetén. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Az apt beállítása</h4></div></div></div>
+<p>Az egyik eszköz, amit a csomagok telepítésére használnak egy Debian GNU/Linux rendszeren, az <span class="command"><strong>apt</strong></span> program, amely a <code class="classname">apt</code> csomag része<a href="#ftn.id3189" class="footnote" name="id3189"><sup class="footnote">[11]</sup></a>. Más csomagkezelő felületek, mint az <span class="command"><strong>aptitude</strong></span> és a <span class="command"><strong>synaptic</strong></span>, szintén használatban vannak. Ezeket a felületeket ajánljuk új felhasználóknak, mivel további funkciókat (például csomagkeresést és állapotellenőrzéseket) is integrálnak egy kellemes felhasználói felületen. </p>
+<p>Az <span class="command"><strong>apt</strong></span> parancsot be kell állítani, hogy tudja a csomagok beszerzési helyét. A beállítások a <code class="filename">/etc/apt/sources.list</code> fájlba kerülnek és természetesen a telepítés után is szerkeszthetők. </p>
+<p>Ha alap elsőbbséggel telepítesz, a telepítő magától elintézi a beállítások nagy részét, a használt telepítő módtól és a telepítés során hozott korábbi döntéseidtől függően. A legtöbb esetben a telepítő automatikusan hozzáad egy biztonsági tükröt, és amennyiben stabil terjesztést használsz, egy tükröt a <span class="quote">„<span class="quote">stabil frissítések (stable-upgrades)</span>”</span> szerviznek. </p>
+<p>Ha alacsonyabb prioritással telepítesz (például szakértői módban), több döntést hozhatsz meg saját magad. Eldöntheted, hogy szeretnéd-e használni a biztonsági frissítések és/vagy a stable-updates szolgáltatásokat, illetve azt is kiválaszthatod, hogy szeretnél-e csomagokat hozzáadni az archívum <span class="quote">„<span class="quote">contrib</span>”</span>, <span class="quote">„<span class="quote">non-free</span>”</span> és <span class="quote">„<span class="quote">non-free-firmware</span>”</span> szekcióiból. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Telepítés több mint egy DVD képfájlból</h5></div></div></div>
+<p>Ha egy olyan DVD képfájlból telepítesz, ami egy nagyobb készlet része, a telepítő megkérdezi, hogy szeretnéd-e beolvasni a további telepítési adathordozókat. Ha rendelkezel ilyen további adathordozókkal, valószínűleg érdemes ezt megtenni, hogy a telepítő használhassa a rajtuk lévő csomagokat. </p>
+<p>Ha nincs semmilyen extra médiumod, az nem gond: ezek használata nem kötelező. Ha nem használsz hálózati tükröt sem (ahogy azt a következő részben kerül említésre), az azt jelentheti, hogy nem minden csomag települ, ami a következő lépésben kiválasztott feladatokhoz tartozik. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>A csomagok a DVD képfájlokon a népszerűségük sorrendjében vannak elhelyezve. Ez azt jelenti, hogy a legtöbb esetben csak egy készlet első képfájljára van szükség, és csak nagyon kevesen használják a készlet utolsó képfájljain található csomagokat. </p>
+<p>Ez azt is jelenti, hogy egy teljes DVD készlet megvásárlása vagy letöltése és kiírása pénzkidobás, mivel a legtöbbet sosem fogod használni. A legtöbb esetben jobban jársz, ha csak az első 1-2 DVD-t szerzed be, és bármilyen további csomagot, amire szükséged lehet, az internetről töltesz le egy tükörszerver használatával. </p>
+</td></tr>
+</table></div>
+<p>Ha több telepítési médiát is beolvasol, az installer kérni fogja, hogy cseréld ki őket, amikor olyan csomagokra van szüksége, amelyek a jelenleg nem a meghajtóban lévő lemezen vannak. Fontos, hogy csak ugyanahhoz a készlethez tartozó lemezeket olvass be. A beolvasás sorrendje nem igazán számít, de ha növekvő sorrendben olvasod be őket, az csökkenti a hibák esélyét. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Hálózati tükör használata</h5></div></div></div>
+<p>Az egyik kérdés, ami a legtöbb telepítés során előjön az, hogy akarsz-e hálózati tükröt használni csomagok forrásaként. A legtöbb esetben az alapértelmezett válasz megfelelő, de van néhány kivétel. </p>
+<p>Ha <span class="emphasis"><em>nem</em></span> DVD képfájlból telepítesz, mindenképpen használj hálózati tükröt, különben csak egy nagyon minimális rendszered lesz. Viszont, ha korlátozott az internetkapcsolatod, a legjobb, ha a telepítés következő lépésében <span class="emphasis"><em>nem</em></span> választod a <code class="literal">desktop</code> feladatot. </p>
+<p>Ha DVD-ről telepítesz, a telepítéshez szükséges csomagoknak elérhetőnek kell lenniük az első DVD képen. A hálózati tükör használata opcionális. </p>
+<p>Az egyik előnye a hálózati tükör hozzáadásának, hogy a DVD képfájlok létrehozása óta történt frissítések, amelyek bekerültek a kiadásba, elérhetővé válnak telepítésre. Ezáltal a DVD készleted élettartama meghosszabbodik anélkül, hogy veszélyeztetné a telepített rendszer biztonságát vagy stabilitását. </p>
+<p>Összefoglalva: a hálózati tükör kiválasztása általában jó ötlet, kivéve, ha nincs megbízható internetkapcsolatod. Ha egy csomag jelenlegi verziója elérhető a telepítési médiáról, az installer mindig azt fogja használni. Az adatmennyiség, amit letölt, ha tükör használata mellett döntesz, attól függ, hogy </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>a telepítés következő lépéseiben választott feladatok, </p></li>
+<li class="listitem"><p>melyik csomagok szükségesek azokhoz a feladatokhoz, </p></li>
+<li class="listitem"><p>mely csomagok találhatók meg az általad beolvasott telepítési médián, és </p></li>
+<li class="listitem"><p>hogy van-e elérhető frissített verzió a telepítési médián lévő csomagokból egy tükrön (akár egy normál csomag tükör, akár egy biztonsági vagy stabil-frissítések tükör). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Jó tudni, hogy az utolsó pont azt jelenti, hogy még akkor is, ha nem választottál hálózati tükröt, néhány csomag mégis letöltésre kerülhet az Internetről, ha létezik biztonsági, vagy stabil frissítés, és ezek a szervizek be lettek állítva. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Hálózati tükör választása</h5></div></div></div>
+<p>Hacsak nem döntöttél úgy, hogy nem használsz hálózati tükröt, meg fog jelenni egy lista a hálózati tükrökről, ami az előzőleg megadott országod alapján készült. Általában az alapértelmezett ajánlat kiválasztása megfelelő szokott lenni. </p>
+<p>Az alapértelmezett ajánlat a deb.debian.org, ami önmagában nem egy tükör, hanem egy olyan tükörhöz irányít át, ami naprakész és gyors. Ezek a tükrök támogatják a TLS-t (https protokoll) és az IPv6-ot. Ezt a szolgáltatást a Debian Rendszergazdai (DSA) csapat tartja karban. </p>
+<p>Kézzel is megadhatsz egy tükröt az <span class="quote">„<span class="quote">információ megadása manuálisan</span>”</span> opció kiválasztásával. Ekkor megadhatod a tükör hoszt nevét és egy opcionális portszámot. Ez valójában egy URL alap kell legyen, tehát ha egy IPv6 címet adsz meg, akkor szögletes zárójeleket kell köré tenni, például <span class="quote">„<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Ha a géped csak IPv6-s hálózaton van (ami valószínűleg nem igaz a felhasználók többségére), akkor az országodhoz alapból beállított tükör nem mindig fog működni. A lista minden tagja elérhető IPv4-gyel, de csak némelyik használható IPv6-tal. Mivel az egyes tükrök elérhetősége idővel változhat, ezt az információt a telepítő nem tartalmazza. Ha az országodhoz tartozó alap tükröt nem lehet IPv6-on elérni, próbálkozhatsz a többi felajánlott tükörrel, vagy választhatod az <span class="quote">„<span class="quote">adatok kézi megadása</span>”</span> lehetőséget. Ott megadhatod az <span class="quote">„<span class="quote">ftp.ipv6.debian.org</span>”</span> tükröt, ami egy IPv6-os tükör másik neve, bár ez valószínűleg nem a leggyorsabb lesz. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Szoftverek kiválasztása és telepítése</h4></div></div></div>
+<p>A telepítő folyamat során lehetőség nyílik további szoftverek kiválasztására telepítéshez. A több mint <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    elérhető csomag közül egyéni szoftver csomagok kiválasztása helyett a telepítő folyamat e szakasza szoftverek előre-megadott gyűjteményeinek kiválasztására és telepítésére összpontosít, hogy gyorsan beállítsa a gépet különböző feladatok elvégzésére. </p>
+<p>Ezek a feladatok nagyjából különböző célokat vagy tevékenységeket képviselnek, amelyeket a számítógépeddel végezni szeretnél, mint például a <span class="quote">„<span class="quote">Asztali környezet</span>”</span>, <span class="quote">„<span class="quote">Webszerver</span>”</span> vagy <span class="quote">„<span class="quote">SSH szerver</span>”</span><a href="#ftn.id3251" class="footnote" name="id3251"><sup class="footnote">[12]</sup></a>. A <a class="xref" href="apds02.html" title="D.2. Feladatokhoz szükséges hely">D.2. szakasz - Feladatokhoz szükséges hely</a> felsorolja az elérhető feladatok helyigényét. </p>
+<p>Egyes feladatok gyakran előre-kijelöltek a telepítés alatti gép tulajdonságai alapján. Ha nem tetszenek, vagy nem e módon akarod ezeket telepíteni, szüntesd meg itt a feladatok kijelölését! Megvan a lehetőség, hogy egyáltalán ne telepíts semmit ezen a módon. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tipp]" src="images/tip.png"></td>
+<th align="left">Tipp</th>
+</tr>
+<tr><td align="left" valign="top"><p>A telepítő szabvány felhasználói felületében a szóköz használható egy feladat kijelölésének váltásához. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Az <span class="quote">„<span class="quote">Asztali környezet</span>”</span> feladat egy grafikus asztali környezetet fog telepíteni. </p>
+<p>Alapértelmezés szerint a(z) <code class="classname">debian-installer</code> a <span class="phrase">Gnome</span>  asztali környezetet telepíti. A telepítés során interaktívan választhatsz másik asztali környezetet is. Több asztalt is telepíthetsz, de előfordulhat, hogy néhány asztali környezet kombinációja nem telepíthető együtt. </p>
+<p>Fontos megjegyezni, hogy ez csak akkor fog működni, ha a kívánt asztali környezethez szükséges csomagok valóban elérhetők. Bármelyik elérhető asztali környezet ilyen módon történő telepítése gond nélkül működik, ha DVD-képet használsz vagy olyan telepítési módot, amely hálózati tükröt (mirror) is elér. </p>
+</td></tr>
+</table></div>
+<p>A különböző szerverfeladatok a hozzájuk tartozó szoftvereket nagyjából az alábbiak szerint telepítik. Webszerver: <code class="classname">apache2</code>; SSH szerver: <code class="classname">openssh</code>. </p>
+<p>A <span class="quote">„<span class="quote">Szokásos rendszereszközök</span>”</span> feladat minden olyan csomagot telepít, amelynek prioritása <span class="quote">„<span class="quote">standard</span>”</span>. Ezek közé tartozik sok olyan általános segédprogram, amelyek jellemzően minden Linux vagy Unix rendszeren elérhetők. Ezt a feladatot érdemes kijelölve hagyni, hacsak nem tudod pontosan, mit csinálsz, és kifejezetten egy nagyon minimális rendszert szeretnél. </p>
+<p>Ha a nyelvválasztás során a <span class="quote">„<span class="quote">C</span>”</span>-től eltérő helyi beállítást választottál, a <span class="command"><strong>tasksel</strong></span> ellenőrzi, hogy van-e lokalizációs feladat rendelve ehhez a beállításhoz, és automatikusan megpróbálja ezeket a csomagokat telepíteni. Ide tartoznak például olyan csomagok, amik szó listákat, vagy különleges betűtípusokat tartalmaznak a nyelvedhez. Ha választottál desktop környezetet, az ahhoz tartozó lokalizációs csomagokat is telepíti (ha van ilyen). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>A Debian Trixie-től kezdve a(z) <code class="classname">debian-installer</code> lehetővé teszi a Debian Pure Blends közvetlen telepítését. A feladatok listájának alján található egy <span class="quote">„<span class="quote">Válassz Debian Blendet a telepítéshez</span>”</span> bejegyzés, ami egy további választási párbeszédablak megjelenését teszi lehetővé, miután a <span class="command"><strong>tasksel</strong></span> befejeződött. </p>
+<p>Ebben a párbeszédablakban (<span class="command"><strong>blendsel</strong></span>) kiválaszthatod, melyik blendet szeretnéd telepíteni, hasonlóan a feladatok kiválasztásához. </p>
+<p>További információkért nézd meg a <a class="ulink" href="https://www.debian.org/blends" target="_top">Debian weboldalát</a> a Debian Pure Blends-ről. </p>
+</td></tr>
+</table></div>
+<p>A feladatok kiválasztása után, válaszd ezt: <span class="guibutton">Continue</span>. Ekkor az <span class="command"><strong>apt</strong></span> telepíti a csomagokat, melyek a választott feladatok részei. Ha egy programnak több információra van szüksége a felhasználótól, a folyamat alatt meg fogja kérdezni. </p>
+<p>Tartsd észben, hogy különösen az Asztali környezet feladat nagyon nagy méretű. Ha netinst CD képfájlból telepítesz, és a netinst-en nem lévő csomagokhoz egy tükröt használsz, a telepítő sok csomagot akarhat letölteni a hálózaton keresztül. Ha viszonylag lassú az internetkapcsolatod, ez hosszú időt vehet igénybe. Nincs lehetőség a csomagok telepítésének megszakítására, miután elindult. </p>
+<p>Még akkor is, ha a csomagok benne vannak a telepítési képfájlban, a telepítő letöltheti őket a tükörről, ha a tükrön elérhető verzió újabb, mint ami a képfájlban van. Ha a stabil kiadást telepíted, ez előfordulhat egy pontkiadás (az eredeti stabil kiadás frissítése) után; ha a tesztelési kiadást telepíted, ez akkor történik meg, ha egy régebbi képfájlt használsz. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. A rendszer indíthatóvá tétele</h3></div></div></div>
+<p>Lemez nélküli munkaállomás telepítésekor a helyi lemezről indítás természetesen értelmetlen, és e lépés kimarad. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Más operációs rendszerek érzékelése</h4></div></div></div>
+<p>Egy boot betöltő telepítése előtt a telepítő megkísérli felismerni, milyen más rendszerek vannak már esetleg a gépen. Ha talál támogatottat, közli a boot betöltő telepítő lépés alatt és a gépet beállítja ezek indítására is a Debian mellett. </p>
+<p>Több operációs rendszer egy gépről indítása néha még mindig fekete mágia lehet. A boot betöltő más rendszerek felismerésére és beállítására vonatkozó automatikus támogatása architektúrák sőt sokszor akár al-architektúrák közt is eltér. Ha ez nem működik, több információért lásd a boot kezelőd dokumentációját. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3299"></a>6.3.7.2. Telepítsd a <span class="command"><strong>Grub</strong></span> boot loader-t a meghajtóra</h4></div></div></div>
+<p>A(z) amd64 boot loader neve <span class="quote">„<span class="quote">grub</span>”</span>. A Grub egy rugalmas és megbízható boot loader, ami jó alapértelmezett választás mind az új felhasználóknak, mind a tapasztaltaknak. </p>
+<p>Alapértelmezés szerint a grub az UEFI partícióra vagy az elsődleges meghajtó Boot Recordjára települ, ahol átveszi a teljes irányítást a boot folyamat felett. Ha szeretnéd, máshová is telepítheted. További részletekért nézd meg a grub kézikönyvet. </p>
+<p>Ha a grub valamiért nem felel meg, használd a <span class="guibutton">Go Back</span> gombot a fő menühöz, és válaszd a kívánt boot betöltőt. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Folytatás boot betöltő nélkül</h4></div></div></div>
+<p>E lehetőség használható a telepítés befejezésére boot betöltő nélkül, vagy mert az architektúra/al-architektúra nem ad ilyet, vagy mert nem kívánatos (például egy már telepített boot betöltőt használsz). </p>
+<p>Ha a boot-betöltő kézi beállítását tervezed, ellenőrizni kell a telepített kernel nevét a <code class="filename">/target/boot</code> könyvtárban. Itt egy <em class="firstterm">initrd</em> jelenlétét is ellenőrizni kell; ha van, valószínűleg utasítani kell a boot-betöltőt ennek használatára. További szükséges adat a <code class="filename">/</code> fájlrendszer számára választott lemez és partíció és, ha a <code class="filename">/boot</code> külön partíción van, a <code class="filename">/boot</code> fájlrendszer adatai. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. A telepítés befejezése</h3></div></div></div>
+<p>Ezek az utolsó apróságok az új rendszer indítása előtt. Főleg a <code class="classname">debian-installer</code> feladatai utáni rendrakásból áll. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. A rendszeróra beállítása</h4></div></div></div>
+<p>A telepítő megkérdezheti, hogy az óra az UTC szerint állított-e. Normális esetben e kérdést elkerüli, ha lehet és megpróbálja kitalálni a választ például a telepített más operációs rendszerek alapján. </p>
+<p>Szakértői módban mindig lehetőséged lesz eldönteni, hogy az óra UTC szerint legyen-e beállítva.  <span class="phrase">Az olyan rendszerek, amelyeken (többek között) Windows is fut, jellemzően a helyi időt használják. Ha kettős rendszerindítást szeretnél, válaszd a helyi időt az UTC helyett.</span> </p>
+<p>Ezen a ponton a <code class="classname">debian-installer</code> megkísérli elmenteni az aktuális időt a rendszer hardver órájára. Ez vagy UTC, vagy helyi időt jelent attól függően, mit választottál ki. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. A rendszer újraindítása</h4></div></div></div>
+<p>A rendszer kérni fogja, hogy távolítsd el a boot médiumot (CD, USB kulcs stb.), amiről a telepítőt elindítottad. Ezután a gép újraindul, immár az új Debian rendszeredbe. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Hibaelhárítás</h3></div></div></div>
+<p>Az e szakaszban felsorolt összetevők általában nem részei a telepítő folyamatnak, de nehezebb helyzetekhez készen állnak a felhasználó segítésére. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Telepítő naplók mentése</h4></div></div></div>
+<p>Ha a telepítés sikeres, a telepítő folyamat során keletkező napló fájlok automatikusan mentésre kerülnek az új Debian rendszeren a <code class="filename">/var/log/installer/</code> könyvtárba. </p>
+<p>Ha a főmenüből a <span class="guimenuitem">Hibakereső naplók mentése</span> lehetőséget választod, elmentheted a naplófájlokat egy USB stickre, hálózatra, merevlemezre vagy más adathordozóra. Ez hasznos lehet, ha végzetes problémákba ütközöl a telepítés során, és szeretnéd tanulmányozni a naplókat egy másik rendszeren vagy csatolni őket egy telepítési jelentéshez. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. A héj használata és a naplók megtekintése</h4></div></div></div>
+<p>Több módja van egy héj indításának a telepítő alatt, A legtöbb rendszeren, ha nem soros konzolról telepítesz, a legkönnyebb mód a 2. <span class="emphasis"><em>virtuális konzolra</em></span> váltásra a <span class="keycap"><strong>Bal Alt</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3346" class="footnote" name="id3346"><sup class="footnote">[13]</sup></a> (Mac billentyűzeten <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>) leütése. Használd a <span class="keycap"><strong>Bal Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> gombokat a telepítőre visszaváltáshoz. </p>
+<p>A grafikus telepítőhöz lásd: <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. A grafikus telepítő használata">6.1.1. szakasz - A grafikus telepítő használata</a>. </p>
+<p>Ha nem tudsz konzolt váltani, használd a <span class="guimenuitem">Héj futtatása</span> pontot a fő menüből, így elindítható egy héj. A fő menübe a legtöbb párbeszédből visszajuthatsz a <span class="guibutton">Go Back</span> gomb egy vagy többszörös lenyomásával. A telepítőhöz való visszatérésre, gépeld be az <strong class="userinput"><code>exit</code></strong> parancsot a héj lezárásához. </p>
+<p>Most egy RAM lemezből indítottunk és a szokásos eszközök közül csak egy korlátozott készlet áll rendelkezésre. Az <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> és a <span class="command"><strong>help</strong></span> megadja az elérhető programokat. A héj egy <span class="command"><strong>ash</strong></span> nevű Bourne héj másolat pár szép képességgel mint például az automata kiegészítés és történet. </p>
+<p>Fájlok szerkesztésére és megtekintésére, használd a <span class="command"><strong>nano</strong></span> szerkesztőt. A telepítő rendszer napló-fájljai a <code class="filename">/var/log</code> könyvtárban találhatók. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Bár alapvetően mindent megtehetsz egy héjból, melyet az elérhető parancsok lehetővé tesznek, egy héj használatának lehetősége csak hibák esetére szolgál. </p>
+<p>Ezt kézzel téve a héjból ütközhet a telepítő folyamattal és hibákat vagy be nem fejezett telepítést okozhat. Ezért lehetőleg mindig a telepítőt használd a csere partíció bekapcsolására és ne tedd a héjból. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Telepítés hálózati konzolon keresztül</h3></div></div></div>
+<p>Az egyik legérdekesebb összetevő a <em class="firstterm">network-console</em>. Lehetővé teszi a telepítés szinte egészét a hálózatról SSH-n át. A hálózat használata feltételezi a telepítés első pár lépésének megtörténtét legalább a hálózat beállításáig. (Automatizálható a <a class="xref" href="ch04s06.html" title="4.6. Automatikus telepítés">4.6. szakasz - Automatikus telepítés</a> részben írtak szerint.) </p>
+<p>Ez a komponens alapértelmezés szerint nincs betöltve a fő telepítési menübe, ezért külön kérned kell. Ha optikai médiáról telepítesz, közepes prioritással kell indítanod vagy más módon meg kell hívnod a fő telepítési menüt, és válaszd a <span class="guimenuitem">Telepítő komponensek betöltése a telepítési médiáról</span> lehetőséget. A további komponensek listájából válaszd a <span class="guimenuitem">network-console: Telepítés folytatása távolról SSH használatával</span> opciót. A sikeres betöltést egy új menübejegyzés jelzi, ami a <span class="guimenuitem">Telepítés folytatása távolról SSH használatával</span> nevet viseli. </p>
+<p><span class="phrase">Miután kiválasztottad ezt az új bejegyzést,</span>  meg kell adnod egy új jelszót, amelyet a telepítőrendszerhez való csatlakozáshoz fogsz használni, majd meg kell erősítened azt. Ennyi az egész. Ezután egy olyan képernyőt kell látnod, amely arra utasít, hogy távolról jelentkezz be <span class="emphasis"><em>installer</em></span> felhasználóként az imént megadott jelszóval. Egy másik fontos részlet ezen a képernyőn a rendszer ujjlenyomata – ezt biztonságosan továbbítani kell annak a személynek, aki távolról folytatja a telepítést. </p>
+<p>Folytathatod a telepítést helyben, ilyen esetekben mindig üsd le az <span class="keycap"><strong>Enter</strong></span> billentyűt a fő menühöz, ahol bármely szükséges összetevő kiválasztható. </p>
+<p>Nézzük a másik oldalt. Terminálod állítsd UTF-8 kódolásra, mert ezt használja a telepítő. E nélkül is folytatható a távoli telepítés, de ekkor különös műalkotásokat láthatsz, például törött párbeszéd-kereteket vagy olvashatatlan nem-ascii karaktereket. Egy kapcsolat létrehozásához a telepítővel csak ezt kell begépelni: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> Itt az <em class="replaceable"><code>install_host</code></em> a telepítendő gép neve vagy IP címe. A parancs kiadása után a távoli gép először kapcsolódik a telepítendőre. Ha ez először történik az adott távoli gépről, akkor azon a telepítendő gép ujjnyoma megjelenik az 1. tényleges bejelentkezés előtt, és megerősítéssel igazolni kell, hogy ez a telepítendő gép ujjlenyomata. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>A telepítő <span class="command"><strong>ssh</strong></span> kiszolgálója olyan alapbeállítást használ, ami nem küld kapcsolat fenntartó (keep-alive) csomagokat. Ezért a telepítendő rendszerrel való kapcsolatot határozatlan ideig nyitva kell tartani. Azonban néhány esetben — a helyi hálózati beállításaidtól függően — a kapcsolat megszakadhat ha egy bizonyos ideig nem használják. Egy lehetséges ilyen eset, amikor valamilyen Hálózati címfordítás (Network Address Translation, NAT) található valahol a kliens és a telepítendő rendszer között. Attól függően, hogy a telepítés mely lépésekor szakadt meg a kapcsolat, vagy tudod majd folytatni a telepítést újrakapcsolódás után, vagy nem. </p>
+<p>Elkerülheted, hogy a kapcsolat megszakadjon, ha az <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>érték</code></em></code></strong> opciót adod meg az <span class="command"><strong>ssh</strong></span> kapcsolat indításakor vagy ha ezt az opciót beleírod az <span class="command"><strong>ssh</strong></span> konfigurációs fájlodba. Figyelj azonban arra, hogy bizonyos esetekben ez az opció éppenséggel <span class="emphasis"><em>megszakíthatja</em></span> a kapcsolatot (például ha a keep-alive csomagokat egy rövid hálózati kimaradás alatt küldi el, amit az <span class="command"><strong>ssh</strong></span> egyébként még kezelni tudna), ezért csak akkor használd, ha tényleg szükséges. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ha egymás után több számítógépet telepítesz, és ezek véletlenül ugyanazt az IP-címet vagy gépnevet kapják, az <span class="command"><strong>ssh</strong></span> megtagadja a csatlakozást az ilyen gépekhez. Ennek oka, hogy az ujjlenyomatuk eltérő lesz, ami általában egy hamisítási (spoofing) támadás jele. Ha biztos vagy benne, hogy nem erről van szó, törölnöd kell a megfelelő sort a <code class="filename">~/.ssh/known_hosts</code> fájlból<a href="#ftn.id3408" class="footnote" name="id3408"><sup class="footnote">[14]</sup></a>, majd próbáld meg újra a csatlakozást. </p></td></tr>
+</table></div>
+<p>A bejelentkezés után egy kezdő képernyőt látsz 2 lehetőséggel: <span class="guimenuitem">Menü indítása</span> és <span class="guimenuitem">Héj indítása</span>. Az előbbi adja a fő telepítő menüt, ahol a szokásos módon folytathatod a telepítést. Az utóbbi egy héjat indít, melyről vizsgálhatod és ha kell, javíthatod a távoli rendszert. A telepítő menühöz csak 1 SSH folyamatban használható, de héjakhoz több is. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>A távoli telepítés indítása után SSH-n át, ne térj vissza a helyi konzolon futó adott telepítő szakaszhoz. Ez megsértheti az új rendszer beállításait most tartalmazó adatbázist. Ez sikertelen telepítést okozhat vagy gondokat a telepített rendszeren. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2600" class="footnote"><p><a href="#id2600" class="para"><sup class="para">[4] </sup></a> technikai meghatározás: ahol több helyi beállítás létezik e nyelvhez eltérő országkódokkal. </p></div>
+<div id="ftn.id2608" class="footnote"><p><a href="#id2608" class="para"><sup class="para">[5] </sup></a> Közepes és alacsony elsőbbségnél mindig kiválaszthatod a preferált helyi beállítást azok közül, amik a nyelvedhez elérhetőek (ha több, mint egy ilyen van). </p></div>
+<div id="ftn.id2614" class="footnote"><p><a href="#id2614" class="para"><sup class="para">[6] </sup></a> Ezek olyan beállítások, amik nem UTF-8-at használnak karakter kódolásra, hanem valami régebbi sztenderdet, pl. ISO 8859-1-et (ezt a nyugat-európai nyelvek használják), vagy EUC-JP-t (ezt a japánok használják). </p></div>
+<div id="ftn.id2794" class="footnote"><p><a href="#id2794" class="para"><sup class="para">[7] </sup></a> A telepítő 256 bites AES kulccsal titkosítja az LVM kötet-csoportot és beállítja a kernel <span class="quote">„<span class="quote">dm-crypt</span>”</span> támogatást. </p></div>
+<div id="ftn.id2888" class="footnote"><p><a href="#id2888" class="para"><sup class="para">[8] </sup></a> Őszintén szólva MD eszköz egyetlen fizikai meghajtó partícióiból és készíthető, de ez nem jár túl sok előnnyel. </p></div>
+<div id="ftn.id3131" class="footnote"><p><a href="#id3131" class="para"><sup class="para">[9] </sup></a> Jelmondat használata kulcsként jelenleg azt jelenti, hogy a partíció <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a> használatával lesz beállítva. </p></div>
+<div id="ftn.id3146" class="footnote"><p><a href="#id3146" class="para"><sup class="para">[10] </sup></a> Ahhoz azért jó pár felülírás kell, hogy a 3-betűs ügynökségeknek se legyen esélye kinyerni az adatokat a párszor felülírás után. </p></div>
+<div id="ftn.id3189" class="footnote"><p><a href="#id3189" class="para"><sup class="para">[11] </sup></a> Megjegyzendő, hogy a valós csomagtelepítő program a <span class="command"><strong>dpkg</strong></span>. Azonban ez inkább egy alacsony szintű eszköz. Az <span class="command"><strong>apt</strong></span> egy magasabb szintű eszköz, amely szükség esetén meghívja a <span class="command"><strong>dpkg</strong></span>-t. Tudja, hogyan kell csomagokat beszerezni a telepítési médiáról, hálózatról vagy bárhonnan. Képes automatikusan telepíteni más csomagokat is, amelyek szükségesek ahhoz, hogy a telepíteni kívánt csomag helyesen működjön. </p></div>
+<div id="ftn.id3251" class="footnote"><p><a href="#id3251" class="para"><sup class="para">[12] </sup></a> Tudnod kell, hogy a lista bemutatásához az installer valójában a <span class="command"><strong>tasksel</strong></span> programot hívja meg. Ezt bármikor futtathatod a telepítés után, hogy több csomagot telepíts (vagy eltávolíts), de használhatsz egy részletesebb eszközt, mint például az <span class="command"><strong>aptitude</strong></span>. Ha egy konkrét csomagot keresel, a telepítés befejezése után egyszerűen futtasd a <strong class="userinput"><code>aptitude install <em class="replaceable"><code>csomag</code></em></code></strong> parancsot, ahol a <em class="replaceable"><code>csomag</code></em> a keresett csomag neve. </p></div>
+<div id="ftn.id3346" class="footnote"><p><a href="#id3346" class="para"><sup class="para">[13] </sup></a> Ami: nyomd le az <span class="keycap"><strong>Alt</strong></span> billentyűt a <span class="keycap"><strong>szóköz</strong></span> mellett balra és az <span class="keycap"><strong>F2</strong></span> billentyűt egyszerre. </p></div>
+<div id="ftn.id3408" class="footnote"><p><a href="#id3408" class="para"><sup class="para">[14] </sup></a> A következő paranccsal törölhetsz egy meglévő bejegyzést: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>hosztnév</code></em>|<em class="replaceable"><code>IP cím</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Összetevők bemutatása </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Hiányzó firmware betöltése</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

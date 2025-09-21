@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Montering af krypterede diskenheder</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Kapitel 7. Start op i dit nye Debian-system">
+<link rel="prev" href="ch07s01.html" title="7.1. Sandhedens øjeblik">
+<link rel="next" href="ch07s03.html" title="7.3. Log ind">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Montering af krypterede diskenheder</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 7. Start op i dit nye Debian-system</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Montering af krypterede diskenheder</h2></div></div></div>
+<p>Hvis du oprettede krypterede diskenheder under installationen og tildelte dem monteringspunkter, så vil du blive anmodt om en adgangsfrase for hver af disse diskenheder under opstarten. </p>
+<p>For partitioner krypteret med dm-crypt får du vist den følgende prompt under opstarten: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> I den første linje af prompten, er <em class="replaceable"><code>part</code></em> navnet på den underliggende partition, f.eks. sda2 eller md0. Du undrer dig nu sikkert over <span class="emphasis"><em>hvilken diskenhed</em></span> du reelt indtaster adgangsfrasen for. Drejer det sig om din <code class="filename">/home</code>? Eller til <code class="filename">/var</code>? Hvis du kun har en krypteret diskenhed er dette selvfølgelig nemt og du kan bare indtaste adgangsfrasen du brugte ved opsætning af denne diskenhed. Hvis du har opsat mere end en krypteret diskenhed under installationen, så er noterne du skrev ned som det sidste trin i <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Konfigurer krypterede diskenheder">Afsnit 6.3.4.6, “Konfigurer krypterede diskenheder”</a> rigtig gode nu. Hvis du ikke skrev opsætningen mellem <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> og monteringspunkter før ned, så kan du stadig finde den i <code class="filename">/etc/crypttab</code> og <code class="filename">/etc/fstab</code> i dit nye system. </p>
+<p>Prompten kan se noget anderledes ud når et krypteret rod-filsystem er monteret. Dette afhænger af hvilke initramfs-generatorer der blev brugt til at oprette initrd'en brugt til at starte systemet op med. Eksemplet nedenfor er for en initrd oprettet med <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Ingen tegn (heller ikke stjerner) vil blive vist mens du indtaster adgangsfrasen. Hvis du indtaster forkert adgangsfrase, så har du to yderligere forsøg. Efter det tredje forsøg vil opstartsprocessen springe denne diskenhed over og fortsætte med at montere det næste filsystem. Se venligst <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Fejlsøgning">Afsnit 7.2.1, “Fejlsøgning”</a> for yderligere information. </p>
+<p>Efter indtastning af alle adgangsfraser bør opstarten fortsætte som normalt. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Fejlsøgning</h3></div></div></div>
+<p>Hvis nogle af de krypterede diskenheder ikke kunne monteres på grund af en forkert adgangsfrase, så skal du montere dem manuelt efter opstarten. Der er flere tilfælde. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Det første tilfælde vedrører rodpartitionen. Når den ikke er monteret korrekt, så vil opstartsprocessen stoppe og du vil skulle genstarte computeren for at forsøge igen. </p></li>
+<li class="listitem">
+<p>Det nemmeste tilfælde er for krypterede diskenheder, der indeholder data som <code class="filename">/home</code> eller <code class="filename">/srv</code>. Du kan bare montere dem manuelt efter genstarten. </p>
+<p>For dm-crypt er det en smule sværere. Først skal du registrere diskenhederne med <span class="application">device mapper</span> ved at køre: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Dette vil skanne alle diskenheder nævnt i <code class="filename">/etc/crypttab</code> og vil oprette passende enheder under mappen <code class="filename">/dev</code> efter indtastning af korrekt adgangsfrase. (Allerede registrerede diskenheder vil blive sprunget over, så du kan gentage denne kommando flere gange uden problemer). Efter succesfuld registrering kan du montere diskenhederne på den normale måde: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/monteringspunkt</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Hvis en diskenhed indeholdende ikkekritiske systemfiler ikke kunne monteres (<code class="filename">/usr</code> eller <code class="filename">/var</code>), bør systemet stadig kunne montere diskenhederne manuelt ligesom i det forrige tilfælde. Du skal dog også (gen)starte alle tjenester der normalt kører i dit normale kørselsniveau, da det er meget sandsynligt, at de ikke blev startet. Den nemmeste måde er bare at genstarte computeren. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Sandhedens øjeblik </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Log ind</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

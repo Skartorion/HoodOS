@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. 概要</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="prev" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="next" href="apbs02.html" title="B.2. preseed の利用">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. 概要</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録B preseed を利用したインストールの自動化</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. 概要</h2></div></div></div>
+<p>preseed は、インストールの実行中に手動で回答を入力せずに、インストールプロセス中の質問の答を設定する方法を提供します。これにより、ほとんどの方法のインストールを自動化し、さらに通常のインストールでは利用できない特徴もあります。 </p>
+<p>preseed は必須ではありません。空の preseed ファイルを使用すると、インストーラは通常の手動インストールと同じ振る舞いをします。preseed した各質問は、(正しく与えていれば!) ベースラインからと同じ方法で、インストールの内容を変更します。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. preseed の方法</h3></div></div></div>
+<p>preseed を利用するには、<em class="firstterm">initrd</em>, <em class="firstterm">file</em>, <em class="firstterm">network</em> と 3 種類の方法があります。initrd preseed は、いずれのインストール方法でも動作し、より多くの preseed をサポートしますが、多くの準備が必要です。file preseed や network preseed は、それぞれインストール方法が異なる場合に使用されます。 </p>
+<p>以下の表では、各インストール方法で使用できる preseed 方法を示します。 </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>インストール方法</th>
+<th>initrd</th>
+<th>file</th>
+<th>network</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>netboot</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>hd-media <span class="phrase">(USB メモリを含む)</span>
+</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>ネットワークアクセスを行う場合だけでなく、適切な <code class="literal">preseed/url</code> を設定する場合。 </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>preseed 方法の重要な違いは、事前設定ファイルを読込・処理するポイントです。initrd preseed では、インストールの始め (最初の質問が行われる前) に読み込まれます。カーネルコマンドラインからの preseed がその直後に続きます。そのため、(可能なブートローダの場合) ブートローダの設定、またはブートローダのブート時に手作業でカーネルコマンドラインを編集することにより initrd 中での設定状況に上書きできます。file preseed では、インストールイメージが読み込まれた後です。network preseed では、ネットワークの設定の後でないと読み込まれません。 </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[重要]" src="images/important.png"></td>
+<th align="left">重要</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>言うまでもなく、事前設定ファイルが読み込まれる前に処理される質問は preseed できません (最初のハードウェア検出のように、優先度が中や低でしか表示されない質問も同様です)。あまり便利ではありませんが <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. preseed が質問するブートパラメータの利用">「preseed が質問するブートパラメータの利用」</a> で説明しているように、ブートパラメータを経由して preseed することでそういった質問が出ないようにする方法があります。 </p>
+<p>preseed が起動する前に、通常現れる質問を簡単に回避するのに、<span class="quote">「<span class="quote">自動</span>」</span> モードでインストーラを起動できます。これによりネットワークの設定が終わるまで、preseed の前に行われる質問 (言語、国、キーボード選択など) を遅らせ、preseed にその質問を含められます。また、インストールの優先度を最重要で行うため、大量にある重要でない質問を回避できます。詳細は <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. 自動モード">「自動モード」</a> をご覧ください。 </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. 制限</h3></div></div></div>
+<p><code class="classname">debian-installer</code> で行われる質問のほとんどはこの方法で preseed できますが、いくつか注目すべき例外があります。ディスク全体を (再度) パーティション分割するか、ディスクの空き領域を利用しなければなりません。つまり既存のパーティションを利用できないと言うことです。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">付録B preseed を利用したインストールの自動化 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> B.2. preseed の利用</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

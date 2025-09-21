@@ -1,0 +1,120 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Accessibilità</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Capitolo 5. Avvio del sistema d'installazione">
+<link rel="prev" href="ch05s01.html" title="5.1. Avvio dell'installatore su PC 64 bit">
+<link rel="next" href="ch05s03.html" title="5.3. Parametri di avvio">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Accessibilità</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 5. Avvio del sistema d'installazione</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Accessibilità</h2></div></div></div>
+<p>Alcuni utenti potrebbero aver bisogno di particolari supporti perché, per esempio, hanno una disabilità visiva. <span class="phrase">I display braille USB vengono rilevati automaticamente (non i display seriali collegati con un convertitore seriale-USB), ma molte altre</span>  funzionalità per l'accessibilità devono essere attivate manualmente. <span class="phrase">Alcune macchine emettono dei bip quando il menu d'avvio è pronto per ricevere la pressione dei tasti. Sui sistemi BIOS è emesso un bip, sui sistemi UEFI sono emessi due bip.</span> L'attivazione di alcune delle funzionalità per l'accessibilità può essere fatta utilizzando i parametri d'avvio<span class="phrase"> (consultare anche <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. La schermata di avvio">Sezione 5.1.5, «La schermata di avvio»</a>)</span>. Notare che sulla maggioranza delle architetture il boot loader interpreta la tastiera come una tastiera QWERTY. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2401"></a>5.2.1. Interfaccia utente dell'Installatore</h3></div></div></div>
+<p>L'Installatore Debian dispone di diverse interfacce per porre delle domande all'utente, ogni interfaccia ha dei vantaggi dal punto di vista dell'accessibilità: in particolare, <strong class="userinput"><code>text</code></strong> usa del semplice testo invece <strong class="userinput"><code>newt</code></strong> usa dei riquadri di dialogo testuali. La scelta può essere fatta dal prompt di avvio, consultare la documentazione per <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> in <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametri dell'Installatore Debian">Sezione 5.3.2, «Parametri dell'Installatore Debian»</a>. </p>
+<p>Con l'interfaccia utente <strong class="userinput"><code>newt</code></strong> (usata prevalentemente con il braille), gli utenti scelgono le risposte usando i tasti freccia e le confermano con <span class="keycap"><strong>Invio</strong></span>. Premendo i tasti <span class="keycap"><strong>Tab</strong></span> o <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> è possibile passare da un elemento all'altro della finestra di dialogo, da notare che usando il bottone <strong class="userinput"><code>Indietro</code></strong> vengono riproposte le domande precedenti. Alcune finestre di dialogo contengono delle caselle di controllo, su queste è possibile mettere e togliere la spunta premendo <span class="keycap"><strong>Space</strong></span>. </p>
+<p>Con l'interfaccia utente <strong class="userinput"><code>text</code></strong> (usata prevalentemente con la sintesi vocale), gli utenti scelgono le risposte digitando il numero corrispondente seguito da <span class="keycap"><strong>Invio</strong></span> oppure scegliendo la risposta con i tasti freccia e confermano con <span class="keycap"><strong>Invio</strong></span>. Gli utenti possono anche non fare scelte e premere <span class="keycap"><strong>Invio</strong></span> per accettare la risposta predefinita. Digitando <strong class="userinput"><code>&lt;</code></strong> seguito da <span class="keycap"><strong>Invio</strong></span> vengono riproposte le domande precedenti. Nei casi in cui è richiesta la scelta di più valori (per esempio la scelta dei task), gli utenti possono digitare <strong class="userinput"><code>!</code></strong> per indicare nessun valore scelto. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2424"></a>5.2.2. Display braille USB</h3></div></div></div>
+<p>I display braille USB dovrebbero essere rilevati automaticamente; viene attivata la versione testuale dell'Installatore e il supporto per il display braille verrà installato sul sistema finale. È sufficiente premere <span class="keycap"><strong>Invio</strong></span> al menu d'avvio. Una volta avviato <code class="classname">brltty</code> è possibile scegliere una tavola braille tramite il menu preferenze. La documentazione sulle associazioni dei tasti per i dispositivi braille può essere trovata sul sito web di <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2431"></a>5.2.3. Display braille seriali</h3></div></div></div>
+<p>I display braille seriali non possono essere rilevati automaticamente (infatti questa operazione potrebbe danneggiarli). Quindi è necessario aggiungere il parametro d'avvio <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>porta</code></em></code></strong> per indicare a <code class="classname">brltty</code> quale driver e quale porta utilizzare. <em class="replaceable"><code>driver</code></em> deve essere sostituito con il codice a due lettere del driver adatto al proprio terminale (si veda il <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">manuale di BRLTTY</a>). <em class="replaceable"><code>porta</code></em> deve essere sostituito dal nome della porta alla quale è collegato il display, il valore predefinito è <strong class="userinput"><code>ttyS0</code></strong>, <strong class="userinput"><code>ttyUSB0</code></strong> quando si usa un convertitore seriale-USB. È possibile indicare anche un terzo parametro prt scegliere il nome della tavola braille da usare (si veda il <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">manuale di BRLTTY</a>), la tavola predefinita è quella inglese. Notare che la tavola può essere cambiata in seguito tramite il menu preferenze. È anche possibile indicare un quarto parametro per passare parametri al driver braille, per esempio per pochi modelli molto rari è necessario passare <strong class="userinput"><code>protocol=foo</code></strong>. La documentazione sulle associazioni dei tasti per i dispositivi braille può essere trovata sul sito web di <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2447"></a>5.2.4. Software di sintesi vocale</h3></div></div></div>
+<p>Il supporto per la sintesi vocale è disponibile in tutte le immagini dell'installatore in cui è presente la versione grafica dell'Installatore, cioè tutte le netinst, le immagini dei DVD e la variante netboot gtk. Può essere attivato selezionandolo nel menu di avvio digitando <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Invio</strong></span>. Verrà automaticamente selezionata la versione testuale dell'installatore e il supporto per il software di sintesi vocale verrà installato sul sistema finale. </p>
+<p>Quando sono rivelate più schede sonore, verrà richiesto di premere <span class="keycap"><strong>Invio</strong></span> quando il parlato è riprodotto dalla scheda sonora desiderata. </p>
+<p>La prima domanda (la lingua) è pronunciata in inglese e il resto dell'installazione è pronunciato nella lingua scelta (se disponibile in <code class="classname">espeak</code>). </p>
+<p>La velocità predefinita del parlato è abbastanza lenta. Per aumentarla premere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span>; per ridurla premere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span>. Il volume predefinito è medio. Per aumentarlo premere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span>; per diminuirlo premere <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span>. Per conoscere tutti i dettagli sulle scorciatoie da tastiera, consultare la <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">guida di Speakup</a>. Per accettare la risposta predefinita a una domanda, premere <span class="keycap"><strong>Invio</strong></span>. Per dare una risposta vuota a una domanda, premere <strong class="userinput"><code>!</code></strong>. Per tornare indietro alla domanda precedente, premere <strong class="userinput"><code>&lt;</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2473"></a>5.2.5. Hardware di sintesi vocale</h3></div></div></div>
+<p>Il supporto per l'hardware di sintesi vocale è disponibile in tutte le immagini dell'installatore in cui è presente la versione grafica dell'Installatore, cioè tutte le netinst, le immagini dei DVD e la variante netboot gtk. Quindi è necessario scegliere una delle voci <span class="quote">«<span class="quote">Graphical install</span>»</span> dal menu d'avvio. </p>
+<p>I dispositivi di sintesi vocale non possono essere rilevati automaticamente, è necessario aggiungere il parametro <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>driver</code></em></code></strong> per indicare a <code class="classname">speakup</code> quale driver utilizzare. <em class="replaceable"><code>driver</code></em> deve essere sostituito con il codice del driver adatto al proprio dispositivo (si veda l'<a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">elenco dei codici dei driver</a>). La versione testuale dell'Installatore è automaticamente selezionata e il supporto per le periferiche di sintesi vocale verrà automaticamente installato sul sistema finale. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2483"></a>5.2.6. Altri dispositivi</h3></div></div></div>
+<p>Alcuni dispositivi per l'accessibilità sono delle schede da inserire all'interno della macchina in grado di leggere il testo direttamente dalla memoria video. Per farle funzionare è necessario disabilitare il supporto per il framebuffer tramite il parametro d'avvio <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Purtroppo questo riduce il numero di lingue utilizzabili. </p>
+<p>È possibile attivare la versione testuale del bootloader digitando <strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Invio</strong></span> prima di inserire del parametro d'avvio. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2491"></a>5.2.7. Temi a contrasto elevato</h3></div></div></div>
+<p>Gli utenti ipovedenti possono usare l'installatore con un tema di colori a contrasto elevato che lo rende più leggibile. Per attivarlo, scegliere <span class="quote">«<span class="quote">Accessible high contrast</span>»</span> dal menu di avvio tramite la scorciatoia <strong class="userinput"><code>d</code></strong> oppure aggiungere <strong class="userinput"><code>theme=dark</code></strong> in coda ai parametri d'avvio. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2497"></a>5.2.8. Zoom</h3></div></div></div>
+<p>L'installatore grafico offre agli utenti ipovedenti una funzione di zoom essenziale: le scorciatoie di tastiera <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> e <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> aumentano e diminuiscono la dimensione dei caratteri. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2506"></a>5.2.9. Installazione esperta, modalità ripristino e installazione automatizzata</h3></div></div></div>
+<p>Anche con il supporto per l'accessibilità è possibile scegliere tra le modalità installazione esperta, modalità ripristino e installazione automatizzata. Per accedere a tali opzioni occorre prima entrare nel sottomenu <span class="quote">«<span class="quote">Advanced options</span>»</span> del menu di avvio premendo il tasto <strong class="userinput"><code>a</code></strong>. Su un sistema BIOS (il menu di avvio ha fatto un solo bip), è necessario confermare premendo <span class="keycap"><strong>Invio</strong></span>; su sistemi UEFI (al menu di avvio sono stati emessi due bip) non serve confermare. Poi, chi vuole, può attivare la sintesi vocale premendo <strong class="userinput"><code>s</code></strong> (su un sistema BIOS confermare con <span class="keycap"><strong>Invio</strong></span>, un sistema UEFI non attende conferma). Adesso è possibile usare le diverse scorciatoie: <strong class="userinput"><code>x</code></strong> per l'installazione in modalità esperta, <strong class="userinput"><code>r</code></strong> per la modalità ripristino oppure <strong class="userinput"><code>a</code></strong> per l'installazione automatizzata. Ancora una volta, su un sistema BIOS è necessario premere <span class="keycap"><strong>Invio</strong></span> per confermare. </p>
+<p>La scelta automated install permette di installare Debian in modo completamente automatico usando la preconfigurazione, il cui sorgente può essere inserito una volta avviate le funzionalità di accessibilità. La preconfigurazione è documentata in <a class="xref" href="apb.html" title="Appendice B. Installazione automatica tramite preconfigurazione">Appendice B, <i>Installazione automatica tramite preconfigurazione</i></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2520"></a>5.2.10. Accessibilità del sistema installato</h3></div></div></div>
+<p>La documentazione sull'accessibilità del sistema installato è disponibile sulla <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">pagina wiki Debian Accessibility</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Avvio dell'installatore su <span class="phrase">PC 64 bit</span>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Parametri di avvio</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

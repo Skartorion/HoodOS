@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Εγκαθιστώντας το Debian GNU/Linux πάνω από Parallel Line IP (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Παράρτημα D. Διάφορα">
+<link rel="prev" href="apds03.html" title="D.3. Εγκαθιστώντας το Debian GNU/Linux από ένα Σύστημα Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Εγκαθιστώντας το Debian GNU/Linux χρησιμοποιώντας PPP over Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Εγκαθιστώντας το Debian GNU/Linux πάνω από Parallel Line IP (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Παράρτημα D. Διάφορα</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Εγκαθιστώντας το Debian GNU/Linux πάνω από Parallel Line IP (PLIP)</h2></div></div></div>
+<p>Η ενότητα αυτή εξηγεί πώς να εγκαταστήσετε το Debian GNU/Linux σε έναν υπολογιστή χωρίς κάρτα Ethernet, αλλά μόνο μ' έναν απομακρυσμένο υπολογιστή σαν πύλη συνδεδεμένο μέσω ενός καλωδίου Null-Modem (που λέγεται επίσης και καλώδιο Null-Printer). Ο υπολογιστής-πύλη θα πρέπει να είναι συνδεδεμένος σ' ένα δίκτυο που να διαθέτει ένα καθρέφτη της αρχειοθήκης του Debian (πχ. στο Διαδίκτυο). </p>
+<p>Στο παράδειγμα στο παράρτημα αυτό, θα ρυθμίσουμε μια σύνδεση PLIP χρησιμοποιώντας μια πύλη συνδεδεμένη στο Διαδίκτυο μέσω μιας dial-up σύνδεσης (ppp0). Θα χρησιμοποιήσουμε τις διευθύνσεις IP 192.168.0.1 και 192.168.0.2 για τις διασυνδέσεις PLIP στο σύστημα προορισμού και αφετηρίας αντίστοιχα (οι διευθύνσεις αυτές θα πρέπει να μην είναι σε χρήση μέσα στο χώρο διευθύνσεων του δικτύου σας). </p>
+<p>Η ρύθμιση της σύνδεσης PLIP κατά την εγκατάσταση θα είναι επίσης διαθέσιμη μετά την επανεκκίνηση στο εγκατεστημένο σύστημα (δείτε το <a class="xref" href="ch07.html" title="Κεφάλαιο 7. Μπαίνοντας στο καινούριο σας σύστημα Debian">Κεφάλαιο 7, <i>Μπαίνοντας στο καινούριο σας σύστημα Debian</i></a>). </p>
+<p>Πριν ξεκινήσετε θα πρέπει να ελέγξετε τις ρυθμίσεις στο BIOS (βασική διεύθυνση IO και IRQ) για τις παράλληλες θύρες τόσο στο σύστημα αφετηρίας όσο και στο σύστημα προορισμού. Οι πιο συνηθισμένες τιμές είναι  <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5157"></a>D.4.1. Απαιτήσεις</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Ένα σύστημα προορισμού, που ονομάζεται <span class="emphasis"><em>target</em></span>, στον οποίον θα εγκατασταθεί το Debian. </p></li>
+<li class="listitem"><p>Μέσα εγκατάστασης; δείτε <a class="xref" href="ch02s04.html" title="2.4. Μέσα Εγκατάστασης">Τμήμα 2.4, «Μέσα Εγκατάστασης»</a>. </p></li>
+<li class="listitem"><p>Ένα άλλο σύστημα συνδεδεμένο στο Διαδίκτυο, που ονομάζεται <span class="emphasis"><em>αφετηρία</em></span>, που θα λειτουργήσει σαν πύλη. </p></li>
+<li class="listitem"><p>Ένα καλώδιο DB-25 Null-Modem. Δείτε το <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> για περισσότερες πληροφορίες σχετικά μ' αυτό το καλώδιο και οδηγίες για το πώς να το φτιάξετε οι ίδιοι. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5172"></a>D.4.2. Ρύθμιση της αφετηρίας</h3></div></div></div>
+<p>Το παρακάτω σκριπτ είναι ένα απλό παράδειγμα του πώς να ρυθμίσετε το σύστημα αφετηρίας σαν πύλη στο Διαδίκτυο χρησιμοποιώντας ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# We remove running modules from kernel to avoid conflicts and to
+# reconfigure them manually.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configure the plip interface (plip0 for me, see dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configure gateway
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5182"></a>D.4.3. Εγκατάσταση στο σύστημα προορισμού</h3></div></div></div>
+<p>Εκκινήστε το μέσο εγκατάστασης. Η εγκατάσταση θα πρέπει να γίνει σε κατάσταση ειδικού (expert). Εισάγετε <strong class="userinput"><code>expert</code></strong> στο προτρεπτικό εκκίνησης. Αν χρειάζεται να θέσετε παραμέτρους για αρθρώματα του πυρήνα, θα πρέπει επίσης να το κάνετε στο προτρεπτικό εκκίνησης. Για παράδειγμα, για να εκκινήσετε τον εγκαταστάτη και να ορίσετε τιμές για τις επιλογές <span class="quote">«<span class="quote">io</span>»</span> και <span class="quote">«<span class="quote">irq</span>»</span> του αρθρώματος parport_pc, εισάγετε τα παρακάτω στο προτρεπτικό εκκίνησης:  </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Ακολουθούν οι απαντήσεις που θα πρέπει να δωθούν κατά τα διάφορα στάδια της εγκατάστασης. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Φόρτωση συνιστωσών του εγκαταστάτη από το μέσο εγκατάστασης</span>
+
+</p>
+<p>Επιλέξτε <strong class="userinput"><code>plip-modules</code></strong> από την λίστα. Αυτό θα καταστήσει διαθέσιμους τους οδηγούς PLIP στο σύστημα εγκατάστασης. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Ανίχνευση υλικού δικτύου</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Αν το σύστημα προορισμού <span class="emphasis"><em>έχει</em></span> μια κάρτα δικτύου, θα εμφανιστεί μια λίστα με οδηγούς για τις κάρτες που έχουν ανιχνευθεί. Αν θέλετε να εξαναγκάσετε τον <code class="classname">debian-installer</code> να χρησιμοποιήσει έτσι κι αλλιώς την σύνδεση plip, θα πρέπει να αποεπιλέξετε όλους τους οδηγούς που εμφανίζονται στη λίστα. Προφανώς, αν το σύστημα προορισμού δεν διαθέτει μια κάρτα δικτύου, ο εγκαταστάτης δεν θα εμφανίσει αυτή τη λίστα. </p></li>
+<li class="listitem"><p>Επειδή δεν ανιχνέυθηκε/επιλέχθηκε καμμιά κάρτα δικτύου νωρίτερα, ο εγκαταστάτης θα σας ζητήσει να επιλέξετε έναν οδηγό κάρτας δικτύου από μια λίστα. Επιλέξτε τον οδηγό του αρθρώματος <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Ρύθμιση του Δικτύου </span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Αυτόματη ρύθμιση του δικτύου με DHCP: Όχι </p></li>
+<li class="listitem"><p>Διεύθυνση IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Διεύθυνση Point-to-point <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Διευθύνσεις των διακομιστών ονοματοδοσίας: μπορείτε να εισάγετε τις ίδιες διευθύνσεις που χρησιμοποιήθηκαν και στο σύστημα αφετηρίας (δείτε το αρχείο <code class="filename">/etc/resolv.conf</code>).  </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Εγκαθιστώντας το Debian GNU/Linux από ένα Σύστημα Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Εγκαθιστώντας το Debian GNU/Linux χρησιμοποιώντας PPP over Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Installation af Debian GNU/Linux over Parallel Line IP (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Appendiks D. Diverse forklaringer">
+<link rel="prev" href="apds03.html" title="D.3. Installation af Debian GNU/Linux fra et Unix/Linux-system">
+<link rel="next" href="apds05.html" title="D.5. Installation af Debian GNU/Linux med brug af PPP over Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Installation af Debian GNU/Linux over Parallel Line IP (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks D. Diverse forklaringer</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Installation af Debian GNU/Linux over Parallel Line IP (PLIP)</h2></div></div></div>
+<p>Dette afsnit forklarer hvordan Debian GNU/Linux installeres på en computer uden et Ethernetkort, men kun via en ekstern adgangspunktcomputer tilkoblet via et Null-Modem-kabel (også kaldt for Null-Printer-kabel). Adgangspunktcomputeren skal være forbundet til et netværk, som har et Debian-spejl (f.eks. til internettet). </p>
+<p>I eksemplet i dette appendiks vil vi opsætte en PLIP-forbindelse via et adgangspunkt forbundet til internettet over en opkaldsforbindelse (ppp0). Vi vil bruge IP-adressen 192.168.0.1 og 192.168.0.2 for PLIP-grænsefladerne på målsystemet og kildesystemet respektivt (disse adresser skal være ubrugte indenfor dit netværks adresserum). </p>
+<p>PLIP-forbindelsen opsat under installationen vil også være tilgængelig efter genstarten i det installerede system (se <a class="xref" href="ch07.html" title="Kapitel 7. Start op i dit nye Debian-system">Kapitel 7, <i>Start op i dit nye Debian-system</i></a>). </p>
+<p>Før du begynder, så skal du kontorllere BIOS-konfigurationen (IO-baseadresse og IRQ) for de parallelle porte for både kilde- og målsystemerne. De mest udbredte værdier er <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5100"></a>D.4.1. Krav</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>En målcomputer, kaldet <span class="emphasis"><em>mål</em></span>, hvor Debian vil blive installeret. </p></li>
+<li class="listitem"><p>Systeminstallationsmedie; se <a class="xref" href="ch02s04.html" title="2.4. Installationsmedie">Afsnit 2.4, “Installationsmedie”</a>. </p></li>
+<li class="listitem"><p>En anden computer forbundet til internettet, kaldt <span class="emphasis"><em>kilde</em></span>, som vil fungere som adgangspunkt. </p></li>
+<li class="listitem"><p>Et DB-25 Null-Modem-kabel. Se <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> for yderligere information om dette kabel og instruktioner om hvordan du laver dit eget. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5115"></a>D.4.2. Opsætning af kilde</h3></div></div></div>
+<p>Det følgende skalskript er et simpelt eksempel på hvordan kildecomputeren kan konfigureres som et adgangspunkt til internettet via ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Vi fjerner kørende moduler fra kernen for at undgå konflikter og for at 
+# konfigurere dem om manuelt.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Konfigurer plip-grænsefladen (plip0 for mig, se dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Konfigurer adgangspunkt
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5125"></a>D.4.3. Installation af mål</h3></div></div></div>
+<p>Start installationsmediet op. Installationen skal køres i eksperttilstand; indtast <strong class="userinput"><code>expert</code></strong> ved opstartsprompten. Hvis du skal angive parametre for kernemoduler, så skal du også gøre dette ved opstartsprompten. For eksempel, for at starte installationsprogrammet op og angive værdier for indstillingerne <span class="quote">“<span class="quote">io</span>”</span> og <span class="quote">“<span class="quote">irq</span>”</span> for parport_pc-modulet, så indtast følgende ved opstartsprompten: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Nedenfor er svarene, som skal angives under diverse trin af installationen. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Indlæs installationskomponenter fra installationsmedie</span>
+
+</p>
+<p>Vælg indstillingen <strong class="userinput"><code>plip-modules</code></strong> fra listen; dette vil gøre PLIP-drivere tilgængelige for installationssystemet. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Detekt netværksudstyr</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Hvis målet <span class="emphasis"><em>ikke</em></span> har et netværkskort, så vil en liste med drivermoduler for registrerede kort blive vist. Hvis du ønsker at tvinge <code class="classname">debian-installer</code> til at bruge plip i stedet for, så skal du fravælge alle vist drivermoduler. Indlysende nok, hvis målet ikke har et netværkskort, så vil installationsprogrammet ikke vise denne liste. </p></li>
+<li class="listitem"><p>Da intet netværkskort blev detekteret/valgt tidligere, vil installationsprogrammet anmode dig om at vælge et modul for netværksdriveren fra en liste. Vælg modulet <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">KOnfigurer netværket</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Automatisk konfiguration af netværk med HDCP: Nej </p></li>
+<li class="listitem"><p>IP-adresse: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Punkti til punkt-adresse: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Navneserveradresser: Du kan indtaste de samme adresser brugt på kilde (se <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Installation af Debian GNU/Linux fra et Unix/Linux-system </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Installation af Debian GNU/Linux med brug af PPP over Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

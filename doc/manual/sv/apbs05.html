@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Avancerade inställningar</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="apb.html" title="Appendix B. Automatiserad installation med förinställningar">
+<link rel="prev" href="apbs04.html" title="B.4. Innehållet av en förkonfigurationsfil (för trixie)">
+<link rel="next" href="apc.html" title="Appendix C. Partitionera för Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Avancerade inställningar</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Appendix B. Automatiserad installation med förinställningar</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Avancerade inställningar</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Kör anpassade kommandon under installationen</h3></div></div></div>
+<p>Ett mycket kraftfullt och flexibelt alternativ som erbjuds av förkonfigurationsverktygen är möjligheten att köra kommandon eller skript vid vissa punkter i installationen. </p>
+<p>When the filesystem of the target system is mounted, it is available in <code class="filename">/target</code>. If an installation CD/DVD is used, when it is mounted it is available in <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Förinställning i d-i anses inte som säker. Inget i installationsprogrammet letar
+# efter buffertöverflöden eller andra attackförsök genom värdena i en
+# förkonfigurationsfil såsom den här. Använd endast förkonfigurationfiler från en
+# plats du kan lita på! För att gör det och på grund av att det är generellt sett
+# användbart, här är ett sätt att automatiskt köra de skalkommandon du vill
+# inne i installationsprogrammet.
+
+# Det första kommandot körs så tidigt som möjligt, direkt efter
+# att förinställningen är inläst.
+#d-i preseed/early_command string anna-install some-udeb
+# Det här kommandot körs direkt före partitioneraren startar. Det kan vara
+# användbart för att tillämpa förinställning av dynamisk partitionering som är
+# beroende av tillståndet för diskarna (som kanske annars inte är synligt när
+# preseed/early_command kör).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Det här kommandot körs precis innan installationen är färdig, men när det
+# fortfarande finns en användbar /target-katalog. Du kan göra en chroot till /target och
+# använda det direkt, eller använda apt-install och kommandon från /target för att
+# enkelt installera paket och köra kommandon på målsystemet.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Användning av förinställningar för att ändra på standardvärden</h3></div></div></div>
+<p>Det är möjligt att använda förinställning för att ändra standardsvaret på en fråga, men fortfarande ställa frågan. För att göra det här måste flaggan <em class="firstterm">seen</em> återställas till <span class="quote">”<span class="quote">false</span>”</span> efter att värdet ställts in för en fråga. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Samma effekt kan uppnås för <span class="emphasis"><em>alla</em></span> frågor genom att ställa in parametern <code class="classname">preseed/interactive=true</code> på uppstartsprompten. Det här kan också vara användbart för testning eller felsökning av din förkonfigurationsfil. </p>
+<p>Observera att <span class="quote">”<span class="quote">d-i</span>”</span>-ägaren endast ska användas för variabler som används i själva installationsprogrammet. För variabler som tillhör paket som installeras på målsystemet så ska du istället använda namnet för paketet. Se sidfoten på <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Användning av uppstartsparametrar för att förinställa frågor">Avsnitt B.2.2, ”Användning av uppstartsparametrar för att förinställa frågor”</a>. </p>
+<p>Om du förinställer med hjälp av uppstartsparametrar så kan du göra att installationsprogrammet frågar motsvarade fråga genom att använda operatorn <span class="quote">”<span class="quote">?=</span>”</span> operator, t.ex. <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>värde</code></em></code></strong> (eller <strong class="userinput"><code><em class="replaceable"><code>ägare</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>värde</code></em></code></strong>).. Det här kommer så klart endast ha effekt för parametrar som motsvarar frågorna som visas under en installation och inte för <span class="quote">”<span class="quote">interna</span>”</span> parametrar. </p>
+<p>För mer felsökningsinformation använd uppstartsflagan <code class="classname">DEBCONF_DEBUG=5</code>. Detta innebära att <code class="classname">debconf</code> kommer att skriva mer detaljer om varje inställning för varje variabel och om framstegen genom processen genom varje pakets installationsskript. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Kedjeinläsning av förkonfigurationsfiler</h3></div></div></div>
+<p>Det är möjligt att inkludera andra förkonfigurationsfiler från en förkonfigurationsfil. Alla inställningar i de filerna kommer att åsidosätta eventuella inställningar från filer som lästs in tidigare. Det gör det möjligt att lägga in, till exempel, allmänna nätverksinställningar för din plats i en fil och mer specifika inställningar för vissa konfigurationer i andra filer. </p>
+<div class="informalexample"><pre class="screen"># Fler än en fil kan listas, separerade med blanksteg; alla kommer att
+# läsas in. De inkluderade filerna kan även innehålla egna direktiv för preseed/include.
+# Observera att om filnamnen är relativa, tas de från samma katalog som
+# förkonfigurationsfilen som inkluderar dem.
+#d-i preseed/include string x.cfg
+
+# Installationsprogrammet kan valfritt validera kontrollsummor för förkonfigurationsfiler innan
+# de används. För närvarande stöds endast md5sums, lista kontrollsummorna
+# i samma ordning som listan över filer som ska inkluderas.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Mer flexibelt, det här kör ett skalkommando och om det skriver ut namnen på
+# förkonfigurationsfiler, inkludera de filerna. 
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bosse ]; then echo bosse.cfg; fi
+
+# Mest flexibelt av alla, denna hämtar ett program och kör det. Programmet
+# kan använda kommandon såsom debconf-set för att ändra debconf-databasen.
+# Fler än ett skript kan listas, separerade med blanksteg.
+# Observera att om filnamnen är relativa tas de från samma katalog
+# som förkonfigurationsfilen som kör dem.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Det är även möjligt att kedjeläsa från initrd- eller filförinställningsfasen, in i nätverksförinställningen genom att ställa in preseed/url i de tidigare filerna. Det här kommer att orsaka att nätverksförinställningen genomförs när nätverket kommer upp. Du måste vara försiktig här, eftersom det kommer att vara två olika körningar vid förinställning, vilket till exempel betyder att du kommer att få en andra chans att köra kommandot preseed/early, den andra gången inträffar efter att nätverket har kommit upp. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Innehållet av en förkonfigurationsfil (för trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> Appendix C. Partitionera för Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

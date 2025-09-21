@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Förbered filerna för nätverksuppstart via TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch04.html" title="Kapitel 4. Få tag på installationsmedia">
+<link rel="prev" href="ch04s04.html" title="4.4. Förbereda filer för uppstart med hårddisk">
+<link rel="next" href="ch04s06.html" title="4.6. Automatisk installation">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Förbered filerna för nätverksuppstart via TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 4. Få tag på installationsmedia</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Förbered filerna för nätverksuppstart via TFTP</h2></div></div></div>
+<p>Om din maskin är ansluten till ett lokalt nätverk har du möjligheten att starta upp via nätverket från en annan maskin med TFTP. Om du tänker starta upp installationssystemet från en annan maskin behöver uppstartsfilerna placeras på specifika platser på den maskinen och maskinen konfigureras för att få stöd för uppstart av din specifika maskin. </p>
+<p>Du behöver konfigurera en TFTP-server, och för många maskiner även en DHCP-server<span class="phrase">, eller BOOTP-server</span>. </p>
+<p> <span class="phrase">BOOTP är ett IP-protokoll som informerar en dator om dess IP-adress och var på nätverket den kan hämta en uppstartsavbildning.</span> DHCP (Dynamic Host Configuration Protocol) är en mer flexibel, bakåtkompatibel utökning av BOOTP. Vissa system kan endast konfigureras via DHCP. </p>
+<p>Trivial File Transfer Protocol (TFTP) används för att erbjuda uppstartsavbildningar till klienten. Teoretiskt sett kan alla servrar, på alla plattformar, som implementerat de här protokollen, kan användas. I exemplen i det här avsnittet, tillhandahåller vi kommandon för SunOS 4.x, SunOS 5.x (även kallad Solaris) och GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>För en Debian GNU/Linux-server så rekommenderar vi <code class="classname">tftpd-hpa</code>. Den är skriven av samma upphovsman som starthanteraren <code class="classname">syslinux</code> och är därför minst sannolik att orsaka problem. Ett bra alternativ är <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Konfigurering av DHCP-server</h3></div></div></div>
+<p>En fri DHCP-serverprogramvara är ISC <span class="command"><strong>dhcpd</strong></span>. För Debian GNU/Linux, rekommenderas paketet <code class="classname">isc-dhcp-server</code>. Här är en exempelkonfigurationsfil för det (se <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "exempel.se";
+option domain-name-servers ns1.exempel.se;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servernamn";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host klientnamn {
+  filename "/tftpboot.img";
+  server-name "servernamn";
+  next-server servernamn;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>I det här exemplet finns det en server kallad <em class="replaceable"><code>servernamn</code></em> som gör allt arbete som DHCP-server, TFTP-server och nätverksgateway. Du behöver nästan säkert ändra domännamnsalternativen, såväl som servernamnet och klientens maskinvaruadress. Alternativet <em class="replaceable"><code>filename</code></em> bör vara ange namnet på den fil som ska hämtas via TFTP. </p>
+<p>Efter du har redigerat konfigurationsfilen för <span class="command"><strong>dhcpd</strong></span>, starta om den med <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1597"></a>4.5.1.1. Aktivera PXE-uppstart i DHCP-konfigurationen</h4></div></div></div>
+<p>Här är ett annat exempel på en <code class="filename">dhcp.conf</code>, som använder Pre-boot Execution Environment-metoden (PXE) för TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "exempel.se";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# Nästa paragraf behöver ändras för att passa din miljö
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# gatewayadressen kan vara olik
+# (tillgång till Internet till exempel)
+  option routers 192.168.1.1;
+# indikerar dns-servern du vill använda
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+ next-server 192.168.1.3;
+ host tftpclient {
+# maskinvaruadressen för tftp-klienten
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Observera att för PXE-uppstarter är klientfilnamnet <code class="filename">pxelinux.0</code> en starthanterare, inte en kärnavbildning (se <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Flytta TFTP-avbildningarna till rätt plats">Avsnitt 4.5.4, ”Flytta TFTP-avbildningarna till rätt plats”</a> nedan). </p>
+<p>Om din maskin använder UEFI för att starta måste du ange en startladdare som är lämplig för UEFI-maskiner, till exempel </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Konfigurera en BOOTP-server</h3></div></div></div>
+<p>Det finns två BOOTP-servrar tillgängliga för GNU/Linux. Den första är CMU <span class="command"><strong>bootpd</strong></span>. Den andra är faktiskt en DHCP-server: ISC <span class="command"><strong>dhcpd</strong></span>. I Debian GNU/Linux finns dessa i paketen <code class="classname">bootp</code> respektive <code class="classname">isc-dhcp-server</code>. </p>
+<p>För att använda CMU <span class="command"><strong>bootpd</strong></span>, måste du först kommentera bort (eller lägga till) den relevanta raden i <code class="filename">/etc/inetd.conf</code>. På Debian GNU/Linux kan du köra <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, sedan <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> för att göra det. Om din BOOTP-server inte kör Debian, bör raden i fråga se ut så här: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Nu måste du skapa filen <code class="filename">/etc/bootptab</code>. Den har samma sorts familjära och kryptiska format som de gamla goda BSD-filerna <code class="filename">printcap</code>, <code class="filename">termcap</code> och <code class="filename">disktab</code>. Se manualsidan för <code class="filename">bootptab</code> för mer information. För CMU <span class="command"><strong>bootpd</strong></span> behöver du känna till maskinvaruadressen (MAC) för klienten. Här är ett exempel på en <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> Du behöver ändra åtminstone alternativet <span class="quote">”<span class="quote">ha</span>”</span>, som anger maskinvaruadressen för klienten. Alternativet <span class="quote">”<span class="quote">bf</span>”</span> anger filen som klienten bör hämta via TFTP; se <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Flytta TFTP-avbildningarna till rätt plats">Avsnitt 4.5.4, ”Flytta TFTP-avbildningarna till rätt plats”</a> för mer detaljer. </p>
+<p>Tvärtemot är konfigurering av BOOTP med ISC <span class="command"><strong>dhcpd</strong></span> riktigt enkelt, för att den behandlar BOOTP-klienter som vanliga specialfall av DHCP-klienter. Vissa arkitekturer kräver en komplex konfiguration för att starta upp klienter via BOOTP. Om din dator är en av dessa, läs avsnittet <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Konfigurering av DHCP-server">Avsnitt 4.5.1, ”Konfigurering av DHCP-server”</a>. Om inte, kommer du antagligen komma undan med att bara lägga till direktivet <strong class="userinput"><code>allow bootp</code></strong> till konfigurationsblocket för subnätet som innehåller klienten i <code class="filename">/etc/dhcp/dhcpd.conf</code>, och starta om <span class="command"><strong>dhcpd</strong></span> med <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Aktivering av TFTP-server</h3></div></div></div>
+<p>För att få igång TFTP-servern så bör du först försäkra dig om att <span class="command"><strong>tftpd</strong></span> är aktiverad. </p>
+<p>I det fallet med <code class="classname">tftpd-hpa</code> så finns det två sätt som tjänsten kan köras på. Den kan startas vid behov av systemets <code class="classname">inetd</code>-demon, eller så kan den konfigureras till att köras som en oberoende demon. Vilken av dessa metoder som används väljs när paketet installeras och kan ändras genom att konfigurera om paketet. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Historiskt sett hanterade TFTP-servrarna  avbildningar från katalogen <code class="filename">/tftpboot</code>. Dock kan Debian GNU/Linux-paket använda andra kataloger för att följa <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a>. Till exempel, <code class="classname">tftpd-hpa</code> använder som standard <code class="filename">/srv/tftp</code>. Du kan därför behöva justera konfigurationsexemplen i det här avsnittet. </p></td></tr>
+</table></div>
+<p>Alla tillgängliga alternativ för <span class="command"><strong>in.tftpd</strong></span> i Debian bör logga TFTP-begäran till systemloggarna som standard. Vissa av dem har stöd för argumentet <strong class="userinput"><code>-v</code></strong> för att öka informationsnivån. Det rekommenderas att kontrollera dessa loggmeddelanden när uppstartsproblem sker eftersom de är en bra startpunkt för att diagnostisera orsaken till felen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Flytta TFTP-avbildningarna till rätt plats</h3></div></div></div>
+<p>Placera sedan TFTP-uppstartsavbildningen du behöver, som du hittar i <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Var man får tag på installationsfiler">Avsnitt 4.2.1, ”Var man får tag på installationsfiler”</a>, i katalogen för uppstartsavbildningar för <span class="command"><strong>tftpd</strong></span>. Du kan behöva att skapa en länk från den filen till den fil som <span class="command"><strong>tftpd</strong></span> kommer att använda för att starta upp en specifik klient. Tyvärr fastställs filnamnet av TFTP-klienten och det finns inga riktiga standarder. </p>
+<p>För PXE-uppstart är allt du behöver konfigurerat i filen <code class="filename">netboot/netboot.tar.gz</code>. Extrahera helt enkelt den här filen till katalogen för uppstartsavbildningar för <span class="command"><strong>tftpd</strong></span>. Se till att din dhcp-server är konfigurerad att skicka <code class="filename">pxelinux.0</code> till <span class="command"><strong>tftpd</strong></span> som det filnamn som ska användas för uppstart. För UEFI maskiner, så måste du skicka ut ett lämpligt EFI-startavbildsnamn (som <code class="filename"> /debian-installer/amd64/bootnetx64.efi </code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Förbereda filer för uppstart med hårddisk </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Automatisk installation</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

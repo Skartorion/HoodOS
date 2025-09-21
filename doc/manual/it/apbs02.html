@@ -1,0 +1,276 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Uso della preconfigurazione</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Appendice B. Installazione automatica tramite preconfigurazione">
+<link rel="prev" href="apbs01.html" title="B.1. Introduzione">
+<link rel="next" href="apbs03.html" title="B.3. Creazione di un file di preconfigurazione">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Uso della preconfigurazione</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Appendice B. Installazione automatica tramite preconfigurazione</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Uso della preconfigurazione</h2></div></div></div>
+<p>Le prime cose da fare sono creare un file di preconfigurazione e metterlo nella posizione da cui lo si vuole usare. La creazione del file di preconfigurazione è trattata in seguito, invece lo spostamento del file è molto semplice per la preconfigurazione network o quando si vuole leggere il file da una chiavetta USB. Invece per inserire il file in un'immagine ISO per l'installazione è necessario masterizzare una nuova immagine. Come preparare il file di preconfigurazione per initrd è fuori dagli scopi di questo documento, si consulti la documentazione del <code class="classname">installatore Debian</code> per gli sviluppatori. </p>
+<p>Un file di preconfigurazione di esempio, che può essere usato come base per il proprio file di preconfigurazione è disponibile in <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Questo file è creato partendo dai frammenti utilizzati in questa appendice. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Caricamento del file di preconfigurazione</h3></div></div></div>
+<p>Se si utilizza la preconfigurazione initrd, bisogna assicurarsi solo che il file <code class="filename">preseed.cfg</code> si trovi nella directory principale del initrd. L'installatore automaticamente verifica se questo file è presente e lo carica. </p>
+<p>Per gli altri metodi di preconfigurazione è necessario specificare durante l'avvio dell'installatore quale file usare. Normalmente questo può essere fatto passando al kernel un determinato parametro d'avvio, manualmente durante l'avvio oppure tramite il file di configurazione del boot loader <span class="phrase">(p.e. <code class="filename">syslinux.cfg</code>) aggiungendo il parametro alla fine delle righe <span class="quote">«<span class="quote">append</span>»</span> per il kernel.</span> </p>
+<p>Se si specifica un file di preconfigurazione nella configurazione del boot loader, è possibile modificare la configurazione in modo che non sia necessario premere Invio per avviare l'installazione. <span class="phrase">Con syslinux si può ottenere questo risultato impostando il timeout a <code class="literal">1</code> in <code class="filename">syslinux.cfg</code>.</span>  </p>
+<p>Per essere sicuri che l'installatore usi il file di preconfigurazione corretto si può, opzionalmente, specificare una checksum per il file. Attualmente la checksum deve essere di tipo md5sum e, se viene specificata, il file di preconfigurazione la deve verificare altrimenti l'installatore non userà quel file. </p>
+<div class="informalexample"><pre class="screen">Parametri di avvio da specificare:
+- con avvio da rete:
+  preseed/url=http://host/percorso/di/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- oppure
+  preseed/url=tftp://host/percorso/di/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- con avvio da un'immagine per l'installazione masterizzata:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- con installazione da un supporto USB (mettere il file di preconfigurazione
+  nella directory principale della chiavetta USB):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Notare che quando <code class="filename">preseed/url</code>, <code class="filename">preseed/file</code> e <code class="filename">preseed/file/checksum</code> sono passati come parametri di avvio possono essere abbreviati rispettivamente con <code class="filename">url</code>, <code class="filename">file</code> e <code class="filename">preseed-md5</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Uso dei parametri di avvio per la preconfigurazione</h3></div></div></div>
+<p>Anche se un file di preconfigurazione non può essere usato per preconfigurare alcuni passi, l'installazione può avvenire ugualmente in modo completamente automatico dato che è possibile passare i valori di preconfigurazione tramite la riga di comando all'avvio dell'installatore. </p>
+<p>I parametri di avvio possono essere usati anche per impostare le risposte ad alcune domande senza usare la preconfigurazione. In questo manuale ci sono esempi in cui questa funzionalità è particolarmente utile. </p>
+<p>Per impostare un valore da usare all'interno di <code class="classname">installatore Debian</code> è sufficiente passare <strong class="userinput"><code><em class="replaceable"><code>percorso/alla/variabile</code></em>=<em class="replaceable"><code>valore</code></em></code></strong> per qualsiasi variabile di preconfigurazione mostrata negli esempi di questa appendice. Se un valore deve essere usato per configurare dei pacchetti sul sistema installato è necessario inserire come prefisso il <em class="firstterm">proprietario</em><a href="#ftn.id4550" class="footnote" name="id4550"><sup class="footnote">[19]</sup></a> della variabile in questo modo <strong class="userinput"><code><em class="replaceable"><code>proprietario</code></em>:<em class="replaceable"><code>percorso/alla/variabile</code></em>=<em class="replaceable"><code>valore</code></em></code></strong>. Se non si specifica il proprietario, il valore della variabile non viene copiato nel database di debconf sul sistema installato e quindi non può essere usato durante la successiva configurazione del relativo pacchetto. </p>
+<p>Normalmente una domanda preconfigurata non viene posta. Per impostare la risposta predefinita a una domanda e far in modo che la domanda sia comunque posta, usare l'operatore <span class="quote">«<span class="quote">?=</span>»</span> al posto di <span class="quote">«<span class="quote">=</span>»</span>. Si veda <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Uso della preconfigurazione per modificare i valori predefiniti">Sezione B.5.2, «Uso della preconfigurazione per modificare i valori predefiniti»</a>. </p>
+<p>Alcune delle variabili che più frequentemente sono impostate dal prompt boot dispongono di un'abbreviazione. Negli esempi contenuti in questa appendice è usata, quando disponibile, l'abbreviazione al posto della variabile completa. Per esempio alla variabile <code class="literal">preseed/url</code> è stato assegnato l'alias <code class="literal">url</code>. Un altro esempio è l'alias <code class="literal">tasks</code> che viene tradotto in <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>L'uso di <span class="quote">«<span class="quote">---</span>»</span> nelle opzioni d'avvio ha un significato speciale, i parametri del kernel che seguono l'ultimo <span class="quote">«<span class="quote">---</span>»</span> potrebbero essere copiati nella configurazione del bootloader nel sistema installato (solo se il boot loader è supportato dall'installatore). L'installatore filtra qualsiasi opzione (come le opzioni di preconfigurazione) che riesce a riconoscere. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Gli attuali kernel linux (2.6.9 e successivi) accettano al massimo 32 opzioni sulla riga di comando e 32 opzioni d'ambiente, comprese quelle aggiunte dal sistema d'installazione. Nel caso si superino questi limiti il kernel si blocca. Le versioni precedenti del kernel accettano un numero inferiore di opzioni. </p></td></tr>
+</table></div>
+<p>Nella maggior parte dei casi alcune delle opzioni predefinite nel file di configurazione del boot loader, come <code class="literal">vga=normal</code> possono essere tranquillamente rimosse per permettere l'aggiunta di ulteriori opzioni di preconfigurazione. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Non sempre potrebbe essere possibile specificare valori con spazi come parametro d'avvio, persino se si delimitano con delle virgolette. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Modalità <span class="quote">«<span class="quote">auto</span>»</span>
+</h3></div></div></div>
+<p>Ci sono alcune funzionalità di Debian Installer che combinate insieme permettono di ottenere installazioni automatiche e personalizzate (anche molto complesse) semplicemente passando delle righe di comando al prompt boot. </p>
+<p>Per attivare queste funzionalità si deve scegliere <code class="literal">Automated install</code> dal menu di avvio, su alcune architetture e in alcuni metodi di avvio è chiamato <code class="literal">auto</code>. Quindi, in questa sezione, <code class="literal">auto</code> non è un parametro ma si riferisce alla voce nel menu di avvio che poi deve essere seguita dai parametri di avvio. <span class="phrase">Consultare in <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. La schermata di avvio">Sezione 5.1.5, «La schermata di avvio»</a> le informazioni su come aggiungere i parametri di avvio.</span> </p>
+<p>Per illustrare queste funzionalità sono riportati alcuni esempi su come possono essere usate dal prompt boot: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Questa funzionalità assume la presenza di un server DHCP che indichi alla macchina un server DNS per risolvere <code class="literal">autoserver</code>, eventualmente aggiungendo il dominio locale se fornito dal DHCP. Se questa funzione è usata su una macchina del dominio <code class="literal">esempio.com</code> e se il DHCP è configurato correttamente allora il file di preconfigurazione viene recuperato da <code class="literal">http://autoserver.esempio.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>L'ultima parte dell'URL (<code class="literal">d-i/trixie/./preseed.cfg</code>) è impostata in <code class="literal">auto-install/defaultroot</code>, il cui valore predefinito contiene la directory <code class="literal">trixie</code> per permettere alle versioni successive di specificare il proprio nome in codice e quindi permettere migrazioni future in modo controllato. Il <code class="literal">/./</code> viene usato per indicare la directory principale relativamente a cui le restanti parti del percorso possono essere ancorate (da usarsi in preseed/include e preseed/run); questo permette di specificare file sia come URL completi, come percorsi inizianti con <code class="literal">/</code> e quindi ancorati oppure come percorsi relativi dalla posizione in cui è stato trovato l'ultimo file di preconfigurazione. Questo può essere usato per costruire script più portabili, dove l'intera gerarchia di script può essere spostata in una nuova posizione senza comprometterne il funzionamento, per esempio copiando i file in una chiavetta USB quando in precedenza erano ospitati da server web. In questo esempio, se il file di preconfigurazione imposta <code class="literal">preseed/run</code> al valore <code class="literal">/scripts/late_command.sh</code>, il file viene prelevato da <code class="literal">http://autoserver.esempio.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Se non esiste un'infrastruttura DHCP o DNS locale oppure se non si vuole usare il percorso predefinito per il file <code class="filename">preseed.cfg</code>, è comunque possibile usare un URL esplicita oppure, quando non si usa l'elemento <code class="literal">/./</code>, viene ancorata al punto di partenza del percorso (cioè al terzo <code class="literal">/</code> nella URL). Segue un esempio che richiede un minimo supporto da parte della rete locale: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/percorso/di/mypreseed.file</code></em>
+</pre></div>
+<p> Il modo in cui funziona è questo: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>quando manca il protocollo nella URL, viene assunto http; </p></li>
+<li class="listitem"><p>se la sezione per il nome host non contiene dei punti, viene aggiunto il dominio indicato da DHCP; </p></li>
+<li class="listitem"><p>se dopo il nome host non ci sono <code class="literal">/</code>, viene usato il percorso predefinito. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Oltre l'URL è possibile specificare anche altre impostazioni che non influenzano direttamente il comportamento del <code class="classname">installatore Debian</code> ma che possono essere passate a un qualsiasi script specificato con <code class="literal">preseed/run</code> all'interno del file di preconfigurazione. Al momento l'unico esempio di questa caratteristica è <code class="literal">auto-install/classes</code> (che dispone dell'alias <code class="literal">classes</code>) e può essere usato in questo modo: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>esempio.com</code></em> classes=<em class="replaceable"><code>classe_A;classe_B</code></em>
+</pre></div>
+<p> Le classi possono, per esempio, indicare il tipo di sistema da installare oppure la localizzazione da usare. </p>
+<p>Ovviamente è possibile estendere questo concetto e, nel caso, è ragionevole usare il namespace auto-install, usando nei propri script qualcosa di simile a <code class="literal">auto-install/style</code>. Se si necessitasse questa possibilità si consiglia di inviare una segnalazione alla mailing list <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> in modo da evitare conflitti nel namespace ed eventualmente aggiungere un alias per i nuovi parametri. </p>
+<p>La possibilità di scegliere all'avvio <code class="literal">auto</code> non è ancora disponibile su tutte le architetture. È possibile ottenere lo stesso effetto semplicemente aggiungendo i parametri <code class="literal">auto=true priority=critical</code> nella riga di comando per il kernel. Il parametro del kernel <code class="literal">auto</code> è un alias di <code class="literal">auto-install/enable</code> e se impostato a <code class="literal">true</code> ritarda le domande su localizzazione e tastiera fino a quando non è data la possibilità di preconfigurarle, mentre l'impostazione <code class="literal">priority</code> è un alias di <code class="literal">debconf/priority</code> e impostarla a <code class="literal">critical</code> blocca la richiesta di qualsiasi domanda con priorità inferiore. </p>
+<p>Quando si seleziona l'installazione Automatica senza specificare una configurazione di preconfigurazione, all'utente viene richiesto di indicare quale preconfigurazione usare. Invece, se è stata specificata la configurazione di preconfigurazione da utilizzare, il prompt viene normalmente soppresso per consentire un'installazione completamente non interattiva. Tuttavia, se l'intento è quello di permettere la modifica delle impostazioni predefinite usando un <code class="literal">preseed.cfg</code> inserito nel initrd, il risultato sarà come se non fosse stata indicata alcuna preconfigurazione, nonostante sia stata indicata. In questo caso, la variabile debconf <code class="literal">auto-install/cloak_initrd_preseed</code> può essere impostata a <code class="literal">true</code> (ad esempio nel file <code class="literal">preseed.cfg</code> nel initrd) per ottenere il comportamento desiderato. </p>
+<p>Altre opzioni che possono risultare utili quando si cerca di automatizzare un'installazione con DHCP sono: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> che indica alla macchina di usare il primo dispositivo di rete attivo e di essere un po' più paziente durante l'attesa della risposta all'interrogazione DHCP. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Suggerimento]" src="images/tip.png"></td>
+<th align="left">Suggerimento</th>
+</tr>
+<tr><td align="left" valign="top"><p>Un esempio esaustivo su come utilizzare questa infrastruttura, compresi degli script e delle classi d'esempio, può essere trovato sul <a class="ulink" href="http://hands.com/d-i/" target="_top">sito web dello sviluppatore</a>. Sono disponibili anche altri esempi che mostrano come, usando in modo creativo la preconfigurazione, si possono ottenere molti altri interessati effetti. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Alias utilizzati nella preconfigurazione</h3></div></div></div>
+<p>I seguenti alias possono risultare utili quando si usa la preconfigurazione (in modalità auto). Notare che questi sono semplicemente degli alias più brevi per i nomi delle domande e che è sempre necessario specificare anche un valore, per esempio <code class="literal">auto=true</code> o <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Esempi di preconfigurazione del prompt di avvio</h3></div></div></div>
+<p>Seguono alcuni esempi su come potrebbe cambiare l'aspetto del prompt di avvio (è necessario adattare gli esempi alle proprie esigenze<span class="phrase">; vedere anche <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. La schermata di avvio">Sezione 5.1.5, «La schermata di avvio»</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Per impostare Francese come lingua e Francia come paese:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Per impostare Inglese come lingua, Germania come paese e Tedesco come
+# disposizione della tastiera:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Per installare il desktop MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Per installare il task web-server:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Uso di un server DHCP per specificare un file di preconfigurazione</h3></div></div></div>
+<p>È possibile usare anche DHCP per indicare un file di preconfigurazione da scaricare dalla rete, questo è possibile perché DHCP consente il passaggio del nome di un file fra server e client. Normalmente il file specificato è quello per l'avvio dalla rete, però se al suo posto è inserito un URL allora il programma d'installazione scarica il file dall'URL e lo usa come un file di preconfigurazione. Segue un esempio di come deve essere impostato il file dhcpd.conf per la versione 3 del server DHCP di ISC (il pacchetto Debian isc-dhcp-server). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Notare che l'esempio precedente limita la specifica del nome del file ai soli client DHCP che si identificano come <span class="quote">«<span class="quote">d-i</span>»</span>, quindi ha effetto solo sul programma d'installazione e non influenza i normali client DHCP. Si può anche mettere il testo in una sezione del file di configurazione in modo che sia usata da un solo host per impedire la preconfigurazione di tutte le macchine che si installano sulla propria rete. </p>
+<p>Un modo corretto per usare la preconfigurazione tramite DHCP è preconfigurare i soli valori specifici della propria rete, per esempio quale mirror Debian usare. In questo modo tutte le installazioni fatte sulla propria rete hanno già attivo un buon mirror, ma il resto della configurazione deve essere fatto interattivamente. L'uso della preconfigurazione tramite DHCP per fare la completa configurazione delle installazioni Debian deve essere fatto con molta cautela. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4550" class="footnote"><p><a href="#id4550" class="para"><sup class="para">[19] </sup></a> Il proprietario di una variabile debconf (o modello) è normalmente il nome del pacchetto che contiene il corrispondente modello. Le variabili usate all'interno dell'installatore hanno come proprietario <span class="quote">«<span class="quote">d-i</span>»</span>. I modelli e le variabili possono avere più di un proprietario, questo aiuta a determinare in quali casi possono essere eliminati dal database di debconf quando il pacchetto viene rimosso. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Introduzione </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Creazione di un file di preconfigurazione</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

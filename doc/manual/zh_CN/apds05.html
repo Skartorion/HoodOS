@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. 通过 PPP over Ethernet（PPPPoE）安装 Debian GNU/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apd.html" title="附录 D. 其他">
+<link rel="prev" href="apds04.html" title="D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux">
+<link rel="next" href="ape.html" title="附录 E. 文案">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. 通过 PPP over Ethernet（PPPPoE）安装 Debian GNU/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 D. 其他</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. 通过 PPP over Ethernet（PPPPoE）安装 Debian GNU/Linux</h2></div></div></div>
+<p>在一些国家，PPP over Ethernet (PPPoE) 是互联网供应商提供的通用宽带协议(ADSL 或 cable)。虽然安装程序默认并不支持使用 PPPoE 建立网络连接，但却很容易实现。本节将说明操作方法。 </p>
+<p>安装时建立的 PPPoE 连接，重新启动后在新安装的系统里面仍然可用(参阅 <a class="xref" href="ch07.html" title="第 7 章 引导进入新的 Debian 系统">第 7 章 <i>引导进入新的 Debian 系统</i></a>)。 </p>
+<p>要让安装过程中有建立和使用 PPPoE 的选项，您需要使用 CD-ROM/DVD 映像。其他的安装方式不支持（例如 netboot ）。 </p>
+<p>通过 PPPoE 进行安装，绝大部分与其他方式相同。下面步骤说明不同之处。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>使用 <strong class="userinput"><code>modules=ppp-udeb</code></strong> <a href="#ftn.id5175" class="footnote" name="id5175"><sup class="footnote">[22]</sup></a> 作为引导参数引导安装程序。这确保设置 PPPoE 的组件 (<code class="classname">ppp-udeb</code>) 会被加载并自动运行。 </p></li>
+<li class="listitem"><p>按照正常的步骤进行安装（语言、国家和键盘选择；加载额外的安装组件<a href="#ftn.id5181" class="footnote" name="id5181"><sup class="footnote">[23]</sup></a>）。 </p></li>
+<li class="listitem"><p>下一步是探测网络硬件，目的是识别当前系统中的网卡。 </p></li>
+<li class="listitem">
+<p>在真正的 PPPoE 设置启动后，安装程序会探测所有识别的网卡，寻找 PPPoE 连接(一个处理 PPPoE 连接的服务器)。 </p>
+<p>第一次尝试可能无法找到连接。这经常会出现在低速或过载的网络，或者有缺陷的服务器上。多数情况下，第二次就能成功发现连接；要重试，从安装程序的主菜单中选择 <span class="guimenuitem">Configure and start a PPPoE connection</span>。 </p>
+</li>
+<li class="listitem"><p>连接找到之后，用户需要提供登录信息（PPPoE 用户名和密码）。 </p></li>
+<li class="listitem"><p>此时，安装程序就会用所提供的信息建立 PPPoE 连接。如果所提供的信息正确，PPPoE 将会正确配置，并且安装程序可以使用它连上互联网获取软件包(在需要时)。假如登录信息不正确或有错误出现，安装程序将停止，但可以选择 <span class="guimenuitem">Configure and start PPPoE connection</span> 菜单项重新配置。 </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5175" class="footnote"><p><a href="#id5175" class="para"><sup class="para">[22] </sup></a> 参阅 <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. 引导屏幕">第 5.1.5 节 “引导屏幕”</a> 了解如何添加引导参数。</p></div>
+<div id="ftn.id5181" class="footnote"><p><a href="#id5181" class="para"><sup class="para">[23] </sup></a> 本步骤中，<code class="classname">ppp-udeb</code> 组件作为其中的一个组件被加载。如果使用中或低优先级（expert 模式），您可以手动选择 <code class="classname">ppp-udeb</code>，而不是在引导提示符后面输入<span class="quote">“<span class="quote">模块</span>”</span>参数。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. 通过 Parallel Line IP（PLIP）安装 Debian GNU/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 附录 E. 文案</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

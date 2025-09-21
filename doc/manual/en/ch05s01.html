@@ -1,0 +1,445 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.1. Booting the Installer on 64-bit PC</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="ch05.html" title="Chapter 5. Booting the Installation System">
+<link rel="prev" href="ch05.html" title="Chapter 5. Booting the Installation System">
+<link rel="next" href="ch05s02.html" title="5.2. Accessibility">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.1. Booting the Installer on <span class="phrase">64-bit PC</span>
+</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Chapter 5. Booting the Installation System</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s02.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2270"></a>5.1. Booting the Installer on <span class="phrase">64-bit PC</span>
+</h2></div></div></div>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Warning]" src="images/warning.png"></td>
+<th align="left">Warning</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+If you have any other operating systems on your system that you wish to
+keep (dual boot setup), you should make sure that they have been properly
+shut down <span class="emphasis"><em>before</em></span> you boot the installer.
+Installing an operating system while another operating system is in
+hibernation (has been suspended to disk) could result in loss of, or damage
+to the state of the suspended operating system which could cause problems
+when it is rebooted.
+
+</p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+For information on how to boot the graphical installer, see
+<a class="xref" href="ch05s01.html#graphical" title="5.1.6. The Graphical Installer">Section 5.1.6, “The Graphical Installer”</a>.
+
+</p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-boot-x86"></a>5.1.1. Booting from USB Memory Stick</h3></div></div></div>
+<p>
+If your computer will boot from USB, this will probably be the easiest
+route for installation. Assuming you have prepared everything from
+<span class="phrase"><a class="xref" href="ch03s06.html#boot-dev-select-x86" title="3.6.2. Boot Device Selection">Section 3.6.2, “Boot Device Selection”</a></span>
+and <a class="xref" href="ch04s03.html" title="4.3. Preparing Files for USB Memory Stick Booting">Section 4.3, “Preparing Files for USB Memory Stick Booting”</a>, just plug your USB stick into some free
+USB connector and reboot the computer.  The system should boot up, and
+unless you have used the flexible way to build the stick and not
+enabled it, you should be presented with a graphical boot menu (on
+hardware that supports it). Here you can select various installer
+options, or just hit <span class="keycap"><strong>Enter</strong></span>.
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2286"></a>5.1.2. Booting from optical disc (CD/DVD)</h3></div></div></div>
+<p>
+
+If you have a set of optical discs, and your machine supports booting directly
+off those, great!  Simply
+<span class="phrase">
+configure your system for booting off an optical disc as described in
+<a class="xref" href="ch03s06.html#boot-dev-select-x86" title="3.6.2. Boot Device Selection">Section 3.6.2, “Boot Device Selection”</a>,
+</span>
+insert the disc, reboot, and proceed to the next chapter.
+
+</p>
+<p>
+
+Note that certain optical drives may require special drivers, and thus be
+inaccessible in the early installation stages. If it turns out the
+standard way of booting off an optical disc doesn't work for your hardware,
+revisit this chapter and read about alternate kernels and installation
+methods which may work for you.
+
+</p>
+<p>
+
+Even if you cannot boot from optical disc, you can probably install the
+Debian system components and any packages you want from such disc.
+Simply boot using a different medium and when it's
+time to install the operating system, base system, and any additional
+packages, point the installation system at the optical drive.
+
+</p>
+<p>
+
+If you have problems booting, see <a class="xref" href="ch05s04.html" title="5.4. Troubleshooting the Installation Process">Section 5.4, “Troubleshooting the Installation Process”</a>.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-initrd"></a>5.1.3. Booting from Linux using
+  <span class="command"><strong>GRUB</strong></span>
+</h3></div></div></div>
+<p>
+To boot the installer from hard disk, you must first download
+and place the needed files as described in <a class="xref" href="ch04s04.html" title="4.4. Preparing Files for Hard Disk Booting">Section 4.4, “Preparing Files for Hard Disk Booting”</a>.
+</p>
+<p>
+For <span class="command"><strong>GRUB2</strong></span>, you will need to configure two
+essential things in <code class="filename">/boot/grub/grub.cfg</code>:
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+to load the <code class="filename">initrd.gz</code> installer at boot time;
+
+</p></li>
+<li class="listitem"><p>
+
+have the <code class="filename">vmlinuz</code> kernel use a RAM disk as
+its root partition.
+
+</p></li>
+</ul></div>
+<p>
+
+</p>
+<p>
+
+An entry for the installer would be for example:
+
+</p>
+<div class="informalexample"><pre class="screen">
+menuentry 'New Install' {
+insmod part_msdos
+insmod ext2
+set root='(hd0,msdos1)'
+linux /boot/newinstall/vmlinuz
+initrd /boot/newinstall/initrd.gz
+}
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-tftp-x86"></a>5.1.4. Booting with TFTP</h3></div></div></div>
+<p>
+
+Booting from the network requires that you have a network
+connection and a TFTP network boot server (and probably also a
+DHCP, RARP, or BOOTP server for automatic network configuration).
+
+</p>
+<p>
+
+The server-side setup to support network booting is described in <a class="xref" href="ch04s05.html" title="4.5. Preparing Files for TFTP Net Booting">Section 4.5, “Preparing Files for TFTP Net Booting”</a>.
+
+</p>
+<p>
+
+There are various ways to do a TFTP boot on i386.
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2319"></a>5.1.4.1. NIC or Motherboard that support PXE</h4></div></div></div>
+<p>
+
+It could be that your Network Interface Card or Motherboard provides
+PXE boot functionality.
+This is a <span class="trademark">Intel</span>™ re-implementation
+of TFTP boot. If so, you may be able to configure your BIOS/UEFI to boot from the
+network.
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2323"></a>5.1.4.2. NIC with Network BootROM</h4></div></div></div>
+<p>
+
+It could be that your Network Interface Card provides
+TFTP boot functionality.
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2326"></a>5.1.4.3. Etherboot</h4></div></div></div>
+<p>
+
+The <a class="ulink" href="http://www.etherboot.org" target="_top">etherboot project</a>
+provides bootdiskettes and even bootroms that do a TFTPboot.
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-screen"></a>5.1.5. The Boot Screen</h3></div></div></div>
+<p>
+
+When the installer boots, you should be presented with a friendly graphical
+screen showing the Debian logo and a menu:
+
+</p>
+<div class="informalexample"><pre class="screen">
+Debian GNU/Linux installer boot menu
+
+Graphical install
+Install
+Advanced options                            &gt;
+Accessible dark contrast installer menu     &gt;
+Help
+Install with speech synthesis
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+This graphical screen will look very slightly different depending on
+how your computer has booted (BIOS or UEFI), but the same options will
+be shown.
+
+</p></td></tr>
+</table></div>
+<p>
+
+Depending on the installation method you are using, the <span class="quote">“<span class="quote">Graphical
+install</span>”</span> option may not be available. Bi-arch images additionally have a
+64 bit variant for each install option, right below it, thus almost doubling the
+number of options.
+
+</p>
+<p>
+
+For a normal installation, select either the <span class="quote">“<span class="quote">Graphical install</span>”</span> or
+the <span class="quote">“<span class="quote">Install</span>”</span> entry — using either the
+arrow keys on your keyboard or by typing the first (highlighted) letter —
+and press <span class="keycap"><strong>Enter</strong></span> to boot the installer. The 
+<span class="quote">“<span class="quote">Graphical install</span>”</span> entry is already selected by default.
+
+</p>
+<p>
+
+The <span class="quote">“<span class="quote">Advanced options</span>”</span> entry gives access to a second menu
+that allows to boot the installer in expert mode, in rescue mode and for
+automated installs.
+
+</p>
+<p>
+
+If you wish or need to add any boot parameters for either the
+installer or the kernel, press <span class="keycap"><strong>Tab</strong></span> (BIOS boot), or <span class="keycap"><strong>e</strong></span> then
+<span class="keycap"><strong>down arrow</strong></span> three times then <span class="keycap"><strong>end</strong></span>, to edit the <span class="quote">“<span class="quote">linux</span>”</span> line of the boot entry (UEFI boot).
+This will bring the boot command for the selected menu entry
+and allow you to edit it to suit your needs.  Note that the keyboard layout at
+this point is still QWERTY. The help screens (see
+below) list some common possible options. Press <span class="keycap"><strong>Enter</strong></span> (BIOS boot)
+or <span class="keycap"><strong>F10</strong></span> (UEFI boot) to boot the installer with your options;
+pressing <span class="keycap"><strong>Esc</strong></span> will return you to the boot menu and undo any
+changes you made.
+
+</p>
+<p>
+
+Choosing the <span class="quote">“<span class="quote">Help</span>”</span> entry will result in the first help screen
+being displayed which gives an overview of all available help screens.
+To return to the boot menu after the help screens have been
+displayed, type <span class="quote">“<span class="quote">menu</span>”</span> at the boot prompt and press <span class="keycap"><strong>Enter</strong></span>. All
+help screens have a boot prompt at which the boot command can be typed:
+
+</p>
+<div class="informalexample"><pre class="screen">
+Press F1 for the help index, or ENTER to boot:
+</pre></div>
+<p>
+
+At this boot prompt you can either just press <span class="keycap"><strong>Enter</strong></span> to boot the
+installer with default options or enter a specific boot command and,
+optionally, boot parameters. A number of boot parameters which might be
+useful can be found on the various help screens. If you do add any
+parameters to the boot command line, be sure to first type the boot method
+(the default is <strong class="userinput"><code>install</code></strong>) and a space before the
+first parameter (e.g., <strong class="userinput"><code>install nomodeset</code></strong>).
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>
+
+The keyboard is assumed to have a default American English layout at this
+point. This means that if your keyboard has a different (language-specific)
+layout, the characters that appear on the screen may be different from what
+you'd expect when you type parameters. Wikipedia has a
+<a class="ulink" href="https://en.wikipedia.org/wiki/Keyboard_layout#United_States" target="_top">schema of the US keyboard layout</a> which
+can be used as a reference to find the correct keys to use.
+
+</p></td></tr>
+</table></div>
+<p>
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>
+
+If you are using a system that has the BIOS configured to use serial console,
+you may not be able to see the initial graphical splash screen upon booting
+the installer; you may even not see the boot menu. The same can happen if
+you are installing the system via a remote management device that provides a
+text interface to the VGA console. Examples of these devices include the text
+console of Compaq's <span class="quote">“<span class="quote">integrated Lights Out</span>”</span> (iLO) and HP's
+<span class="quote">“<span class="quote">Integrated Remote Assistant</span>”</span> (IRA).
+
+</p>
+<p>
+
+To bypass the graphical boot screen you can either blindly press <span class="keycap"><strong>Esc</strong></span>
+to get a text boot prompt, or (equally blindly) press <span class="quote">“<span class="quote">H</span>”</span>
+followed by <span class="keycap"><strong>Enter</strong></span> to select the <span class="quote">“<span class="quote">Help</span>”</span> option described
+above. After that your keystrokes should be echoed at the prompt.
+To prevent the installer from using the framebuffer for the rest of the
+installation, you will also want to add <strong class="userinput"><code>vga=normal nomodeset</code></strong>
+to the boot prompt, as described in the help text.
+
+</p>
+</td></tr>
+</table></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="graphical"></a>5.1.6. The Graphical Installer</h3></div></div></div>
+<p>
+
+The graphical version of the installer is only available for a limited
+number of architectures, including <span class="phrase">64-bit PC</span>. The functionality of
+the graphical installer is essentially the same as that of the text-based
+installer as it basically uses the same programs, but with a different
+frontend.
+
+</p>
+<p>
+
+Although the functionality is identical, the graphical installer still has
+a few significant advantages. The main advantage is that it supports more
+languages, namely those that use a character set that cannot be displayed
+with the text-based <span class="quote">“<span class="quote">newt</span>”</span> frontend. It also has a few usability
+advantages such as the option to use a mouse, and in some cases several
+questions can be displayed on a single screen.
+
+</p>
+<p>
+
+The graphical installer is available with all CD/DVD images and with the
+hd-media installation method. To boot the graphical installer simply select
+the relevant option from the boot menu. Expert and rescue mode for the
+graphical installer can be selected from the <span class="quote">“<span class="quote">Advanced options</span>”</span>
+menu. The previously used boot methods <strong class="userinput"><code>installgui</code></strong>,
+<strong class="userinput"><code>expertgui</code></strong> and <strong class="userinput"><code>rescuegui</code></strong> can
+still be used from the boot prompt which is shown after selecting the
+<span class="quote">“<span class="quote">Help</span>”</span> option in the boot menu.
+
+</p>
+<p>
+
+Just as with the text-based installer it is possible to add boot parameters
+when starting the graphical installer.
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>
+
+The graphical installer requires significantly more memory to run than
+the text-based installer: 810MB. If insufficient memory is
+available, it will automatically fall back to the text-based
+<span class="quote">“<span class="quote">newt</span>”</span> frontend.
+
+</p>
+<p>
+
+If the amount of memory in your system is below 780MB,
+the graphical installer may fail to boot at all while booting the
+text-based installer would still work. Using the text-based installer is
+recommended for systems with little available memory.
+
+</p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s02.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Chapter 5. Booting the Installation System </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> 5.2. Accessibility</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

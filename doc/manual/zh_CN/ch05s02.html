@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. 辅助功能</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch05.html" title="第 5 章 引导安装系统">
+<link rel="prev" href="ch05s01.html" title="5.1. 在 64-bit PC 上引导安装程序">
+<link rel="next" href="ch05s03.html" title="5.3. 引导参数">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. 辅助功能</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 5 章 引导安装系统</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. 辅助功能</h2></div></div></div>
+<p>一些用户可以因为例如视觉障碍而需要特别的支持。<span class="phrase">USB（不含通过串口 USB 转换口转换的串行显示器）盲文点字显示器可以自动检测到，但多数情况下其它的</span> 辅助功能不得不手动启用。<span class="phrase">在可以支持的机器上，当准备好接收输入时引导菜单会发出哔声。在 BIOS 系统中会发出一声哔声，而在 UEFI 系统中会发出两声哔声。</span> 一些引导参数可以 <span class="phrase">接着</span> 被添加来启用辅助功能<span class="phrase">（请参见<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. 引导屏幕">第 5.1.5 节 “引导屏幕”</a>）</span>。注意：在多数架构下引导加载程序会将您的键盘视为 QWERTY 布局的键盘。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1833"></a>5.2.1. 安装程序前端</h3></div></div></div>
+<p>Debian 安装程序支持使用多个前端提出问题，可访问性各有不同：特别是 <strong class="userinput"><code>text</code></strong> 使用纯文本，而 <strong class="userinput"><code>newt</code></strong> 使用基于文本的对话框。可以在启动提示符下进行选择，请参见<a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian 安装程序的参数">第 5.3.2 节 “Debian 安装程序的参数”</a>中的 <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> 文档。 </p>
+<p>使用 <strong class="userinput"><code>newt</code></strong> 前端时（通常和盲文同时使用），可以使用方向键选择答案，然后按 <span class="keycap"><strong>Enter</strong></span> 确认选择。按下 <span class="keycap"><strong>Tab</strong></span> 或 <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> 可以在对话框的元素之间进行切换，更关键的是，还可以选择<strong class="userinput"><code>返回</code></strong>按钮，可以返回到之前的问题。有些对话框包含复选框，可以使用 <span class="keycap"><strong>Space</strong></span> 勾选或取消勾选。 </p>
+<p>使用 <strong class="userinput"><code>text</code></strong> 前端时（通常和语音合成同时使用），可以输入数字并按下 <span class="keycap"><strong>Enter</strong></span> 来选择答案，或者，通过方向键选择并按下 <span class="keycap"><strong>Enter</strong></span> 来确认答案。不输入任何内容直接按 <span class="keycap"><strong>Enter</strong></span> 可以选择默认值。输入 <strong class="userinput"><code>&lt;</code></strong> 并按下 <span class="keycap"><strong>Enter</strong></span> 可以返回到之前的问题。当需要选择一组项目作为答案时（例如在选择任务时），可以输入 <strong class="userinput"><code>!</code></strong> 表示不选择任何项目。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1856"></a>5.2.2. USB 盲文点字显示器</h3></div></div></div>
+<p>系统应该可以自动检测到 USB 盲文点字显示器。然后自动选取文本版本的安装程序，并且目标系统上回自动安装盲文点字显示器。只需要在引导菜单中按下 <span class="keycap"><strong>Enter</strong></span> 键。一旦 <code class="classname">brltty</code> 启动，就可以通过进入首选项菜单来选择盲文表了。在 <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> website</a> 可以找到盲文点字显示器的键绑定文档。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1863"></a>5.2.3. 串口盲文点字显示器</h3></div></div></div>
+<p>系统无法安全地检测到串口盲文点字显示器（因为这可能会损坏某s些设备）。这样需要添加引导参数 <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em>,<em class="replaceable"><code>table</code></em></code></strong>，来告知 <code class="classname">brltty</code> 该使用哪个驱动程序和端口。<em class="replaceable"><code>driver</code></em>（驱动器）应该替换为您终端使用的两个字母的驱动器代码（请参见 <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY manual（手册）</a>）。<em class="replaceable"><code>port</code></em>（端口） 应该替换为显示器所连接的串口名称，默认为 <strong class="userinput"><code>ttyS0</code></strong>，当使用串口转 USB 转接口时，可以典型地使用 <strong class="userinput"><code>ttyUSB0</code></strong>。可以提供第三方参数，来选择所使用的盲文表的名称（请参见 <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY manual（手册）</a>）；默认为英语表。注意，可以在后面进入首选项菜单来更换该表。可以提供第四个参数，来将参数传递给盲文驱动程序，如一些少见的型号所需的 <strong class="userinput"><code>protocol=foo</code></strong>。盲文设备的键绑定文档可以在 <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> website（网站）</a> 找到。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1880"></a>5.2.4. 软件语音合成</h3></div></div></div>
+<p>在具有图形安装程序的所有安装程序影像中，即在所有的网络安装 CD 和 DVD 映像，以及上网本 gtk 变种中，可以获得对软件语音合成的支持。可以通过在引导菜单输入<strong class="userinput"><code>s</code></strong><span class="keycap"><strong>Enter</strong></span> 来选择激活它。然后会自动选择文本版本的安装程序，并且对软件语音合成的支持将自动安装在目标系统上。 </p>
+<p>如果检测到几个声卡，那么会提示从所需要的声卡听到语音时，按下 <span class="keycap"><strong>Enter</strong></span> 键。 </p>
+<p>第一个问题（语言）以英语讲出，而安装的其余部分以所选择的语言讲出（如果在 <code class="classname">espeak</code>中可用的话）。 </p>
+<p>默认语速很慢。要使其更快，请按 <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span> 组合键。要使其更慢，请按 <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span> 组合键。默认音量应该是中等的。要更大声，请按 <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span> 组合键。要使其更安静，请按 <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span> 组合键。要获取有关浏览快捷方式的更多详细信息，请参见 <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup guide（语音向导）</a>。要接受问题的默认答案，只需在提示符下按 <span class="keycap"><strong>Enter</strong></span> 键即可。要为问题提供空答案，请在提示符下键入<strong class="userinput"><code>！</code></strong>。要返回上一个问题，请在提示符下键入 <strong class="userinput"><code>&lt;</code></strong>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1906"></a>5.2.5. 硬件语音合成 （Hardware Speech Synthesis）</h3></div></div></div>
+<p>对于硬件语音合成设备的支持只在具有图形安装程序的安装映像中有效，也就是所有的网络安装 CD 和 DVD 映像，以及上网本 gtk 变体中。这样您需要在引导菜单中选择 <span class="quote">“<span class="quote">Graphical install（图形安装）</span>”</span> 入口。 </p>
+<p>硬件语音合成设备无法自动检测到。这样需要添加引导参数 <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>driver</code></em></code></strong> ，来告知 <code class="classname">speakup</code> 使用哪个驱动程序。<em class="replaceable"><code>driver</code></em> （驱动程序）应替换为该设备的驱动程序代码（请参见 <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">driver code list，即驱动程序代码列表</a>）。然后自动选择文本版本的安装程序，并且对于语音合成设备的支持会自动安装到目标系统上。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1916"></a>5.2.6. 板卡设备</h3></div></div></div>
+<p>一些辅助设备实际上是插入计算机里面的板卡，它们直接从显存里面读取字符。要让它们工作，需要使用引导参数 <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong> 来禁止使用 framebuffer（帧缓存）。然而这会减少可用语言的数量。 </p>
+<p>如果需要，在输入 <strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Enter</strong></span> 来添加引导参数前，可以激活文本版本的引导加载程序。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1924"></a>5.2.7. 高对比度的主题</h3></div></div></div>
+<p>对于视力弱的用户，安装程序可以使用高对比度的彩色主题来增加可读性。为了启用它，可以从引导屏幕上通过<strong class="userinput"><code>d</code></strong> 快捷键，或者添加 <strong class="userinput"><code>theme=dark</code></strong> 引导参数，来使用<span class="quote">“<span class="quote">Accessible high contrast</span>”</span>（使用高对比读）入口。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1930"></a>5.2.8. 缩放</h3></div></div></div>
+<p>对于低视力的用户，图形安装程序有非常基本的缩放支持：<span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> 组合快捷键和 <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> 组合快捷键，用于增减与减小字体的尺寸。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1939"></a>5.2.9. 专家安装、救援模式、自动安装</h3></div></div></div>
+<p>专家、救援和自动安装选则也可以提供有辅助功能。要访问它们，必须在引导菜单中键入 <strong class="userinput"><code>a</code></strong>，来进入<span class="quote">“<span class="quote">Advanced option</span>”</span>（高级选项）子菜单。当使用 BIOS 系统时（引导菜单只有一次蜂鸣音），之后必须按下 <span class="keycap"><strong>Enter</strong></span> 按键；对于 UEFI 系统（引导菜单会有两次蜂鸣音），必须不能这样做。然后，要启用语音合成，可以选择按下 <strong class="userinput"><code>s</code></strong> 按键（使用 BIOS 系统而不是 UEFI 系统时，紧接着再按下 <span class="keycap"><strong>Enter</strong></span> 按键）。从那里可以使用各种快捷方式：用于专家安装的 <strong class="userinput"><code>x</code></strong>，用于救援模式的 <strong class="userinput"><code>r</code></strong> 或用于自动安装的 <strong class="userinput"><code>a</code></strong>。当使用 BIOS 系统时，必须再次紧接着按下 <span class="keycap"><strong>Enter</strong></span> 按键。 </p>
+<p>自动安装选择允许使用预置来完全自动地安装 Debian，它的源可以在启动辅助特性后进入。预置本身在 <a class="xref" href="apb.html" title="附录 B. 使用预置自动进行安装">附录 B, <i>使用预置自动进行安装</i></a> 中归档。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1953"></a>5.2.10. 已安装系统的辅助功能</h3></div></div></div>
+<p>可在 <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debian Accessibility wiki page（Debian 辅助功能维基页面）</a>中找到有关已安装系统的辅助功能的文档。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. 在 <span class="phrase">64-bit PC</span> 上引导安装程序 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. 引导参数</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

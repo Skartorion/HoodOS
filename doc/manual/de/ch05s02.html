@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Barrierefreiheit</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch05.html" title="Kapitel 5. Das Installationssystem booten">
+<link rel="prev" href="ch05s01.html" title="5.1. Starten des Installers auf 64-Bit PC-Systemen">
+<link rel="next" href="ch05s03.html" title="5.3. Boot-Parameter">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Barrierefreiheit</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 5. Das Installationssystem booten</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Barrierefreiheit</h2></div></div></div>
+<p>Einige Nutzer könnten eventuell spezielle Unterstützung benötigen, zum Beispiel aufgrund einer Sehbehinderung. <span class="phrase">USB-Braillezeilen werden automatisch erkannt (serielle Geräte, die über einen Seriell-auf-USB-Adapter angeschlossen sind, allerdings nicht), aber die meisten anderen</span>  Funktionalitäten für Barrierefreiheit müssen manuell aktiviert werden. <span class="phrase">Auf Rechnern, die dies unterstützen, gibt das Boot-Menü Pieptöne aus, wenn es bereit ist, Tastatureingaben zu verarbeiten. Es piept auf BIOS-Systemen einmal und auf UEFI-Systemen zweimal.</span> Es können <span class="phrase">dann</span> einige Boot-Parameter angegeben werden, um diese Funktionalitäten zu aktivieren<span class="phrase"> (lesen Sie dazu auch <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Der Start-Bildschirm (Boot-Screen)">Abschnitt 5.1.5, „Der Start-Bildschirm (Boot-Screen)“</a>)</span>. Beachten Sie, dass auf den meisten Architekturen die Tastatur vom Bootloader so interpretiert wird, als wäre es eine Tastatur mit QWERTY-Layout. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1854"></a>5.2.1. Installer-Oberfläche (Frontend)</h3></div></div></div>
+<p>Der Debian Installer unterstützt verschiedene Oberflächen für die Interaktion mit dem Benutzer, und diese haben bezüglich Barrierefreiheit unterschiedliche Schwerpunkte. Erwähnenswert ist hier das <strong class="userinput"><code>text</code></strong>-Frontend, welches ausschließlich reinen Text verwendet, sowie das <strong class="userinput"><code>newt</code></strong>-Frontend, das textbasierte Dialogboxen nutzt. Sie können am Boot-Prompt festlegen, welche Oberfläche genutzt wird; lesen Sie dazu die Dokumentation zum Boot-Parameter <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> in <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian-Installer-Parameter">Abschnitt 5.3.2, „Debian-Installer-Parameter“</a>. </p>
+<p>Bei Nutzung der <strong class="userinput"><code>newt</code></strong>-Oberfläche (überwiegend relevant für eine Braille-Zeile) wird normalerweise eine Antwort über die Pfeiltasten ausgewählt und über <span class="keycap"><strong>Enter</strong></span> bestätigt. Das Drücken von <span class="keycap"><strong>Tab</strong></span> oder <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> erlaubt das Umschalten zwischen verschiedenen Elementen des Dialogs (erwähnenswert ist hier vor allem der <strong class="userinput"><code>Zurück</code></strong>-Button, der Sie zurück bringt zu vorherigen Fragen). Einige Dialoge enthalten Auswahl-Checkboxen, die über die <span class="keycap"><strong>Leertaste</strong></span> ein- oder ausgeschaltet werden können. </p>
+<p>Bei der <strong class="userinput"><code>text</code></strong>-Oberfläche (überwiegend verwendet für den Sprachausgabe-Modus des Installers) wird meist eine Antwort ausgewählt, indem entweder deren Nummer eingegeben oder die Antwort über die Pfeiltasten markiert wird, jeweils gefolgt von <span class="keycap"><strong>Enter</strong></span> zur Bestätigung. Sie können hier auch nichts eingeben und einfach <span class="keycap"><strong>Enter</strong></span> drücken, um den Standardwert zu übernehmen. Die Eingabe von <strong class="userinput"><code>&lt;</code></strong> und <span class="keycap"><strong>Enter</strong></span> bringt Sie zurück zu vorherigen Fragen. In Fällen, wo die Auswahl mehrerer Optionen möglich ist (z.B. bei der Wahl der Programmgruppen), können Sie auch <strong class="userinput"><code>!</code></strong> eingeben, um nichts auszuwählen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1876"></a>5.2.2. USB-Braillezeilen</h3></div></div></div>
+<p>USB-Braillezeilen sollten automatisch erkannt werden. Es wird dann automatisch eine Textversion des Installers ausgewählt und Hardware-Unterstützung für die Braillezeile wird automatisch in das Zielsystem installiert. Sie müssen im Boot-Menü also einfach nur <span class="keycap"><strong>Enter</strong></span> drücken. Sobald <code class="classname">brltty</code> gestartet ist, können Sie im Einstellungsmenü ein Braillezeilengerät auswählen. Dokumentation über Tastenkürzel für Braillezeilengeräte ist auf der <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code>-Webseite</a> verfügbar. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1883"></a>5.2.3. Serielle Braillezeilen</h3></div></div></div>
+<p>Serielle Braillezeilen können nicht sicher automatisch erkannt werden (dies könnte einige davon sogar beschädigen). Daher müssen Sie den Boot-Parameter <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em></code></strong> angeben, um <code class="classname">brltty</code> mitzuteilen, welcher Treiber und Port benutzt werden soll. Sie sollten <em class="replaceable"><code>driver</code></em> durch den zweistelligen Buchstabencode des Treibers ersetzen, den Sie für Ihre Braillezeile benötigen (siehe dazu das <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">brltty Referenz-Handbuch</a>). <em class="replaceable"><code>port</code></em> sollten Sie durch den Namen des seriellen Anschlusses ersetzen, an den die Braillezeile angeschlossen ist; <strong class="userinput"><code>ttyS0</code></strong> ist der Standardwert, <strong class="userinput"><code>ttyUSB0</code></strong> kann üblicherweise verwendet werden, wenn ein Seriell-auf-USB-Adapter eingesetzt wird. Optional kann ein dritter Parameter angegeben werden, um die zu verwendende Braille-Tabelle festzulegen (siehe das <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">brltty-Referenz-Handbuch</a>); die englische Tabelle ist der Standard. Beachten Sie, dass Sie die verwendete Tabelle später im Einstellungsmenü noch ändern können. Über einen vierten Parameter können zusätzliche Optionen an den Braille-Treiber übergeben werden, wie z.B. <strong class="userinput"><code>protocol=foo</code></strong>, das für einige seltene Modelle benötigt wird. Dokumentation über Tastenkürzel für Braillezeilengeräte finden Sie auf der <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code>-Webseite</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1899"></a>5.2.4. Software-Sprachausgabe (Software-Sprachsynthesizer)</h3></div></div></div>
+<p>Treiberunterstützung für Software-Sprachausgabe ist in allen Installer-Images enthalten, die auch den grafischen Installer enthalten, d.h. in allen Netinst- und DVD-Images sowie in der gtk-Variante des netboot-Images. Sie kann aktiviert werden, indem im Boot-Menü <strong class="userinput"><code>s</code></strong> + <span class="keycap"><strong>Enter</strong></span> gedrückt wird. Es wird dann die textbasierte Variante des Installers gestartet, und die Unterstützung für Software-Sprachausgabe wird automatisch auch im Zielsystem installiert. </p>
+<p>Wenn mehrere Soundkarten erkannt wurden, werden Sie aufgefordert, <span class="keycap"><strong>Enter</strong></span> zu drücken, sobald Töne von der gewünschten Soundkarte zu hören sind. </p>
+<p>Die erste Frage (Sprache) wird in Englisch gesprochen, der Rest der Installation in der ausgewählten Sprache (falls diese in <code class="classname">espeak</code> verfügbar ist). </p>
+<p>Die Standardgeschwindigkeit für die Sprachausgabe ist ziemlich langsam. Um sie zu erhöhen, drücken Sie <span class="keycap"><strong>Feststelltaste</strong></span>+<span class="keycap"><strong>6</strong></span>. Um die Geschwindigkeit zu vermindern, verwenden Sie <span class="keycap"><strong>Feststelltaste</strong></span>+<span class="keycap"><strong>5</strong></span>. Die Standardlautstärke sollte einen mittleren Wert haben. Wenn die Ausgabe lauter sein soll, drücken Sie <span class="keycap"><strong>Feststelltaste</strong></span>+<span class="keycap"><strong>2</strong></span>. Um die Lautstärke zu reduzieren, verwenden Sie <span class="keycap"><strong>Feststelltaste</strong></span>+<span class="keycap"><strong>1</strong></span>. Weitere Details zu den Tastaturkürzeln finden Sie im <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup-Handbuch</a>. Um die Standardauswahl für eine Frage zu akzeptieren, drücken Sie am Prompt einfach <span class="keycap"><strong>Enter</strong></span>. Wenn die Antwort auf eine Frage Nichts sein soll (also ein leeres Feld), tippen Sie <strong class="userinput"><code>!</code></strong> ein. Möchten Sie zur vorherigen Frage zurückspringen, tippen Sie <strong class="userinput"><code>&lt;</code></strong> ein. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1925"></a>5.2.5. Hardware-Sprachausgabe (Hardware-Sprachsynthesizer)</h3></div></div></div>
+<p>Treiberunterstützung für Hardware-Sprachausgabe-Geräte ist in allen Installer-Images enthalten, die auch den grafischen Installer enthalten, d.h. in allen Netinst- und DVD-Images sowie in der gtk-Variante des netboot-Images. Sie müssen daher im Boot-Menü einen <span class="quote">„<span class="quote">Graphical install</span>“</span>-Eintrag auswählen. </p>
+<p>Hardware-Sprachausgabe-Geräte können nicht automatisch erkannt werden. Sie müssen daher den Boot-Parameter <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>driver</code></em></code></strong> angeben, um <code class="classname">speakup</code> mitzuteilen, welcher Treiber verwendet werden soll. Ersetzen Sie dabei <em class="replaceable"><code>driver</code></em> durch den Code des Treibers, den Sie für Ihr Gerät benötigen (eine Auflistung der Treiber-Codes finden Sie im <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup-Handbuch</a>). Es wird dann automatisch die Textversion des Installers ausgewählt und die Hardware-Unterstützung für Sprachausgabe-Geräte wird automatisch in das Zielsystem installiert. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1935"></a>5.2.6. Interne Boards/Karten</h3></div></div></div>
+<p>Einige Geräte für Barrierefreiheit sind letztendig Steckkarten, die innerhalb des Rechners eingesteckt werden und die den Text direkt aus dem Videospeicher auslesen. Damit sie funktionieren, muss die Framebuffer-Unterstützung deaktiviert werden (verwenden Sie dazu den Boot-Parameter <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>). Dies reduziert allerdings die Anzahl der zur Verfügung stehenden Sprachen. </p>
+<p>Falls gewünscht kann vor der Eingabe des Boot-Parameters eine Textversion des Bootloaders aktiviert werden, indem die Taste <strong class="userinput"><code>h</code></strong> gefolgt von <span class="keycap"><strong>Enter</strong></span> gedrückt wird. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1943"></a>5.2.7. Theme mit hohem Kontrast</h3></div></div></div>
+<p>Für Nutzer mit verminderter Sehkraft kann der Installer ein spezielles farbiges Theme mit extra hohem Kontrast verwenden. Um es zu aktivieren, verwenden Sie den Menüeintrag <span class="quote">„<span class="quote">Accessible high contrast</span>“</span> aus dem Boot-Menü (Tastaturkürzel <strong class="userinput"><code>d</code></strong>) oder geben Sie händisch den Boot-Parameter <strong class="userinput"><code>theme=dark</code></strong> an. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1949"></a>5.2.8. Zoom</h3></div></div></div>
+<p>Für Nutzer mit verminderter Sehkraft enthält der grafische Installer auch eine einfache Unterstützung zur Vergrößerung der Anzeige (Zoom): über die Tastenkombinationen <span class="keycap"><strong>Strg</strong></span>+<span class="keycap"><strong>+</strong></span> und <span class="keycap"><strong>Strg</strong></span>+<span class="keycap"><strong>-</strong></span> lässt sich die Schrifthöhe vergrößern bzw. verkleinern. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1958"></a>5.2.9. Experten-Installation, Rettungsmodus, automatisierte Installation</h3></div></div></div>
+<p>Die Auswahlmöglichkeiten Expert, Rescue und Automated Install sind auch barrierefrei (mit Sprachausgabe) verfügbar. Um sie zu nutzen, müssen Sie zunächst das Untermenü <span class="quote">„<span class="quote">Advanced options</span>“</span> öffnen, indem Sie <strong class="userinput"><code>a</code></strong> drücken. Wenn Sie ein BIOS-System verwenden (d.h. beim Start des Boot-Menüs hat der Computer nur einmal gepiept), müssen Sie jetzt noch <span class="keycap"><strong>Enter</strong></span> drücken. Auf UEFI-Systemen hingegen (d.h. beim Starten hat der Computer zweimal gepiept) ist dies nicht erforderlich. Um die Sprachausgabe zu aktivieren, können Sie jetzt <strong class="userinput"><code>s</code></strong> drücken (gefolgt von <span class="keycap"><strong>Enter</strong></span> auf BIOS-Systemen). Nun stehen verschiedene Tastaturkürzel zur Verfügung: <strong class="userinput"><code>x</code></strong> für eine Experten-Installation, <strong class="userinput"><code>r</code></strong> für das Starten des Rescue-Modes und <strong class="userinput"><code>a</code></strong> für eine automatisierte Installation. Auch hier müssen Sie auf BIOS-Systemen nochmals <span class="keycap"><strong>Enter</strong></span> drücken. </p>
+<p>Durch eine automatisierte Installation kann Debian über die Verwendung der Voreinstellung vollständig automatisiert installiert werden. Die Quelle dieser Voreinstellungen (die Voreinstellungsdatei) kann angegeben werden, nachdem die Funktionen zur Barrierefreiheit gestartet wurden. Voreinstellung selbst ist in <a class="xref" href="apb.html" title="Anhang B. Automatisieren der Installation mittels Voreinstellung">Anhang B, <i>Automatisieren der Installation mittels Voreinstellung</i></a> dokumentiert. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1972"></a>5.2.10. Barrierefreiheit auf dem neu installierten System</h3></div></div></div>
+<p>Dokumentation zum Thema Barrierefreiheit auf dem neu installierten System finden Sie auf der <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debian Accessibility Wiki-Seite</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Starten des Installers auf <span class="phrase">64-Bit PC</span>-Systemen </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Boot-Parameter</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Opsætning af dit system så du kan bruge e-post</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Kapitel 8. De næste trin og hvordan du kommer videre">
+<link rel="prev" href="ch08s03.html" title="8.3. Yderligere læsning og information">
+<link rel="next" href="ch08s05.html" title="8.5. Kompilering af en ny kerne">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Opsætning af dit system så du kan bruge e-post</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 8. De næste trin og hvordan du kommer videre</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Opsætning af dit system så du kan bruge e-post</h2></div></div></div>
+<p>I dag er e-post en vigtig del af mangae folks liv. Da der er mange muligheder for opsætning, og da en korrekt opsætning er vigtig for mange af Debians redskaber, så vil vi prøve at dække det grundlæggende i dette afsnit. </p>
+<p>Der er tre hovedfunktioner, som udgør et e-postsystem. Først er der <em class="firstterm">Postbrugeragenten</em> (MUA), som er programmet en bruger anvender til at lave og læse post. Så er der <em class="firstterm">Postoverførselsagenten</em> (MTA) som håndterer overførslen af beskeder fra en computer til den næste. Og sidst er der <em class="firstterm">Postleveringsagenten</em> (MDA), som håndterer leverancen af indgående post til brugerens indboks. </p>
+<p>Disse tre funktioner kan udføres af separate programmer, men de kan også kombineres i et eller to programmer. Det er også muligt at have forskellige programmer til at håndtere disse funktioner for forskellige typer af post. </p>
+<p>På Linux- og Unixsystemer er <span class="command"><strong>mutt</strong></span> historisk en meget populær MUA. Som de fleste traditionelle Linuxprogrammer er programmet tekstbaseret. Det bruges ofte i kombination med <span class="command"><strong>exim</strong></span> eller <span class="command"><strong>sendmail</strong></span> som MTA og <span class="command"><strong>procmail</strong></span> som MDA. </p>
+<p>Med den stigende popularitet indenfor grafiske skrivebordssystemer er brugen af grafiske e-postprogrammer såsom GNOMEs <span class="command"><strong>evolution</strong></span>, KDE's <span class="command"><strong>kmail</strong></span> eller Mozillas <span class="command"><strong>thunderbird</strong></span> blevet mere populære. Disse programmer kombinerer funktionen hos en MUA, MTA og MDA, men kan — og er ofte — brugt i kombination med traditionelle Linuxværktøjer. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Standard e-postkonfiguration</h3></div></div></div>
+<p>Selv om du planlægger at bruge et grafisk postprogram, er det nyttigt, at en traditionel MTA/MDA også er installeret og korrekt opsat på dit Debian GNU/Linux-system. Årsagen er at diverse redskaber der kører på systemet<a href="#ftn.id3673" class="footnote" name="id3673"><sup class="footnote">[16]</sup></a> kan sende vigtige beskeder via e-post for at informere systemadministratoren om (potentielle) problemer eller ændringer. </p>
+<p>For dette kan du installere pakkerne <code class="classname">exim4</code> og <code class="classname">mutt</code> med <span class="command"><strong>apt install exim4 mutt</strong></span>. <code class="classname">exim4</code> er en kombineret MTA/MDA, som er relativ lille men meget fleksibel. Som standard vil programmet blive konfigureret til kun at håndtere e-post lokalt for selve systemet og e-post adresseret til systemadministratoren (root-konto) vil blive leveret til den normale brugerkonto oprettet under installationen<a href="#ftn.id3684" class="footnote" name="id3684"><sup class="footnote">[17]</sup></a>. </p>
+<p>Når system-e-post leveres tilføjes den til en fil i <code class="filename">/var/mail/<em class="replaceable"><code>account_name</code></em></code>. Den leverde e-post kan læses via <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Sende e-post udenfor systemet</h3></div></div></div>
+<p>Som nævnt tidligere, så er det installerede Debian-system kun opsat til at håndtere e-post lokalt for systemet, ikke til at sende post til andre eller modtage post fra andre. </p>
+<p>Hvis du ønsker at <code class="classname">exim4</code> skal håndtere ekstern e-post, så kig i det næste underafsnit for de grundlæggende tilgængelige konfigurationsindstillinger. Sikr dig ved test at post kan sendes og modtages korrekt. </p>
+<p>Hvis du forventer at bruge et grafisk postprogram og en postserver fra din internetleverandør (ISP) eller dit firma, så er der reelt ingen grund til at konfigurere <code class="classname">exim4</code> til at håndtere ekstern e-post. Bare konfigurer dit grafiske favoritprogram til at bruge de korrekte servere til at sende og modtage e-post (hvordan er uden for denne manuals område). </p>
+<p>I det tilfælde hvor du skal konfigurere individuelle redskaber til korrekt at sende e-post er et sådant redskab f.eks. <span class="command"><strong>reportbug</strong></span>, et program som håndterer indsendelse af fejlrapporter omhandlende Debian-pakker. Som standard forventer det at kunne bruge <code class="classname">exim4</code> til at indsende fejlrapporter. </p>
+<p>For at sætte <span class="command"><strong>reportbug</strong></span> korrekt op til at bruge en ekstern postserver, så kør venligst kommandoen <span class="command"><strong>reportbug --configure</strong></span> og svar <span class="quote">“<span class="quote">no</span>”</span> til spørgsmålet om en MTA er tilgængelig. Du vil så blive spurgt om SMTP-serveren, der skal bruges til at indsende fejlrapporter. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Konfiguration af Exim4-posttransportagenten</h3></div></div></div>
+<p>Hvis du ønsker, at dit system også skal håndtere ekstern e-post, så skal du konfigurere pakken <code class="classname">exim4</code> <a href="#ftn.id3709" class="footnote" name="id3709"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Efter indtastning af den kommando (som root), så vil du blive spurgt, om du ønsker at opdele konfigurationen i små filer. Hvis du er usikker, så vælg standardindstillingen. </p>
+<p>Herefter vil du blive præsenteret for flere gængse postscenarier. Vælg den som er tættest på dine behov. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">internetside</span></dt>
+<dd><p>Dit system er forbundet til et netværk og din post sendes og modtages direkte via SMTP. På de følgende skærmbilleder får du nogle får grundlæggende spørgsmål, såsom din maskines postnavn, eller en liste over domæner hvorfra du accepterer eller videresender post. </p></dd>
+<dt><span class="term">post sendt af smarthost</span></dt>
+<dd>
+<p>I dette scenarie sendes din udgående post til en anden maskine, kaldt <span class="quote">“<span class="quote">smarthost</span>”</span>, som håndterer afsendelsen af beskeden videre til sin destination. Smarthost'en lagrer normalt også indgående post adresseret til din computer, så du ikke skal være permanent på nettet. Det betyder så også, at du skal hente din post fra smarthost'en via programmer såsom fetchmail. </p>
+<p>I mange tilfælde vil smarthost'en være din ISP's postserver, hvilket gør denne indstilling meget velegnet for opkaldsbrugere. Det kan også være et firmas server eller et andet sytsem på dit eget netværk. </p>
+</dd>
+<dt><span class="term">post sendt af smarthost; ingen lokal post</span></dt>
+<dd><p>Denne indstilling er grundlæggende den samme som den forrige, med undtagelse af, at systemet ikke vil blive opsat til at håndtere post for et lokalt e-postdomæne. Post på selve systemet (f.eks. for systemadministratoren) vil stadig blive håndteret. </p></dd>
+<dt><span class="term">kun lokal levering</span></dt>
+<dd><p>Dette er valget dit system er konfigureret til som standard. </p></dd>
+<dt><span class="term">ingen konfiguration på dette tidspunkt</span></dt>
+<dd><p>Vælg denne hvis du er absolut overbevist om, hvad du gør. Dette vil efterlade dig med et postsystem der ikke er konfigureret — indtil du konfigurerer det, vil du ikke kunne sende eller modtage post og du mister måske nogle vigtige beskeder fra dine systemredskaber. </p></dd>
+</dl></div>
+<p>Hvis ingen af disse scenarier passer til dine behov, eller hvis du skal bruge en mere detaljeret opsætning, så skal du redigere konfigurationsfilerne under mappen <code class="filename">/etc/exim4</code>, efter at installationen er færdig. Yderligere information om <code class="classname">exim4</code> kan findes under <code class="filename">/usr/share/doc/exim4</code>; filen <code class="filename">README.Debian.gz</code> har yderligere detaljer om konfiguration af <code class="classname">exim4</code> og forklarer hvor yderligere dokumentation kan findes. </p>
+<p>Bemærk at afsendelse af post direkte til internettet, når du ikke har et officielt domænenavn kan medføre, at din post bliver afvist på grund af metoder til at stoppe spam på de modtagende servere. Brug af din ISP's postserver foretrækkes. Hvis du stadig ikke ønsker at sende post direkte, kan du foretrække at bruge en anden e-postadresse end standarden. Hvis du bruger <code class="classname">exim4</code> som din MTA, er dette muligt ved at tilføje et punkt i <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3673" class="footnote"><p><a href="#id3673" class="para"><sup class="para">[16] </sup></a> Eksempler er: <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3684" class="footnote"><p><a href="#id3684" class="para"><sup class="para">[17] </sup></a> Omdirigering af post for root til den normale brugerkonto konfigureres i <code class="filename">/etc/aliases</code>. Hvis ingen brugerkonto blev oprettet, så vil posten selvfølgelig blive leveret til root-kontoen. </p></div>
+<div id="ftn.id3709" class="footnote"><p><a href="#id3709" class="para"><sup class="para">[18] </sup></a> Du kan selvfølgelig også fjerne <code class="classname">exim4</code> og erstatte den med en alternativ MTA/MDA. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Yderligere læsning og information </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Kompilering af en ny kerne</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

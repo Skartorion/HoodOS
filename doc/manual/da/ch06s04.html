@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Indlæsning af manglende firmware</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Kapitel 6. Brug af Debian-installationsprogrammet">
+<link rel="prev" href="ch06s03.html" title="6.3. Brug af individuelle komponenter">
+<link rel="next" href="ch06s05.html" title="6.5. Tilpasning">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Indlæsning af manglende firmware</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 6. Brug af Debian-installationsprogrammet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Indlæsning af manglende firmware</h2></div></div></div>
+<p>Som beskrevet i <a class="xref" href="ch02s02.html" title="2.2. Enheder som kræver firmware">Afsnit 2.2, “Enheder som kræver firmware”</a> kræver nogle enheder at firmware indlæses. I de fleste tilfælde vil enheden ikke fungere overhovedet hvis firmwaren ikke er tilgængelig; undertiden er noget af den grundlæggende funktionalitet ikke svækket hvis den mangler og firmwaren er kun krævet for at aktivere yderligere funktioner. </p>
+<p>Starting with Debian GNU/Linux 12.0, following the <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022 General Resolution about non-free firmware</a>, official installation images (like netinst) can include non-free firmware packages. Even with those firmware packages available, some firmware files might still be missing. Or one might be using netboot files, which don't include firmware packages. </p>
+<p>Hvis en enhedsdriver anmoder om firmware som ikke er tilgængelig, så vil <code class="classname">debian-installer</code> vise en dialog som tilbyder at indlæse den manglende firmware. Hvis denne indstilling vælges vil <code class="classname">debian-installer</code> skanne tilgængelige enheder for enten løse firmwarefiler eller pakker, der indeholder firmware. Hvis fundet vil firmwaren blive kopieret til den korrekte placering (<code class="filename">/lib/firmware</code>) og drivermodulet vil blive genindlæst. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Hvilke enheder der skannes og hvilke filsystemer, der er understøttet afhænger af arkitekturen, installationsmetoden og stadiet for installationen. Specielt i de tidlige stadier af installationen vil indlæsning af firmwaren fra et FAT-formateret USB-drev have størst sandsynlighed for succes. <span class="phrase">På i386 og amd64 kan firmware også indlæses fra et MMC- eller SD-kort.</span> </p></td></tr>
+</table></div>
+<p>Bemærk at det er muligt at udelade indlæsning af firmwaren, hvis du ved at enheden også vil fungere uden den, eller hvis enheden ikke er krævet under installationen. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3417"></a>6.4.1. Forberedelse af et medie</h3></div></div></div>
+<p>The most common method to load such firmware is from some removable medium such as a USB stick. To prepare a USB stick (or other medium like a hard drive partition), the firmware files or packages must be placed in either the root directory or a directory named <code class="filename">/firmware</code> of the file system on the medium. The recommended file system to use is FAT as that is most certain to be supported during the early stages of the installation. </p>
+<p>Tarballs and zip files containing current packages for the most common firmware, and the associated metadata to ensure a proper detection by the installer (<code class="filename">dep11</code> directory), are available from: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Just download the tarball or zip file for the correct release and unpack it to the file system on the medium. </p>
+<p>Det er også muligt at kopiere individuelle firmwarefiler til medieet. Løs firmware kan indehentes for eksempel fra et allerede installeret system eller fra en udstyrsleverandør. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3428"></a>6.4.2. Firmware og det installerede system</h3></div></div></div>
+<p>Any firmware loaded during the installation will be copied automatically to the installed system. In most cases this will ensure that the device that requires the firmware will also work correctly after the system is rebooted into the installed system. However, if the installed system runs a different kernel version than the installer, there is a slight chance that the firmware cannot be loaded due to version skew. </p>
+<p>If the firmware was loaded from a firmware package, <code class="classname">debian-installer</code> will also install this package for the installed system and will automatically add the non-free-firmware section of the package archive in APT's <code class="filename">sources.list</code>. This has the advantage that the firmware should be updated automatically if a new version becomes available. </p>
+<p>Hvis indlæsningen af firmwaren blev sprunget over under installationen, så vil den relevante enhed ikke fungere korrekt med det installerede system før firmwaren (pakke) er installeret manuelt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top"><p>Hvis firmwaren blev indlæst fra uafhængige filer, så vil firmwaren kopieret til det installerede system <span class="emphasis"><em>ikke</em></span> automatisk blive opdateret med mindre, at den tilsvarende firmawarepakke (hvis tilgængelig) installeres efter installationen er færdig. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Gør det installerede system færdigt</h3></div></div></div>
+<p>Afhængig af hvordan installationen blev udført, så kan det være at behovet for noget firmware ikke blev registreret under installationen, at den relevante firmware ikke var tilgængelig, eller man valgte ikke at installere noget af firmwaren på det tidspunkt. I nogle tilfælde kan en succesfuld installation stadig ende op med en sort skærm eller en forvansket visning når der startes op i det installerede system. Når dette sker, så kan de følgende løsninger forsøges: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Send tilvalget <code class="code">nomodeset</code> på kernekommandolinjen. Dette kan måske hjælpe med at starte op i en <span class="quote">“<span class="quote">grafisk reservetilstand</span>”</span>.</p></li>
+<li class="listitem"><p>Brug tastekombinationen <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> for at skifte til VT2, der kan tilbyde en funktionel logind-prompt.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Brug af individuelle komponenter </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Tilpasning</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

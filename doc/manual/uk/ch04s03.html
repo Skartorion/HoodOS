@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Підготовка файлів для завантаження з USB-диска</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Розділ 4. Отримання інсталяційних даних">
+<link rel="prev" href="ch04s02.html" title="4.2. Завантаження файлів з Debian Mirrors">
+<link rel="next" href="ch04s04.html" title="4.4. Підготовка файлів для завантаження з жорсткого диска">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Підготовка файлів для завантаження з USB-диска</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Розділ 4. Отримання інсталяційних даних</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Підготовка файлів для завантаження з USB-диска</h2></div></div></div>
+<p>Для підготовки USB-диска, ми радимо використовувати систему, де вже працює GNU/Linux та підтримується USB. У поточних системах GNU/Linux USB-диск повинен автоматично розпізнаватися, коли Ви його під'єднуєте. Якщо це не так, перевірте, чи завантажений модуль ядра для USB-дисків. Коли буде вставлений USB-диск, він буде порівняний із пристроєм з назвою <code class="filename">/dev/sdX</code>, де <span class="quote">«<span class="quote">X</span>»</span> — це літера в діапазоні a–z. Ви зможете побачити, як був визначений USB-диск, виконавши команду <span class="command"><strong>lsblk</strong></span> до та після під'єднання диска. (Результат команди <span class="command"><strong>dmesg</strong></span> (від імені root) також є гарною можливістю для цього.) Також для того, щоб писати на флешку, можливо, потрібно вимкнути перемикач захисту від запису. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Застереження]" src="images/warning.png"></td>
+<th align="left">Застереження</th>
+</tr>
+<tr><td align="left" valign="top"><p>Процедури, описані в цьому розділі, знищать все, що вже є на пристрої! Переконайтеся, що Ви використовуєте правильну назву пристрою для свого USB-диска. Якщо Ви використовуєте неправильний пристрій, результатом може бути втрата всієї інформації, наприклад, на жорсткому диску. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Підготовка USB-диска з гібридним образом CD/DVD</h3></div></div></div>
+<p>Образи для встановлення Debian для цієї архітектури створені за допомогою технології <span class="command"><strong>isohybrid</strong></span>;. Це означає, що їх можна записати безпосередньо на USB-диск, що є дуже простим способом створення інсталяційного носія. Просто оберіть образ (наприклад, netinst або DVD-1), який вміститься на Вашому USB-диску. Для отримання інсталяційного образу перегляньте <a class="xref" href="ch04s01.html" title="4.1. Офіційні Debian GNU/Linux інсталяційні образи">Розділ 4.1, «Офіційні Debian GNU/Linux інсталяційні образи»</a>. </p>
+<p>Обраний Вами інсталяційний образ потрібно записати безпосередньо на USB-диск, перезаписавши його поточний вміст. Наприклад, якщо використовується система GNU/Linux, файл образу можна записати на USB-диск таким чином, переконавшись, що накопичувач відключений: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Простий запис інсталяційного образу на USB в такий спосіб має добре працювати для більшості користувачів. Для особливих потреб є ще <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">сторінка wiki</a>. </p>
+<p>Інформацію про те, як це зробити в інших операційних системах, можна знайти у <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD FAQ</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Важливо]" src="images/important.png"></td>
+<th align="left">Важливо</th>
+</tr>
+<tr><td align="left" valign="top"><p>Образ має бути записаний на весь диск, а не на розділ, тобто /dev/sdb, не /dev/sdb1. Не користуйтеся утилітами <span class="command"><strong>unetbootin</strong></span> та подібними, які старіше за образ. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Завантаження файлів з Debian Mirrors </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Підготовка файлів для завантаження з жорсткого диска</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

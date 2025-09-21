@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Vooraf configureren in de praktijk</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apb.html" title="Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen">
+<link rel="prev" href="apbs01.html" title="B.1. Inleiding">
+<link rel="next" href="apbs03.html" title="B.3. Een antwoordbestand aanmaken">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Vooraf configureren in de praktijk</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Vooraf configureren in de praktijk</h2></div></div></div>
+<p>Eerst zult u een zogenaamd antwoordbestand of preconfiguratiebestand moeten creëren en dat moeten plaatsen daar waar u het wenst te gebruiken. Het creëren van het antwoordbestand wordt later in deze bijlage behandeld. Het op de juiste plaats zetten is behoorlijk eenvoudig bij preconfiguratie via het netwerk of wanneer u het bestand wilt inlezen vanaf een usb-stick. Indien u het bestand in een installatie-ISO-image wilt opnemen, zult u het image opnieuw moeten genereren. Hoe u het antwoordbestand kunt opnemen in het initrd valt buiten het bestek van dit document. Raadpleeg in dit verband de documentatie ten behoeve van de ontwikkelaars van <code class="classname">debian-installer</code>. </p>
+<p>Een voorbeeld van een antwoordbestand dat u als basis kunt gebruiken voor uw eigen preconfiguratiebestand is te vinden op <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Dit bestand is gebaseerd op de configuratiefragmenten die in deze bijlage gebruikt worden. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Het antwoordbestand laden</h3></div></div></div>
+<p>Indien u de preconfiguratiemethode met initrd gebruikt, moet u er alleen voor zorgen dat u een bestand met de naam <code class="filename">preseed.cfg</code> in de basismap van initrd heeft staan. Het installatiesysteem zal automatisch nagaan of zich daar een dergelijk bestand bevindt en het dan laden. </p>
+<p>Voor de andere preconfiguratiemethodes moet u het installatiesysteem bij het opstarten zeggen welk bestand het moet gebruiken. Dit wordt gewoonlijk gedaan door de kernel een opstartparameter mee te geven, ofwel handmatig bij het opstarten ofwel via het bewerken van het configuratiebestand van de bootloader <span class="phrase">(bijv. <code class="filename">syslinux.cfg</code>) en de parameter toe te voegen aan het einde van de 'append'-regel(s) voor de kernel.</span> </p>
+<p>Indien u het preconfiguratiebestand vermeldt in de configuratie van de bootloader, zou u de configuratie zo kunnen aanpassen dat u niet op de enter-toets moet drukken om het installatiesysteem op te starten. <span class="phrase">Voor syslinux betekent dit in <code class="filename">syslinux.cfg</code> de pauzetijd (timeout) instellen op <code class="literal">1</code>.</span> </p>
+<p>Om er zeker van te zijn dat het installatiesysteem het juiste antwoordbestand gebruikt, kunt u facultatief de checksum van het bestand vermelden. Momenteel moet dat een md5sum zijn en als u dit vermeldt moet de checksum wel passen bij het antwoordbestand, anders zal het installatiesysteem weigeren het bestand te gebruiken. </p>
+<div class="informalexample"><pre class="screen">Opstartparameters die u moet opgeven:
+- indien u over het netwerk opstart:
+  preseed/url=http://computernaam/pad/naar/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- of
+  preseed/url=tftp://computernaam/pad/naar/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- indien u opstart van een opnieuw gegenereerd installatie-image:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- indien u de installatie met USB-media uitvoert
+  (plaats het antwoordbestand in de basismap van de USB-stick):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Merk op dat <code class="filename">preseed/url</code> ingekort kan worden tot <code class="filename">url</code>, <code class="filename">preseed/file</code> tot <code class="filename">file</code> en <code class="filename">preseed/file/checksum</code> tot <code class="filename">preseed-md5</code> wanneer ze opgegeven worden als opstartparameters. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Met opstartparameters vooraf installatievragen beantwoorden</h3></div></div></div>
+<p>Als er geen gebruik gemaakt kan worden van een antwoordbestand om voor sommige stappen de antwoorden vooraf te geven, kan de installatie nog steeds volledig geautomatiseerd worden, aangezien u preconfiguratiewaarden aan de commandoregel kunt opgeven bij het opstarten van het installatiesysteem. </p>
+<p>Opstartparameters kunnen ook gebruikt worden als u niet echt vooraf wilt configureren, maar enkel een antwoord op een specifieke vraag wilt meegeven. Elders in deze handleiding worden enkele voorbeelden gegeven van situaties waarin dit zinvol kan zijn. </p>
+<p>Om een waarde in te stellen die binnenin <code class="classname">debian-installer</code> gebruikt moet worden, kunt u voor elke preconfiguratievariabele die in de voorbeelden in deze bijlage vermeld wordt, gewoon het volgende opgeven: <strong class="userinput"><code><em class="replaceable"><code>pad/naar/variabele</code></em>=<em class="replaceable"><code>waarde</code></em></code></strong>. Indien het een waarde betreft die gebruikt moet worden om een pakket voor het doelsysteem te configureren, moet u de <em class="firstterm">eigenaar</em><a href="#ftn.id3986" class="footnote" name="id3986"><sup class="footnote">[19]</sup></a> van de variabele voorvoegen, zoals in dit voorbeeld: <strong class="userinput"><code><em class="replaceable"><code>eigenaar</code></em>:<em class="replaceable"><code>pad/naar/variabele</code></em>=<em class="replaceable"><code>waarde</code></em></code></strong>. Indien u geen eigenaar vermeldt, zal de waarde van de variabele niet gekopieerd worden naar de databank van debconf op het doelsysteem en dus niet gebruikt worden tijdens de configuratie van het betreffende pakket. </p>
+<p>Als u een vraag op deze manier vooraf beantwoordt, heeft dat tot gevolg dat ze normaal gezien niet zal gesteld worden. Wilt u voor een bepaalde vraag een specifieke waarde als standaard instellen, maar wilt u ook dat de vraag toch nog gesteld wordt, gebruik dan <span class="quote">“<span class="quote">?=</span>”</span> in plaats van <span class="quote">“<span class="quote">=</span>”</span> als operator. Zie ook <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Gebruik maken van preconfiguratie om standaardwaarden aan te passen">Paragraaf B.5.2, “Gebruik maken van preconfiguratie om standaardwaarden aan te passen”</a>. </p>
+<p>Merk op dat sommige variabelen die frequent aan de opstartprompt ingesteld worden, een verkorte alias hebben. Indien er een alias bestaat, wordt die in de voorbeelden in deze bijlage gebruikt in plaats van de volledige variabele. Voor de variabele <code class="literal">preseed/url</code> bijvoorbeeld, wordt de alias <code class="literal">url</code> gebruikt. Een ander voorbeeld is de alias <code class="literal">tasks</code>, die staat voor <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Een <span class="quote">“<span class="quote">---</span>”</span> in de opstartopties heeft een bijzondere betekenis. Kernelparameters die na de laatste <span class="quote">“<span class="quote">---</span>”</span> staan, zullen gekopieerd worden naar de configuratie van de bootloader van het geïnstalleerde systeem (als het installatiesysteem dit voor die bootloader ondersteunt). Het installatiesysteem zal automatisch elke optie die het herkent (zoals preconfiguratieopties), uitfilteren. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>De huidige linux kernels (2.6.9 en recenter) accepteren maximaal 32 commandoregelopties en 32 omgevingsopties, inclusief die opties die standaard gebruikt worden voor het installatiesysteem. Indien deze aantallen overschreden worden, zal de kernel panikeren (crashen). (Bij oudere kernels lagen deze aantallen lager.) </p></td></tr>
+</table></div>
+<p>Bij de meeste installaties mogen sommige van de standaardopties in het configuratiebestand van de bootloader, zoals <code class="literal">vga=normal</code>, probleemloos verwijderd worden, waardoor u meer preconfiguratieopties kunt gebruiken. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Het is niet altijd mogelijk om voor opstartparameters waarden op te geven die een spatie bevatten, zelfs niet als u ze met spaties afbakent. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Automatische modus</h3></div></div></div>
+<p>Er kunnen verschillende eigenschappen van het installatiesysteem van Debian gecombineerd worden, waardoor met een redelijk eenvoudig commando aan de opstartprompt een vrij gekozen aangepaste complexe automatische installatie gerealiseerd kan worden. </p>
+<p>Dit is mogelijk als u bij het opstarten kiest voor <code class="literal">Geautomatiseerde installatie</code>. Bij sommige architecturen of opstartmethodes wordt die ook <code class="literal">auto</code> genoemd. In dit onderdeel staat <code class="literal">auto</code> dus niet voor een parameter, maar wel voor het selecteren van die opstartkeuze, waarbij de erop volgende opstartparameters toegevoegd worden aan de opstartprompt. <span class="phrase">Zie <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Het opstartscherm">Paragraaf 5.1.5, “Het opstartscherm”</a> voor informatie over hoe u een opstartparameter moet toevoegen.</span> </p>
+<p>Ter illustratie geven we hier enkele voorbeelden die aan de opstartprompt gebruikt kunnen worden: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Dit rekent erop dat er een DHCP-server beschikbaar is die de machine tot op het punt kan krijgen waarop <code class="literal">autoserver</code> door DNS opgezocht kan worden, nadat er eventueel het lokale domein aan toegevoegd werd als dat door DHCP vermeld wordt. Indien dit toegepast wordt op een site waarvan het domein <code class="literal">example.com</code> is, en waarvan de DHCP-configuratie op een verstandige manier aangepakt is, heeft dit tot gevolg dat het volgende antwoordbestand opgehaald wordt: <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Het laatste deel van die url (<code class="literal">d-i/trixie/./preseed.cfg</code>) is afkomstig van <code class="literal">auto-install/defaultroot</code>. Standaard bevat die de map <code class="literal">trixie</code> om toe te laten dat toekomstige versies een eigen codenaam gebruiken en om een dergelijke verwijzing op een gecontroleerde manier te kunnen aanpassen. Het element <code class="literal">/./</code> wordt gebruikt om een basismap aan te geven. Erop volgende paden worden daaraan relatief verankerd (om in preseed/include en preseed/run gebruikt te worden). Dit maakt het mogelijk om bestanden op te geven aan de hand van een volledige URL, of met een pad dat begint met een / en dat dus verankerd is, of zelfs met een pad dat relatief is ten opzichte van de plaats waar het laatste antwoordbestand gevonden werd. Men kan hiervan gebruik maken om scripts te maken die beter transponeerbaar zijn, waardoor een samenhangend geheel van scripts verplaatst kan worden naar een andere locatie zonder dat ze onklaar worden. Een voorbeeld zou kunnen zijn ze naar een USB-stick kopiëren terwijl ze oorspronkelijk op een webserver dienst deden. Als het antwoordbestand uit dit voorbeeld <code class="literal">preseed/run</code> instelt op <code class="literal">/scripts/late_command.sh</code>, dan zal het bestand opgehaald worden van <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Als er geen lokale infrastructuur voor DHCP of DNS aanwezig is, of als u het standaardpad naar <code class="filename">preseed.cfg</code> niet wilt gebruiken, kunt u nog steeds een expliciete URL gebruiken en als u het element <code class="literal">/./</code> niet gebruikt, zal de verankering aan het begin van het pad (d.w.z. de derde <code class="literal">/</code> in de URL) gebeuren. Hierna volgt een voorbeeld dat minimale ondersteuning vraagt van de lokale netwerkinfrastructuur: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/pad/naar/mijnantwoord.bestand</code></em>
+</pre></div>
+<p> Dit werkt als volgt: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>als de URL geen protocol vermeldt, wordt http verondersteld, </p></li>
+<li class="listitem"><p>als het element computernaam geen punt bevat, wordt de van DHCP afkomstige domeinnaam eraan toegevoegd, en </p></li>
+<li class="listitem"><p>als er na de computernaam geen <code class="literal">/</code>'s staan, dan wordt het standaardpad eraan toegevoegd. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Naast de URL, kunt u ook nog instellingen opgeven die niet onmiddellijk het gedrag van <code class="classname">debian-installer</code> zelf beïnvloeden, maar die doorgegeven kunnen worden aan scripts die in het geladen antwoordbestand vermeld worden met behulp van <code class="literal">preseed/run</code>. Momenteel is het enige voorbeeld hiervan <code class="literal">auto-install/classes</code>, waarvoor <code class="literal">classes</code> een alias is. Dit kan als volgt gebruikt worden: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>klasse_A;klasse_B</code></em>
+</pre></div>
+<p> De klassen zouden bijvoorbeeld het type systeem kunnen vermelden dat geïnstalleerd moet worden of de te gebruiken lokalisatie. </p>
+<p>Het is uiteraard mogelijk om dit concept uit te breiden en als u dit doet, is het redelijk om daarvoor de naamruimte auto-install te gebruiken. Zo zou men iets kunnen hebben als <code class="literal">auto-install/style</code>, hetgeen dan in uw scripts gebruikt wordt. Indien u de behoefte voelt om dit te doen, gelieve het dan te vermelden op de mailinglijst <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, zodat we naamruimteconflicten kunnen vermijden en eventueel ten behoeve van u een alias voor de parameter kunnen toevoegen. </p>
+<p>De opstartoptie <code class="literal">auto</code> is nog niet op alle architecturen gedefinieerd. U kunt hetzelfde effect bekomen door gewoon de twee parameters <code class="literal">auto=true priority=critical</code> toe te voegen aan de commandoregel van de kernel. De kernelparameter <code class="literal">auto</code> is een alias voor <code class="literal">auto-install/enable</code> en die op <code class="literal">true</code> instellen stelt de vragen over taalgebied en toetsenbordindeling uit tot na het moment waarop er een mogelijkheid was om ze via een antwoordbestand te beantwoorden. De parameter <code class="literal">priority</code> is een alias voor <code class="literal">debconf/priority</code> en als die op <code class="literal">critical</code> ingesteld wordt, worden geen vragen meer gesteld die een lagere prioriteit hebben. </p>
+<p>Wanneer een Automatische Installatie wordt geselecteerd zonder dat ook een configuratie via een antwoordbestand wordt opgegeven, wordt de gebruiker gevraagd een locatie van het antwoordbestand op te geven. Als daarentegen wel een configuratie via een antwoordbestand is opgegeven, wordt die vraag normaal gesproken onderdrukt om een ​​volledig niet-interactieve installatie mogelijk te maken. Als het echter de bedoeling is om standaardinstellingen te wijzigen door een <code class="literal">preseed.cfg</code> in een initrd te gebruiken, dan zou het resultaat daarvan moeten zijn dat er echt gedrag vertoont wordt alsof er voorafgaandelijk nog geen configuratie is opgegeven, ook al is dat wel het geval. In dat geval kan de debconf-variabele <code class="literal">auto-install/cloak_initrd_preseed</code> worden ingesteld op <code class="literal">true</code> (bijvoorbeeld in de <code class="literal">preseed.cfg</code> van de initrd) om het vereiste gedrag te krijgen. </p>
+<p>Andere opties die interessant kunnen zijn in het geval u een installatie tracht te automatiseren waarin van DHCP gebruik gemaakt wordt zijn: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code>. Deze opties zorgen ervoor dat de machine kiest voor de eerste bruikbare netwerkkaart (NIC) en meer geduld heeft bij het wachten op een antwoord op zijn DHCP-aanvraag. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>Een uitgebreid voorbeeld van het gebruik van dit raamwerk, met inbegrip van voorbeeldscripts en klassen, kunt u vinden op de <a class="ulink" href="http://hands.com/d-i/" target="_top">website van de ontwikkelaar</a>. De voorbeelden die u daar aantreft tonen ook veel andere leuke effecten die u met een creatief gebruik van preconfiguratie kunt bekomen. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Nuttige aliassen bij het vooraf configureren</h3></div></div></div>
+<p>De volgende aliassen kunnen nuttig zijn als u gebruik maakt van preconfiguratie (eventueel in automatische modus). Merk op dat dit gewoon korte aliassen zijn voor de namen van de vragen en dat u ook steeds een waarde moet opgeven: bijvoorbeeld <code class="literal">auto=true</code> of <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>bestand</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Preconfiguratievoorbeelden voor de opstart-prompt</h3></div></div></div>
+<p>Hier volgen enkele voorbeelden van hoe de opstart-prompt er kan uitzien (u zal dit aan uw behoeften moeten aanpassen<span class="phrase">; zie ook <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Het opstartscherm">Paragraaf 5.1.5, “Het opstartscherm”</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Om Frans als taal in te stellen en Frankrijk als land:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Om Engels als taal in te stellen en Duitsland als land, en om een Duitse toetsenbordindeling te gebruiken:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Om de grafische werkomgeving MATE te installeren:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Om de taak web-server te installeren:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Een DHCP-server gebruiken om antwoordbestanden op te geven</h3></div></div></div>
+<p>Het is ook mogelijk om DHCP te gebruiken om een antwoordbestand op te geven dat van het netwerk opgehaald moet worden. DHCP laat toe om een bestandsnaam op te geven. Gewoonlijk is dat een bestand dat gebruikt wordt bij het opstarten over het netwerk, maar als blijkt dat het een URL is, dan zullen installatiemedia die preconfiguratie over het netwerk ondersteunen, het bestand ophalen op die URL en het gebruiken als antwoordbestand. Hierna volgt een voorbeeld van de manier waarop dit voor versie 3 van de ISC DHCP-server (het Debian pakket isc-dhcp-server) opgezet kan worden in het bestand dhcpd.conf. </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Merk op dat het bovenstaande voorbeeld dit bestand voorbehoudt voor de DHCP-cliënten die zichzelf als <span class="quote">“<span class="quote">d-i</span>”</span> identificeren, zodat het geen invloed heeft op gewone DHCP-cliënten, maar enkel gebruikt wordt voor het installatiesysteem. U kunt de tekst ook in een informatieblok plaatsen dat geldt voor één enkele computer, zodat u kunt vermijden dat preconfiguratie gebruikt wordt voor alle installaties die op uw netwerk uitgevoerd worden. </p>
+<p>Een goede manier om gebruik te maken van preconfiguratie via DHCP is om dit te reserveren voor het vooraf configureren van waarden (antwoorden) die specifiek zijn voor uw netwerk, zoals de te gebruiken Debian spiegelserver. Op die manier zullen installaties op uw netwerk automatisch een goede spiegelserver selecteren, terwijl de rest van de installatie interactief uitgevoerd kan worden. Preconfiguratie via DHCP gebruiken om installaties van Debian volledig te automatiseren, zou enkel met de nodige voorzichtigheid mogen gebeuren. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3986" class="footnote"><p><a href="#id3986" class="para"><sup class="para">[19] </sup></a> De eigenaar van een debconf-variabele (of sjabloon) is normaal gezien de naam van het pakket dat het overeenkomstige debconf-sjabloon bevat. Voor variabelen die in het installatiesysteem zelf gebruikt worden, is de eigenaar<span class="quote">“<span class="quote">d-i</span>”</span>. Sjablonen en variabelen kunnen meer dan één eigenaar hebben en dit gegeven kan helpen bij het bepalen of een bepaalde variabele uit de databank van debconf verwijderd mag worden als een pakket op het systeem gewist wordt (d.w.z. als apt met het commando purge gebruikt wordt). </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Inleiding </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Een antwoordbestand aanmaken</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

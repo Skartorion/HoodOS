@@ -1,0 +1,625 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. 事前設定ファイルの内容 (trixie 用)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="prev" href="apbs03.html" title="B.3. 事前設定ファイルの作成">
+<link rel="next" href="apbs05.html" title="B.5. 高度なオプション">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. 事前設定ファイルの内容 (trixie 用)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録B preseed を利用したインストールの自動化</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. 事前設定ファイルの内容 (trixie 用)</h2></div></div></div>
+<p>本付録で使用する設定の断片は、<span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span> のサンプル事前設定ファイルでも利用できます。 </p>
+<p>本サンプルは、Intel x86 アーキテクチャ用インストールを元にしていることに注意してください。他のアーキテクチャにインストールする場合、サンプルのいくつか (キーボードの選択やブートローダの選択など) は適切でないかもしれませんので、そのアーキテクチャ用に適切な debconf 設定で置き換える必要があるでしょう。 </p>
+<p>Debian インストーラコンポーネントの実際の動作が、どのように異なるのかといった詳細は、<a class="xref" href="ch06s03.html" title="6.3. それぞれのコンポーネントの使用法">「それぞれのコンポーネントの使用法」</a> にあります。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. 地域化</h3></div></div></div>
+<p>通常のインストール中、地域化について最初に質問されるため、地域化に関する質問は initrd またはカーネルブート パラメータによる方法でのみ preseed 可能となります。自動モード (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. 自動モード">「自動モード」</a>) では <code class="literal">auto-install/enable=true</code> の設定を (通常は preseed の別名 <code class="literal">auto</code> 経由で) 盛り込むことになります。それにより地域化の質問を聞いてくる時機が後になるため、どの方法でも preseed できるようになります。 </p>
+<p>ロケールは言語と国を両方指定でき、<code class="classname">debian-installer</code> がサポートする言語と認識する国のいずれかの組み合わせでもかまいません。組み合わせが正しいロケールの形になっていない場合、インストーラは選択した言語から正しいロケールを自動選択します。ブートパラメータでロケールを指定するには、<strong class="userinput"><code>locale=<em class="replaceable"><code>en_US.UTF-8</code></em></code></strong> としてください。 </p>
+<p>この方法は非常に簡単ですが、言語・国・ロケールの利用可能な組み合わせを、すべて preseed できるわけではありません<a href="#ftn.id4239" class="footnote" name="id4239"><sup class="footnote">[20]</sup></a>。言語と国は、どちらもブートパラメータで指定できます。 </p>
+<div class="informalexample"><pre class="screen"># ロケールで使用する言語を限定的に予約する、国と言語。
+d-i debian-installer/locale string en_US.UTF-8
+
+# 別々に国と言語を予約する場合。
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# オプションで特定の言語も加える場合。
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>キーボード設定は、キーマップの選択と、(非ラテンキーマップ向けの) 非ラテンキーマップと US キーマップとの、切り替えキーの選択から成っています。インストール中では基本的なキーマップバリエーションしか有効ではありません。詳細なバリエーションは、インストールしたシステムで <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> を実行することでのみ有効になります。 </p>
+<div class="informalexample"><pre class="screen"># キーボード配列選択
+d-i keyboard-configuration/xkb-keymap select jp
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>キーボード設定をスキップするには、<code class="classname">keymap</code> を <strong class="userinput"><code>skip-config</code></strong> と preseed してください。これにより、カーネルのキーマップが有効になったままとなります。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. 音声合成</h3></div></div></div>
+<p>インストール中に音声合成ソフトウェア (<code class="literal">speakup.synth=soft</code> などのカーネルコマンドラインを渡す)、サウンドボードと音声を予め予約しておく。 </p>
+<p>音声合成機能はすでに起動していますが、これはカーネルコマンドラインか initrd から使用されます。 </p>
+<p><code class="literal">espeakup/voice</code> を予約するとインストールしたシステムの音声読み上げ機能を設定できます。 これはソフトウェア音声合成が有効になっていなくてもインストーラー内部で有効になっています。 </p>
+<div class="informalexample"><pre class="screen"># どの ALSA カードをソフトウェア音声合成に使うかを指定
+# 数字の0より大きな整数または ID
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# どの espeak-ng 音声を使用するか指定
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. ネットワーク設定</h3></div></div></div>
+<p>もちろん、ネットワークから事前設定ファイルを読み込む場合、preseed のネットワーク設定は動作しません。しかし、光学ディスクや USB メモリから起動するときには重要です。ネットワークから事前設定ファイルを読み込む場合、ネットワーク設定パラメータは、カーネルブートパラメータで渡すことになります。 </p>
+<p>ネットワークから事前設定ファイルを読み込む前に netboot するとき、特定のインターフェースを選ぶ必要があるなら、<strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong> のようにブートパラメータを使用してください。 </p>
+<p><span class="quote">「<span class="quote">preseed/url</span>」</span> で network preseed を使用する際、ネットワーク設定の preseed は通常不可能ですが、例えば、ネットワークインターフェースに静的アドレスを設定するといった、以下のハックを利用して動作させることができます。このハックは、以下のコマンドを含む <span class="quote">「<span class="quote">preseed/run</span>」</span> スクリプトを作成し、事前設定ファイルを読み込んだ後でネットワークの設定を強制的に再度行う、というものです。 </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>以下の debconf 変数は、ネットワークの設定と関係があります。 </p>
+<div class="informalexample"><pre class="screen"># ネットワーク設定をすべて無効にします。 これはCDROMから
+#ネットワークにつながっていない機器や信頼性の低いネットワーク
+# などでインストールする時に便利です。
+#d-i netcfg/enable boolean false
+
+# netcfg はネットワークにつながっている機器を選びます。
+# 機器が一つしかない場合はリストが表示されません。
+d-i netcfg/choose_interface select auto
+
+# 特定のネットワーク機器を選択する:
+#d-i netcfg/choose_interface select eth1
+
+# ネットワーク検出のタイムアウトを設定(デフォルト3秒)
+# 数値の単位は秒です。
+#d-i netcfg/link_wait_timeout string 10
+
+# DHCPサーバが遅くてインストーラーが時間切れで終了してしまう場合
+# この数値を調節してください。
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# ネットワーク自動設定が既定値です。
+# 手動でネットワーク設定をしたい場合はコメントを外してください。
+# そして、次の段落にある静的ネットワーク設定をしてください。
+#d-i netcfg/disable_autoconfig boolean true
+
+# 既製のネットワーク設定ファイルを使用して静的ネットワーク設定を行う場合
+# DHCPサーバーを使用する市内に関わらず次の設定をしてください。
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# 静的ネットワーク設定
+#
+# IPv4 例
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6 例
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# DHCPサーバから渡されたホスト名やドメイン名を優先的に使う場合に設定します。
+# しかしながら、この設定を変えてもネットワーク設定に関する質問は省略されます。
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# DHCPサーバが返す内容や逆引きDNSのP登録情報に関わらずホスト名を強制的に変更する場合
+# コメントを外して値を変えてください。
+#d-i netcfg/hostname string somehost
+
+# WEP key ダイアログの表示をしない。
+d-i netcfg/wireless_wep string
+# いくつかのISPがパスワード等で採用している奇抜な DHCP ホスト名
+#d-i netcfg/dhcp_hostname string radish
+
+# インストーラーイメージに含まれているものを含めファームウェアを検索しない
+#d-i hw-detect/firmware-lookup string never
+
+# 非フリーのファームウェアが必要な場合読み込むかどうかを変更できます。
+# この値を false にすると読み込まれません。
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p><code class="classname">netcfg/get_netmask</code> が preseed されていない場合、<span class="command"><strong>netcfg</strong></span> は自動的にネットマスクを決定することに注意してください。この場合、自動インストールを行うためには、この変数を <code class="literal">seen</code> としてマークされていなければなりません。同様に、<code class="classname">netcfg/get_gateway</code> が設定されていないと、<span class="command"><strong>netcfg</strong></span> は適切なアドレスを選択します。特殊な場合として、<code class="classname">netcfg/get_gateway</code> に <span class="quote">「<span class="quote">none</span>」</span> と設定して、ゲートウェイを使用しないようにできます。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. ネットワークコンソール</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># SSH経由でリモートインストールを行う場合、以下の設定をして
+# アクセスに必要な環境を整えてください。
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p> network-consolse に関する詳細な情報は <a class="xref" href="ch06s03.html#network-console" title="6.3.10. network-console を利用したインストール">「network-console を利用したインストール」</a> で参照してください。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. ミラーサイト設定</h3></div></div></div>
+<p>使用するインストール方法に依存しますが、インストーラの追加コンポーネントのダウンロードや、基本システムのインストール、インストールしたシステムの <code class="filename">/etc/apt/sources.list</code> のセットアップにミラーサイトを使用できます。 </p>
+<p><code class="classname">mirror/suite</code> パラメータでは、インストールするシステム用の組を設定します。 </p>
+<p><code class="classname">mirror/udeb/suite</code> パラメータでは、インストーラの追加コンポーネントの組を設定します。実際にコンポーネントをネットワークでダウンロードする場合に役立つだけです。また、インストールで使用するインストール方法のための initrd を生成するには、この組が一致していなければなりません。通常インストーラは、自動的に正しい値を設定しますので、設定する必要はありません。 </p>
+<div class="informalexample"><pre class="screen"># ミラープロトコル:
+# FTPを選択すると、国とミラーの設定をする必要はありません。
+# 既定値で設定されているプロトコル: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# インストールできる組み合わせ
+#d-i mirror/suite string testing
+# インストーラーを読み込むのに使用する組み合わせ(optional).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. アカウント設定</h3></div></div></div>
+<p>root アカウント用のパスワードや、最初のユーザアカウントの名前・パスワードは preseed できます。パスワードには、平文か crypt(3) <span class="emphasis"><em>ハッシュ</em></span>のどちらかを使用できます。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>パスワードを知っている事前設定ファイルに誰でもアクセスできるため、preseed のパスワードは、完全に安全というわけではないことを知っておいてください。保存するパスワードをハッシュ化することで、総当たり攻撃を許す DES や MD5 のような弱いハッシュ化アルゴリズムを使わない限りは安全だと考えられます。ハッシュ化アルゴリズムとしては SHA-256 か SHA512 を勧めます。。 </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># root アカウントの作成を飛ばす (通常アカウントのユーザは 
+# sudo を使えるようにする)
+#d-i passwd/root-login boolean false
+# 代案として、通常ユーザの作成を飛ばす。
+#d-i passwd/make-user boolean false
+
+# root パスワード、平文
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# または、パスワードを crypt 3 hash で暗号化する
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# 通常ユーザの作成をする
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# 通常ユーザのパスワード、平文
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# または、パスワードを crypt 3 hash で暗号化する
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# 最初に作成するユーザを既定ではなく指定された UID で作成
+#d-i passwd/user-uid string 1010
+
+# 作成されたユーザアカウントは標準的なグループに加えられます。
+# 標準的なグループを変更するには下記を編集
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p><code class="classname">passwd/root-password-crypted</code> 変数や <code class="classname">passwd/user-password-crypted</code> 変数では、preseed で <span class="quote">「<span class="quote">!</span>」</span> という値を取れます。この場合、そのアカウントは無効となります。もちろん管理権限での実行や root ログインを許可する代替手段 (例えば SSH キー認証や <span class="command"><strong>sudo</strong></span>) を用意しておいた上で、root アカウントに設定すると便利です。 </p>
+<p>以下のコマンド (<code class="classname">whois</code> パッケージから利用できます) を、パスワードの SHA-512 ベースの crypt(3) ハッシュを生成するのに利用できます。 </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. 時計と時間帯の設定</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># 機器を UTC/GMT のタイムゾーンに設定する
+d-i clock-setup/utc boolean true
+
+# タイムゾーン $TZ; に設定する
+# /usr/share/zoneinfo/ for valid values.
+d-i time/zone string US/Eastern
+
+# インストール中に NTP 時刻設定サービスに接続して時刻合わせを行う
+d-i clock-setup/ntp boolean true
+# 時刻設定する NTP サーバを指定
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. パーティション分割</h3></div></div></div>
+<p>ハードディスクのパーティション分割に preseed を使用するのは、<code class="classname">partman-auto</code> でサポートしている機能に限定されています。パーティションはディスクに既存の空き領域とディスク全体のどちらかから選べます。ディスクレイアウトは、あらかじめ定義したレシピ、レシピファイルによるカスタムレシピ、事前設定ファイルに書いたレシピから選択できます。 </p>
+<p>RAID、LVM、暗号化を用いた高度なパーティションセットアップを、preseed ではサポートしていますが、preseed を用いずにインストールしたときに使用できるような、完全な柔軟性があるわけではありません。 </p>
+<p>以下の例は、レシピを使用する際の基本的な情報のみを提供しています。詳細情報は、<code class="classname">debian-installer</code> パッケージにある、<code class="filename">partman-auto-recipe.txt</code> と <code class="filename">partman-auto-raid-recipe.txt</code> をご覧ください。どちらのファイルも <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top"><code class="classname">debian-installer</code> ソースリポジトリ</a> にもあります。リリースごとに、サポートする機能が変更されることがありますので、注意してください。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>ディスクの識別は、ドライバの読み込み順に依存します。複数のディスクがシステムにある場合、preseed を使用する前に、正しいディスクを確実に選択できるようにしなければなりません。 </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. パーティション分割の例</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># ディスクに空きスペースがあれば、どれか一つのパーティションを
+# 選ぶことができます、下記を設定すれば自動で最大の空きが選ばれます。
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# 次案として、インストールするディスクが決まっている場合、名前を指定できます。
+# その場合、/dev/sda のような伝統的な記述方法に限られます。
+# /dev/discs/disc0/disc のような記述はできません。
+# 例えば、SATAの一番最初のディスクなら /dev/sda です:
+#d-i partman-auto/disk string /dev/sda
+# また、パーティションの種類も下記から選べます:
+# - regular: アーキテクチャ標準
+# - lvm: 論理パーティション
+# - crypto: 暗号化された論理パーティション
+d-i partman-auto/method string lvm
+
+# 論理ボリュームが使用する領域を指定できます。指定できる書式は
+# サイズ (例: 20GB) または、割合で X %、最大は 'max' を使用します
+d-i partman-auto-lvm/guided_size string max
+
+# 自動的にインストールされるパーティションに古い論理パーティションがある場合
+# 通常、下記を設定すればユーザは警告されます。
+d-i partman-lvm/device_remove_lvm boolean true
+# 同じことをソフトウェアRAIDに行います
+d-i partman-md/device_remove_md boolean true
+# 論理パーティションに書き込む、または上書きする場合、警告します
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# 事前にインストールを行うパーティションの分割形式を選択できます
+# - atomic: すべてを一つのパーティションに
+# - home:  /home パーティションを分割
+# - multi:  /home, /var, /tmp を分割する
+# - server:  /var と /srv パーティションを分割; swapは 1GB に限定
+# - small_disk: 小さなHDD用の編成 (10GB 以下)
+
+d-i partman-auto/choose_recipe select atomic
+
+# また、自分で用意した方法で行う場合、設定ファイルを指定できます
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# また、事前設定ファイルを一行で書くことも可能です
+# 下記は、小さな boot パーティションに適切な swapをつけ
+# 残りを root にする例です
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# 詳しくは 'debian-installer' パッケージの中にある partman-auto-recipe.txt
+# をご覧ください。 このドキュメントにはシステムラベルや
+# ボリュームグループなど名前の書式なども書かれています。
+
+## EFI パーティションを使用する場合
+# 上記の書式に従って EFI パーティションを用意する場合
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# このように記述しますが、アーキテクチャにより微妙な違いがありますので
+# 'partman-auto' パッケージの中にある D-I ソースリポジトリを参考にしてください
+
+# 上記の事前予約を設定した場合、次の設定を行うことで 'partman'
+# パーティションマネージャが自動的に確認なしで実行します。
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# UFEIブートを強制します (BIOSブート互換は失われます) 既定値: false.
+#d-i partman-efi/non_efi_system boolean true
+# GPT パーティションテーブルの使用を確認 - EFI パーティションが必要です
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# 暗号化ディスクを使用する場合、パーティションの消去を飛ばす。
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. RAID を用いたパーティション分割</h4></div></div></div>
+<p>ソフトウェア RAID アレイにパーティションをセットアップすることも、preseed を使用してできます。サポートしているのは、RAID 0, 1, 5, 6, 10、や縮退アレイの作成、スペアデバイスの指定です。 </p>
+<p>RAID 1 を使用する際には、アレイで使用する全デバイスへインストールするよう、preseed で探せます。<a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. ブートローダのインストール">「ブートローダのインストール」</a> をご覧ください。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>自動パーティション分割でのこの形式は、誤動作をしやすいです。またこの機能は、<code class="classname">debian-installer</code> の開発者によって、相対的にまだあまりテストを受けていません。様々な条件で正しく動作するかの責任 (理解でき衝突しない限り) は、ユーザの側にあります。問題が発生したら、<code class="filename">/var/log/syslog</code> をチェックしてください。 </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># この方式は 'raid' に設定されていなければなりません
+#d-i partman-auto/method string raid
+# パーティションを行うディスクを選んでください。
+# インストールされるディスクはすべて同じレイアウトになるので
+# それらは同じサイズでなければ動作しません。
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# 次に使用する物理パーティションを指定してください。
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# 最後に、RAID形式を選んでください。使用できる形式は 0-1-5-6-10 です。
+# デバイスの区切り記号は # です
+# 使用可能なパラメータ:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# 詳しくは 'debian-installer' にある partman-auto-raid-recipe.txt
+# をご覧ください。
+
+# これらは partman が確認なしで自動的に行う設定です
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. パーティションマウントの制御</h4></div></div></div>
+<p>通常、ファイルシステムは、汎用一意識別子 (UUID) をキーとしてマウントされます。これにより、デバイス名が変更されたとしても、適切にマウントできます。UUID は長く読みにくいため、お好みにより、インストーラは、伝統的なデバイス名やあなたが割り当てたラベルをベースにして、ファイルシステムをマウントできます。インストーラにラベルでマウントさせる場合、ラベルがないファイルシステムは、UUID でマウントされます。 </p>
+<p>LVM 論理ボリュームのような不変名のデバイスは、UUID ではなく伝統的な名前で使用され続けます。 </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[警告]" src="images/warning.png"></td>
+<th align="left">警告</th>
+</tr>
+<tr><td align="left" valign="top"><p>伝統的なデバイス名は、ブート時にカーネルが検出する順番によって、変わってしまう可能性があり、そのため、誤ったファイルシステムをマウントする原因になります。同様に、新しいディスクや USB ドライブを挿すと、ラベルが競合してしまいます。こうなってしまうと、起動時の挙動が不定になってしまいます。 </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># 標準では UUID 型でマウントされますが、「伝統的」な名前 /xxx/yyy や
+# 「ラベル」デバイスにつけた名前も使用できます
+# 上記が動作しなかった場合 UUID 識別にファールバック(代替利用)されます
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. 基本システムのインストール</h3></div></div></div>
+<p>インストールのこの段階で、実際に preseed できる項目は多くありません。質問はカーネルのインストールに関するものだけです。 </p>
+<div class="informalexample"><pre class="screen"># APT が推奨されるパッケージを既定ではインストールしないように変更する。
+# この設定をするとシステムが不完全なものとなるので経験豊富な上級者向きです
+#d-i base-installer/install-recommends boolean false
+
+# インストールされるカーネルイメージ(メタ)パッケージの種類
+# カーネルのインストールを行わない場合 "none"
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. APTを設定</h3></div></div></div>
+<p><code class="filename">/etc/apt/sources.list</code> のセットアップと基本設定オプションは、インストール方法と初期の質問への回答から、完全に自動的に行われます。さらに、他の (ローカルな) リポジトリを追加できます。 </p>
+<div class="informalexample"><pre class="screen"># 追加インストールメディアをスキャンしたい場合は選んでください
+# (デフォルト: false).
+d-i apt-setup/cdrom/set-first boolean false
+# 非フリーのファームウェアをインストールする
+#d-i apt-setup/non-free-firmware boolean true
+# non-free および contrib ソフトウェアのインストールを選択できます
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# source.list にBD/DVDなどのインストールメディアを記載したくない場合は
+# 次のコマンドをアンコメントしてください
+# (netinst やCDイメージはこの設定に関わらず記載されません)
+#d-i apt-setup/disable-cdrom-entries boolean true
+# ネットワークミラーを使いたくない場合は以下のコメントを外してください。
+#d-i apt-setup/use_mirror boolean false
+# どのアップデートを使うかを選択します; 利用するミラーを指定します。
+# 以下で表示される値は通常のデフォルト値です。
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# 追加リポジトリ、local[0-9] が利用できます
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# deb-src 行を有効にする
+#d-i apt-setup/local0/source boolean true
+# ローカルリポジトリの公開鍵 URL; 鍵を指定しないと apt は認証されていないリポジトリ
+# に対して警告を出し、sources.list 行はアンコメントされたままになります。
+#d-i apt-setup/local0/key string http://local.server/key
+# base64 エンコードで上記の鍵を認証する場合 ( `base64 -w0`)
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# 鍵ファイルは ASCII-armorで構成されているかどうかチェックされ
+# その場合 ".asc" の拡張子が付き、そうでない場合は '.gpg' になります。.
+# "keybox database" format is currently not supported. (see generators/60local in apt-setup's source)
+
+# デフォルトではインストーラーは既知の GPG 鍵で認証されたリポジトリを必要とします。
+# 以下の設定はこの認証を無効化するのに利用します。
+# 警告: 安全でなく、推奨されません。
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# i386 向けの multiarch 設定を追加するには以下のコメントをはずします
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. パッケージ選択</h3></div></div></div>
+<p>有効なタスクを組み合わせてインストールするものを選ぶことができます。有効なタスクを以下に書き出します。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (標準ツール) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (グラフィカルデスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (Gnome デスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (XFCE デスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (KDE Plasma デスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Cinnamon デスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (MATE デスクトップp) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (LXDE デスクトップ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (web サーバ) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH サーバ) </p></li>
+</ul></div>
+<p>タスクをインストールしないこともできますし、他の方法でパッケージのセットが強制的にインストールされることもあります。<strong class="userinput"><code>standard</code></strong> タスクは常に含めるのをお勧めします。 </p>
+<p>あるいは tasksel のダイアログを全く表示させたくないという場合は、<code class="classname">pkgsel/run_tasksel</code> の preseed を設定してください(この場合、tasksel ではパッケージは何もインストールされません)。 </p>
+<p>タスクでインストールするパッケージに加えて、特定のパッケージをインストールする場合、<code class="classname">pkgsel/include</code> パラメータを使用できます。このパラメータの値は、カーネルコマンドラインと同様に簡単に仕様できるよう、カンマか空白で区切ったパッケージのリストを取れます。 </p>
+<div class="informalexample"><pre class="screen">#tasksel 特定の機能に必要なパッケージを複数選択するツール 
+# を使用する/しない 
+#d-i pkgsel/run_tasksel boolean false
+
+# 追加で個別のパッケージをインストールする
+#d-i pkgsel/include string openssh-server build-essential
+# debootstrap 実行後にアップグレードを行うかどうかの設定
+# 可能な設定は: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# 人気ソフトウェアコンテストに参加するかどうかを設定
+# インストールしたパッケージや使用する頻度などの情報を送信する。
+# インストールメディアに含むべきパッケージなどの開発に役立ちます。 
+# 既定値: false
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. ブートローダのインストール</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grubはx86用のブートローダーです。</span>
+
+
+# 他のオペレーティングシステムが検出されない場合、GRUBは自動的にUEFIパーティション/ブートレコードにインストールされます。 安心設計な設定です。
+d-i grub-installer/only_debian boolean true
+
+# このオプションは、GRUBインストーラに他のOSが存在する場合でも、UEFIパーティション/ブートレコードにインストールするように指示します。これは、他のOSを起動できなくなる可能性があるため、あまり安全ではありません。
+d-i grub-installer/with_other_os boolean true
+
+# USBメモリを使用した場合、起動ディスクの位置を安全に判断できない可能性がある時、これを指定します。
+#d-i grub-installer/bootdev  string /dev/sda
+# 起動ディスクがUSBスティックでない場合：
+#d-i grub-installer/bootdev  string default
+
+# UEFIパーティション/ブートレコード以外の場所にインストールしたい場合は、以下の行のコメントを外して編集します。
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# 複数のディスクにGRUBをインストールするには：
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# GRUBをパスワードで保護、平文または暗号化
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# MD5ハッシュを使用して暗号化します（grub-md5-crypt(8)を参照）。
+#d-i grub-installer/password-crypted password [MD5ハッシュ]
+
+# インストールされたシステムにブートパラメータを追加するには、以下のオプションを使用します（ブートローダーインストーラでサポートされている場合）
+# 注：インストーラに渡されたオプションは自動的に追加されます
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p><code class="classname">grub</code> で使用するパスワードの MD5 ハッシュは、<span class="command"><strong>grub-md5-crypt</strong></span> を使用して生成するか、<a class="xref" href="apbs04.html#preseed-account" title="B.4.6. アカウント設定">「アカウント設定」</a> にあるコマンドを使用して生成します。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. インストールの仕上げ</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># シリアルコンソールからのインストール中、仮想コンソール (VT1-VT6) は通常 /etc/inittab で無効になっています。次の行のコメントを外して有効にします。
+#d-i finish-install/keep-consoles boolean true
+
+# インストール完了時のメッセージを表示する/しない。
+d-i finish-install/reboot_in_progress note
+
+# インストーラが再起動中にディスクを排出するのを防ぎます。特定の機種で便利です。
+#d-i cdrom-detect/eject boolean false
+
+# インストーラが終了時にシャットダウンし、インストールされたシステムを再起動しないようにする方法です。
+#d-i debian-installer/exit/halt boolean true
+# 上記に加え、電源も切ります。
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. 他パッケージの preseed</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># インストールするソフトウェアの組み合わせによっては、エラーや
+#システムの不具合が報告される場合があります。
+# 以下のコマンドを実行することによって、それを事前に把握できます。
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4239" class="footnote"><p><a href="#id4239" class="para"><sup class="para">[20] </sup></a> 例えば、preseed で <code class="literal">locale</code> を <strong class="userinput"><code>en_NL</code></strong> とすると、インストールしたシステムのデフォルトロケールは <code class="literal">en_US.UTF-8</code> になります。例えば <code class="literal">en_GB.UTF-8</code> を期待するのであれば、preseed にその値を設定する必要があります。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. 事前設定ファイルの作成 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> B.5. 高度なオプション</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

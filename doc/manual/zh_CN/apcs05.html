@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian 分区程序</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apc.html" title="附录 C. 为 Debian 准备分区">
+<link rel="prev" href="apcs04.html" title="C.4. Linux 里面的设备名称">
+<link rel="next" href="apd.html" title="附录 D. 其他">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian 分区程序</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 C. 为 Debian 准备分区</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian 分区程序</h2></div></div></div>
+<p>Debian 开发人员选用了几种在不同硬盘和不同体系结构上的分区程序。下面是一个适合您的体系的程序列表。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>推荐的 Debian 分区工具。这把瑞士军刀可以修改分区大小，创建文件系统<span class="phrase">(Windows 下的说法是 <span class="quote">“<span class="quote">format</span>”</span>)</span>和关联分区至挂接点。 </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>最早的 Linux 磁盘分区工具，对于老手很好用。 </p>
+<p>请注意，如果您的机器上有一个 FreeBSD 分区。安装内核包含对这些分区的支持，但是 <span class="command"><strong>fdisk</strong></span> 表示他们的设备名称方式可能有所不同(也可能不是)。参阅 <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>。 </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>一个简单易用、全屏幕的磁盘分区程序。供其他人员使用。 </p>
+<p>请注意 <span class="command"><strong>cfdisk</strong></span> 完全不了解 FreeBSD 的分区，因此，再说一次，设备名称与结果可能不同。 </p>
+</dd>
+</dl></div>
+<p>当您选择了 <span class="guimenuitem">Partition disks</span> (或类似的)，默认会执行其中的一个程序。在 VT2 命令行上也可以使用其他的分区工具，但不推荐采用这种方式。 </p>
+<p>要记得标记您的引导分区为 <span class="quote">“<span class="quote">Bootable</span>”</span>。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4666"></a>C.5.1. 为 <span class="phrase">64-bit PC</span> 分区</h3></div></div></div>
+<p>如果使用新的硬盘（或者想要擦除硬盘上的整个分区表），那么需要创建新的分区表。<span class="quote">“<span class="quote">Guided partitioning</span>”</span> 会自动做这件事，但当手动分区时，需要在磁盘的顶层入口移动选项并点击 <span class="keycap"><strong>Enter</strong></span> 按键。这会在磁盘上创建新的分区表。在专家模式中，然后您会被询问分区表的类型。基于 UEFI 系统默认为 <span class="quote">“<span class="quote">gpt</span>”</span>，而对于较旧的 BIOS 默认值为 <span class="quote">“<span class="quote">msdos</span>”</span>。在标准的优先安装中，会自动使用这些默认值。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>当选择 <span class="quote">“<span class="quote">gpt</span>”</span> 类型（对于 UEFI 系统是默认的）的分区表时，在磁盘的开始部分自动创建空余的 1MB 空间。这会要求用于嵌入 GRUB2 启动引导程序。 </p></td></tr>
+</table></div>
+<p>如果您已经有 Windows 这样的其他操作系统存在，并想在安装 Debian 时保留它们，应该重新设置分区大小，释放空间给 Debian 安装程序。安装程序支持修改 FAT 和 NTFS 文件系统的尺寸；当您进入安装程序的分区步骤，选择 <span class="guimenuitem">Manual</span> 选项，然后只需选择已有的分区，更改其尺寸。 </p>
+<p>While modern UEFI systems don't have such limitations as listed below, the old PC BIOS generally adds additional constraints for disk partitioning. There is a limit to how many <span class="quote">“<span class="quote">primary</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions a drive can contain. </p>
+<p>On such old PC BIOS system, <span class="quote">“<span class="quote">primary</span>”</span> partitions are the original partitioning scheme for PC disks. However, there can only be four of them. To get past this limitation, <span class="quote">“<span class="quote">extended</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions were invented. By setting one of your primary partitions as an extended partition, you can subdivide all the space allocated to that partition into logical partitions. You can create up to 60 logical partitions per extended partition; however, you can only have one extended partition per drive. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Linux 里面的设备名称 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 附录 D. 其他</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

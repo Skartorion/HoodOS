@@ -1,0 +1,416 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Instal·lar Debian GNU/Linux des d'un sistema Unix/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Apèndix D. Informació variada">
+<link rel="prev" href="apds02.html" title="D.2. Espai requerit per a les tasques">
+<link rel="next" href="apds04.html" title="D.4. Instal·lació de Debian GNU/Linux per «Parallel Line IP» (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Instal·lar Debian GNU/Linux des d'un sistema Unix/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix D. Informació variada</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Instal·lar Debian GNU/Linux des d'un sistema Unix/Linux</h2></div></div></div>
+<p>Aquesta secció explica com instal·lar Debian GNU/Linux des d'un Unix o Linux, sense utilitzar el sistema de menús de l'instal·lador com s'explica a tot aquest manual. Aquest COM ES FA d'<span class="quote">«<span class="quote">instal·lació creuada</span>»</span> l'han demanat usuaris de Red Hat, Mandriva i SuSE que migren a Debian GNU/Linux. En aquesta secció es pressuposa una certa familiaritat amb la introducció d'ordres «*nix» i la navegació pel sistema de fitxers. En aquesta secció, <code class="prompt">$</code> significa que l'ordre s'ha d'introduir al sistema actual de l'usuari, i <code class="prompt">#</code> significa que l'ordre s'ha d'introduir al «chroot» de Debian. </p>
+<p>Una vegada tingueu configurat el sistema Debian a la vostra mida, podreu migrar totes les dades existents (si n'hi ha alguna) i continuar treballant. Aquesta és, per tant una instal·lació Debian GNU/Linux amb <span class="quote">«<span class="quote">sense temps d'inactivitat</span>»</span>. També és una manera intel·ligent de treballar amb maquinari que d'altra manera no funciona bé amb diferents arrencades o mitjans d'instal·lació. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ja que aquesta és principalment una tasca manual, heu de considerar que haureu de fer moltes configuracions bàsiques del sistema, que requeriran més coneixement en general sobre Debian i Linux que el necessari per a realitzar una instal·lació regular. No espereu que aquest procediment resulti en un sistema idèntic al que obtindríeu amb una instal·lació regular. També heu de tenir en compte que aquest procediment només descriu els passos bàsics per a configurar el sistema. Pot ser que siguin necessaris passos addicionals d'instal·lació i/o configuració. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4862"></a>D.3.1. Començar</h3></div></div></div>
+<p>Amb les actuals eines «*nix», es necessita tornar a partir el disc, preparant al menys un sistema de fitxers i una partició d'intercanvi. Necessitareu al menys 647 MiB d'espai per una instal·lació de consola, o bé al menys 2635 MiB si voleu instal·lar X (més si intenteu instal·lar algun entorn d'escriptori com el GNOME o el KDE Plasma). </p>
+<p>A continuació, genereu sistemes de fitxers a les vostres particions. Per exemple, per generar un sistema de fitxers «ext3» a la partició <code class="filename">/dev/sda6</code> (que és el nostre exemple per la partició arrel): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Si voleu generar un sistema de fitxers «ext2», ometeu <strong class="userinput"><code>-j</code></strong>. </p>
+<p>Inicialitzeu i activeu l'intercanvi (substituïu el número de la partició per la vostra partició d'intercanvi de Debian): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Munteu la partició a <code class="filename">/mnt/debinst</code> (el lloc d'instal·lació, per ser l'arrel (<code class="filename">/</code>) del sistema de fitxers del nou sistema). El punt de muntatge és arbitrari, i se'n farà ús després. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Si voleu tenir parts del vostre sistema de fitxers (p. ex. «/usr») muntats en particions separades, haureu de generar i muntar aquests directoris manualment abans de procedir amb la següent fase. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4883"></a>D.3.2. Instal·lar <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>L'eina que utilitza l'instal·lador de Debian, i que es reconeix oficialment com la manera d'instal·lar un sistema base de Debian, és <span class="command"><strong>debootstrap</strong></span>. Fa ús de <span class="command"><strong>wget</strong></span> i <span class="command"><strong>ar</strong></span>, i per altra part tan sols depèn de <code class="classname">/bin/sh</code> i eines Unix/Linux bàsiques<a href="#ftn.id4891" class="footnote" name="id4891"><sup class="footnote">[21]</sup></a>. Instal·leu <span class="command"><strong>wget</strong></span> i <span class="command"><strong>ar</strong></span> si no hi són ara al vostre sistema, i descarregueu i instal·leu <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Podeu també utilitzar el procediment següent per fer la instal·lació de forma manual. Genereu un directori de treball per extreure els «.deb» dins: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> El binari de <span class="command"><strong>debootstrap</strong></span> el podeu trobar a l'arxiu de Debian (assegureu-vos de seleccionar l'arxiu correcte per la vostra arquitectura). Descarregueu el «.deb» <span class="command"><strong>debootstrap</strong></span> del <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> repositori</a>, copieu el paquet al directori i extraieu-ne els fitxers. Necessitareu tenir privilegis de «root» per instal·lar els fitxers. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4908"></a>D.3.3. Executar <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Podeu descarregar els fitxers que necessiteu del <span class="command"><strong>debootstrap</strong></span> directament de l'arxiu quan l'executeu. Podeu substituir <strong class="userinput"><code>ftp.es.debian.org/debian</code></strong> per qualsevol rèplica de l'arxiu a l'ordre de l'exemple de baix, preferiblement per un que estigui a prop vostre. Teniu una llista de les rèpliques a <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Si teniu una imatge d'instal·lació de Debian GNU/Linux trixie muntada a <code class="filename">/cdrom</code>, podeu substituir l'adreça del http per: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Substituïu una de les següents per <em class="replaceable"><code>ARCH</code></em> a l'ordre <span class="command"><strong>debootstrap</strong></span>: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.es.debian.org/debian
+</pre></div>
+<p> Si l'arquitectura destí és diferent de la de la màquina, haureu d'afegir l'opció <strong class="userinput"><code>--foreign</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4930"></a>D.3.4. Configurar el sistema base</h3></div></div></div>
+<p>Ara ja teniu un sistema Debian real al disc, això si, molt petit. Feu <span class="command"><strong>chroot</strong></span>: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Si l'arquitectura de destí és diferent a la de l'hoste, primer haureu de copiar «qemu-user-static» al nou hoste: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> Després d'entrar al «chroot» podríeu necessitar ajustar la definició del terminal per a que sigui compatible amb el sistema Debian base, per exemple: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Depenent del valor de «TERM», haureu d'instal·lar el paquet <code class="classname">ncurses-term</code> per a tenir suport per a ell. </p>
+<p>Si l'arquitectura objectiu és diferent de a la de l'hoste, necessitau acabar el procés multietapa d'arrencada: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4945"></a>D.3.4.1. Generar fitxers de dispositiu</h4></div></div></div>
+<p>En aquest punt <code class="filename">/dev/</code> només conté fitxers de dispositiu molt bàsics. Per als següents passos de la instal·lació pot ser que es requereixin fitxers de dispositiu addicionals. Hi ha diferents maneres d'assolir això, i el mètode que hauríeu d'emprar depèn del sistema hoste que esteu usant per a fer la instal·lació, de si fareu servir o no un nucli modular, i de si penseu usar fitxers de dispositiu estàtics o dinàmics (p. ex. usant <code class="classname">udev</code>) per al nou sistema. </p>
+<p>Algunes de les opcions disponibles són: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>instal·lar el paquet «makedev» i generar un conjunt de fitxers de dispositiu estàtic fent servir (abans de fer «chroot») </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>només generar manualment dispositius de fitxer fent servir <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>muntar vinculantment («bind mount») «/dev» des del vostre sistema hoste a sobre de «/dev» al sistema destí; tingueu en compte que els guions «postinst» d'alguns paquets poden intentar crear fitxers de dispositiu, per tant aquest opció s'ha d'utilitzar amb cura. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4961"></a>D.3.4.2. Muntatge de les particions</h4></div></div></div>
+<p>Necessitareu generar el fitxer <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Aquest és un exemple que podeu modificar per a que s'ajuste a les vostres necessitats: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: informació estàtica del sistema de fitxers.
+#
+# s. fitxers    punt muntatge  tipus   opcions                  dump passades
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Utilitzeu <strong class="userinput"><code>mount -a</code></strong> per muntar tots els sistemes de fitxers que heu especificat al vostre <code class="filename">/etc/fstab</code>, o bé munteu cada sistema de fitxers de forma individual: </p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # ex.: mount /usr
+</pre></div>
+<p> Els sistemes Debian tenen punts de muntatge pels dispositius extraïbles a <code class="filename">/media</code>, però manté enllaços per raons de compatibilitat a <code class="filename">/</code>. Podeu generar aquests si els necessiteu, per exemple: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> Podeu muntar el sistema de fitxers «proc» vàries vegades i a llocs arbitraris, però s'espera tenir el <code class="filename">/proc</code>. Si no utilitzeu <strong class="userinput"><code>mount -a</code></strong>, assegureu-vos de muntar «proc» abans de continuar: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>L'ordre <strong class="userinput"><code>ls /proc</code></strong> ha de mostrar ara un directori no buit. Si això fallés, podeu provar de muntar «proc» des de fora del «chroot»: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4985"></a>D.3.4.3. Configurar la zona horària</h4></div></div></div>
+<p>Posant la tercera línia del fitxer <code class="filename">/etc/adjtime</code> a <span class="quote">«<span class="quote">UTC</span>»</span> o <span class="quote">«<span class="quote">LOCAL</span>»</span> determina si el sistema interpretarà que el rellotge intern està en UTC o en horari local. L'ordre següent permetrà configurar i triar la vostra zona horària. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Això és un exemple: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> La següent ordre vos ajudarà a seleccionar la vostra franja horària. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4997"></a>D.3.4.4. Configurar la xarxa</h4></div></div></div>
+<p>Per configurar la xarxa, editeu <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> i <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Ací teniu alguns exemples senzills de <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- fitxer de configuració per ifup(8), ifdown(8)
+# Llegiu la pàgina del manual de «interfaces(5)» per veure quines
+# opcions teniu al vostre abast.
+######################################################################
+
+# La interfície «loopback» ja no és realment necessària, però es pot emprar
+# si és necessari.
+#
+# auto lo
+# iface lo inet loopback
+
+# Per utilitzar «dhcp»:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Un exemple de configuració amb IP estàtica («network», «broadcast» i
+# «gateway» són opcionals):
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Introduïu el nom del(s) vostre(s) servidor(s) de noms a <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Un exemple senzill de <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Introduïu el nom del vostre sistema (de 2 a 63 caràcters): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> I un fitxer <code class="filename">/etc/hosts</code> bàsic amb suport IPv6: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# Les línies següents són les desitjables per a màquines amb suport IPv6
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Si teniu vàries targetes de xarxa, ordeneu els noms dels mòduls dels controladors al fitxer <code class="filename">/etc/modules</code> amb l'ordre desitjat. A l'arrencada, cada targeta s'associarà amb el nom de la interfície («eth0», «eth1», etc.) que esperàveu. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5021"></a>D.3.4.5. Configurar Apt</h4></div></div></div>
+<p>El «debootstrap» haurà generat un fitxer <code class="filename">/etc/apt/sources.list</code> molt bàsic que permetrà instal·lar paquets addicionals. Per altra banda, potser voldreu afegir alguns fonts addicionals, per exemple per al codi font dels paquets i les actualitzacions de seguretat: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.es.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Recordeu d'executar <strong class="userinput"><code>apt update</code></strong> després de fer els canvis a la llista de fonts. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5028"></a>D.3.4.6. Configurar el teclat i els paràmetres locals («locales»)</h4></div></div></div>
+<p>Per configurar els vostres paràmetres locals per utilitzar un idioma que no sigui l'anglès, instal·leu el paquet de suport <code class="classname">locales</code> i configureu-lo. En aquest moment es recomana utilitzar els «locales» amb UTF-8. </p>
+<div class="informalexample"><pre class="screen">
+# aptitude install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Per configurar el vostre teclat (si fa falta): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>El canvi en la configuració del teclat no serà efectiu mentre esteu al «chroot», sinó que estarà configurat en reiniciar de nou. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5037"></a>D.3.5. Instal·lar un nucli</h3></div></div></div>
+<p>Si intenteu arrencar aquest sistema, probablement voldreu un nucli Linux i un carregador d'arrencada. Identifiqueu si hi ha algun nucli pre-empaquetat amb: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Ara instal·lau el paquet corresponent al nucli que desitjau fent servir el seu nom de paquet. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5046"></a>D.3.6. Configuració del carregador d'arrencada</h3></div></div></div>
+<p>Per aconseguir que el vostre sistema Debian GNU/Linux arrenqui, configureu el carregador d'arrencada per a que carregui el nucli instal·lat a la partició. Fixeu-vos que <span class="command"><strong>debootstrap</strong></span> no instal·la cap carregador d'arrencada, encara que podeu utilitzar l'<span class="command"><strong>apt</strong></span> dins el «chroot» per tal de fer-ho. </p>
+<p>Comproveu amb <strong class="userinput"><code>info grub</code></strong> per tenir més informació de com configurar el carregador d'arrencada. Si voleu mantenir el sistema que heu usat per a instal·lar Debian, simplement afegiu una entrada per a la instal·lació de Debian al vostre fitxer ja existent de grub2 <code class="filename">grub.cfg</code>. </p>
+<p>Instal·lar i configurar el <code class="classname">grub2</code> és tan fàcil com: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> La segona ordre instal·larà el <span class="command"><strong>grub2</strong></span> (en aquest cas al MBR de <code class="literal">sda</code>). L'última ordre prepararà un fitxer correcte i funcional a <code class="filename">/boot/grub/grub.cfg</code>. </p>
+<p>Tingueu en compte que això assumeix que s'ha generat un fitxer de dispositiu <code class="filename">/dev/sda</code>. Hi ha mètodes alternatius per instal·lar <span class="command"><strong>grub2</strong></span>, però aquests estan fora l'abast d'aquest apèndix. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5065"></a>D.3.7. Accés remot: instal·lar SSH i configurar l'accés</h3></div></div></div>
+<p>Si podeu accedir al sistema des de la consola, podeu botar aquesta secció. Si el sistema ha d'ésser accessible des de la xarxa més endavant, és necessari instal·lar SSH i configurar l'accés. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> La identificació com a administrador amb contrasenya està desactivada per defecte, de manera que la configuració de l'accés es pot fer establint una contrasenya i activant la identificació del compte d'administració amb contrasenya:</p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> Aquesta opció està activada:</p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> També es pot configurar l'accés posant una contrasenya SSH al compte d'administració:</p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Finalment, l'accés es pot configurar donant d'alta un usuari i assignant-li una contrasenya: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5078"></a>D.3.8. Retocs finals</h3></div></div></div>
+<p>Com ja s'ha dit abans, el sistema instal·lat serà molt bàsic. Si us agradaria tenir un sistema més madur, hi ha un mètode fàcil per instal·lar tots els paquets de prioritat <span class="quote">«<span class="quote">standard</span>»</span>: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Per suposat, podeu utilitzar l'<span class="command"><strong>apt</strong></span> per instal·lar paquets de forma individual. </p>
+<p>Després de la instal·lació hi ha un munt de paquets descarregats a <code class="filename">/var/cache/apt/archives/</code>. Podeu alliberar espai al disc executant: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4891" class="footnote"><p><a href="#id4891" class="para"><sup class="para">[21] </sup></a>Això inclou les utilitats base de GNU i ordres com <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> i <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Espai requerit per a les tasques </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Instal·lació de Debian GNU/Linux per «Parallel Line IP» (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

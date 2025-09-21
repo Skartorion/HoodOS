@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian-Partitionierungsprogramme</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apc.html" title="Anhang C. Partitionieren für eine Debian-Installation">
+<link rel="prev" href="apcs04.html" title="C.4. Gerätebezeichnungen unter Linux">
+<link rel="next" href="apd.html" title="Anhang D. Verschiedenes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian-Partitionierungsprogramme</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang C. Partitionieren für eine Debian-Installation</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian-Partitionierungsprogramme</h2></div></div></div>
+<p>Es wurden mehrere Variationen der Partitionierungsprogramme von den Entwicklern in Debian eingepflegt, um mit verschiedenen Festplattentypen und Rechnerarchitekturen funktionieren zu können. Hier eine Liste der Programme, die für Ihre Architektur verfügbar sind: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Das bevorzugte Partitionierungswerkzeug in Debian. Dieses Schweizer Messer unter den Partitionierungsprogrammen kann auch die Größe von bestehenden Partitionen verändern sowie Dateisysteme erstellen <span class="phrase"> (in der Windows-Sprache <span class="quote">„<span class="quote">formatieren</span>“</span>) </span> und die Einbindungspunkte zuweisen. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Der Original-Linux-Festplatten-Partitionierer, gut für Gurus. </p>
+<p>Seien Sie vorsichtig, wenn Sie bestehende FreeBSD-Partitionen auf Ihrem Rechner haben. Die Installationskernel bieten Unterstützung für diesen Partitionstyp, aber die Art und Weise, wie <span class="command"><strong>fdisk</strong></span> sie darstellt (oder eventuell nicht), kann verursachen, dass sich die Gerätebezeichnungen unterscheiden. Lesen Sie dazu das <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD-HowTo</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Ein einfach zu nutzender Festplatten-Partitionierer im Vollbildmodus für den Rest der Welt. </p>
+<p>Beachten Sie, dass <span class="command"><strong>cfdisk</strong></span> FreeBSD-Partitionen nicht versteht und sich deswegen Gerätebezeichnungen unterscheiden können (siehe oben). </p>
+</dd>
+</dl></div>
+<p>Eines dieser Programme wird standardmäßig gestartet, wenn Sie <span class="guimenuitem">Eine Festplatte partitionieren</span> (oder ähnliches) auswählen. Es könnte möglich sein, ein anderes Programm auf der zweiten virtuellen Konsole VT2 zu benutzen, aber dies wird nicht empfohlen. </p>
+<p>Denken Sie daran, die Boot-Partition als <span class="quote">„<span class="quote">Bootable</span>“</span> (boot-fähig) zu markieren. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4716"></a>C.5.1. Partitionieren auf <span class="phrase">64-Bit PC</span>-Systemen</h3></div></div></div>
+<p>Wenn Sie eine neue Festplatte verwenden (oder falls Sie die Partitionstabelle Ihrer Platte komplett löschen möchten), muss eine neue Partitionstabelle erzeugt werden. Bei einer <span class="quote">„<span class="quote">Geführten Partitionierung</span>“</span> wird dies automatisch erledigt, aber wenn Sie manuell partitionieren, bewegen Sie dazu die Markierung im Partitionsprogramm auf den Eintrag für die Festplatte (ganz oben) und drücken <span class="keycap"><strong>Enter</strong></span>. Eine neue Partitionstabelle wird erzeugt. Im Expertenmodus werden Sie nach dem gewünschten Typ gefragt. Standardeinstellung für UEFI-basierte Systeme ist <span class="quote">„<span class="quote">gpt</span>“</span>, für Systeme der älteren BIOS-Welt ist dies <span class="quote">„<span class="quote">msdos</span>“</span>. In einer Installation mit Standardprioritiät werden obige Werte automatisch verwendet. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wird eine Partitionstabelle vom Typ <span class="quote">„<span class="quote">gpt</span>“</span> ausgewählt (Standardwert für UEFI-Systeme), erstellt der Partitionierer automatisch am Anfang der Platte einen freien Bereich von 1 MB Größe. Dies ist beabsichtigt und erforderlich, um den GRUB2-Bootloader einbetten zu können. </p></td></tr>
+</table></div>
+<p>Wenn Sie bereits ein anderes Betriebssystem wie z.B. Windows auf Ihrem Rechner haben und zusätzlich zu Debian auch behalten möchten, müssen Sie unter Umständen die entsprechende Partition verkleinern, um Platz für die Debian-Installation zu schaffen. Der Installer unterstützt die Änderung der Größe sowohl von FAT- als auch von NTFS-Dateisystemen: wenn Sie den Schritt zur Festplattenpartitionierung erreichen, wählen Sie die Option <span class="guimenuitem">Manuell</span>; dann wählen Sie die entsprechende Partition aus und ändern ihre Größe. </p>
+<p>Während moderne UEFI-Systeme keinen der unten beschriebenen Beschränkungen unterliegen, ist man beim Partitionieren von Laufwerken auf BIOS-Systemen einigen solcher Einschränkungen unterworfen. Es gibt ein Limit, wie viele <span class="quote">„<span class="quote">primäre</span>“</span> und <span class="quote">„<span class="quote">logische</span>“</span> Partitionen eine Festplatte enthalten darf. </p>
+<p>Auf solchen alten PC-BIOS-Systemen sind <span class="quote">„<span class="quote">primäre</span>“</span> Partitionen das ursprüngliche Partitionierungsprinzip für PC-Festplatten. Allerdings kann es davon nur vier Stück geben. Um diese Grenze überschreiten zu können, wurden zusätzlich <span class="quote">„<span class="quote">erweiterte</span>“</span> und <span class="quote">„<span class="quote">logische</span>“</span> Partitionen eingeführt. Wenn Sie eine Ihrer primären Partitionen als erweiterte Partition einrichten, können Sie den Platz, den diese Partition einnimmt, in logische Partitionen aufteilen. Sie können bis zu 60 logische Partitionen in einer erweiterten Partition erstellen, allerdings können Sie pro Festplatte nur eine erweiterte Partition haben. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Gerätebezeichnungen unter Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> Anhang D. Verschiedenes</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.6. Recupero di un sistema danneggiato</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Capitolo 8. Passi successivi e cosa fare adesso">
+<link rel="prev" href="ch08s05.html" title="8.5. Compilazione di un nuovo kernel">
+<link rel="next" href="apa.html" title="Appendice A. Installation Howto">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.6. Recupero di un sistema danneggiato</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s05.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 8. Passi successivi e cosa fare adesso</th>
+<td width="20%" align="right"> <a accesskey="n" href="apa.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="rescue"></a>8.6. Recupero di un sistema danneggiato</h2></div></div></div>
+<p>Purtroppo può capitare che qualcosa vada storto e il sistema che è stato accuratamente installato non sia più avviabile. È possibile che si sia danneggiata la configurazione del boot loader durante un aggiornamento oppure che un nuovo kernel non si avvii oppure che dei raggi cosmici abbiano colpito il disco fisso e alcuni bit in <code class="filename">/sbin/init</code> siano impazziti. A prescindere dalla causa è necessario avere un sistema funzionante per riparare il sistema originale, in questo caso può essere utile la modalità di ripristino. </p>
+<p>Per attivare la modalità di ripristino scegliere <strong class="userinput"><code>rescue</code></strong> dal menu oppure inserire <strong class="userinput"><code>rescue</code></strong> al prompt <code class="prompt">boot:</code> oppure avviare usando il parametro <strong class="userinput"><code>rescue/enable=true</code></strong>. Verranno mostrate le prime schermate dell'installatore con una nota in un angolo che indica si sta usando la modalità di ripristino e non quella d'installazione. Il sistema non verrà sovrascritto! La modalità di ripristino si avvale delle funzionalità per il riconoscimento dell'hardware presenti nell'installatore in modo da permettere l'uso dei dischi, dei dispositivi di rete, ecc. mentre si cerca di riparare il sistema. </p>
+<p>Al posto del programma di partizionamento viene mostrato un elenco delle partizioni sul sistema e viene chiesto di sceglierne una. Normalmente si sceglie la partizione che contiene il filesystem di root che si vuole riparare. Si possono scegliere le partizioni su device RAID e LVM ma anche quelle create direttamente sui dischi. </p>
+<p>Se possibile l'installatore fornisce una shell sul filesystem che si è scelto, questa shell può essere usata per effettuare qualsiasi operazione necessaria al ripristino. <span class="phrase"> Per esempio, se si vuole reinstallare il boot loader GRUB nel Master Boot Record del primo disco si deve inserire il comando <strong class="userinput"><code>grub-install '(hd0)'</code></strong>. </span> </p>
+<p>Se l'installatore non è in grado di fornire una shell usabile nel file system che si è scelto come root forse il file system è corrotto e dopo aver dato un avviso viene invece fornita una shell nell'ambiente dell'installatore. In questo ambiente non sono disponibili molti strumenti ma dovrebbero essere comunque sufficienti per ripristinare il sistema. Il file system che era stato scelto come quello di root viene invece montato sulla directory <code class="filename">/target</code>. </p>
+<p>In entrambi i casi una volta chiusa la shell il sistema si riavvia automaticamente. </p>
+<p>Si noti che riparare dei sistemi danneggiati può essere molto complicato e questo manuale non analizza tutti i particolari che si possono danneggiare e come ripristinarli. Se non si sa cosa fare si consulti un esperto. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s05.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apa.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.5. Compilazione di un nuovo kernel </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> Appendice A. Installation Howto</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

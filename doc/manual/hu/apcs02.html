@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. A könyvtárfa</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apc.html" title="C. függelék - Particionálás a Debian számára">
+<link rel="prev" href="apcs01.html" title="C.1. A Debian partíciók és méretük eldöntése">
+<link rel="next" href="apcs03.html" title="C.3. Ajánlott partíciós séma">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. A könyvtárfa</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">C. függelék - Particionálás a Debian számára</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. A könyvtárfa</h2></div></div></div>
+<p>A Debian GNU/Linux a <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Fájlrendszer Hierarchia Szabvány</a>-t követi a könyvtárak és fájlok elnevezésében. E szabvánnyal a felhasználók és programok számára megjósolható a fájlok és könyvtárak helye. A gyökér szintű könyvtárat a <code class="filename">/</code> jelenti. A gyökér szintjén minden Debian rendszer tartalmazza e könyvtárakat: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Könyvtár</th>
+<th>Tartalom</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>Alapvető parancs binárisok</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>A boot betöltő statikus fájljai</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>Eszköz fájlok</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Gazdagép-specifikus rendszer beállítások</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>A felhasználók home könyvtárai</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Alapvető megosztott függvény-könyvtárak és kernel modulok</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>A külső adathordozók csatolási pontjai</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Egy fájlrendszer ideiglenes csatolására szolgáló csatolási pont</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Virtuális könyvtár a rendszer adatokhoz</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>A 'root' felhasználó home könyvtára</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Futási időben változó adatok</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>Alapvető rendszer binárisok</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Virtuális könyvtár a rendszer adatokhoz</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>Átmeneti fájlok</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Másodlagos hierarchia</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Változó adatok</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Adatok a rendszer által adott szolgáltatásokhoz</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Hozzáadott alkalmazás szoftver csomagok</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Az alábbi lista a könyvtárakhoz és partíciókhoz kötődő legfontosabb szempontokat tartalmazza. A lemez használat nagyon eltérhet az adott rendszer összeállítástól és felhasználói módtól függően. Az ajánlások itt általános útmutatók és kiindulópontot adnak a particionáláshoz. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>A gyökérpartíciónak (<code class="filename">/</code>) mindig fizikailag tartalmaznia kell a következő könyvtárakat: <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> és <code class="filename">/usr</code>, különben a rendszer nem fog tudni elindulni. Ez azt jelenti, hogy legalább 700–850MB lemezterületet kell biztosítanod a gyökérpartíción, beleértve a <code class="filename">/usr</code> könyvtárat is, vagy 5–6GB-ot egy munkaállomás vagy kiszolgáló telepítése esetén. </p></li>
+<li class="listitem"><p><code class="filename">/var</code>: a változó adatok, mint hírek, email üzenetek, web lapok, adatbázisok, csomagkezelő gyorstár, stb. kerülnek ide. E könyvtár mérete nagyban függ a rendszer használatának módjától, de a legtöbb felhasználó számára a csomagkezelő eszköz szabja meg. Ha egyszerre mindent telepíteni szeretnél, amit a Debian csak tud, a <code class="filename">/var</code> számára 2 vagy 3 GB hely is szükséges lehet. Ha darabokban telepíted a dolgokat (így például előbb a szolgáltatásokat és eszközöket, majd a szövegkezelőket, majd az X rendszert, ...), akár 300–500 MB is elég lehet. Ha a merevlemezen lévő hellyel nagyon spórolni kell és nem tervezel nagy rendszer-frissítéseket, akár még 30 vagy 40 MB méretre is lekicsinyíthető. </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code>: a programok által létrehozott átmeneti adatok általában ide kerülnek. 40–100MB általában elég. Egyes alkalmazások — például archívum kezelők, CD/DVD készítők és multimédia szoftverek — a <code class="filename">/tmp</code> könyvtárat kép fájlok átmeneti tárolására használhatják. Ha ilyen alkalmazások használatát tervezed, igazítsd a <code class="filename">/tmp</code> könyvtárban elérhető helyet ehhez. </p></li>
+<li class="listitem"><p><code class="filename">/home</code>: a felhasználók személyes adataikat e könyvtár alkönyvtáraiba teszik. Mérete függ a felhasználók számától és attól, hogy milyen fájlokat tárolnak e saját könyvtáraikban. A tervezett felhasználástól függően általában jó legalább 100MB helyet fenntartani mindegyiküknek, de igazítsd ezt az értéket igényeidhez. Tarts fent sokkal több helyet, ha sok multimédia fájl (képek, zenék, filmek) mentését tervezed saját könyvtáradba. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. A Debian partíciók és méretük eldöntése </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Ajánlott partíciós séma</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Zaváděcí parametry</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="ch05.html" title="Kapitola 5. Zavedení instalačního systému">
+<link rel="prev" href="ch05s02.html" title="5.2. Zpřístupnění">
+<link rel="next" href="ch05s04.html" title="5.4. Problémy s instalačním systémem">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Zaváděcí parametry</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Kapitola 5. Zavedení instalačního systému</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Zaváděcí parametry</h2></div></div></div>
+<p>Parametry pro zavádění jsou vlastně parametry pro jádro Linuxu, které se používají v případech, kdy chceme zajistit, aby jádro korektně pracovalo s neposlušnými zařízeními. Ve většinou je jádro schopno rozpoznat všechna zařízení automaticky, ale v některých speciálních případech mu musíte trochu pomoci. </p>
+<p>Při prvním zavádění systému zkuste, zdali systém rozpozná všechna potřebná zařízení jen s implicitními parametry (tj. nenastavujte pro začátek žádné vlastní hodnoty). Systém obvykle naběhne. V případě, že se tak nestane, můžete systém zavést později poté, co zjistíte, jaké parametry je potřeba zadat, aby jádro korektně rozpoznalo váš hardware. </p>
+<p>Poznatky o nejrůznějších zaváděcích parametrech a podivných zařízeních jsou k nalezení v <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top">Linux BootPrompt HOWTO</a>. Následující text obsahuje popis jen stěžejních parametrů. Vybrané problémy popisuje <a class="xref" href="ch05s04.html" title="5.4. Problémy s instalačním systémem">5.4 – „Problémy s instalačním systémem“</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Boot serial console</h3></div></div></div>
+<p>If you are booting with a serial console, generally the kernel will autodetect this. If you have a videocard (framebuffer) and a keyboard also attached to the computer which you wish to boot via serial console, you may have to pass the <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> argument to the kernel, where <em class="replaceable"><code>device</code></em> is a serial device of the target, which is usually something like <code class="filename">ttyS0</code>. </p>
+<p>Někdy je potřeba zadat konkrétní parametry sériového portu, jako je jeho rychlost a parita, např. <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>. Další obvyklé rychlosti bývají 57600 a 115200. Ujistěte se, že tento parametr přidáte až za <span class="quote">„<span class="quote">---</span>“</span>, aby se toto nastavení zkopírovalo i do konfigurace zavaděče v instalovaném systému. (Pokud to instalátor pro daný zavaděč umožňuje.) </p>
+<p>Abyste zajistili, že instalace používá typ terminálu kompatibilní s vaším emulátorem terminálu, můžete přidat parametr <strong class="userinput"><code>TERM=<em class="replaceable"><code>typ</code></em></code></strong>. Instalační systém podporuje následující typy terminálů: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> a <code class="literal">dumb</code>. Pro sériovou konzoli v <code class="classname">debian-installer</code> je výchozím typem <strong class="userinput"><code>vt102</code></strong>. Používáte-li IPMI konzoli, nebo virtualizační nástroj (např. QEMU/KVM), který sám o sobě nenabízí konverzi do daných typů terminálu, můžete jej spustit uvnitř <span class="command"><strong>screen</strong></span>. To totiž zajistí automatický převod na typ terminálu <code class="literal">screen</code>, který je velmi podobný typu <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parametry instalačního programu</h3></div></div></div>
+<p>Instalační systém rozpoznává několik užitečných parametrů<a href="#ftn.id2040" class="footnote" name="id2040"><sup class="footnote">[3]</sup></a>. </p>
+<p>Mnoho parametrů má i svou zkrácenou formu, která usnadňuje zadávání a také pomáhá obejít omezení příkazové řádky jádra. Pokud má parametr zkrácenou formu, bude uvedena v závorce za dlouhou podobou. Krátkou formu preferujeme i v příkladech této příručce. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Nastavením tohoto parametru můžete změnit nejnižší prioritu zobrazených otázek. </p>
+<p>Standardní instalace používá nastavení <strong class="userinput"><code>priority=high</code></strong>, což znamená, že se zobrazí jak kritické, tak důležité hlášky, ale normální a nevýznamné zprávy jsou přeskočeny. Jestliže se vyskytne problém, instalátor upraví priority otázek podle potřeb. </p>
+<p>Když použijete parametr <strong class="userinput"><code>priority=medium</code></strong>, zobrazí se instalační menu a získáte nad instalací větší kontrolu. Při použití <strong class="userinput"><code>priority=low</code></strong>, nic se nepřeskakuje a zobrazí se všechny hlášky instalačního programu (to je ekvivalentní zaváděcí metodě <strong class="userinput"><code>expert</code></strong>).  Hodnotou <strong class="userinput"><code>priority=critical</code></strong> se potlačí všechny zprávy a otázky se stupněm důležitosti menším než kritickým.  Pro tyto potlačené otázky se použijí přednastavené hodnoty. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Ovlivňuje uživatelské rozhraní, ve kterém bude instalace probíhat. Dostupné volby jsou: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> Výchozí rozhraní je <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. Pro instalaci přes sériovou konzolu může být vhodnější <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong>. Některé specializované typy instalačních médií mohou nabízet jen omezený výběr rozhraní, nicméně rozhraní <strong class="userinput"><code>newt</code></strong> a <strong class="userinput"><code>text</code></strong> by měla být dostupná na většině instalačních médií. Na architekturách, kde to je možné, využívá grafický instalátor rozhraní <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Setting this boot parameter to 2 will cause the installer's boot process to be verbosely logged. Setting it to 3 makes debug shells available at strategic points in the boot process. (Exit the shells to continue the boot process.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Toto je standardní hodnota.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Upovídanější než obvykle.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Spousty ladících informací.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Pro opravdu detailní ladění se během zavádění několikrát spustí shell, ve kterém můžete kontrolovat a ovlivňovat náběh systému. Když shell ukončíte, bude zavádění pokračovat. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Způsobí, že instalátor nebude ukládat logovací hlášky jen do lokálního souboru, ale bude je také posílat přes síť vzdálenému syslogu běžícímu na zadaném počítači a portu. Jestliže parametr log_port vynecháte, bude se předpokládat standardní port syslogu 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Může vynutit, aby instalátor použil agresivnější nízkopaměťový režim, než by nastavil podle skutečně dostupné paměti. Možné hodnoty jsou 1 a 2. Více naleznete v <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Kontrola dostupné paměti / nízkopaměťový režim">6.3.1.1 – „Kontrola dostupné paměti / nízkopaměťový režim“</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Zabrání instalátoru, aby na druhé a třetí virtuální konzoli nabízel interaktivní shell, což je užitečné při automatizovaných vzdálených instalacích, kdy je fyzická bezpečnost omezena. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Některé architektury využívají pro instalaci v různých jazycích jaderný framebuffer (grafická konzole). Pokud na svém systému zaznamenáte symptomy jako chybové hlášky o btermu a boglu, černou obrazovku nebo zamrznutí instalace po několika minutách od spuštění, můžete framebuffer vypnout parametrem <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>A theme determines how the user interface of the installer looks (colors, icons, etc.). Which themes are available may differ per frontend. Currently both the newt and gtk frontend have (apart from the default look) only one additional theme named <span class="quote">„<span class="quote">dark</span>“</span> theme, which was designed for visually impaired users. Set this theme by booting with <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (there is also the keyboard shortcut <strong class="userinput"><code>d</code></strong> for this in the boot menu). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>Standardně se <code class="classname">debian-installer</code> snaží získat nastavení sítě přes automatické nastavení sítě IPv6 a DHCP. Je-li získáno nějaké nastavení, instalační systém se na nic nebude ptát a automaticky bude pokračovat v instalaci. K ručnímu nastavení sítě se dostanete pouze v případě, že automatické nastavení selže. </p>
+<p>Máte-li tedy na místní síti DHCP server nebo IPv6 router, ale z nějakého důvodu jej nechcete použít (protože např. pro účely instalace vrací špatné hodnoty), můžete použít parametr <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong>, kterým zabráníte automatickému nastavení sítě (ať už verze 4 nebo 6) a rovnou budete požádáni o ruční nastavení síťových údajů. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Pokud chcete zabránit startu PCMCIA služeb, nastavte tento parametr na hodnotu <strong class="userinput"><code>false</code></strong>. Některé notebooky jsou totiž nechvalně známé tím, že při startu PCMCIA služeb zaseknou celý systém. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Zde můžete zadat url k souboru s přednastavením, podle kterého se má provést automatická instalace, viz <a class="xref" href="ch04s06.html" title="4.6. Automatická Instalace">4.6 – „Automatická Instalace“</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Zde můžete zadat soubor s přednastavením, podle kterého se má provést automatická instalace, viz <a class="xref" href="ch04s06.html" title="4.6. Automatická Instalace">4.6 – „Automatická Instalace“</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Nastavením na hodnotu <strong class="userinput"><code>true</code></strong> se zobrazí i otázky, které byly přednastaveny. To může být užitečné pro testování nebo ladění souboru s přednastavením. Nastavení se neprojeví u otázek, které byly zadány jako parametry při zavádění systému. Pro ty však existuje speciální syntaxe, viz <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Použití přednastavení pro změnu výchozích hodnot">B.5.2 – „Použití přednastavení pro změnu výchozích hodnot“</a>. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Při nastavení na hodnotu <strong class="userinput"><code>true</code></strong> odsune otázky obvykle zobrazované před začátkem přednastavení až za nastavení sítě. Podrobnosti o automatizaci instalací pomocí této možnosti naleznete v části <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Automatický režim">B.2.3 – „Automatický režim“</a>. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Během instalací skrze sériovou nebo správcovskou konzoli jsou tradiční virtuální konzoly (VT1-VT6) v souboru <code class="filename">/etc/inittab</code> zakázány. Chcete-li tomu zabránit, nastavte na hodnotu <strong class="userinput"><code>true</code></strong>. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>By default, before rebooting, <code class="classname">debian-installer</code> automatically ejects the optical media used during the installation. This can be unnecessary if the system does not automatically boot off such media. In some cases it may even be undesirable, for example if the optical drive cannot reinsert the media itself and the user is not there to do it manually. Many slot loading, slim-line, and caddy style drives cannot reload media automatically. </p>
+<p>Pro zakázání automatického vysunutí nastavte parametr na hodnotu <strong class="userinput"><code>false</code></strong>. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Nastavením na hodnotu <strong class="userinput"><code>false</code></strong> se systém pro správu balíků nebude pokoušet o instalaci doporučených balíků jak během instalace, tak později v nainstalovaném systému. Více naleznete v kapitole <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Instalace základního systému">6.3.5 – „Instalace základního systému“</a>. </p>
+<p>Použitím této volby můžete získat štíhlejší systém, ale také je možné, že zmizí některé vlastnosti, které byste normálně od systému očekávali. Pro získání požadované funkcionality pak můžete ručně doinstalovat některé vybrané doporučované balíky, nicméně musíte vědět, které balíky potřebujete a proto by tuto možnost měli používat pouze zkušení harcovníci. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Instalační systém vyžaduje, aby byly všechny repositáře autentizovány známým gpg klíčem. Nastavením na hodnotu <strong class="userinput"><code>true</code></strong> můžete autentizaci potlačit. <span class="bold"><strong>Varování: Nebezpečné, není doporučeno.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Nastavíte-li tento parametr na hodnotu <strong class="userinput"><code>true</code></strong>, spustí se místo běžné instalace záchranný režim. Viz <a class="xref" href="ch08s06.html" title="8.6. Obnovení poškozeného systému">8.6 – „Obnovení poškozeného systému“</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Použití zaváděcích parametrů pro zodpovězení otázek</h3></div></div></div>
+<p>Na stejném místě, kam se zadávají parametry pro jádro nebo instalační program, můžete zadat odpověď na téměř každou otázku, se kterou se můžete při instalaci potkat. Tato možnost se využívá spíše ve specifických případech a je zde vypsáno jen několik příkladů. Podrobnější informace naleznete v dodatku <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Použití zaváděcích parametrů jako formy přednastavení">B.2.2 – „Použití zaváděcích parametrů jako formy přednastavení“</a>. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Existují dva způsoby, jak nastavit jazyk, zemi a místní prostředí (locale) instalace a následně nainstalovaného systému. </p>
+<p>První a nejjednodušší je použít pouze parametr <code class="literal">locale</code>. Jazyk a země se pak z této hodnoty odvodí automaticky. Například <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> vybere jako výchozí jazyk němčinu, jako zemi Švýcarsko a výchozí locale v nainstalovaném systému bude <code class="literal">de_CH.UTF-8</code>. Nevýhodou je skutečnost, že takto nelze nastavit všechny možné kombinace jazyka, země a locale. </p>
+<p>Druhou, pružnější, možností je zadat jazyk (<code class="literal">language</code>) a zemi (<code class="literal">country</code>) samostatně, přičemž můžete volitelně použít i parametr <code class="literal">locale</code>, kterým nastavíte výchozí locale instalovaného systému. Například můžete systému sdělit, že se nacházíte v Německu, ale rádi byste používali anglické prostředí v jeho britském standardu: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Pomocí tohoto parametru můžete nechat automaticky nahrát komponenty instalačního systému, které se implicitně nenahrávají. Příkladem užitečných komponent jsou <code class="classname">openssh-client-udeb</code> (během instalace můžete využívat <span class="command"><strong>scp</strong></span>)<span class="phrase"> a <code class="classname">ppp-udeb</code> (podporuje nastavení PPPoE, viz <a class="xref" href="apds05.html" title="D.5. Jak nainstalovat Debian GNU/Linux pomocí PPP přes Ethernet (PPPoE)">D.5 – „Jak nainstalovat Debian GNU/Linux pomocí PPP přes Ethernet (PPPoE)“</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Set to <strong class="userinput"><code>true</code></strong> if you want to disable IPv6 autoconfiguration and DHCP and instead force static network configuration. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>Instalační systém standardně používá pro stažení souborů ze zrcadel Debianu protokol http a při standardní prioritě otázek nelze za běhu změnit na ftp. nastavením tohoto parametru na hodnotu <strong class="userinput"><code>ftp</code></strong> můžete instalátor donutit, aby použil právě tento protokol. Ftp zrcadlo nemůžete vybrat z připraveného seznamu, vždy jej musíte zadat ručně. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Tímto parametrem můžete nainstalovat úlohy, které nejsou při instalaci v interaktivním seznamu úloh dostupné. Příkladem budiž úloha <code class="literal">kde-desktop</code>. Více informací naleznete v části <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Výběr a instalace softwaru">6.3.6.2 – „Výběr a instalace softwaru“</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Předávání parametrů jaderným modulům</h3></div></div></div>
+<p>Jestliže jsou ovladače zakompilovány přímo do jádra, můžete jim předávat parametry tak, jak je popsáno v dokumentaci k jádru. Pokud však jsou ovladače zkompilovány jako moduly, znamená to, že jsou při instalaci zaváděny odlišným způsobem než při zavádění nainstalovaného systému a nemůžete jim předat parametry klasickým postupem. Musíte použít speciální syntaxi, kterou instalátor rozpozná a zařídí, aby se tyto parametry uložily do příslušných konfiguračních souborů a posléze se v pravý čas použily. Tyto parametry se automaticky přenesou i do nainstalovaného systému. </p>
+<p>Poznamenejme, že v dnešní době je používání parametrů modulů téměř raritou, protože jádro ve většině případů správně rozpozná přítomný hardware a nastaví pro něj vhodné hodnoty automaticky. Pokud tomu tak není, stále můžete použít ruční nastavení. </p>
+<p>Syntaxe pro nastavení parametrů modulu je následující: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>název_modulu</code></em>.<em class="replaceable"><code>název_parametru</code></em>=<em class="replaceable"><code>hodnota</code></em>
+</pre></div>
+<p> Potřebujete-li modulu předat několik parametrů, stačí syntaxi několikrát zopakovat. Například pro nastavení staré síťové karty 3Com, aby použila konektor BNC (koaxiální) a IRQ 10, zadali-byste: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Zapsání jaderných modulů na černou listinu</h3></div></div></div>
+<p>Někdy je nutné zanést modul na černou listinu a zabránit tak jádru a udevu, aby jej automaticky zavedli. Jedním z důvodů bývá ten, že modul způsobuje na vašem hardwaru problémy. Někdy také jádro registruje pro jedno zařízení dva ovladače, což může vytvářet problémy v případech, kdy jsou tyto ovladače navzájem konfliktní, nebo pokud zařízení funguje správně jen s jedním z ovladačů a jádro nejprve zavede ten chybný ovladač. </p>
+<p>Moduly můžete na černou listinu přidat následovně: <strong class="userinput"><code><em class="replaceable"><code>jméno_modulu</code></em>.blacklist=yes</code></strong>. Prakticky to znamená, že se modul zapíše do souboru <code class="filename">/etc/modprobe.d/blacklist.local</code>, což ho vyřadí jak během instalace, tak v nově nainstalovaném systému. </p>
+<p>Poznamenejme, že modul stále může být zaveden explicitně přímo instalačním systémem. Předejít tomu můžete instalací v expertním režimu a odebráním modulu ze seznamu modulů, který se zobrazuje během několika fází rozpoznávání hardwaru. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2040" class="footnote"><p><a href="#id2040" class="para"><sup class="para">[3] </sup></a> S aktuálními jádry (od verze 2.6.9) lze použít až 32 parametrů a 32 proměnných prostředí. Pokud tato čísla překročíte, jádro zpanikaří. Další omezení je, že se celá příkazová řádka jádra musí vejít do 255 znaků. Cokoliv nad tuto délku může být v tichosti oříznuto.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Zpřístupnění </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Problémy s instalačním systémem</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

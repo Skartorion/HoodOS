@@ -1,0 +1,659 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Indhold af forhåndskonfigurationsfilen (for trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)">
+<link rel="prev" href="apbs03.html" title="B.3. Oprettelse af en forhåndskonfigurationsfil">
+<link rel="next" href="apbs05.html" title="B.5. Avancerede indstillinger">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Indhold af forhåndskonfigurationsfilen (for trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Indhold af forhåndskonfigurationsfilen (for trixie)</h2></div></div></div>
+<p>Konfigurationsfragmenterne brugt i dette appendiks er også tilgængelige som et eksempel på en forhåndskonfigureret fil fra <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Bemærk at dette eksempel er baseret på en installation for Intel x86-arkitekturen. Hvis du installerer en anden arkitektur, så kan nogle af eksemplerne (såsom tastatturvalg og installation af opstartsindlæser) være irrelevante og skal erstattes af debconf-indstillinger passende for din arkitektur. </p>
+<p>Detaljer om hvordan forskellige komponenter for Debians installationsprogram fungerer kan findes i <a class="xref" href="ch06s03.html" title="6.3. Brug af individuelle komponenter">Afsnit 6.3, “Brug af individuelle komponenter”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Opsætning af sted</h3></div></div></div>
+<p>Under en normal installation vil spørgsmål om sted blive spurgt først, så disse værdier kan kun forhåndskonfigureres via metoderne hos initrd- eller kerneopstartsparametre. Automatisk tilstand (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Auto-tilstand">Afsnit B.2.3, “Auto-tilstand”</a>) inkluderer indstillingen <code class="literal">auto-install/enable=true</code> (normalt via aliasset for forhåndskonfiguration <code class="literal">auto</code>). Dette forsinker spørgsmålene om sted, så de kan forhåndskonfigureres med enhver metode. </p>
+<p>Stedet kan bruges til at specificere både sprog og land og kan være enhver kombination af et sprog understøttet af <code class="classname">debian-installer</code> og et anerkendt land. Hvis kombinationen ikke udgør et gyldigt sted, så vil installationsprogrammet automatisk vælge et sted, som er gyldig for det valgte sprog. For at specificere stedet som en opstartsparametre, så brug <strong class="userinput"><code>locale=<em class="replaceable"><code>en_US.UTF-8</code></em></code></strong>. </p>
+<p>Selvom denne metode er meget nem at bruge, så tillader den ikke forhåndskonfiguration af alle mulige kombinationer af sprog, land og sted<a href="#ftn.id4238" class="footnote" name="id4238"><sup class="footnote">[20]</sup></a>. Så alternativt kan værdierne forhåndskonfigureres individuelt. Sprog og land kan også angives som opstartsparametre. </p>
+<div class="informalexample"><pre class="screen"># Forhåndskonfiguration af sted angiver sprog, land og sted..
+d-i debian-installer/locale string en_US.UTF-8
+
+# Værdierne kan også forhåndskonfigureres individuelt for større fleksibilitet.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# Valgfrit kan yderligere steder angives for oprettelse.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Tastaturkonfiguration består af valg af et tastaturkort og (for andre end latinske tastaturkort) en ændringstast til at skifte mellem det amerikanske tastaturkort og andre ikke latinske tastaturkort. Kun grundlæggende tastaturkortvarianter er tilgængelige under installation. Avancerede varianter er kun tilgængelige i det installerede system, via <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Tastaturvalg.
+d-i keyboard-configuration/xkb-keymap select us
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>For at undlade tastaturkonfiguration, forhåndskonfigureres <code class="classname">keymap</code> med <strong class="userinput"><code>skip-config</code></strong>. Dette vil medføre, at kernens tastaturkort forbliver aktiv. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Speech synthesis</h3></div></div></div>
+<p>When installing with software speech synthesis (i.e. <code class="literal">speakup.synth=soft</code> passed on the kernel command line), the sound board and the voice to be used can be preseeded. </p>
+<p>Since speech synthesis is started very early, this can only be preseeded from initrd or the kernel command line. </p>
+<p>Preseeding <code class="literal">espeakup/voice</code> also enables configuring the installed system with speech accessibility features. This takes effect even if software speech synthesis was not actually enabled inside the installer. </p>
+<div class="informalexample"><pre class="screen"># Which ALSA card to be used for software speech.
+# Can be a number from 0, or an ID as seen in
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Which espeak-ng voice to be used
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Netværkskonfiguration</h3></div></div></div>
+<p>Selvfølgelig vil forhåndskonfiguration af netværkskonfigurationen ikke fungere, hvis du indlæser din prækonfigurationsfil fra netværket. Men det er glimrende, når du starter op fra optiske diske eller USB-drev. Hvis du indlæser prækonfigurationsfiler fra netværket, så kan du sende parametrene for netværkskonfiguration ved at bruge parametre for kerneopstart. </p>
+<p>Hvis du skal vælge en bestemt grænseflade under netopstart før indlæsning af en forhåndskonfigurationsfil fra netværket, så brug en opstartsparameter såsom <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Selvom forhåndskonfiguration for netværkskonfiguration normalt er muligt, når der bruges netværksforhåndskonfiguration (via <span class="quote">“<span class="quote">preseed/url</span>”</span>), så kan du bruge det følgende hack til at arbejde omkring dette, for eksempel hvis du ønsker at angive en statisk adresse for netværksgrænsefladen. Hack'et er for at tvinge netværkskonfigurationen til afvikling igen efter at prækonfigurationsfilen er blevet indlæst, ved at oprette et <span class="quote">“<span class="quote">preseed/run</span>”</span>-skript indeholdende de følgende kommandoer: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>De følgende debconf-variabler er relevante for netværkskonfiguration. </p>
+<div class="informalexample"><pre class="screen"># Disable network configuration entirely. This is useful for cdrom
+# installations on non-networked devices where the network questions,
+# warning and long timeouts are a nuisance.
+#d-i netcfg/enable boolean false
+
+# netcfg will choose an interface that has link if possible. This makes it
+# skip displaying a list if there is more than one interface.
+d-i netcfg/choose_interface select auto
+
+# To pick a particular interface instead:
+#d-i netcfg/choose_interface select eth1
+
+# To set a different link detection timeout (default is 3 seconds).
+# Values are interpreted as seconds.
+#d-i netcfg/link_wait_timeout string 10
+
+# If you have a slow dhcp server and the installer times out waiting for
+# it, this might be useful.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Automatic network configuration is the default.
+# If you prefer to configure the network manually, uncomment this line and
+# the static network configuration below.
+#d-i netcfg/disable_autoconfig boolean true
+
+# If you want the preconfiguration file to work on systems both with and
+# without a dhcp server, uncomment these lines and the static network
+# configuration below.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Static network configuration.
+#
+# IPv4 example
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6 example
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Any hostname and domain names assigned from dhcp take precedence over
+# values set here. However, setting the values still prevents the questions
+# from being shown, even if values come from dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# If you want to force a hostname, regardless of what either the DHCP
+# server returns or what the reverse DNS entry for the IP is, uncomment
+# and adjust the following line.
+#d-i netcfg/hostname string somehost
+
+# Disable that annoying WEP key dialog.
+d-i netcfg/wireless_wep string
+# The wacky dhcp hostname that some ISPs use as a password of sorts.
+#d-i netcfg/dhcp_hostname string radish
+
+# If you want to completely disable firmware lookup (i.e. not use firmware
+# files or packages that might be available on installation images):
+#d-i hw-detect/firmware-lookup string never
+
+# If non-free firmware is needed for the network or other hardware, you can
+# configure the installer to always try to load it, without prompting. Or
+# change to false to disable asking.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Bemærk venligst at <span class="command"><strong>netcfg</strong></span> automatisk vil bestemme netmasken hvis <code class="classname">netcfg/get_netmask</code> ikke er forhåndskonfigureret. I dette tilfælde skal variablen markeres som <code class="literal">set</code> for automatiske installationer. Tilsvarende vil <span class="command"><strong>netcfg</strong></span> vælge en passende adresse hvis <code class="classname">netcfg/get_gateway</code> ikke er angivet. Som et speciel tilfælde så kan du sætte <code class="classname">netcfg/get_gateway</code> til <span class="quote">“<span class="quote">none</span>”</span> for at specificere at intet adgangspunkt skal bruges. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Netværkskonsol</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Brug de følgende indstillinger, hvis du ønsker at gøre brug af komponenten
+# network-console for ekstern installation over SSH. Dette giver kun mening
+# hvis du forventer at udføre den resterende installation manuelt.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>Yderligere information relateret til network-console kan findes i <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Installation over network-console">Afsnit 6.3.10, “Installation over network-console”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Spejlindstillinger</h3></div></div></div>
+<p>Afhængig af installationsmetoden du anvender, kan et spejl bruges til at hente yderligere komponenter for installationsprogrammet, for at installere det grundlæggende system og opsætte <code class="filename">/etc/apt/sources.list</code> for det installerede system. </p>
+<p>Parameteren <code class="classname">mirror/suite</code> bestemmer programpakken for det installerede system. </p>
+<p>Parameteren <code class="classname">mirror/udeb/suite</code> bestemmer programpakken for yderligere komponenter for installationsprogrammet. Den er kun nyttigt at angive denne, hvis komponenterne faktisk hentes over netværket og skal matche programpakken, som blev brugt til at bygge initrd'en for installationsmetoden brugt for installationen. Normalt vil installationsprogrammet automatisk brug den korrekte værdi og der bør derfor ikke være behov for at angive denne. </p>
+<div class="informalexample"><pre class="screen"># Spejlprotokol:
+# Hvis du vælger ftp, så skal spejl/land-strengen ikke være angivet.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Programpakke at installere.
+#d-i mirror/suite string testing
+# Programpakke for indlæsning af installationsprogrammets komponenter
+# (valgfri).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Kontoopsætning</h3></div></div></div>
+<p>Adgangskoden for root-kontoen og navn og adgangskode for den første normale brugers konto kan forhåndskonfigureres. For adgangskoderne kan du enten bruge rene tekstværdier eller crypt(3)-<span class="emphasis"><em>hasher</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vær opmærksom på at forhåndskonfiguration af adgangskoder ikke er fuldstændig sikker da alle med adgang til den forhåndskonfigurerede fil vil have viden om disse adgangskoder. Lagring af hashede adgangskoder anses for at være sikker medmindre at en svag hashingalgoritme såsom DES eller MD5 bruges; de giver mulighed for »bruteforce«-angreb. Anbefalede hashingalgoritmer for adgangskoder er SHA-256 og SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Udelad oprettelsen af en root-konto (normal brugerkonto vil kunne
+# anvende sudo).
+#d-i passwd/root-login boolean false
+# Alternativet, for at undlade oprettelsen af en normal brugerkonto.
+#d-i passwd/make-user boolean false
+
+# Root-adgangskode, enten i klar tekst
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# eller krypteret via en crypt(3)-hash.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# For at oprette en normal brugerkonto.
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Normal brugers adgangskode, enten i klar tekst
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# eller krypteret via en crypt(3)-hash.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Opret den første bruger med den specificerde UID i stedet for standarden.
+#d-i passwd/user-uid string 1010
+
+# Brugerkontoen vil blive tilføjet til nogle opstartsgrupper. For at
+# omgå dette, så brug følgende.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Variablerne <code class="classname">passwd/root-password-crypted</code> og <code class="classname">passwd/user-password-crypted</code> kan også forhåndskonfigureres med <span class="quote">“<span class="quote">!</span>”</span> som deres værdi. I det tilfælde, bliver den tilsvarende konto deaktiveret. Dette kan være nyttigt for root-kontoen, selvfølgelig såfremt en alternativ metode er opsat til at tillade administrative aktiviteter eller root-logind (for eksempel ved at bruge SSH-nøglegodkendelse eller <span class="command"><strong>sudo</strong></span>). </p>
+<p>Den følgende kommando (tilgængelig fra pakken <code class="classname">whois</code>) kan bruges til at oprette en SHA-512-baseret crypt(3)-hash for en adgangskode: </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Ur- og tidszoneopsætning</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Kontrollerer om udstyrets ur er sat til UTC.
+d-i clock-setup/utc boolean true
+
+# Du kan sætte dette til enhver gyldig indstilling for $TZ; se indholdet af
+# /usr/share/zoneinfo/ for gyldige værdier.
+d-i time/zone string US/Eastern
+
+# Kontrollerer om NTP skal bruges til at sætte uret under installationen
+d-i clock-setup/ntp boolean true
+# NTP-server at bruge. Standarden er næsten altid fin her.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Partitionering</h3></div></div></div>
+<p>Brug af forhåndskonfiguration til at partitionere harddisken er begrænset til det som <code class="classname">partman-auto</code> understøtter. Du kan vælge at partitionere enten eksisterende fri plads på en disk eller en hel disk. Layouttet på disken kan bestemmes ved at bruge en på forhånd defineret opskrift, en brugeropskrift fra en opskriftsfil eller en opskrift inkluderet i forhåndskonfigurationsfilen. </p>
+<p>Forhåndskonfiguration af avancerede partitionsopsætninger via brug af RAID, LVM og kryptering er understøttet, men ikke med den fulde fleksibilitet under partitionering under en installation uden forhåndskonfiguration. </p>
+<p>Eksemplerne nedenfor viser kun grundlæggende information vedrørende brugen af opskrifter. Se filerne <code class="filename">partman-auto-recipe.txt</code> og <code class="filename">partman-auto-raid-recipe.txt</code> inkluderet i pakken <code class="classname">debian-installer</code> for alle detaljer. Begge filer er også tilgængelig fra <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top"><code class="classname">debian-installer</code> kildearkivet</a>. Bemærk at den understøttede funktionalitet kan ændre sig mellem udgivelser. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Identifikationen af diske er afhængige af rækkefølgen, som deres drivere indlæses i. Hvis der er flere diske i systemet, så sikr dig, at den korrekte vil blive valgt, før forhåndskonfiguration anvendes. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Partitioneringseksempel</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># If the system has free space you can choose to only partition that space.
+# This is only honoured if partman-auto/method (below) is not set.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Alternatively, you may specify a disk to partition. If the system has only
+# one disk the installer will default to using that, but otherwise the device
+# name must be given in traditional, non-devfs format (so e.g. /dev/sda
+# and not e.g. /dev/discs/disc0/disc).
+# For example, to use the first SCSI/SATA hard disk:
+#d-i partman-auto/disk string /dev/sda
+# In addition, you'll need to specify the method to use.
+# The presently available methods are:
+# - regular: use the usual partition types for your architecture
+# - lvm:     use LVM to partition the disk
+# - crypto:  use LVM within an encrypted partition
+d-i partman-auto/method string lvm
+
+# You can define the amount of space that will be used for the LVM volume
+# group. It can either be a size with its unit (eg. 20 GB), a percentage of
+# free space or the 'max' keyword.
+d-i partman-auto-lvm/guided_size string max
+
+# If one of the disks that are going to be automatically partitioned
+# contains an old LVM configuration, the user will normally receive a
+# warning. This can be preseeded away...
+d-i partman-lvm/device_remove_lvm boolean true
+# The same applies to pre-existing software RAID array:
+d-i partman-md/device_remove_md boolean true
+# And the same goes for the confirmation to write the lvm partitions.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# You can choose one of the predefined partitioning recipes:
+# - atomic: all files in one partition
+# - home:   separate /home partition
+# - multi:  separate /home, /var, and /tmp partitions
+# - server: separate /var and /srv partitions; swap limitted to 1G
+# - small_disk: scheme dedicated to small harddrives (under 10GB)
+d-i partman-auto/choose_recipe select atomic
+
+# Or provide a recipe of your own...
+# If you have a way to get a recipe file into the d-i environment, you can
+# just point at it.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# If not, you can put an entire recipe into the preconfiguration file in one
+# (logical) line. This example creates a small /boot partition, suitable
+# swap, and uses the rest of the space for the root partition:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# The full recipe format is documented in the file partman-auto-recipe.txt
+# included in the 'debian-installer' package or available from D-I source
+# repository. This also documents how to specify settings such as file
+# system labels, volume group names and which physical devices to include
+# in a volume group.
+
+## Partitioning for EFI
+# If your system needs an EFI partition you could add something like
+# this to the recipe above, as the first element in the recipe:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# The fragment above is for the amd64 architecture; the details may be
+# different on other architectures. The 'partman-auto' package in the
+# D-I source repository may have an example you can follow.
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Force UEFI booting ('BIOS compatibility' will be lost). Default: false.
+#d-i partman-efi/non_efi_system boolean true
+# Ensure the partition table is GPT - this is required for EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# When disk encryption is enabled, skip wiping the partitions beforehand.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Partitionering med brug af RAID</h4></div></div></div>
+<p>Du kan også bruge forhåndskonfiguration til at opsætte partitioner på program-RAID-arrayer. Understøttet er RAID-niveauerne 0, 1, 5, 6 og 10, der opretter degraded arrayer og specificerer ledige enheder. </p>
+<p>Hvis du bruger RAID 1, så kan du forhåndskonfigurere grub til at installere alle enheder brugt i tabellen; se <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Installation af opstartsindlæseren">Afsnit B.4.12, “Installation af opstartsindlæseren”</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Denne type af automatiseret partitionering er nem at få gjort forkert. Det er også funktionalitet som modtager forholdsvis lidt test fra udviklerens side hos <code class="classname">debian-installer</code>. Ansvaret for at de forskellige opskrifter er korrekte (så de giver mening og ikke er i konflikt) ligger hos brugeren. Kontroller <code class="filename">/var/log/syslog</code> hvis du får problemer. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Metoden skal være »raid«.
+#d-i partman-auto/method string raid
+# Specificer diskene der skal partitioneres. De får alle samme layout,
+# så dette vil kun fungere hvis diskene er af samme størrelse.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Derefter skal du angive de fysiske partitioner. 
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Til sidst skal du angive hvordan de tidligere definerede partionerer skal
+# bruges i RAID-opsætningen. Husk at bruge de korrekte partitionsnumre
+# for logiske partitioner. RAID-niveauerne 0, 1, 5, 6 og 10 er understøttet;
+# enheder adskilles med »#«.
+# Parametre er:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Se filen partman-auto-raid-recipe.txt for yderligere information
+# inkluderet i pakken »debian-installer« eller tilgængelig fra D-I-
+# kildearkivet.
+
+# Denne opsætning får partman til automatisk at partitionere uden bekræftelse.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Kontrol af hvordan partitionerne monteres</h4></div></div></div>
+<p>Normally, filesystems are mounted using a universally unique identifier (UUID) as a key; this allows them to be mounted properly even if their device name changes. UUIDs are long and difficult to read, so, if you prefer, the installer can mount filesystems based on the traditional device names, or based on a label you assign. If you ask the installer to mount by label, any filesystems without a label will be mounted using a UUID instead. </p>
+<p>Enheder med stabile navne, såsom LVM logiske diskenehder, vil fortsætte med at bruge deres traditionelle navne frem for UUID'er. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Advarsel]" src="images/warning.png"></td>
+<th align="left">Advarsel</th>
+</tr>
+<tr><td align="left" valign="top"><p>Traditionelle enhedsnavne kan ændre sig baseret på rækkefølgen hvormed kernen registrerer enheder ved opstart, hvilket kan medføre at det forkerte filsystem monteres. Tilsvarende vil etikettter ramle sammen, hvis vi tilslutter en ny disk eller et USB-drev og hvis det sker, vil dit systems opførsel, når startet, være tilfældigt. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Standarden er at montere efter UUID, men du kan også vælge »traditional«
+# brug traditionelle enhedsnavne, eller »label« for at prøve filsystemetiketter
+# af før der faldes tilbage til UUID'er.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Installation af det grundlæggende system</h3></div></div></div>
+<p>Der er faktisk ikke meget som kan forhåndskonfigureres på dette trin af installationen. De eneste spørgsmål, der stilles, vedrører installationen af kernen. </p>
+<div class="informalexample"><pre class="screen"># Konfigurer APT til ikke at installere anbefalede pakker som standard. Brug
+# af denne indstilling medføre et ufuldstændigt system og bør kun bruges af
+# meget erfarne brugere.
+#d-i base-installer/install-recommends boolean false
+
+# (Meta)pakken for kerneaftryk at installere; »none« kan bruges hvis ingen
+# kerne skal installeres.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Apt-opsætning</h3></div></div></div>
+<p>Opsætning af <code class="filename">/etc/apt/sources.list</code> og grundlæggende konfigurationsindstillinger er fuldt automatiseret baseret på din installationsmetode og svarer til tidligere spørgsmål. Du kan valgfrit tilføje andre (lokale) arkiver. </p>
+<div class="informalexample"><pre class="screen"># Choose, if you want to scan additional installation media
+# (default: false).
+d-i apt-setup/cdrom/set-first boolean false
+# You can choose to install non-free firmware.
+#d-i apt-setup/non-free-firmware boolean true
+# You can choose to install non-free and contrib software.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Uncomment the following line, if you don't want to have the sources.list
+# entry for a DVD/BD installation image active in the installed system
+# (entries for netinst or CD images will be disabled anyway, regardless of
+# this setting).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Uncomment this if you don't want to use a network mirror.
+#d-i apt-setup/use_mirror boolean false
+# Select which update services to use; define the mirrors to be used.
+# Values shown below are the normal defaults.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Additional repositories, local[0-9] available
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Enable deb-src lines
+#d-i apt-setup/local0/source boolean true
+# URL to the public key of the local repository; you must provide a key or
+# apt will complain about the unauthenticated repository and so the
+# sources.list line will be left commented out.
+#d-i apt-setup/local0/key string http://local.server/key
+# or one can provide it in-line by base64 encoding the contents of the
+# key file (with `base64 -w0`) and specifying it thus:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# The content of the key file is checked to see if it appears to be ASCII-armoured.
+# If so it will be saved with an ".asc" extension, otherwise it gets a '.gpg' extension.
+# "keybox database" format is currently not supported. (see generators/60local in apt-setup's source)
+
+# By default the installer requires that repositories be authenticated
+# using a known gpg key. This setting can be used to disable that
+# authentication. Warning: Insecure, not recommended.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Uncomment this to add multiarch configuration for i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Pakkevalg</h3></div></div></div>
+<p>Du kan vælge at installere enhver kombination af opgaver, som er tilgængelige. Tilgængelige opgaver, da dette skrives, inkluderer: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (standardværktøjer) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (grafisk skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (GNOME-skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (XFCE-skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (KDE Plasma-skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Cinnamonskrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (MATE-skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (LXDE-skrivebord) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (netserver) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH-server) </p></li>
+</ul></div>
+<p>Du kan også vælge ikke at installere opgaver og tvinge installationen af et sæt af pakke igennem på en anden måde. Vi anbefaler altid inkludering af <strong class="userinput"><code>standardopgaven</code></strong>. </p>
+<p>Or if you don't want the tasksel dialog to be shown at all, preseed <code class="classname">pkgsel/run_tasksel</code> (no packages are installed via tasksel in that case). </p>
+<p>Hvis du ønsker at installere nogle individuelle pakker udover pakkerne installeret af tasks, så kan du bruge parameteren <code class="classname">pkgsel/include</code>. Værdien for denne parameter kan være en liste af pakker adskilt af enten kommaer eller mellemrum, som gør at den kan nemt kan bruges på kernes kommandolinje. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Or choose to not get the tasksel dialog displayed at all (and don't install
+# any packages):
+#d-i pkgsel/run_tasksel boolean false
+
+# Individual additional packages to install
+#d-i pkgsel/include string openssh-server build-essential
+# Whether to upgrade packages after debootstrap.
+# Allowed values: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# You can choose, if your system will report back on what software you have
+# installed, and what software you use. The default is not to report back,
+# but sending reports helps the project determine what software is most
+# popular and should be included on the first DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Installation af opstartsindlæseren</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub is the boot loader (for x86).</span>
+
+# This is fairly safe to set, it makes grub install automatically to the UEFI
+# partition/boot record if no other operating system is detected on the machine.
+d-i grub-installer/only_debian boolean true
+
+# This one makes grub-installer install to the UEFI partition/boot record, if
+# it also finds some other OS, which is less safe as it might not be able to
+# boot that other OS.
+d-i grub-installer/with_other_os boolean true
+
+# Due notably to potential USB sticks, the location of the primary drive can
+# not be determined safely in general, so this needs to be specified:
+#d-i grub-installer/bootdev  string /dev/sda
+# To install to the primary device (assuming it is not a USB stick):
+#d-i grub-installer/bootdev  string default
+
+# Alternatively, if you want to install to a location other than the UEFI
+# parition/boot record, uncomment and edit these lines:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# To install grub to multiple disks:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Optional password for grub, either in clear text
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# or encrypted using an MD5 hash, see grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Use the following option to add additional boot parameters for the
+# installed system (if supported by the bootloader installer).
+# Note: options passed to the installer will be added automatically.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>En MD5-hash for en adgangskode til <code class="classname">grub</code> kan oprettes via <span class="command"><strong>grub-md5-crypt</strong></span>, eller via kommandoen fra eksemplet i <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Kontoopsætning">Afsnit B.4.6, “Kontoopsætning”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Afslutning af installationen</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># During installations from serial console, the regular virtual consoles
+# (VT1-VT6) are normally disabled in /etc/inittab. Uncomment the next
+# line to prevent this.
+#d-i finish-install/keep-consoles boolean true
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+
+# This will prevent the installer from ejecting the disc during the reboot,
+# which is useful in some situations.
+#d-i cdrom-detect/eject boolean false
+
+# This is how to make the installer shutdown when finished, but not
+# reboot into the installed system.
+#d-i debian-installer/exit/halt boolean true
+# This will power off the machine instead of just halting it.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Forhåndskonfiguration af andre pakker</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Afhængig af hvilke programmer du vælger at installere, eller hvis noget
+# går galt under installationsprocessen, så er det muligt at andre spørgsmål
+# kan stilles. Du kan selvfølgelig også forhåndskonfigurere disse. For en liste
+# over alle de mulige spørgsmål, der kan stilles under en installation, udføres
+# en installation, og disse kommandoer afvikles:
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4238" class="footnote"><p><a href="#id4238" class="para"><sup class="para">[20] </sup></a> Forhåndskonfiguration af <code class="literal">locale</code> til <strong class="userinput"><code>en_NL</code></strong> vil for eksempel medføre <code class="literal">en_US.UTF-8</code> som standardsted for det installerede system. Hvis f.eks. <code class="literal">en_GB.UTF-8</code> foretrækkes i stedet for, så skal værdierne forhåndskonfigureres individuelt. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Oprettelse af en forhåndskonfigurationsfil </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Avancerede indstillinger</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

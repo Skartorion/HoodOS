@@ -1,0 +1,133 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Debian GNU/Linux installeren met het Parallel Line Internet Protocol (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apd.html" title="Bijlage D. Varia">
+<link rel="prev" href="apds03.html" title="D.3. Debian GNU/Linux installeren vanuit een Unix/Linux-Systeem">
+<link rel="next" href="apds05.html" title="D.5. Debian GNU/Linux installeren met PPP over Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Debian GNU/Linux installeren met het Parallel Line Internet Protocol (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage D. Varia</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Debian GNU/Linux installeren met het Parallel Line Internet Protocol (PLIP)</h2></div></div></div>
+<p>In dit onderdeel wordt uitgelegd hoe u Debian GNU/Linux kunt installeren op een computer zonder ethernetkaart, maar die via een zogenaamde Null-Modemkabel (ook wel Null-Printer-kabel of crossed-over RS-232-kabel genoemd) verbonden is met een ander systeem, een gateway-computer genaamd. De gateway-computer moet verbonden zijn met een netwerk waarop zich een Debian-spiegelserver bevindt (bijv. verbonden met het internet). </p>
+<p>In het voorbeeld in deze bijlage zetten we een PLIP-verbinding op met een gateway die met het internet verbonden is via een inbelverbinding (ppp0). We gebruiken het internetadres 192.168.0.1 voor de PLIP-interface op het doelsysteem en 192.168.0.2 voor de PLIP-interface op het bronsysteem (beide adressen mogen in uw netwerkadresruimte niet in gebruik zijn). </p>
+<p>De PLIP-verbinding die tijdens de installatie opgezet wordt zal na de herstart ook met het geïnstalleerde systeem beschikbaar zijn (zie <a class="xref" href="ch07.html" title="Hoofdstuk 7. De computer opstarten met uw nieuwe Debian systeem">Hoofdstuk 7, <i>De computer opstarten met uw nieuwe Debian systeem</i></a>). </p>
+<p>Voor u begint moet u de BIOS-configuratie (IO-basisadres en IRQ) nakijken van de parallelle poort van zowel het bron- als het doelsysteem. De meest gangbare waarden zijn <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5108"></a>D.4.1. Vereisten</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Een doelcomputer, <span class="emphasis"><em>doel</em></span> genoemd, waarop Debian geïnstalleerd zal worden. </p></li>
+<li class="listitem"><p>Installatiemedia om het systeem te installeren; zie <a class="xref" href="ch02s04.html" title="2.4. Installatiemedia">Paragraaf 2.4, “Installatiemedia”</a>. </p></li>
+<li class="listitem"><p>Een tweede computer die verbonden is met het internet, <span class="emphasis"><em>bron</em></span> genoemd, en die als gateway dienst zal doen. </p></li>
+<li class="listitem"><p>Een DB-25 Null-Modem-kabel. Raadpleeg de <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> voor meer informatie over deze kabel en voor richtlijnen om er zelf een te maken. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5123"></a>D.4.2. <span class="emphasis"><em>Bron</em></span> opzetten</h3></div></div></div>
+<p>Het volgende shell-script is een eenvoudig voorbeeld van hoe u de broncomputer kunt configureren als een gateway naar het internet via ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# We verwijderen actieve modules uit de kernel om conflicten te vermijden
+# en om ze zelf opnieuw handmatig te configureren.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configureer de plip-interface
+# (in mijn geval plip0. Gebruik dmesg | grep plip om dit na te gaan)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configureer de gateway
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5134"></a>D.4.3. <span class="emphasis"><em>Doel</em></span> installeren</h3></div></div></div>
+<p>Start het installatiemedium op. De installatie moet uitgevoerd worden in expertmodus; voer <strong class="userinput"><code>expert</code></strong> in aan de opstartprompt. Als u parameters moet instellen voor kernelmodules, moet u dat ook aan de opstartprompt doen. Bijvoorbeeld, om het installatiesysteem op te starten en voor de module parport_pc waarden in te stellen voor de opties <span class="quote">“<span class="quote">io</span>”</span> en <span class="quote">“<span class="quote">irq</span>”</span>, moet u aan de opstartpromt de volgende invoer gebruiken: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Hierna vindt u de antwoorden die tijdens de verschillende fases van de installatie moeten gegeven worden. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Componenten van het installatiesysteem laden van installatiemedia</span>
+
+</p>
+<p>Selecteer uit de lijst de optie <strong class="userinput"><code>plip-modules</code></strong>. Dit zal de PLIP-stuurprogramma's beschikbaar maken voor het installatiesysteem. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Netwerkhardware detecteren</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Indien 'doel' <span class="emphasis"><em>wel degelijk</em></span> een netwerkkaart heeft, zult u een lijst van stuurprogrammamodules voor de gedetecteerde kaart te zien krijgen. Indien u <code class="classname">debian-installer</code> wilt dwingen om in de plaats daarvan plip te gebruiken, moet u alle vermelde stuurprogrammamodules uitvinken. Als 'doel' geen netwerkkaart heeft, zal het installatiesysteem die lijst uiteraard niet tonen. </p></li>
+<li class="listitem"><p>Omdat voordien geen netwerkkaart gedetecteerd/geselecteerd werd, zal het installatiesysteem u vragen om een netwerkstuurprogrammamodule te selecteren uit een lijst. Selecteer de <strong class="userinput"><code>plip</code></strong>-module. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Het netwerk configureren</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Het netwerk automatisch configureren met DHCP: No/Neen </p></li>
+<li class="listitem"><p>IP-adres: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Point-to-point-adres: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Naamserveradressen: u kunt dezelfde adressen opgeven die u voor 'bron' gebruikte (zie <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Debian GNU/Linux installeren vanuit een Unix/Linux-Systeem </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Debian GNU/Linux installeren met PPP over Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

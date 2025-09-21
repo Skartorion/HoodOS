@@ -1,0 +1,93 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Programmes de partitionnement</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Annexe C. Partitionnement pour Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Noms des périphériques sous Linux">
+<link rel="next" href="apd.html" title="Annexe D. Informations diverses">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Programmes de partitionnement</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Annexe C. Partitionnement pour Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Programmes de partitionnement</h2></div></div></div>
+<p>De nombreux utilitaires de partitionnement ont été adaptés par les développeurs Debian pour fonctionner sur différents types de disques et d'architectures matérielles. Voici les programmes qui sont disponibles sur votre architecture : </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>C'est le partitionneur que recommande Debian. Ce <span class="quote">« <span class="quote">couteau suisse</span> »</span> sait aussi redimensionner des partitions et monter des systèmes de fichiers <span class="phrase">(<span class="quote">« <span class="quote">formater</span> »</span> en langage Windows) </span>sur des points de montage. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>C'est le premier partitionneur de disque pour Linux... bon pour les gourous. </p>
+<p>Faites attention si vous avez des partitions FreeBSD sur votre machine. Les noyaux d'installation reconnaissent ces partitions, mais la façon dont <span class="command"><strong>fdisk</strong></span> les représente (ou pas) peut faire varier les noms des périphériques. Lisez attentivement le <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>C'est un partitionneur simple à utiliser, fonctionnant en mode plein écran... pour nous autres. </p>
+<p>Remarquez que <span class="command"><strong>cfdisk</strong></span> ne reconnaît pas du tout les partitions FreeBSD et que les noms des périphériques peuvent être différents. </p>
+</dd>
+</dl></div>
+<p>L'un de ces programmes sera lancé par défaut quand vous sélectionnerez : <span class="guimenuitem">Partitionner un disque dur</span>. Il est possible d'utiliser un autre partitionneur sur la console VT2 mais cela n'est pas recommandé. </p>
+<p>N'oubliez pas de rendre amorçable votre partition racine. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4757"></a>C.5.1. Partitionnement pour <span class="phrase">PC 64 bits</span>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </h3></div></div></div>
+<p>Si vous utilisez un nouveau disque dur (ou si vous souhaitez supprimer la totalité de la table de partitions), une nouvelle table de partitions doit être créée. Cela peut être fait de manière automatique avec le <span class="quote">« <span class="quote">Partitionnement assisté</span> »</span>. Si vous souhaiter partitionner le disque dur manuellement, sélectionnez l'entrée de premier niveau du disque et appuyez sur <span class="keycap"><strong>Entrée</strong></span> pour créer une nouvelle table de partitions. Dans le mode expert, vous pourrez choisir le type de table. Sur les systèmes avec UEFI, <span class="quote">« <span class="quote">gpt</span> »</span> est le type de table par défaut, tandis que <span class="quote">« <span class="quote">msdos</span> »</span> est le type de table par défaut pour les systèmes BIOS. Dans une installation standard, les valeurs par défaut sont utilisées. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>Lorsqu'une table de partitions de type <span class="quote">« <span class="quote">gpt</span> »</span> est sélectionnée, un espace libre de 1 Mo est créé automatiquement au début du disque. Cela est nécessaire pour embarquer le programme d'amorçage GRUB2. </p></td></tr>
+</table></div>
+<p>Si vous voulez préserver un système d'exploitation existant comme Windows, il vous faudra redimensionner sa partition pour faire de la place pour installer Debian. L'installateur sait redimensionner les systèmes de fichiers FAT et NTFS ; quand vous arrivez à l'étape <span class="quote">« <span class="quote">Partitionnement</span> »</span> de l'installateur, choisissez <span class="guimenuitem">Manuel</span> et indiquez simplement la nouvelle taille de la partition. </p>
+<p>Alors que les systèmes récents avec UEFI n'ont pas les limitations listées ci-dessous, les anciens BIOS des PC ont généralement leurs propres contraintes pour le partitionnement des disques. Il y a une limite sur le nombre de partitions « primaires » et « logiques » qu'un disque peut contenir. </p>
+<p>Sur de tels vieux systèmes BIOS, le système de partitionnement des disques de PC est basé sur les partitions « primaires », mais il ne peut y en avoir que quatre. Pour passer outre cette limitation, les partitions « étendues » et « logiques » ont été inventées. En configurant une partition primaire en partition étendue, vous pouvez subdiviser l'espace attribué à cette partition en partitions « logiques ». La partition étendue peut contenir jusqu'à 60 partitions logiques ; en revanche, il ne peut y avoir qu'une seule partition étendue par disque. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Noms des périphériques sous Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> Annexe D. Informations diverses</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Configurazione di hardware e sistema operativo prima dell'installazione</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="ch03.html" title="Capitolo 3. Preparazione dell'installazione di Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Prepartizionamento per sistemi ad avvio multiplo">
+<link rel="next" href="ch04.html" title="Capitolo 4. Recupero dei supporti per l'installazione">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Configurazione di hardware e sistema operativo prima dell'installazione</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Capitolo 3. Preparazione dell'installazione di Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Configurazione di hardware e sistema operativo prima dell'installazione</h2></div></div></div>
+<p>In alcuni casi, prima di installare Debian, potrebbe essere necessario riconfigurare dell'hardware, in questa sezione è descritto cosa fare. Generalmente si tratta di controllare e, nel caso, di modificare le impostazioni del BIOS/UEFI/firmware di sistema. Il <span class="quote">«<span class="quote">BIOS/UEFI</span>»</span> o <span class="quote">«<span class="quote">firmware di sistema</span>»</span> è il software essenziale per il funzionamento dell'hardware, il suo utilizzo è critico durante il processo di bootstrap (che segue l'accensione). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Richiamare il menu di configurazione del BIOS/UEFI</h3></div></div></div>
+<p>Il BIOS/UEFI fornisce le funzioni di base necessarie all'avvio della macchina e permette al sistema operativo di accedere all'hardware. Il proprio sistema è dotato di un apposito menu di configurazione del BIOS/UEFI. Per accedere al menu di configurazione del BIOS/UEFI è necessario premere un tasto o una combinazione di tasti; spesso è il tasto <span class="keycap"><strong>Canc</strong></span> o <span class="keycap"><strong>F2</strong></span> ma alcuni costruttori usano altri tasti. Solitamente dopo l'avvio del computer appare un messaggio che indica quale tasto premere per entrare nella configurazione. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Selezione del dispositivo di avvio</h3></div></div></div>
+<p>All'interno del menu di configurazione del BIOS/UEFI è possibile scegliere da quali dispositivi e in che sequenza verrà fatto il bootstrap del sistema operativo. Le scelte disponibili solitamente includono i dischi fissi interni, il lettore CD/DVD-ROM e i dispositivi di memorizzazione di massa USB quali chiavette USB o dischi esterni USB. Sui sistemi più recenti è spesso disponibile anche la possibilità di attivare l'avvio da rete via PXE. </p>
+<p>In base al supporto di installazione (CD/DVD ROM, chiavetta USB, avvio da rete) prescelto è necessario attivare, se non lo è già, l'avvio dai dispositivi appropriati. </p>
+<p>La maggior parte delle versioni di BIOS/UEFI permettono di richiamare un menu d'avvio da cui è possibile scegliere il dispositivo da cui il computer deve fare l'avvio. Quando questa opzione è disponibile, il BIOS/UEFI solitamente mostra un breve messaggio <span class="quote">«<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>»</span> (premere F12 per il menu di avvio) all'accensione del computer. Il tasto da premere varia da sistema a sistema; i tasti comunemente usati sono <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> e <span class="keycap"><strong>F8</strong></span>. La scelta del dispositivo fatta da questo menu non cambia l'ordine di avvio predefinito nel BIOS/UEFI, sarà possibile avviare una volta dalla chiavetta USB lasciando il disco fisso interno come dispositivo di avvio principale. </p>
+<p>Se il proprio BIOS/UEFI non fornisce il menu di avvio per modificare l'attuale dispositivo di avvio, è necessario cambiare la configurazione nel BIOS/UEFI per rendere il dispositivo da cui dovrà essere avviato il <code class="classname">installatore Debian</code> il dispositivo di avvio principale. </p>
+<p>Sfortunatamente alcuni computer contengono dei BIOS/UEFI con problemi. L'avvio di <code class="classname">installatore Debian</code> da una chiavetta USB potrebbe non funzionare anche quando esiste un'apposita voce nel menu del BIOS/UEFI e con la chiavetta selezionata come dispositivo di avvio principale. Su alcuni di questi sistemi è impossibile usare la chiavetta USB come supporto per l'avvio; su altri è possibile aggirare il problema cambiando il tipo di dispositivo da <span class="quote">«<span class="quote">USB harddisk</span>»</span> o <span class="quote">«<span class="quote">USB stick</span>»</span> in <span class="quote">«<span class="quote">USB ZIP</span>»</span> o <span class="quote">«<span class="quote">USB CDROM</span>»</span>. <span class="phrase"> In particolare, chi usa un'immagine per l'installazione iso-ibride su una chiavetta USB (vedere <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Preparazione di una chiavetta USB con un'immagine CD/DVD ibrida">Sezione 4.3.1, «Preparazione di una chiavetta USB con un'immagine CD/DVD ibrida»</a>), la modifica del tipo di dispositivo in <span class="quote">«<span class="quote">USB CDROM</span>»</span> aiuta su alcuni BIOS/UEFI che non avviano da una chiavetta USB in modalità disco USB.</span> Potrebbe essere necessario configurare il BIOS per attivare il <span class="quote">«<span class="quote">USB legacy support</span>»</span>. </p>
+<p>Se non è possibile intervenire sul BIOS/UEFI per fare l'avvio da una chiavetta USB sarà comunque possibile usare l'immagine ISO copiata sulla chiavetta. Avviare <code class="classname">installatore Debian</code> come descritto <a class="xref" href="ch04s04.html" title="4.4. Preparazione dei file per l'avvio da disco fisso">Sezione 4.4, «Preparazione dei file per l'avvio da disco fisso»</a> e, dopo la ricerca sui dischi rigidi dell'immagine ISO, selezionare il dispositivo USB e scegliere l'immagine. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Sistemi con firmware UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">«<span class="quote">Unified Extensible Firmware Interface</span>»</span>) è un nuovo tipo di firmware di sistema utilizzato su molti sistemi recenti ed è, tra le altre cose, pensato per rimpiazzare il BIOS classico dei PC. </p>
+<p>Attualmente la maggior parte dei sistemi PC che utilizzano UEFI hanno nel firmware il così detto CSM (<span class="quote">«<span class="quote">Compatibility Support Module</span>»</span>) che fornisce al sistema operativo esattamente le stesse interfacce del BIOS di un PC, in questo modo è possibile usare su sistemi UEFI il software scritto per il BIOS classico senza alcuna modifica. Ciononostante UEFI è pensato per rimpiazzare completamente il vecchio BIOS senza la completa compatibilità all'indietro ed esistono già molti sistemi UEFI senza CSM. </p>
+<p>Sui sistemi UEFI è necessario prendere alcuni accorgimenti per l'installazione del sistema operativo. La modalità con la quale il firmware di sistema carica il sistema operativo è notevolmente diversa tra il classico BIOS (o UEFI in modalità CSM) e UEFI in modalità nativa. La differenza principale è come le partizioni del disco sono scritte sul disco. Il BIOS classico e UEFI in modalità CSM usano una tabella della partizioni DOS, la modalità UEFI nativa utilizza uno schema di partizionamento diverso chiamato GPT (<span class="quote">«<span class="quote">GUID Partition Table</span>»</span>). Su un singolo disco è possibile usare solo una delle due e, nel caso di sistemi con più sistemi operativi installati su un unico disco, tutti i sistemi operativi devono obbligatoriamente utilizzare lo stesso tipo di tabella delle partizioni. L'avvio da un disco con GPT è possibile solo usando UEFI in modalità nativa; l'uso di GPT è diventato sempre più comune con il crescere della dimensione dei dischi poiché la tabella delle partizioni DOS non supporta dischi più grandi di circa 2 Terabyte invece GPT gestisce dischi molto più grandi. Un'altra importante differenza tra BIOS (o UEFI in modalità CSM) e UEFI in modalità nativa è dove è memorizzato il programma di avvio e in quale formato deve essere. Ciò comporta che è necessario usare un bootloader specifico per ciascun sistema. </p>
+<p>Quest'ultima differenza è molto importante per avviare <code class="classname">installatore Debian</code> su un sistema UEFI con CSM perché <code class="classname">installatore Debian</code> sceglie se installare il bootloader per BIOS oppure per UEFI nativa in base alla modalità con la quale è stato avviato. Solitamente questo semplice controllo funziona ma può creare dei problemi quando ci sono più sistemi operativi. Inoltre su alcuni sistemi UEFI con CSM la modalità di avvio usata per i supporti removibili può essere diversa da quella usata per i dischi fissi e quindi può accadere che quando si avvia l'installatore da una chiavetta USB sia eseguito in una modalità diversa da quella con cui sono avviati i sistemi operativi presenti sul disco fisso. Ciò potrebbe comportare l'installazione di un bootloader non adatto e di conseguenza al termine dell'installazione il sistema potrebbe non essere più avviabile. Al momento di scegliere il dispositivo da cui fare l'avvio nel menu proposto dal firmware, alcuni sistemi offrono due opzioni separate per ciascun dispositivo in modo da lasciar decidere all'utente se l'avvio deve avvenire in modalità CSM oppure in modalità UEFI nativa. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Avvio sicuro</h3></div></div></div>
+<p>Un altro aspetto di UEFI è il così detto <span class="quote">«<span class="quote">avvio sicuro</span>»</span> (secure boot). L'avvio sicuro è una funzionalità di UEFI che impone al firmware di caricare ed eseguire solo il codice firmato crittograficamente con determinate chiavi e di conseguenza blocca qualsiasi altro codice (potenzialmente pericoloso) non firmato o firmato con una chiave non riconosciuta. In pratica l'unica chiave accettata dalla maggior parte dei sistemi UEFI con avvio sicuro è la chiave che Microsoft usa per firmare il bootloader di Windows. Debian dispone del bootloader <span class="quote">«<span class="quote">shim</span>»</span> firmato da Microsoft e quindi dovrebbe funzionare correttamente sui sistemi su cui è attivo il secure boot. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Disattivare la funzione <span class="quote">«<span class="quote">fast boot</span>»</span>/<span class="quote">«<span class="quote">fast startup</span>»</span> di Windows</h3></div></div></div>
+<p>Windows dispone di una funzionalità (chiamata <span class="quote">«<span class="quote">fast boot</span>»</span> in Windows 8 e <span class="quote">«<span class="quote">fast startup</span>»</span> in Windows 10) per ridurre il tempo d'avvio. Tecnicamente, quando questa funzione è attiva, Windows non esegue un vero spegnimento né l'avvio successivo riparte da freddo, ciò che accade assomiglia a una sospensione parziale sul disco, questo riduce il tempo di avvio. Se Windows è l'unico sistema presente sul disco, non ci sono problemi, invece se sono installati altri sistemi operativi che accedono agli stessi filesystem a cui accede Windows potrebbero verificarsi dei problemi e delle perdite di dati. Infatti potrebbe accadere che al riavvio di Windows lo stato reale del filesystem sia diverso da quello atteso, ciò potrebbe causare la corruzione del filesystem al successivo accesso in scrittura al filesystem. Quindi in configurazioni in cui sono installati altri sistemi operativi, per evitare corruzioni del filesystem, è necessario disattivare da Windows la funzionalità <span class="quote">«<span class="quote">fast boot</span>»</span>/<span class="quote">«<span class="quote">fast startup</span>»</span>. </p>
+<p>Inoltre, il meccanismo di aggiornamento di Windows è noto per aver (a volte) riabilitato automaticamente questa funzionalità, dopo che è stata precedentemente disabilitata dall'utente. Si consiglia di ricontrollare periodicamente questa impostazione. </p>
+<p>Potrebbe anche essere necessario disattivare il <span class="quote">«<span class="quote">fast boot</span>»</span> persino per accedere alla configurazione di UEFI che permette di scegliere l'avvio di un Sistema Operativo differente oppure il <code class="classname">installatore Debian</code>. Su alcuni sistemi UEFI, il firmware riduce il tempo di avvio non inizializzando il controller della tastiera e dell'hardwre USB; in questo caso è necessario avviare Windows e disattivare il <span class="quote">«<span class="quote">fast boot</span>»</span> per consentire di cambiare l'ordine d'avvio. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Problemi hardware a cui prestare attenzione</h3></div></div></div>
+<p><b>Tastiere USB e BIOS. </b>Se non si dispone di una tastiera PS/2 e si ha solo una tastiera USB, su alcuni PC molto vecchi potrebbe essere necessario attivare nella configurazione del BIOS l'emulazione di tastiera per poter usare la tastiera nel menu del bootloader; questo non è un problema sui sistemi più recenti. Se non è possibile usare la tastiera nel menu del bootloader, consultare il manuale della scheda madre cercando informazioni sulle opzioni <span class="quote">«<span class="quote">Legacy keyboard emulation</span>»</span> o <span class="quote">«<span class="quote">USB keyboard support</span>»</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Prepartizionamento per sistemi ad avvio multiplo </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> Capitolo 4. Recupero dei supporti per l'installazione</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

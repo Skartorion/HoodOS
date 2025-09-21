@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. Mengorientasikan Diri Anda ke Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Bab 8. Langkah Berikutnya dan Ke Mana Harus Pergi Dari Sini">
+<link rel="prev" href="ch08s01.html" title="8.1. Mematikan sistem">
+<link rel="next" href="ch08s03.html" title="8.3. Bacaan dan Informasi Lebih Lanjut">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. Mengorientasikan Diri Anda ke Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 8. Langkah Berikutnya dan Ke Mana Harus Pergi Dari Sini</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. Mengorientasikan Diri Anda ke Debian</h2></div></div></div>
+<p>Debian sedikit berbeda dari distribusi lainnya. Bahkan jika Anda terbiasa dengan Linux di distribusi lain, ada hal-hal yang harus Anda ketahui tentang Debian untuk membantu Anda menjaga sistem Anda dalam keadaan baik dan bersih. Bab ini berisi materi untuk membantu Anda mendapatkan orientasi; ini tidak dimaksudkan untuk menjadi tutorial tentang cara menggunakan Debian, tetapi hanya sekilas tentang sistem untuk yang sangat terburu-buru. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4143"></a>8.2.1. Sistem Pemaketan Debian</h3></div></div></div>
+<p>Konsep yang paling penting untuk dipahami adalah sistem pengemasan Debian intinya, sebagian besar sistem Anda harus dipertimbangkan di bawah kendali sistem pengemasan. Ini termasuk: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (tidak termasuk <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (Anda dapat membuat <code class="filename">/var/local</code> dan aman di sana) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> Misalnya, jika Anda mengganti <code class="filename">/usr/bin/perl</code>, itu akan berfungsi, tetapi kemudian jika Anda memutakhirkan paket <code class="classname">perl</code> Anda, berkas yang Anda letakkan di sana akan diganti. Para ahli dapat menyiasatinya dengan meng-<span class="quote">“<span class="quote">hold</span>”</span> paket dalam <span class="command"><strong>aptitude</strong></span>. </p>
+<p>Salah satu metode instalasi terbaik adalah apt. Anda dapat menggunakan versi baris perintah dari <span class="command"><strong>apt</strong></span> serta alat seperti <span class="application">aptitude</span> atau <span class="application">synaptic</span> (yang hanya frontend grafis untuk <span class="command"><strong>apt</strong></span>). Perhatikan bahwa apt juga akan memungkinkan Anda menggabungkan main, contrib, non-free, dan non-free-firmware sehingga Anda dapat memiliki paket terbatas (sebenarnya bukan milik Debian) serta paket dari Debian GNU/Linux pada waktu bersamaan. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4173"></a>8.2.2. Perangkat Lunak Tambahan yang Tersedia untuk Debian</h3></div></div></div>
+<p>Ada repositori perangkat lunak resmi dan tidak resmi yang tidak diaktifkan di instalasi baku Debian. Ini berisi perangkat lunak yang menurut banyak orang penting dan diharapkan untuk dimiliki. Informasi tentang repositori tambahan ini dapat ditemukan di halaman Wiki Debian berjudul <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">The Software Available for Debian's Stable Release</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4177"></a>8.2.3. Manajemen Versi Aplikasi</h3></div></div></div>
+<p>Versi alternatif aplikasi dikelola oleh update-alternatives. Jika Anda mempertahankan beberapa versi aplikasi Anda, baca halaman manual update-alternatives. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4180"></a>8.2.4. Manajemen Pekerjaan Cron</h3></div></div></div>
+<p>Pekerjaan apa pun di bawah lingkup administrator sistem harus ada di <code class="filename">/etc</code>, karena mereka adalah berkas konfigurasi. Jika Anda memiliki pekerjaan cron root untuk eksekusi harian, mingguan, atau bulanan, masukkan ke dalam <code class="filename">/etc/cron.{daily,weekly,monthly}</code>. Ini dipanggil dari <code class="filename">/etc/crontab</code>, dan akan berjalan dalam urutan abjad, yang menserialkan mereka. </p>
+<p>Di sisi lain, jika Anda memiliki pekerjaan cron yang (a) perlu dijalankan sebagai pengguna khusus, atau (b) perlu berjalan pada waktu atau frekuensi khusus, Anda dapat menggunakan <code class="filename">/etc/crontab</code>, atau, lebih baik lagi, <code class="filename">/etc/cron.d/apapun</code>. Berkas-berkas khusus ini juga memiliki bidang tambahan yang memungkinkan Anda untuk menetapkan akun pengguna tempat pekerjaan cron berjalan. </p>
+<p>Dalam kedua kasus, Anda cukup mengedit berkas dan cron akan melihatnya secara otomatis. Tidak perlu menjalankan perintah khusus. Untuk informasi lebih lanjut lihat cron(8), crontab(5), dan <code class="filename">/usr/share/doc/cron/README.Debian</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. Mematikan sistem </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. Bacaan dan Informasi Lebih Lanjut</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

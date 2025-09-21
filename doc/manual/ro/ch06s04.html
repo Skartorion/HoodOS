@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Încărcarea firmware-ului lipsă</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch06.html" title="Cap. 6. Utilizarea programului de instalare Debian">
+<link rel="prev" href="ch06s03.html" title="6.3. Utilizarea de componente individuale">
+<link rel="next" href="ch06s05.html" title="6.5. Personalizare">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Încărcarea firmware-ului lipsă</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 6. Utilizarea programului de instalare Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Încărcarea firmware-ului lipsă</h2></div></div></div>
+<p>După cum este descris în <a class="xref" href="ch02s02.html" title="2.2. Dispozitive care necesită firmware">Secțiune 2.2, „Dispozitive care necesită firmware”</a>, unele dispozitive necesită încărcarea firmware-ului. În majoritatea cazurilor, dispozitivul nu va funcționa deloc dacă firmware-ul nu este disponibil; uneori, funcționalitatea de bază nu este afectată dacă lipsește și firmware-ul este necesar doar pentru a activa funcții suplimentare. </p>
+<p>Începând cu Debian GNU/Linux 12.0, urmând <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Rezoluția generală 2022 despre firmware non-free</a>, imaginile oficiale de instalare (cum ar fi „netinst”) pot include pachete de firmware „non-free". Chiar și cu acele pachete de firmware disponibile, unele fișiere de firmware ar putea să lipsească în continuare. Sau s-ar putea să folosească fișiere netboot, care nu includ pachete de firmware. </p>
+<p>Dacă un controlor de dispozitiv solicită firmware care nu este disponibil, <code class="classname">debian-installer</code> va afișa un dialog care oferă încărcarea firmware-ului lipsă. Dacă această opțiune este selectată, <code class="classname">debian-installer</code> va scana dispozitivele disponibile fie pentru fișiere firmware libere, fie pentru pachete care conțin firmware. Dacă este găsit, firmware-ul va fi copiat în locația corectă (<code class="filename">/lib/firmware</code>) și modulul controlorului va fi reîncărcat. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ce dispozitive sunt scanate și ce sisteme de fișiere sunt acceptate depind de arhitectură, metoda de instalare și stadiul instalării. În special în primele etape ale instalării, încărcarea firmware-ului este cel mai probabil să reușească de pe un stick USB formatat FAT. <span class="phrase">Firmware-ul pe i386 și amd64 poate fi încărcat și de pe un card MMC sau SD.</span> </p></td></tr>
+</table></div>
+<p>Rețineți că este posibil să omiteți încărcarea firmware-ului dacă știți că dispozitivul va funcționa și fără acesta sau dacă dispozitivul nu este necesar în timpul instalării. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4006"></a>6.4.1. Pregătirea unui mediu</h3></div></div></div>
+<p>Cea mai comună metodă de a încărca un astfel de firmware este de pe un mediu detașabil, cum ar fi un stick USB. Pentru a pregăti un stick USB (sau alt mediu cum ar fi o partiție de disc dur/solid), fișierele sau pachetele de firmware trebuie să fie plasate fie în directorul rădăcină, fie într-un director numit <code class="filename">/firmware</code> al sistemului de fișiere de pe mediu. Sistemul de fișiere recomandat de utilizat este FAT, deoarece este cel mai sigur că va fi acceptat în primele etape ale instalării. </p>
+<p>Arhivele comprimate și fișierele zip care conțin pachetele curente pentru cel mai comun firmware, și metadatele asociate pentru a asigura o detectare adecvată de către programul de instalare (directorul <code class="filename">dep11</code>), sunt disponibile de la: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Doar descărcați fișierul arhivei comprimate sau zip pentru versiunea corectă și despachetați-l în sistemul de fișiere de pe mediu. </p>
+<p>De asemenea, este posibil să copiați fișiere firmware individuale pe mediu. Firmware-ul liber ar putea fi obținut, de exemplu, de la un sistem deja instalat sau de la un fabricant de dispozitive. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4017"></a>6.4.2. Firmware-ul și sistemul instalat</h3></div></div></div>
+<p>Orice firmware încărcat în timpul instalării va fi copiat automat în sistemul instalat. În cele mai multe cazuri, acest lucru va asigura că dispozitivul care necesită firmware va funcționa corect și după ce sistemul este repornit în sistemul instalat. Cu toate acestea, dacă sistemul instalat rulează o versiune de nucleu diferită de cea a programului de instalare, există o mică șansă ca firmware-ul să nu poată fi încărcat din cauza diferenței de versiuni. </p>
+<p>Dacă firmware-ul a fost încărcat dintr-un pachet de firmware, <code class="classname">debian-installer</code> va instala, de asemenea, acest pachet pentru sistemul instalat și va adăuga automat secțiunea non-free-firmware a arhivei pachetului în <code class="filename">sources.list</code> APT. Acest lucru are avantajul că firmware-ul va fi actualizat automat dacă devine disponibilă o nouă versiune. </p>
+<p>Dacă încărcarea firmware-ului a fost omisă în timpul instalării, dispozitivul relevant nu va funcționa probabil cu sistemul instalat până când firmware-ul (pachetul) este instalat manual. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Dacă firmware-ul a fost încărcat din fișiere firmware libere, firmware-ul copiat în sistemul instalat <span class="emphasis"><em>nu</em></span> va fi actualizat automat decât dacă pachetul firmware corespunzător (dacă este disponibil) este instalat după finalizarea instalării. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Finalizarea sistemului instalat</h3></div></div></div>
+<p>În funcție de modul în care a fost efectuată instalarea, s-ar putea ca necesitatea unui firmware să nu fi fost detectată în timpul instalării, că firmware-ul relevant nu a fost disponibil sau că cineva a ales să nu instaleze un firmware la acel moment. În unele cazuri, o instalare reușită poate ajunge totuși într-un ecran negru sau într-un afișaj deformat la repornirea sistemului instalat. Când se întâmplă acest lucru, pot fi încercate următoarele soluții: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Pasați opțiunea <code class="code">nomodeset</code> pe linia de comandă a nucleului. Acest lucru ar putea ajuta la pornirea într-un mod <span class="quote">„<span class="quote">grafic de rezervă</span>”</span> pentru un sistem grafic degradat.</p></li>
+<li class="listitem"><p>Utilizați combinația de taste <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> pentru a comuta la VT2, care ar putea oferi un prompt de conectare funcțional.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Utilizarea de componente individuale </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Personalizare</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

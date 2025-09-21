@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>A.3. Installazione</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guida all'installazione di Debian GNU/Linux">
+<link rel="up" href="apa.html" title="Appendice A. Installation Howto">
+<link rel="prev" href="apas02.html" title="A.2. Avvio del programma d'installazione">
+<link rel="next" href="apas04.html" title="A.4. Invio di un resoconto d'installazione">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">A.3. Installazione</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apas02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<th width="60%" align="center">Appendice A. Installation Howto</th>
+<td width="20%" align="right"> <a accesskey="n" href="apas04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="howto-installation"></a>A.3. Installazione</h2></div></div></div>
+<p>Una volta avviato l'installatore viene mostrata una schermata iniziale. Premere <span class="keycap"><strong>Invio</strong></span> per proseguire con l'installazione oppure leggere le istruzioni sugli altri metodi e i parametri di avvio (si consulti <a class="xref" href="ch05s03.html" title="5.3. Parametri di avvio">Sezione 5.3, «Parametri di avvio»</a>). </p>
+<p>Dopo un po' viene richiesto di scegliere la lingua, usare i tasti cursore per selezionare una lingua e poi premere <span class="keycap"><strong>Invio</strong></span> per proseguire. Poi viene richiesto di scegliere la nazione, potendo scegliere fra le nazioni in cui è parlata la lingua scelta in precedenza. Se l'elenco non comprende la propria nazione, è disponibile anche un elenco con tutti i paesi del mondo. </p>
+<p>Potrebbe essere richiesta la conferma della disposizione della tastiera, se non si sa cosa scegliere accettare il valore predefinito. </p>
+<p>Adesso si deve aspettare che il debian-installer rilevi l'hardware e che carichi i componenti e se stesso dall'immagine per l'installazione. </p>
+<p>L'installatore cerca di rilevare automaticamente l'hardware per l'accesso alla rete e di configurarlo con DHCP. Se non si è connessi a una rete o non si ha DHCP, è possibile configurare la rete manualmente. </p>
+<p>La configurazione della rete è seguita dalla creazione degli account per gli utenti; di solito è necessario inserire la password dell'account <span class="quote">«<span class="quote">root</span>»</span> (l'utente d'amministrazione) e le informazioni per creare l'account di un utente normale. Se la password per <span class="quote">«<span class="quote">root</span>»</span> non viene specificata, tale account viene disabilitato e in seguito verrà installato pacchetto <span class="command"><strong>sudo</strong></span> che permetterà di effettuare operazioni amministrative sul nuovo sistema. Al primo utente creato sul sistema sarà consentito l'uso del comando <span class="command"><strong>sudo</strong></span> per impersonare root. </p>
+<p>Il passo successivo consiste nella configurazione dell'orologio e del fuso orario. L'installatore prova a contattare un time server su Internet per assicurarsi che l'orologio sia impostato con l'ora esatta. Il fuso orario è impostato in base alla nazione scelta in precedenza, l'installatore chiede di sceglierne uno solo se nella nazione ci sono più fusi orari. </p>
+<p>Ora è il momento di partizionare i dischi. Per prima cosa viene proposto di partizionare in automatico l'intero disco oppure il solo spazio libero disponibile (si veda <a class="xref" href="ch06s03.html#partman-auto" title="6.3.4.2. Partizionamento guidato">Sezione 6.3.4.2, «Partizionamento guidato»</a>). Questa procedura è quella più adatta per gli utenti meno esperti e per coloro che hanno fretta, se non si desidera usare il partizionamento automatico si deve scegliere <span class="guimenuitem">manuale</span> dal menu. </p>
+<p>Se è presente una partizione con Windows che si vuole preservare, si deve fare particolarmente attenzione con il partizionamento automatico. Nel caso si scelga il partizionamento manuale è possibile usare l'installatore per ridimensionare le partizioni FAT o NTFS esistenti per creare lo spazio per installare Debian: è sufficiente selezionare la partizione e specificarne la nuova dimensione. </p>
+<p>Nella schermata successiva è mostrata la tabella delle partizioni, come verranno formattare e dove verranno montate, selezionare una partizione per modificarla o rimuoverla. Se è stato fatto un partizionamento automatico allora nel menu è possibile scegliere <span class="guimenuitem">Terminare il partizionamento e scrivere i cambiamenti sul disco</span> per confermare la configurazione proposta. Ricordarsi di assegnare almeno una partizione come spazio per lo swap e di montare una partizione su <code class="filename">/</code>. Per avere informazioni più dettagliate su come utilizzare il programma per creare le partizioni, si veda <a class="xref" href="ch06s03.html#di-partition" title="6.3.4. Partizionamento e selezione del punto di mount">Sezione 6.3.4, «Partizionamento e selezione del punto di mount»</a>; l'appendice <a class="xref" href="apc.html" title="Appendice C. Partizionare per Debian">Appendice C, <i>Partizionare per Debian</i></a> contiene altre informazioni relative al partizionamento. </p>
+<p>Adesso il <code class="classname">installatore Debian</code> formatta le partizioni e inizia l'installazione del sistema di base, questa operazione richiede un po' di tempo. Al termine viene installato il kernel. </p>
+<p>Il sistema di base, installato in precedenza, è un sistema funzionante ma minimale. Per rendere il sistema più funzionale il prossimo passo consiste nell'installazione di altri pacchetti tramite la scelta di task. Prima di poter installare i pacchetti è però necessario configurare <code class="classname">apt</code> specificando da dove devono essere recuperati i pacchetti. Il task <span class="quote">«<span class="quote">Utilità standard di sistema</span>»</span> è già selezionato e solitamente deve essere installato; il task <span class="quote">«<span class="quote">Ambiente desktop</span>»</span> mette a disposizione un desktop grafico al termine dell'installazione. Si veda <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Selezione e installazione dei pacchetti">Sezione 6.3.6.2, «Selezione e installazione dei pacchetti»</a> per altri dettagli su questa fase. </p>
+<p>L'ultimo passo è installare un boot loader. Se l'installatore rileva la presenza di altri sistemi operativi sul computer è in grado di aggiungerli nel menu di avvio. <span class="phrase"> GRUB viene installato nella partizione UEFI/boot record del disco principale, normalmente questa è una buona scelta. Comunque viene data l'opportunità di cambiare questa scelta in modo da installarlo da qualche altra parte. </span> </p>
+<p>Infine <code class="classname">installatore Debian</code> comunica il termine dell'installazione, rimuovere il CDROM o qualsiasi altro supporto sia stato usato per l'avvio e premere <span class="keycap"><strong>Invio</strong></span> per riavviare la macchina. Dovrebbe ripartire il sistema appena installato con la richiesta di login, questa fase è descritta in <a class="xref" href="ch07.html" title="Capitolo 7. Avvio del nuovo sistema Debian">Capitolo 7, <i>Avvio del nuovo sistema Debian</i></a>. </p>
+<p>Se sono necessarie altre informazioni sul processo d'installazione si consulti <a class="xref" href="ch06.html" title="Capitolo 6. Uso dell'Installatore Debian">Capitolo 6, <i>Uso dell'Installatore Debian</i></a>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apas02.html"><img src="images/prev.png" alt="Indietro"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apa.html"><img src="images/up.png" alt="Risali"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apas04.html"><img src="images/next.png" alt="Avanti"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">A.2. Avvio del programma d'installazione </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Partenza"></a></td>
+<td width="40%" align="right" valign="top"> A.4. Invio di un resoconto d'installazione</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

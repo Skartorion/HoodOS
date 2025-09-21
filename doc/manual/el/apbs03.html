@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Δημιουργία ενός αρχείου προρυθμίσεων</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)">
+<link rel="prev" href="apbs02.html" title="B.2. Χρησιμοποιώντας preseeding">
+<link rel="next" href="apbs04.html" title="B.4. Περιεχόμενα του αρχείου προρύθμισης (για την έκδοση trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Δημιουργία ενός αρχείου προρυθμίσεων</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Παράρτημα B. Αυτοματοποίηση της εγκατάστασης με χρήση προρυθμίσεων (preseeding)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Δημιουργία ενός αρχείου προρυθμίσεων</h2></div></div></div>
+<p>Το αρχείο των προρυθμίσεων είναι στην μορφή που χρησιμοποιείται από την εντολή <span class="command"><strong>debconf-set-selections</strong></span>. H γενική μορφή μιας γραμμής σε ένα αρχείο προρυθμίσεων είναι: </p>
+<div class="informalexample"><pre class="screen">&lt;owner&gt; &lt;question name&gt; &lt;question type&gt; &lt;value&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Το αρχείο θα πρέπει να ξεκινά με τη γραμμή <code class="literal">#_preseed_V1</code> </p>
+<p>Υπάρχουν μερικοί κανόνες που θα πρέπει να έχετε στο μυαλό σας όταν γράφετε ένα αρχείο προρύθμισης. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Εισάγετε ένα μοναδικό κενό (space) ή μια μοναδική μετατόπιση θέσης (tab) ανάμεσα σε έναν τύπο και την τιμή του: οποιοδήποτε επιπλέον κενό διάστημα (whitespace) θα ερμηνευθεί σαν να ανήκει στην τιμή. </p></li>
+<li class="listitem"><p>Μια γραμμή μπορεί να χωριστεί σε πολλαπλές γραμμές με την προσθήκη στο τέλος του συμβόλου backslash (<span class="quote">«<span class="quote"><code class="literal">\</code></span>»</span>) σαν χαρακτήρα συνέχισης της γραμμής. Ένα καλό σημείο για να χωρίσετε μια γραμμή είναι αμέσως μετά το όνομα της ερώτησης. Ένα κακό σημείο είναι ανάμεσα σε έναν τύπο και την τιμή του. Οι χωριζόμενες γραμμές θα ενωθούν σε μια μοναδική γραμμή με όλα τα προηγούμενα/ακόλουθα κενά διαστήματα συγκολλούμεναν σε ένα μοναδικό διάστημα. </p></li>
+<li class="listitem"><p>Για τις μεταβλητές (templates) του debconf που χρησιμοποιούνται μόνο στον ίδιο τον εγκαταστάτη, ως ιδιοκτήτης θα πρέπει να τεθεί ο <span class="quote">«<span class="quote">d-i</span>»</span>; για την προρύθμιση μεταβλητών που χρησιμοποιούνται στο εγκατεστημένο σύστημα θα πρέπει να χρησιμοποιηθεί το όνομα του πακέτου που περιέχει το αντίστοιχο υπόδειγμα του debconf. Μόνο μεταβλητές για τις οποίες έχει καθοριστεί ιδιοκτήτης διαφορετικός από τον <span class="quote">«<span class="quote">d-i</span>»</span> θα μεταδοθούν στην βάση δεδομένων του debconf για το εγκατεστημένο σύστημα. </p></li>
+<li class="listitem"><p>Οι περισσότερες ερωτήσεις θα πρέπει να προρυθμιστούν χρησιμοποιώντας τις τιμές που είναι έγκυρες στα Αγγλικά και όχι μεταφράσεις τους. Παρ' όλα αυτά υπάρχουν μερικές ερωτήσεις (για παράδειγμα για το πρόγραμμα <code class="classname">partman</code>) στις οποίες θα πρέπει να χρησιμοποιηθούν οι μεταφρασμένες τιμές. </p></li>
+<li class="listitem"><p>Μερικές ερωτήσεις παίρνουν σαν τιμή έναν κωδικό αντί του αγγλικού κειμένου που εμφανίζεται κατά την εγκατάσταση. </p></li>
+<li class="listitem"><p>Ξεκινήστε με <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>Ένα σχόλιο συνίσταται από μια γραμμή που <span class="emphasis"><em>αρχίζει</em></span> με έναν χαρακτήρα δίεσης (<span class="quote">«<span class="quote"><code class="literal">#</code></span>»</span>) και εκτείνεται μέχρι το μήκος αυτής της γραμμής. </p></li>
+</ul></div>
+<p>Ο ευκολότερος τρόπος να δημιουργήσετε ένα αρχείο προρύθμισης είναι να χρησιμοποιήσετε το παράδειγμα στον σύνδεσμο <a class="xref" href="apbs04.html" title="B.4. Περιεχόμενα του αρχείου προρύθμισης (για την έκδοση trixie)">Τμήμα B.4, «Περιεχόμενα του αρχείου προρύθμισης (για την έκδοση trixie)»</a> σαν βάση και να δουλέψετε πάνω σ' αυτό. </p>
+<p>Μια εναλλακτική μέθοδος είναι να κάνετε μια εγκατάσταση με το χέρι και μετά, μετά την επανεκκίνηση, χρησιμοποιήστε την εντολή <span class="command"><strong>debconf-get-selections</strong></span> από το πακέτο <code class="classname">debconf-utils</code>ώστε να σώσετε σε ένα μοναδικό αρχείο τόσο την βάση δεδομένων του debconf όσο και αυτήν του cdebconf του εγκαταστάτη: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Παρ' όλα αυτά, ένα αρχείο που δημιουργείται μ' αυτόν τον τρόπο θα περιέχει κάποια στοιχεία που δεν θα έπρεπε να προρυθμιστούν, και το παραδειγματικό αρχείο είναι ένα καλλίτερο σημείο εκκίνησης για τους περισσότερους χρήστες. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Σημείωση]" src="images/note.png"></td>
+<th align="left">Σημείωση</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Η μέθοδος αυτή στηρίζεται στο γεγονός ότι στο τέλος της εγκατάστασης η βάση δεδομένων του cdebconf σώζεται στο εγκατεστημένο σύστημα στο αρχείο <code class="filename">/var/log/installer/cdebconf</code>. Όμως κι επειδή η βάση αυτή μπορεί να περιέχει ευαίσθητες πληροφορίες, τα αρχεία είναι προκαθορισμένο να διαβάζονται μόνο από τον χρήστη root. </p>
+<p>Ο κατάλογος <code class="filename">/var/log/installer</code> και όλα τα αρχεία σ' αυτόν θα διαγραφούν από το σύστημά σας αν αφαιρέσετε πλήρως το πακέτο <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Για να ελέγξετε πιθανές τιμές για τις ερωτήσεις, μπορείτε να χρησιμοποιήσετε την εντολή <span class="command"><strong>nano</strong></span> για να εξετάσετε τα αρχεία στον κατάλογο <code class="filename">/var/lib/cdebconf</code> κι ενώ η εγκατάσταση είνα ακόμα σε εξέλιξη. Δείτε το αρχείο <code class="filename">templates.dat</code> για τα αρχικά πρότυπα (templates) και το αρχείο <code class="filename">questions.dat</code> για τις τρέχουσες τιμές και τις τιμές που έχουν δοθεί στις μεταβλητές. </p>
+<p>Για να ελέγξετε αν η μορφή του αρχείου προρύθμισης είναι έγκυρη πριν πραγματοποιήσετε μια εγκατάσταση, μπορείτε να χρησιμοποιήσετε την εντολή <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Χρησιμοποιώντας preseeding </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Περιεχόμενα του αρχείου προρύθμισης (για την έκδοση trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

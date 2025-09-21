@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Preparació dels fitxers per arrencar amb el llapis de memòria USB</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Capítol 4. Obtenir el suport d'instal·lació del sistema">
+<link rel="prev" href="ch04s02.html" title="4.2. Descarregar fitxers de les rèpliques de Debian">
+<link rel="next" href="ch04s04.html" title="4.4. Preparació dels fitxers per arrencar des del disc dur">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Preparació dels fitxers per arrencar amb el llapis de memòria USB</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 4. Obtenir el suport d'instal·lació del sistema</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Preparació dels fitxers per arrencar amb el llapis de memòria USB</h2></div></div></div>
+<p>Per preparar el llapis USB, us recomanem usar un sistema amb GNU/Linux ja funcionant i que suporti dispositius USB. Els sistemes GNU/Linux actuals normalment reconeixen automàticament els llapis USB així que es connecten. Si no és el cas, hauríeu de comprovar que estigui carregat el mòdul «usb-storage» del nucli. Quan connecteu el llapis USB, aquest estarà representat per un dispositiu anomenat <code class="filename">/dev/sdX</code>, on la <span class="quote">«<span class="quote">X</span>»</span> és una lletra en minúscules (a-z). Hauríeu de poder veure de quin dispositiu es tracta més exactament executant l'ordre <span class="command"><strong>lsblk</strong></span> abans i després de connectar-lo (La resposta de <span class="command"><strong>dmesg</strong></span> (executat com a «root») és una manera alternativa. Per escriure-hi, és possible que calgui desactivar la protecció d'escriptura del llapis USB. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avís]" src="images/warning.png"></td>
+<th align="left">Avís</th>
+</tr>
+<tr><td align="left" valign="top"><p>Els procediments que es descriuen en aquesta secció destruiran tot el que hi hagi al dispositiu! Assegureu-vos que esteu utilitzant el nom de dispositiu corresponent al llapis USB. Si utilitzeu un nom de dispositiu incorrecte podeu arribar a perdre les dades de, per exemple, un disc dur. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. Preparar una memòria USB fent servir una imatge híbrida de CD/DVD</h3></div></div></div>
+<p>Les imatges d'instal·lació de Debian per a aquesta arquitectura es creen amb la tecnologia <span class="command"><strong>isohybrid</strong></span>; això vol dir que es poden escriure directament a una memòria USB, que resulta ésser un sistema molt senzill d'obtenir un mitjà d'instal·lació. Seleccioneu una imatge (ja sigui la d'instal·lació per xarxa, «netinst», o DVD-1) que càpiga a la vostra memòria USB. Vegeu <a class="xref" href="ch04s01.html" title="4.1. Imatges oficials d'instal·lació de Debian GNU/Linux">Secció 4.1, «Imatges oficials d'instal·lació de Debian GNU/Linux»</a> per a obtenir una imatge d'instal·lació. </p>
+<p>La imatge d'instal·lació que heu seleccionat s'hauria d'escriure directament en la memòria USB, reemplaçant el seu contingut actual. Per exemple, fent servir un sistema GNU/Linux ja operatiu, es pot escriure el fitxer d'imatge en una memòria USB com s'indica a continuació, després d'assegurar-vos que la memòria USB no està muntada: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Copiant la imatge d'instal·lació en una memòria USB hauria d'ésser suficient per a la majoria d'usuaris. Per a casos especials hi ha aquesta <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">pàgina wiki</a>. </p>
+<p>Informació sobre com fer-ho en altres sistemes operatius es pot trobar a les <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD FAQ</a>. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top"><p>La imatge s'ha d'escriure en un disc sencer i no en una partició, p. ex. /dev/sdb i no pas /dev/sdb1. No faceu servir eines del tipus <span class="command"><strong>unetbootin</strong></span> que modifiquen la imatge. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Descarregar fitxers de les rèpliques de Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Preparació dels fitxers per arrencar des del disc dur</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Troubleshooting the Installation Process</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installation Guide">
+<link rel="up" href="ch05.html" title="Chapter 5. Booting the Installation System">
+<link rel="prev" href="ch05s03.html" title="5.3. Boot Parameters">
+<link rel="next" href="ch06.html" title="Chapter 6. Using the Debian Installer">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Troubleshooting the Installation Process</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<th width="60%" align="center">Chapter 5. Booting the Installation System</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Troubleshooting the Installation Process</h2></div></div></div>
+<p>
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Reliability of optical media</h3></div></div></div>
+<p>
+
+Sometimes, especially with older drives, the installer may fail
+to boot from an optical disc. The installer may also — even after booting
+successfully from such disc — fail to recognize the disc or return
+errors while reading from it during the installation.
+
+</p>
+<p>
+
+There are many different possible causes for these problems. We can
+only list some common issues and provide general suggestions on how to
+deal with them. The rest is up to you.
+
+</p>
+<p>
+
+There are two very simple things that you should try first.
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+If the disc does not boot, check that it was inserted correctly and that
+it is not dirty.
+
+</p></li>
+<li class="listitem"><p>
+
+If the installer fails to recognize the disc, try just running the option
+<span class="guimenuitem">Detect and mount installation media</span>
+a second time. Some DMA related issues with very old CD-ROM drives are known to
+be resolved in this way.
+
+</p></li>
+</ul></div>
+<p>
+
+</p>
+<p>
+
+If this does not work, then try the suggestions in the subsections below.
+Most, but not all, suggestions discussed there are valid for CD-ROM and DVD.
+
+</p>
+<p>
+
+If you cannot get the installation working from optical disc, try one of the
+other installation methods that are available.
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2797"></a>5.4.1.1. Common issues</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+Some older CD-ROM drives do not support reading from discs that were burned
+at high speeds using a modern CD writer.
+
+  </p></li>
+<li class="listitem"><p>
+
+Some very old CD-ROM drives do not work correctly if <span class="quote">“<span class="quote">direct memory
+access</span>”</span> (DMA) is enabled for them.
+
+  </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2805"></a>5.4.1.2. How to investigate and maybe solve issues</h4></div></div></div>
+<p>
+
+If the optical disc fails to boot, try the suggestions listed below.
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+Check that your BIOS/UEFI actually supports booting from optical disc (only an
+issue for very old systems) and that booting from such media is enabled in the
+BIOS/UEFI.
+
+  </p></li>
+<li class="listitem">
+<p>
+
+If you downloaded an iso image, check that the md5sum of that image matches
+the one listed for the image in the <code class="filename">MD5SUMS</code> file that
+should be present in the same location as where you downloaded the image
+from.
+
+</p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p>
+
+Next, check that the md5sum of the burned disc matches as well. The
+following command should work. It uses the size of the image to read the
+correct number of bytes from the disc.
+
+</p>
+<div class="informalexample"><pre class="screen">
+$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>
+
+If, after the installer has been booted successfully, the disc is not
+detected, sometimes simply trying again may solve the problem. If you have
+more than one optical drive, try changing the disc to the other drive.
+If that does not work or if the disc is recognized but there are errors
+when reading from it, try the suggestions listed below. Some basic knowledge
+of Linux is required for this.
+To execute any of the commands, you should first switch to the second
+virtual console (VT2) and activate the shell there.
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+
+Switch to VT4 or view the contents of <code class="filename">/var/log/syslog</code>
+(use <span class="command"><strong>nano</strong></span> as editor) to check for any specific error
+messages. After that, also check the output of <span class="command"><strong>dmesg</strong></span>.
+
+  </p></li>
+<li class="listitem">
+<p>
+
+Check in the output of <span class="command"><strong>dmesg</strong></span> if your optical drive was
+recognized. You should see something like (the lines do not necessarily
+have to be consecutive):
+
+</p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p>
+
+If you don't see something like that, chances are the controller your drive
+is connected to was not recognized or may be not supported at all. If you
+know what driver is needed for the controller, you can try loading it manually
+using <span class="command"><strong>modprobe</strong></span>.
+
+  </p>
+</li>
+<li class="listitem"><p>
+
+Check that there is a device node for your optical drive under
+<code class="filename">/dev/</code>. In the example above, this would be
+<code class="filename">/dev/sr0</code>.
+There should also be a <code class="filename">/dev/cdrom</code>.
+
+  </p></li>
+<li class="listitem">
+<p>
+
+Use the <span class="command"><strong>mount</strong></span> command to check if the optical disc is already
+mounted; if not, try mounting it manually:
+
+</p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p>
+
+Check if there are any error messages after that command.
+
+  </p>
+</li>
+<li class="listitem">
+<p>
+
+Check if DMA is currently enabled:
+
+</p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p>
+
+A <span class="quote">“<span class="quote">1</span>”</span> in the first column after <code class="literal">using_dma</code>
+means it is enabled. If it is, try disabling it:
+
+</p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p>
+
+Make sure that you are in the directory for the device that corresponds
+to your optical drive.
+
+  </p>
+</li>
+<li class="listitem"><p>
+
+If there are any problems during the installation, try checking the integrity
+of the installation media using the option near the bottom of the installer's main menu.
+This option can also be used as a general test if the disc can be read
+reliably.
+
+  </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2857"></a>5.4.2. Boot Configuration</h3></div></div></div>
+<p>
+
+If you have problems and the kernel hangs during the boot process,
+doesn't recognize peripherals you actually have, or drives are not
+recognized properly, the first thing to check is the boot parameters,
+as discussed in <a class="xref" href="ch05s03.html" title="5.3. Boot Parameters">Section 5.3, “Boot Parameters”</a>.
+
+</p>
+<p>
+In some cases, malfunctions
+can be caused by missing device firmware (see <a class="xref" href="ch02s02.html" title="2.2. Devices Requiring Firmware">Section 2.2, “Devices Requiring Firmware”</a> and <a class="xref" href="ch06s04.html" title="6.4. Loading Missing Firmware">Section 6.4, “Loading Missing Firmware”</a>).
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2864"></a>5.4.3. Software Speech Synthesis</h3></div></div></div>
+<p>
+
+If software speech synthesis does not work, there is most probably an issue
+with your sound board, usually because either the driver for it is not included
+in the installer, or because it has unusual mixer level names which are set to
+muted by default. You should thus submit a bug report which includes the output
+of the following commands, run on the same machine from a Linux system which is
+known to have sound working (e.g., a live CD).
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Common <span class="phrase">64-bit PC</span> Installation Problems</h3></div></div></div>
+<p>
+
+There are some common installation problems that can be solved or avoided by
+passing certain boot parameters to the installer.
+
+</p>
+<p>
+
+If your screen begins to show a weird picture while the kernel boots,
+eg. pure white, pure black or colored pixel garbage, your system may
+contain a problematic video card which does not switch to the
+framebuffer mode properly.  Then you can use the boot parameter
+<strong class="userinput"><code>vga=normal nomodeset</code></strong> to disable the framebuffer
+console. Only a reduced set of
+languages will be available during the installation due to limited
+console features. See <a class="xref" href="ch05s03.html" title="5.3. Boot Parameters">Section 5.3, “Boot Parameters”</a> for details.
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2887"></a>5.4.4.1. System Freeze During the PCMCIA Configuration Phase</h4></div></div></div>
+<p>
+
+Some very old laptop models produced by Dell are known to crash when PCMCIA device
+detection tries to access some hardware addresses. Other laptops may display
+similar problems. If you experience such a problem and you don't need PCMCIA
+support during the installation, you can disable PCMCIA using the
+<strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> boot parameter. You can
+then configure PCMCIA after the installation is completed and exclude the
+resource range causing the problems.
+
+</p>
+<p>
+
+Alternatively, you can boot the installer in expert mode. You will
+then be asked to enter the resource range options your hardware
+needs. For example, if you have one of the Dell laptops mentioned
+above, you should enter <strong class="userinput"><code>exclude port
+0x800-0x8ff</code></strong> here. There is also a list of some common
+resource range options in the <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System
+resource settings section of the PCMCIA HOWTO</a>. Note that you
+have to omit the commas, if any, when you enter this value in the
+installer.
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Interpreting the Kernel Startup Messages</h3></div></div></div>
+<p>
+
+During the boot sequence, you may see many messages in the form
+<code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code>,
+or <code class="computeroutput"><em class="replaceable"><code>something</code></em>
+not present</code>, <code class="computeroutput">can't initialize
+<em class="replaceable"><code>something</code></em></code>,
+or even <code class="computeroutput">this driver release depends
+on <em class="replaceable"><code>something</code></em></code>.
+Most of these messages are harmless. You
+see them because the kernel for the installation system is built to
+run on computers with many different peripheral devices. Obviously, no
+one computer will have every possible peripheral device, so the
+operating system may emit a few complaints while it looks for
+peripherals you don't own. You may also see the system pause for a
+while. This happens when it is waiting for a device to respond, and
+that device is not present on your system. If you find the time it
+takes to boot the system unacceptably long, you can create a
+custom kernel later <span class="phrase">(see <a class="xref" href="ch08s05.html" title="8.5. Compiling a New Kernel">Section 8.5, “Compiling a New Kernel”</a>)</span>.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Reporting Installation Problems</h3></div></div></div>
+<p>
+
+If you get through the initial boot phase but cannot complete the install,
+the menu option <span class="guimenuitem">Save debug logs</span> may be helpful.
+It lets you store system error logs and configuration information from the
+installer on a storage medium, or download them using a web browser.
+
+This information may provide clues as to what went wrong and how to
+fix it.  If you are submitting a bug report, you may want to attach
+this information to the bug report.
+
+</p>
+<p>
+
+Other pertinent installation messages may be found in
+<code class="filename">/var/log/</code> during the
+installation, and <code class="filename">/var/log/installer/</code>
+after the computer has been booted into the installed system.
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Submitting Installation Reports</h3></div></div></div>
+<p>
+
+If you still have problems, please submit an installation report (in English
+please, whenever possible). We also
+encourage installation reports to be sent even if the installation is
+successful, so that we can get as much information as possible on the largest
+number of hardware configurations. 
+
+</p>
+<p>
+
+Note that your installation report will be published in the Debian Bug
+Tracking System (BTS) and forwarded to a public mailing list. Make sure that
+you use an e-mail address that you do not mind being made public.
+
+</p>
+<p>
+
+If you have a working Debian system, the easiest way to send an installation
+report is to install the <code class="classname">installation-report</code> and
+<code class="classname">reportbug</code> packages
+(<span class="command"><strong>apt install installation-report reportbug</strong></span>),
+configure <code class="classname">reportbug</code> as explained in
+<a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Sending E-Mails Outside The System">Section 8.4.2, “Sending E-Mails Outside The System”</a>, and run the command <span class="command"><strong>reportbug
+installation-reports</strong></span>.
+
+</p>
+<p>
+
+Alternatively you can use this template when filling out
+installation reports, and file the report as a bug report against the
+<code class="classname">installation-reports</code> pseudo package, by sending it to
+<code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>.
+
+</p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Description of the install, in prose, and any thoughts, comments
+      and ideas you had during the initial install.&gt;
+
+Please make sure that any installation logs that you think would
+be useful are attached to this report. (You can find them in the installer
+system in /var/log/ and later on the installed system under
+/var/log/installer.) Please compress large files using gzip.
+
+</pre></div>
+<p>
+
+In the bug report, describe what the problem is, including the last
+visible kernel messages in the event of a kernel hang.  Describe the
+steps that you did which brought the system into the problem state.
+
+</p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Prev"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Up"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Next"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Boot Parameters </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a></td>
+<td width="40%" align="right" valign="top"> Chapter 6. Using the Debian Installer</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

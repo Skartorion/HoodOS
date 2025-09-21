@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Paràmetres d'arrencada</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Capítol 5. Arrencada del sistema d'instal·lació">
+<link rel="prev" href="ch05s02.html" title="5.2. Accessibilitat">
+<link rel="next" href="ch05s04.html" title="5.4. Resolució de problemes del procés d'instal·lació">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Paràmetres d'arrencada</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 5. Arrencada del sistema d'instal·lació</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Paràmetres d'arrencada</h2></div></div></div>
+<p>Els paràmetres d'arrencada són paràmetres del nucli Linux que es fan servir per garantir que els dispositius perifèrics siguin tractats apropiadament. En la majoria de casos, el nucli recull informació dels perifèrics automàticament. Tot i així, en alguns casos caldrà que ajudeu una mica al nucli. </p>
+<p>Si aquesta és la primera vegada que inicieu el sistema, seleccionau els paràmetres d'inici predeterminats (p. ex. no seleccioneu «definir paràmetres») i comprovau si tot funciona correctament. Probablement serà així. En cas contrari, podeu reiniciar a continuació i cercar els paràmetres específics que informaran al vostre sistema sobre el vostre maquinari. </p>
+<p>La informació sobre molts dels paràmetres d'arrencada es pot consultar a <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, incloent informació sobre maquinari complicat. Aquesta secció només inclou un esbós dels paràmetres més importants. Alguns dels problemes més habituals s'inclouen a la secció <a class="xref" href="ch05s04.html" title="5.4. Resolució de problemes del procés d'instal·lació">Secció 5.4, «Resolució de problemes del procés d'instal·lació»</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Terminal d'arrencada sèrie</h3></div></div></div>
+<p>Si esteu arrencant amb una terminal sèrie, generalment el nucli ho detecta automàticament. Si teniu una targeta de vídeo («framebuffer») i un teclat connectat a l'ordinador que voleu arrencar amb la terminal sèrie, heu de passar l'argument <strong class="userinput"><code>console=<em class="replaceable"><code>dispositiu</code></em></code></strong> al nucli, on <em class="replaceable"><code>dispositiu</code></em> és un dispositiu sèrie de l'ordinador, que sol ésser alguna cosa com ara <code class="filename">ttyS0</code>. </p>
+<p>Haureu d'especificar els paràmetres del port sèrie, com la velocitat i la paritat, per exemple <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; altres velocitats típiques són 57600 o 115200. Assegurau-vos que escriviu aquesta opció després de <span class="quote">«<span class="quote">---</span>»</span>, de manera que serà copiat a la configuració del carregador d'arrencada per al sistema instal·lat (sempre que sigui compatible amb el programa l'instal·lador del carregador d'arrencada). </p>
+<p>Per tal d'assegurar que el terminal usat per l'instal·lador coincideix amb el vostre emulador de terminal, s'ha d'afegir el paràmetre <strong class="userinput"><code>TERM=<em class="replaceable"><code>type</code></em></code></strong>. Teniu present que l'instal·lador només admet els següents tipus de terminal: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> i <code class="literal">dumb</code>. L'opció predeterminada per al terminal sèrie al <code class="classname">debian-installer</code> és <strong class="userinput"><code>vt102</code></strong>. Si feu servir una terminal IPMI o una eina de virtualització que no preveu la conversió en aquest tipus de terminal per sí mateix, p. ex. QEMU/KVM, pot iniciar-ho en una sessió <span class="command"><strong>screen</strong></span>. Que es faci efectivament la traducció en el tipus de terminal <code class="literal">screen</code> és molt semblant al tipus <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Paràmetres de l'instal·lador Debian</h3></div></div></div>
+<p>El sistema d'instal·lació reconeix molts paràmetres d'arrencada addicionals <a href="#ftn.id1989" class="footnote" name="id1989"><sup class="footnote">[3]</sup></a> que poden ésser útils. </p>
+<p>Alguns paràmetres tenen un <span class="quote">«<span class="quote">format curt</span>»</span> que ajuda a evitar les limitacions de les opcions de la línia d'ordres del nucli i facilita l'escriptura dels paràmetres. Si un paràmetre té un format curt, aquest es presenta llistat entre parèntesi després de l'opció (normal) llarga. Els exemples d'aquest manual fan servir, preferentment, la forma abreujada. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Aquest paràmetre definirà la prioritat més alta dels missatges a mostrar. </p>
+<p>La instal·lació predeterminada utilitza <strong class="userinput"><code>priority=high</code></strong>. En aquest cas es mostraran els missatges amb prioritat alta («high») i crítica («critical»), però s'anul·laran els missatges amb prioritat mitjana («medium») i baixa («low»). Si l'instal·lador detecta algun problema, ajustarà la prioritat en funció de les necessitats que n'esdevinguin. </p>
+<p>Si utilitzeu el paràmetre d'arrencada <strong class="userinput"><code>priority=medium</code></strong>, se us mostrarà el menú d'instal·lació i disposareu de més control sobre la instal·lació. Quan s'utilitza el paràmetre <strong class="userinput"><code>priority=low</code></strong> es mostraran tots els missatges (és equivalent al mètode d'arrencada <span class="emphasis"><em>expert</em></span>). En el cas de <strong class="userinput"><code>priority=critical</code></strong>, el sistema d'instal·lació mostrarà únicament els missatges crítics i procurarà fer la feina correctament sense mostrar missatges. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Aquest paràmetre d'arrencada defineix el tipus d'interfície d'usuari utilitzat per l'instal·lador. Els possibles paràmetres de configuració actuals són: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> El tipus predeterminat és <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. En el cas de les instal·lacions mitjançant de la consola sèrie s'acostuma a utilitzar <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong>. Alguns mitjans d'instal·lació especialitzats només disposen d'una selecció limitada d'interfícies, però <strong class="userinput"><code>newt</code></strong> i <strong class="userinput"><code>text</code></strong> estan disponibles en la majoria de mitjans d'instal·lació. En les arquitectures que ho admeten, l'instal·lador gràfic fa servir la interfície <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Establint aquest paràmetre d'arrencada a 2 induirà el procés d'arrencada de l'instal·lador a mostrar més missatges. Establint-lo a 3 farà disponible en punts estratègics del procés d'arrencada intèrprets de depuració (sortiu dels intèrprets per a continuar amb el procés d'arrencada). </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>És el valor predeterminat.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Més missatges de l'habitual.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Molta informació de depuració.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Durant el procés d'arrencada s'executen diversos intèrprets d'ordres que permeten una depuració més detallada. Per continuar l'arrencada haureu de sortir de l'intèrpret d'ordres. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Fa que l'instal·lador enviï missatges de registre a un sistema de registre de missatges remot d'un servidor i port específics o bé a un fitxer local. Si no s'especifica, el port predeterminat per al sistema de registre estàndard és 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Es pot emprar per a forçar l'instal·lador a un nivell més gran de poca memòria del que l'instal·lador assigna per defecte basat en la memòria disponible. Els valors possibles són 1 i 2. Vegeu també <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Comprovació de la memòria disponible / mode poca memòria">Secció 6.3.1.1, «Comprovació de la memòria disponible / mode <span class="emphasis"><em>poca memòria</em></span>»</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Evita que l'instal·lador òbriga intèrprets interactius als terminals 2 i 3. Açò és útil per a instal·lacions desateses on la seguretat física siga limitada. </p></dd>
+<dt><span class="term">debian-installer/«framebuffer» (fb)</span></dt>
+<dd><p>Algunes arquitectures utilitzen el «framebuffer» del nucli per oferir la instal·lació en diferents idiomes. Si el «framebuffer» us provoca errors al sistema, podeu deshabilitar la característica utilitzant els paràmetres <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Els símptomes del problema són missatges d'error referents a «bterm» o «bogl», una pantalla en blanc o que es quedi congelat durant uns quants minuts després d'iniciar la instal·lació. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>El tema determina l'aparença de la interfície d'usuari (colors, icones, etc.). Els temes disponibles varien segons la interfície. Actualment ambdues interfícies, «newt» i «gtk», (a banda de l'aparença per defecte) tenen només disponible un tema addicional anomenat <span class="quote">«<span class="quote">fosc</span>»</span> («dark»), dissenyat per a usuaris amb visió limitada. Podeu establir aquest tema arrencant amb <strong class="userinput"><code>theme=<em class="replaceable"><code>fosc</code></em></code></strong> (per a això també hi ha la drecera de teclat <strong class="userinput"><code>d</code></strong> al menú d'engegada). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>El <code class="classname">debian-installer</code> procura, per defecte, configurar la xarxa automàticament utilitzant el DHCP. Si la configuració es realitza correctament no podreu revisar-ne i modificar-ne els paràmetres obtinguts. L'accés a la configuració manual de la xarxa només es donarà quan falli la configuració per DHCP. </p>
+<p>Si en la vostra xarxa local disposeu d'un servidor de DHCP però no el voleu utilitzar, perquè per exemple us retorna respostes incorrectes, podeu evitar-ho i introduir la informació manualment utilitzant el paràmetre <strong class="userinput"><code>netfcg/disable_autoconfig=true</code></strong>. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Si us causa problemes i per evitar que s'iniciïn els serveis PCMCIA trieu <strong class="userinput"><code>false</code></strong>. Aquest comportament s'ha detectat en alguns ordinadors portàtils. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Especifica la URL que enllaça a un fitxer de preconfiguració a baixar i utilitzar per automatitzar la instal·lació. Per a més informació vegeu <a class="xref" href="ch04s06.html" title="4.6. Instal·lació automàtica">Secció 4.6, «Instal·lació automàtica»</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Especifica el camí que enllaça a un fitxer de preconfiguració a carregar per automatitzar la instal·lació. Per a més informació vegeu <a class="xref" href="ch04s06.html" title="4.6. Instal·lació automàtica">Secció 4.6, «Instal·lació automàtica»</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Per mostrar les qüestions encara que estiguin preconfigurades, establiu el paràmetre a <strong class="userinput"><code>true</code></strong>. Pot ser útil per provar o depurar un fitxer de preconfiguració. Fixeu-vos que això no afectarà els paràmetres d'arrencada que hagueu passat, tot i que per a aquests podeu utilitzar una sintaxi especial. Per a més detalls, vegeu <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Ús de la configuració prèvia per canviar els valors predeterminats">Secció B.5.2, «Ús de la configuració prèvia per canviar els valors predeterminats»</a>. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>És possible retardar les qüestions que normalment es plantegen abans de la preconfiguració fins després de la configuració de la xarxa. Per a més informació quant a l'automatització d'instal·lacions, vegeu <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Mode auto">Secció B.2.3, «Mode auto»</a>. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>A instal·lacions des de la consola sèrie o de gestió, les consoles virtuals (VT1 a VT6) es deshabiliten normalment al fitxer <code class="filename">/etc/inittab</code>. Poseu-ho a <strong class="userinput"><code>true</code></strong> per evitar-ho. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>De manera predeterminada, abans de reiniciar, <code class="classname">debian-installer</code> expulsa automàticament els medis òptics emprats durant la instal·lació. Això pot ser innecessari si el sistema no arrenca automàticament des d'aquests medis. En alguns casos pot ser, fins i tot, no desitjat per exemple, si la unitat òptica no pot reinserir el medi automàticament i l'usuari no està allà per a fer-ho manualment. Moltes unitats de tipus càrrega per ranura, línia fina o «caddy» no poden recarregar el medi automàticament. </p>
+<p>Establiu-ho a <strong class="userinput"><code>false</code></strong> per a deshabilitar l'expulsió automàtica i tingueu present que pot ser que hàgiu d'assegurar-vos que el sistema no arrenca automàticament de la unitat òptica després de la instal·lació inicial. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>Si establiu aquesta opció a <strong class="userinput"><code>false</code></strong>, es configurarà el sistema de gestió de paquets per a no instal·lar automàticament els paquets recomanats (<span class="quote">«<span class="quote">Recommends</span>»</span>), tant durant la instal·lació com al propi sistema instal·lat. Vegeu també <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Instal·lació del sistema base">Secció 6.3.5, «Instal·lació del sistema base»</a>. </p>
+<p>Adoneu-vos que aquesta opció resulta en un sistema més lleuger, però també en la mancança de funcions que normalment esperaríeu que hi foren disponibles. Potser necessitareu instal·lar manualment alguns dels paquets recomanats per a obtenir tota la funcionalitat que desitgeu. Per tant, aquesta opció només hauria de ser emprada per usuaris molt experimentats. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Per omissió, l'instal·lador requereix repositoris autenticats amb una clau gpg coneguda. Establiu el paràmetre a <strong class="userinput"><code>true</code></strong> per desactivar l'autenticació. <span class="bold"><strong>Avís: aquesta opció és insegura i no es recomana utilitzar-la.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Establiu-ho a <strong class="userinput"><code>true</code></strong> per entrar en mode de rescat en comptes de realitzar una instal·lació normal. Vegeu <a class="xref" href="ch08s06.html" title="8.6. Restauració d'un sistema amb errors">Secció 8.6, «Restauració d'un sistema amb errors»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Utilitzar els paràmetres de l'arrencada per respondre preguntes</h3></div></div></div>
+<p>És possible establir un valor en l'indicador de l'arrencada per a pràcticament qualsevol de les qüestions que es plategen durant el procés d'instal·lació, encara que això només és útil en casos determinats. Les instruccions generals per fer-ho les podeu trobar a <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Utilització dels paràmetres d'arrencada per complementar la configuració prèvia">Secció B.2.2, «Utilització dels paràmetres d'arrencada per complementar la configuració prèvia»</a>. A continuació podeu veure alguns exemples concrets. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Hi ha dues formes d'indicar l'idioma, país i usos locals a emprar per a la instal·lació i pel propi sistema instal·lat. </p>
+<p>La primera i més fàcil és indicar només el paràmetre <code class="literal">locale</code>. L'idioma i el país es derivaran del seu valor. Per exemple, podeu emprar <strong class="userinput"><code>locale=ca_ES.UTF-8</code></strong> per a escollir el català com a idioma i Espanya com a país (s'emprarà <code class="literal">ca_ES.UTF-8</code> com a «locale» predeterminada del sistema instal·lat). Aquesta forma té la limitació de que no permet especificar totes les combinacions d'idioma, país i usos locals. </p>
+<p>La segona opció, més flexible, és especificar <code class="literal">language</code> (idioma) i <code class="literal">country</code> (país) per separat. En aquest cas podeu especificar un <code class="literal">locale</code> opcional que s'emprarà com a «locale» predeterminada al sistema instal·lat. Per exemple: <strong class="userinput"><code>language=ca country=AD locale=ca_ES.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Es pot utilitzar per carregar automàticament components de l'instal·lador que no es carreguen per omissió. Alguns exemples de components opcionals que us poden ser útils són <code class="classname">openssh-client-udeb</code> (que us permetrà emprar l'ordre <span class="command"><strong>scp</strong></span> durant la instal·lació)<span class="phrase"> i <code class="classname">ppp-udeb</code> (vegeu <a class="xref" href="apds05.html" title="D.5. Instal·lació de Debian GNU/Linux utilitzant PPP sobre Ethernet (PPPoE)">Secció D.5, «Instal·lació de Debian GNU/Linux utilitzant PPP sobre Ethernet (PPPoE)»</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Establiu-lo a <strong class="userinput"><code>true</code></strong> si voleu desactivar l'autoconfiguració IPv6 i DHCP i forçar la configuració de la xarxa utilitzant adreçament estàtic. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>Per omissió, l'instal·lador utilitzarà el protocol HTTP per descarregar fitxers de les rèpliques de Debian i no és possible canviar-ho a FTP durant les instal·lacions amb prioritat normal. Si establiu aquest paràmetre a <strong class="userinput"><code>ftp</code></strong>, forçareu que l'instal·lador utilitzi aquest protocol. Tingueu en compte que no podreu seleccionar una rèplica FTP de la llista, haureu d'introduir el nom del servidor manualment. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Es pot utilitzar per seleccionar tasques que no estan disponibles des de la llista de tasques interactiva, com per exemple <code class="literal">kde-desktop</code>. Per a informació addicional, vegeu <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Selecció i instal·lació de programari">Secció 6.3.6.2, «Selecció i instal·lació de programari»</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Pas de paràmetres a mòduls del nucli</h3></div></div></div>
+<p>Si els controladors estan compilats al nucli, és possible passar paràmetres tal i com es descriu a la pròpia documentació del nucli. Tanmateix, si els controladors estan compilats com a mòduls, no és possible passar paràmetres de la forma habitual, ja que durant el procés d'instal·lació aquests no es carreguen igual que en un sistema ja instal·lat. Haureu d'utilitzar una sintaxi especial, reconeguda per l'instal·lador, que assegurarà que els paràmetres es desen als fitxers de configuració corresponents i per tant que els mòduls tindran disponible aquesta informació quan es carreguin. Els paràmetres també es propagaran automàticament a la configuració del sistema instal·lat. </p>
+<p>Fixeu-vos que ara es força estrany haver de passar paràmetres als mòduls. En la majoria de casos el nucli podrà detectar el maquinari present al sistema i establir uns bons paràmetres predeterminats. Tanmateix, en algunes situacions encara pot ser necessari establir els paràmetres manualment. </p>
+<p>La sintaxi utilitzada per establir els paràmetres dels mòduls és la següent: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>nom_del_mòdul</code></em>.<em class="replaceable"><code>nom_del_paràmetre</code></em>=<em class="replaceable"><code>valor</code></em>
+</pre></div>
+<p> Si necessiteu passar diversos paràmetres al mateix o a diferents mòduls, simplement repetiu això. Per exemple, per fer que una antiga targeta de xarxa 3Com utilitzi el connector BNC (coaxial) i l'IRQ 10, hauríeu de passar: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Afegir mòduls del nucli a la llista negra</h3></div></div></div>
+<p>De vegades pot ser necessari afegir un mòdul en una llista negra per evitar que el nucli i «udev» el carreguin automàticament. Per exemple, un motiu per voler fer això seria un mòdul en particular que causi problemes amb els components del vostre equip. El nucli de vegades també llista dos controladors diferents pel mateix dispositiu. Això pot provocar que el dispositiu no funcioni correctament si hi ha conflictes entre els controladors, o si es carrega primer el controlador que no toca. </p>
+<p>Podeu afegir un mòdul a la llista negra emprant la sintaxi següent: <strong class="userinput"><code><em class="replaceable"><code>nom_del_mòdul</code></em>.blacklist=yes</code></strong>. D'aquesta manera s'afegirà el mòdul a <code class="filename">/etc/modprobe.d/blacklist.local</code>, tant durant la instal·lació com en el sistema instal·lat. </p>
+<p>Tot i així, fixeu-vos que és possible que el sistema d'instal·lació carregui un d'aquests mòduls igualment. Podeu evitar-ho si executeu la instal·lació en mode expert i desseleccioneu el mòdul de la llista que es mostra durant les etapes de detecció de maquinari. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id1989" class="footnote"><p><a href="#id1989" class="para"><sup class="para">[3] </sup></a>Per als nuclis actuals ((2.6.9 o posterior) podeu fer servir 32 opcions d'ordres i 32 opcions d'entorns. Si es sobrepassen aquestes quantitats, el nucli pot fallar. També hi ha un límit de 256 caràcters per a tota la línia d'ordres del nucli, tot el que excedeixi aquest límit es pot truncar silenciosament.</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Accessibilitat </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Resolució de problemes del procés d'instal·lació</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

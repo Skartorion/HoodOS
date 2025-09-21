@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Debian particionáló programok</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apc.html" title="C. függelék - Particionálás a Debian számára">
+<link rel="prev" href="apcs04.html" title="C.4. Eszköznevek Linuxban">
+<link rel="next" href="apd.html" title="D. függelék - Vegyes tudnivalók">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Debian particionáló programok</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">C. függelék - Particionálás a Debian számára</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Debian particionáló programok</h2></div></div></div>
+<p>A Debian fejlesztők számos particionáló programot alkalmaztak a különböző merevlemezekhez és számítógép architektúrákhoz. Itt az architektúrádhoz illő programok sora. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>A Debian rendszer ajánlott particionáló eszköze. Ez a svájci bicska átméretez partíciókat, létrehoz fájlrendszereket <span class="phrase"> (<span class="quote">„<span class="quote">formáz</span>”</span> a windowsos-nyelvűeknél)</span> és csatolási pontokhoz rendeli őket. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Az eredeti Linux lemez-particionáló, tapasztaltaknak való. </p>
+<p>Légy óvatos, ha FreeBSD partícióid vannak. A telepítő kernelek támogatják ezeket a partíciókat, de ahogyan az <span class="command"><strong>fdisk</strong></span> megjeleníti (vagy nem) ezeket, az eszköznevek eltérhetnek. Lásd a <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOGYAN</a> leírást. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Könnyen használható, teljes-képernyős lemez particionáló sokunknak. </p>
+<p>Tudni kell, hogy a <span class="command"><strong>cfdisk</strong></span> egyáltalán nem érti a FreeBSD partíciókat, és újra, az eszközök nevei eltérhetnek emiatt. </p>
+</dd>
+</dl></div>
+<p>E programok egyike indul a <span class="guimenuitem">Lemezek particionálása</span> (vagy hasonló) választásakor. Más particionáló eszköz is használható a VT2 által adott parancssorban, de nem ajánlott. </p>
+<p>Jelöld be az indító partíciót, mint <span class="quote">„<span class="quote">Bootable</span>”</span>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4688"></a>C.5.1. Particionálás <span class="phrase">64-bit PC</span> gépen</h3></div></div></div>
+<p>Ha új merevlemezt használsz (vagy le szeretnéd törölni a merevlemez teljes partíciótábláját), akkor egy új partíciótáblát kell létrehozni. A <span class="quote">„<span class="quote">Vezetett partícionálás</span>”</span> ezt autómatikusan megcsinálja, de ha manuálisan partícionálsz, jelöld ki a legmagasabb szintű bejegyzését a lemeznek és nyomd meg az <span class="keycap"><strong>Enter</strong></span> -t. Ez létre fog hozni egy új partíciótáblát a lemezen. Szakértőmódban ezután lehetőség van kiválasztani a partíciótábla típusát. UEFI-alapó rendszreken ez alapértelmezetten <span class="quote">„<span class="quote">gpt</span>”</span>, míg a régebbi BIOS-világban <span class="quote">„<span class="quote">msdos</span>”</span> a default. Standard prioritású telepítés során autómatikusan ezek az alapértelmezett értékek lesznek használva. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ha <span class="quote">„<span class="quote">gpt</span>”</span> típusó partíciótáblát választottál (UEFI rendszereken ez a default), akkor autómatikusan létrejön 1 MB szabad terület a lemez elején. Ez szándékos és arra való, hogy ide kerüljön a GRUB2 boot-betöltő. </p></td></tr>
+</table></div>
+<p>Ha már van egy másik operációs rendszered, például Windows, és szeretnéd megtartani azt a Debian telepítése mellett, akkor lehet, hogy át kell méretezned a meglévő partícióját, hogy helyet szabadíts fel a Debian számára. A telepítő támogatja mind a FAT, mind az NTFS fájlrendszerek átméretezését. Amikor eljutsz a partícionálási lépéshez a telepítőben, válaszd a <span class="guimenuitem">Kézi szerkesztés</span> opciót, majd egyszerűen válassz ki egy meglévő partíciót, és módosítsd a méretét. </p>
+<p>Bár a modern UEFI rendszerekre már nem vonatkoznak az alábbi korlátozások, a régi PC BIOS-ok általában további megkötéseket jelentenek a lemezparticionálásnál. Korlát van arra, hogy egy meghajtón hány <span class="quote">„<span class="quote">elsődleges</span>”</span> és <span class="quote">„<span class="quote">logikai</span>”</span> partíció lehet. </p>
+<p>Ilyen régi PC BIOS rendszerek esetén az <span class="quote">„<span class="quote">elsődleges</span>”</span> partíciók jelentik az eredeti partícionálási sémát a PC lemezekhez. Ezekből azonban legfeljebb négy lehet. Ennek a korlátnak a megkerülésére találták ki a <span class="quote">„<span class="quote">kiterjesztett</span>”</span> és <span class="quote">„<span class="quote">logikai</span>”</span> partíciókat. Ha az egyik elsődleges partíciót kiterjesztetté alakítod, akkor az abban lefoglalt területet tovább lehet osztani logikai partíciókra. Egy kiterjesztett partíción belül akár 60 logikai partíciót is létrehozhatsz; viszont meghajtónként csak egyetlen kiterjesztett partíció engedélyezett. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Eszköznevek Linuxban </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> D. függelék - Vegyes tudnivalók</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

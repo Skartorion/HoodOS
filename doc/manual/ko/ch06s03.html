@@ -1,0 +1,795 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. 컴포넌트 사용하기</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch06.html" title="6장. 데비안 설치 프로그램 사용하기">
+<link rel="prev" href="ch06s02.html" title="6.2. 컴포넌트 소개">
+<link rel="next" href="ch06s04.html" title="6.4. 없는 펌웨어 읽어들이기">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. 컴포넌트 사용하기</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">6장. 데비안 설치 프로그램 사용하기</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. 컴포넌트 사용하기</h2></div></div></div>
+<p>여기서는 설치 프로그램의 각 컴포넌트를 자세히 설명합니다. 이 컴포넌트는 사용자 입장에서 몇 단계로 분류할 수 있습니다. 여기서 설명하는 순서는 설치할 때 나타나는 순서입니다. 설치할 때 여기 있는 모듈을 모두 사용하지는 않습니다. 이 모듈 중에서 실제로 어떤 모듈을 사용하는지는 설치 방법과 하드웨어에 따라 달라집니다. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. 데비안 설치 프로그램 준비 및 하드웨어 설정</h3></div></div></div>
+<p>데비안 설치 프로그램을 시작하여 첫 번째 화면이 표시되고 있다고 합시다. 이 때 <code class="classname">debian-installer</code> 기능은 아직 매우 제한적입니다. 하드웨어, 원하는 언어, 실행하는 작업 등에 대해서도 아직 모릅니다. 하지만 걱정하지 마십시오. <code class="classname">debian-installer</code>는 아주 똑똑하기 때문에, 하드웨어를 자동으로 검색해서, 필요한 구성 요소를 찾아내고, 고성능 설치 시스템으로 자신을 업그레이드 할 수 있습니다. 그러나(선호하는 언어, 키보드 배치, 사용할 네트워크 미러 선택처럼) 몇 가지 작업은 자동으로 알아낼 수 없으므로, <code class="classname">debian-installer</code>에게 알려줘야 합니다. </p>
+<p>이 단계에서 <code class="classname">debian-installer</code>는 여러 번의 <em class="firstterm">하드웨어 검색</em>을 합니다. 첫번째는 설치 프로그램의 컴포넌트를 읽어들이는 데 필요한 하드웨어를(예를 들어 CD-ROM이나 네트워크 카드) 검색합니다. 첫번째로 검색할 때는 아직 사용할 수 없는 드라이버가 있기 때문에, 나중 단계에서 하드웨어 검색을 다시 합니다. </p>
+<p>하드웨어 검색할 때 <code class="classname">debian-installer</code>에서 하드웨어 드라이버에서 펌웨어를 읽어들여야 하는 지 검사합니다. 펌웨어가 필요하지만 없는 경우에는, 없는 펌웨어를 이동식 미디어에서 읽어들일 수 있도록 대화 상자를 표시합니다. 자세한 설명은 <a class="xref" href="ch06s04.html" title="6.4. 없는 펌웨어 읽어들이기">6.4절. “없는 펌웨어 읽어들이기”</a> 부분을 참고하십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. 사용 가능 메모리 검사 / 저용량 메모리 모드</h4></div></div></div>
+<p><code class="classname">debian-installer</code>가 맨 처음에 하는 일 중의 하나는 메모리 검사입니다. 메모리가 부족할 경우 이 컴포넌트에서는 시스템에서 데비안 GNU/리눅스를 설치하는 데 문제가 없도록 설치 과정에 약간 수정을 가합니다. </p>
+<p>설치 프로그램의 메모리 사용량을 줄이려고 첫째로 번역 기능을 사용하지 않습니다. 즉 설치는 영어로만 진행합니다. 물론 설치한 시스템은 설치가 끝난 다음에 지역화 기능을 설정할 수 있습니다. </p>
+<p>그걸로 부족하다면, 설치 프로그램에서 기초적인 설치를 마칠 수 있는 컴포넌트만 읽어들이는 방법으로 메모리 사용량을 줄입니다. 이렇게 하면 설치 시스템의 기능이 줄어듭니다. 수동으로 컴포넌트를 추가로 읽어들일 수도 있지만, 컴포넌트를 하나 하나 선택할 때마다 메모리를 추가로 사용하기 때문에 설치가 실패할 수도 있습니다. </p>
+<p>설치 프로그램이 저용량 메모리 모드로 동작하는 경우, 상당히 큰 스왑 파티션을 (64MB–2GB) 만들기를 권장합니다. 스왑 파티션을 가상 메모리로 사용해서 시스템에서 사용 가능한 메모리 양을 늘립니다. 설치 프로그램에서는 가능한 한 설치 과정의 앞 부분에서 스왑 파티션을 활성화합니다. 단 스왑 파티션을 자주 사용하면 시스템의 성능이 떨어지고 디스크 동작이 많아질 수 있습니다. </p>
+<p>이렇게 하더라도 시스템의 메모리가 부족하면 시스템이 멈출 수도 있고, 예상하지 못한 오류가 발생하거나 커널이 프로세스를 끝낼 수도 있습니다. (이 경우에 <span class="quote">“<span class="quote">Out of memory</span>”</span> 메시지가 VT4와 syslog에 나타납니다.) </p>
+<p>예를 들어 저용량 메모리 모드에서 스왑 공간이 부족하면 큰 EXT3 파일 시스템을 만들 때 실패한다는 보고가 있었습니다. 스왑을 더 늘려도 개선이 안 된다면, 파일 시스템을 EXT2로(EXT2는 설치 프로그램의 필수 컴포넌트입니다) 만들어 보십시오. 설치를 끝낸 다음에 EXT2 파티션을 EXT3로 바꿀 수 있습니다. </p>
+<p><a class="xref" href="ch05s03.html#installer-args" title="5.3.2. 데비안 설치프로그램 파라미터">5.3.2절. “데비안 설치프로그램 파라미터”</a>에 설명한 것처럼 <span class="quote">“<span class="quote">lowmem</span>”</span> 부팅 파라미터를 이용해, 설치 프로그램이 사용하는 저용량 메모리의 수준을 강제로 높일 수 있습니다. 사용 가능한 메모리로 자동 검색한 것보다 더 많은 메모리로 높일 수 있습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. 지역화 옵션 선택</h4></div></div></div>
+<p>대부분의 경우 처음 물어 보는 질문은 설치할 때 및 설치한 시스템에 모두 사용할 지역화 옵션 선택에 대한 것입니다. 지역화 옵션은 언어, 위치, 로캘로 이루어져 있습니다. </p>
+<p>여기서 선택한 언어를 사용해 나머지 설치 과정을 진행합니다. 단 그 언어로 해당 대화 상자의 번역이 있어야 됩니다. 그 언어로 된 번역문이 없으면 기본값인 영어를 사용합니다. </p>
+<p>선택한 지리적 위치(대부분의 경우 국가)는 설치 과정의 뒷부분에서 기본 표준 시간대 추출과 그 나라에 적절한 데비안 미러를 고르는 데 이용합니다. 국가와 언어는 새 데비안 시스템의 로캘 결정이나 올바른 키보드 레이아웃 선택을 지원합니다. </p>
+<p>먼저 사용할 언어를 선택합니다. 각 언어의 이름은 영어(왼쪽에) 및 해당 언어(오른쪽에)로 쓰여 있습니다. 오른쪽에 있는 이름은 해당 언어의 문자를 이용해서 표시됩니다. 이 언어 목록은 영어 이름 순서로 나열되어 있습니다. 목록의 맨 위에 <span class="quote">“<span class="quote">C</span>”</span> 로캘을 선택하는 옵션이 있습니다. <span class="quote">“<span class="quote">C</span>”</span> 로캘을 선택하면 설치는 영어로 진행하고, 설치한 시스템은 <code class="classname">locales</code> 패키지를 설치하지 않고 지역화 기능이 없게 됩니다. </p>
+<p>다음은 지리적인 위치를 선택하라는 메시지가 있습니다. 언어 선택시 해당 언어가 여러 국가들에서 공식 언어로되어있는 경우 <a href="#ftn.id3141" class="footnote" name="id3141"><sup class="footnote">[4]</sup></a> 그 국가의 목록을 표시합니다. 목록에없는 국가를 선택하면 <span class="guimenuitem"> 기타 </span> (마지막 선택)을 선택하십시오. 그러면 대륙의 목록을 표시합니다. 대륙을 선택하면 관련 국가 목록을 표시합니다. </p>
+<p>언어에 대해 국가가 하나 뿐이라면 국가 목록에 그 나라가 속한 대륙 또는 지역을 표시하고 그 나라를 기본적으로 선택합니다. 다른 대륙에있는 국가를 선택하고 싶은 경우 <span class="guibutton">뒤로 가기</span> 옵션을 선택하십시오. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>설치 시스템의 표준 시간대를 설정하면서 여러분 위치의 국가를 선택하는 일은 중요합니다. </p></td></tr>
+</table></div>
+<p>지역이 정의되어 있지 않은 언어 및 국가의 조합을 선택하여 해당 언어에 여러 지역이 존재하는 경우, 그 중에서 설치한 시스템의 기본 지역을  선택하게 됩니다. <a href="#ftn.id3149" class="footnote" name="id3149"><sup class="footnote">[5]</sup></a> 그렇지 않으면 기본 지역은 선택한 언어 및 국가를 바탕으로 선택됩니다. </p>
+<p>이전에 설명한 것처럼 선택된 기본 지역은 문자 코드 <em class="firstterm"> UTF-8 </em>를 사용합니다. </p>
+<p>낮은 우선순위로 설치하는 경우, 설치 시스템에 만들 로캘을 선택할 때 <span class="quote">“<span class="quote">레가시</span>”</span> 로캘을<a href="#ftn.id3155" class="footnote" name="id3155"><sup class="footnote">[6]</sup></a> 포함해 로캘을 선택합니다. 이 경우 어떤 로캘을 설치 시스템의 기본 로캘로 사용할지 묻습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. 키보드 선택하기</h4></div></div></div>
+<p>어떤 키보드는 특정 언어에서 사용하는 문자에 맞게 만들어져 있습니다. 사용하고 있는 키보드에 맞는 키보드 배치를 고르시고, 해당 키보드 배치가 여기 없으면 어느정도 비슷한 키보드 배치를 고르십시오. 시스템 설치를 모두 마치면 더 많은 종류의 키보드 배치 중에서 하나를 고를 수 있게 됩니다. (<span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>를 실행하십시오.) </p>
+<p>반전 표시를 해당 키보드로 옮기고 <span class="keycap"><strong>Enter</strong></span>를 누르십시오. 화살표 키로 반전 표시를 움직입니다. 화살표 키는 모든 언어의 키보드에 대해 동일하므로, 키보드 설정과는 상관이 없습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. 데비안 설치 프로그램 ISO 이미지 찾기</h4></div></div></div>
+<p><span class="emphasis"><em>hd-media</em></span>에 설치하는 경우, 설치하다가 설치 파일의 나머지를 읽을 때 데비안 설치 프로그램 ISO 이미지를 찾아서 마운트합니다. <span class="command"><strong>iso-scan</strong></span> 구성 요소가 그 일을 합니다. </p>
+<p>처음에 <span class="command"><strong>iso-scan</strong></span>은 알려진 파일 시스템을 사용하는 블록 장치(파티션과 논리 볼륨 등)를 자동으로 마운트하고, <code class="filename">.iso</code>(더 말하면 <code class="filename">.ISO</code>)로 끝나는 파일 이름을 순서대로 검색합니다. 단 처음 시도에서 루트 디렉터리와 하위 디렉터리 밖에 검색하지 않습니다(즉 <code class="filename">/<em class="replaceable"><code>whatever</code></em>.iso</code>과 <code class="filename">/data/<em class="replaceable"><code>whatever</code></em>.iso</code>을 감지하지만 <code class="filename">/data/tmp/<em class="replaceable"><code> whatever</code></em>.iso</code>는 찾지 않습니다 것입니다). ISO 이미지를 찾으면, <span class="command"><strong>iso-scan</strong></span>는 그 이미지가 올바른 데비안 ISO 이미지인지 아닌지 판단하려고 그 내용을 확인합니다. 전자의 경우는 완료되지만 후자의 경우 <span class="command"><strong>iso-scan</strong></span>은 다른 이미지를 찾습니다. </p>
+<p>앞에서 설치 ISO 이미지를 찾는 데 실패하면, <span class="command"><strong>iso-scan</strong></span>에서는 계속해서 이미지를 찾을지 여부를 물어봅니다. 그러면 맨 위의 디렉터리만 찾는 게 아니라, 모든 파일 시스템을 뒤져봅니다. </p>
+<p><span class="command"><strong>iso-scan</strong></span>에서 설치 프로그램 ISO 이미지를 찾지 못했다면, 원래 운영 체제로 다시 시작해서 이미지 이름이 올바른 지(<code class="filename">.iso</code>로 끝나는지), <code class="classname">debian-installer</code>가 인식할 수 있는 파일 시스템에 들어 있는지, 파일이 손상되지 않았는지(체크섬 확인) 확인하십시오. 경험 많은 유닉스 사용자라면 다시 시작하지 않고 두번째 콘솔에서 할 수도 있습니다. </p>
+<p>ISO 이미지가 들어 있는 파티션은 설치 과정에서 다시 사용할 수 없습니다. 이 파티션을 설치 프로그램에서 사용하기 때문입니다. 이 제한을 피하려면, 메모리가 충분하다는 가정 하에, 설치 프로그램에서 ISO 이미지를 마운트하기 전에 RAM에 복샤할 수 있습니다. 이 기능은 우선순위가 낮은 <code class="literal">iso-scan/copy_iso_to_ram</code> debconf 질문에 따라 결정됩니다. (이 질문은 메모리가 필요한 만큼 많을 경우에만 사용할 수 있습니다.) </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. 네트워크 설정하기</h4></div></div></div>
+<p>이 단계에서 시스템에 네트워크 장치를 두 개 이상 찾으면, 어떤 장치를 <span class="emphasis"><em>주요</em></span> 네트워크 인터페이스로 사용할 지 질문을 받게 됩니다. 주요 네트워크 인터페이스란 설치할 때 사용할 인터페이스를 말합니다. 이 인터페이스 외의 인터페이스는 이 시점에서는 설정하지 않습니다. 설치가 다 끝난 다음에 네트워크 장치를 추가로 설정할 수 있습니다. <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span> 맨 페이지를 참고하십시오. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. 네트워크 자동 설정</h5></div></div></div>
+<p>기본으로 <code class="classname">debian-installer</code>는 가능하면 자동으로 컴퓨터의 네트워크 설정을 시도합니다. 자동 설정이 실패한 경우는 여러가지 원인이 있습니다. 네트워크 케이블이 빠졌다든지, 자동 설정에 필요한 네트워크 환경이 아니라든지 등 여러가지 문제 때문에 실패할 수 있습니다. 오류를 확인하려면 4번째 콘솔에서 오류 메시지를 보십시오. 어떤 상황이든 다시 시도하거나, 수동으로 설정할지 여부를 물어봅니다. 가끔 네트워크 서비스가 자동 설정에 필요한 응답이 느릴 수도 있으니, 정상이 분명하다고 확신한다면 자동 설정을 다시 시도해 보십시오. 자동 설정이 계속 실패하면 수동 네트워크 설정으로 들어갈 수 있습니다. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. 네트워크 수동 설정</h5></div></div></div>
+<p>수동 네트워크 설정에서는 네트워크에 관한 여러가지 정보를 차례대로 물어봅니다. <code class="computeroutput">IP 주소</code>, <code class="computeroutput">네트마스크</code>, <code class="computeroutput">게이트웨이</code>, <code class="computeroutput">네임 서버 주소</code>, <code class="computeroutput">호스트이름</code>을 물어봅니다. 또 무선 네트워크 인터페이스가 있다면, <code class="computeroutput">무선 ESSID</code>(무선 네트워크 이름) 및 <code class="computeroutput">WEP 키</code> 또는 <code class="computeroutput">WPA/WPA2 암호</code>를 물어봅니다. <a class="xref" href="ch03s03.html" title="3.3. 필요한 정보">3.3절. “필요한 정보”</a>의 답을 채워 넣으십시오. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>알아두면 편리할 수도 있고 아닐 수도 있는 기술적인 정보: 이 프로그램에서는 네트워크 IP 주소가 시스템의 IP 주소와 네트마스크를 비트 AND한 값이라고 가정합니다. 브로드캐스트 주소는 시스템의 IP 주소와 네트마스크의 비트 NOT한 값을 OR한 값이라고 가정합니다. 또 게이트웨이도 임의로 추정합니다. 수동 설정에서 무슨 값을 써야 할지 잘 모르겠다면, 시스템의 추정값을 사용해 보십시오. 일단 시스템을 설치한 다음에 필요하다면 <code class="filename">/etc/network/interfaces</code> 파일을 편집해서 이 설정을 바꿀 수 있습니다. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 및 IPv6</h5></div></div></div>
+<p>데비안 GNU/리눅스 7.0(<span class="quote">“<span class="quote">Wheezy</span>”</span>)부터, <code class="classname">debian-installer</code>에서 IPv6를 <span class="quote">“<span class="quote">전통적인</span>”</span> IPv4와 마찬가지로 지원합니다. 모든 IPv4와 IPv6 조합을(IPv4 전용, IPv6 전용, 동시 사용) 지원합니다. </p>
+<p>IPv4의 자동 설정은 DHCP(Dynamic Host Configuration Protocol)를 이용합니다. IPv6 자동 설정은 NDP(Neighbor Discovery Protocol, 재귀적 DNS 서버 설정(RDNSS) 기능 포함)를 사용한 상태 없는 자동 설정, DHCPv6를 이용한 상태 있는 자동 설정과, 상태 있는/없는 방식을 혼합한 자동 설정도(NDP를 통해 주소 설정, DHCPv6를 통해 추가 파라미터 설정) 지원합니다. </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. 사용자 및 암호 설정</h3></div></div></div>
+<p>클럭 설정 직전에 설치는 <span class="quote">“<span class="quote">root</span>”</span> 계정 및 초기 사용자 계정을 설정합니다. 다른 사용자 계정은 설치 후 작성하십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. 루트 암호 설정</h4></div></div></div>
+<p><span class="emphasis"><em>루트(root)</em></span> 계정은 <span class="emphasis"><em>수퍼유저</em></span>라고도 합니다. 이 계정은 시스템의 모든 보안 장벽을 그냥 통과할 수 있습니다. 루트 계정은 시스템 관리를 할 경우에만 사용해야 하고, 가능한 한 짧은 시간만 사용해야 합니다. </p>
+<p>암호를 만들 때 적어도 6자 이상이고, 대문자와 소문자와 특수 문자를 모두 포함해야 좋습니다. 루트 암호를 설정할 때 좀 더 주의를 기울여 주십시오. 루트 계정은 권한이 막강합니다. 사전에 나와있는 단어나 추측할 수 있는 개인 정보는 암호에 사용하지 마십시오. </p>
+<p>누가 루트 암호를 말해 달라고 하면 조심하십시오. 한 시스템의 관리자가 여러 명인 경우가 아니라면, 루트 암호는 다른 사람에게 알려주면 안 됩니다. </p>
+<p>여기서 <span class="quote">“<span class="quote">root</span>”</span>에 대한 암호를 지정하지 않은 경우, 루트 계정은 사용할 수 없게 되지만 뒤에 <span class="command"><strong>sudo</strong></span> 패키지를 설치해서 새 시스템에서 관리 작업을 할 수 있게 됩니다. 기본값으로 시스템에서 맨 처음에 만든 사용자는 <span class="command"><strong>sudo</strong></span> 명령으로 루트 사용자가 될 수 있게 허용합니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. 일반 사용자 만들기</h4></div></div></div>
+<p>여기에서 일반 사용자 계정을 만들 것인지를 물어봅니다. 이 계정은 주로 사용하는 개인 로그인 계정입니다. 일상적인 용도나 개인 로그인에 루트 계정을 사용하면 <span class="emphasis"><em>안 됩니다</em></span>. </p>
+<p>루트 권한의 사용을 피하는 이유 중 하나는 루트 계정으로는 아주 쉽게 복구하기 힘든 손상을 입힐 수 있기 때문입니다. 다른 이유로는 수퍼유저의 권한을 이용해 숨어서 시스템의 보안을 침해하는 프로그램인, <span class="emphasis"><em>트로이 목마</em></span> 프로그램을 실행하도록 속을 수도 있기 때문입니다. 유닉스 시스템 관리에 대한 왠만한 책에서는 모두 이 주제에 대해 좀 더 자세하게 설명하고 있습니다. 처음 접한다면 보안 문제에 대한 책을 한 권 정도 읽어 보십시오. </p>
+<p>먼저 전체 이름을 입력하고 사용자 계정으로 사용할 이름을 입력합니다. 사용자 계정은 이름같은 걸 사용하면 충분하고, 실제로 이름이 기본 값입니다. 마지막으로 이 계정의 암호를 입력하십시오. </p>
+<p>설치가 끝난 다음에 언제든지 또 계정을 만드려면, <span class="command"><strong>adduser</strong></span> 명령을 사용하십시오. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. 시계 및 시간 설정</h3></div></div></div>
+<p>설치 프로그램은 시스템 시각을 정확히 맞추려고 먼저 인터넷의 타임 서버에 (<em class="firstterm">NTP</em> 프로토콜 사용) 연결합니다. 연결이 실패하면, 부팅할 때 시스템 시계에서 읽은 시각과 날짜가 올바르다고 가정합니다. 설치 과정에서 시스템 시각을 수동으로 맞추는 방법은 없습니다. </p>
+<p>설치 과정에서 처음으로 선택한 지역에 따라 해당 위치에 해당하는 시간대의 목록을 표시합니다. 여러분의 위치에 시간대가 하나 밖에 없고 기본 설치를 수행하는 경우, 시간대 목록을 나열하지 않고, 그 하나의 시간대에 있다고 가정합니다. </p>
+<p>전문가 모드 및 우선 순위에서 설치하는 경우 표준 시간대 <span class="quote">“<span class="quote">협정세계시</span>”</span>(UTC)를 사용한다는 옵션이 추가됩니다. </p>
+<p>무슨 이유에서든 선택한 위치에 해당하지 <span class="emphasis"><em>않는</em></span> 시간대를 이용하려면, 두 가지 방법이 있습니다. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>간단한 방법은 설치를 완료하고 새로 부팅한 후 다른 시간대를 선택하는 것입니다. 다음과 같은 명령을 사용합니다: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>다른 방법으로 설치 시스템이 부팅할 때 <strong class="userinput"><code>time/zone=<em class="replaceable"><code>값</code></em></code></strong> 파라미터를 넘겨서 시간대를 설정할 수도 있습니다. 이 값은 올바른 시간대 값이어야 합니다. 예를 들어 <strong class="userinput"><code>Europe/London</code></strong>이나 <strong class="userinput"><code>UTC</code></strong>가 있습니다. </p></li>
+</ol></div>
+<p>자동 설치에 preseed를 사용하여 시간대를 원하는 값으로 설정할 수 있습니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. 파티션하기 및 마운트 위치 선택</h3></div></div></div>
+<p>여기에서 마지막으로 하드웨어 검색을 하면, <code class="classname">debian-installer</code>는 필요한 기능을 모든 갖추고, 사용자의 필요에 맞게 진짜 설치 작업을 할 준비를 갖추게 됩니다. 제목이 말하듯 다음 몇 개의 컴포넌트는 디스크를 파티션하고, 파일 시스템을 만들고, 마운트 위치를 지정하고, 또 필요하다면 LVM, RAID, 암호화 장치와 같은 관련 설정을 합니다. </p>
+<p>파티션하는 게 불안하거나 자세히 알고 싶으시면, <a class="xref" href="apc.html" title="부록 C. 데비안에서 파티션 나누기">부록 C. <i> 데비안에서 파티션 나누기</i></a> 부분을 참고하십시오. </p>
+<p>먼저 선택에 따라, 전체 드라이브나 드라이브의 빈 공간을 자동으로 파티션할 수 있습니다. 이 방법을 <span class="quote">“<span class="quote">자동</span>”</span> 파티션이라고 합니다. 자동 파티션을 하지 않으려면, 메뉴에서 <span class="guimenuitem">수동으로</span>를 선택하십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. 지원하는 파티션 옵션</h4></div></div></div>
+<p><code class="classname">debian-installer</code>에서 사용하는 파티션 도구는 꽤 만능입니다. 그러면 다양한 파티션 테이블, 파일 시스템 코드 블록 장치를 사용하여 많은 다른 파티션 구성표를 만들 수 있습니다. </p>
+<p>정확히 어떤 옵션을 사용할 수 있는지는 주로 아키텍처에 따라 다르지만, 그 다른 요인도 있습니다. 예를 들어, 내부 메모리가 제한된 시스템에서는 몇 가지 옵션을 사용할 수 없습니다. 또한 기본도 변할지도 모릅니다. 예를 들어, 대용량 하드 디스크에 대한 기본 파티션 테이블의 유형은 더 작은 하드 디스크의 것과 다른 경우가 있습니다. debconf 우선 순위가 중 또는 낮은 설치를 하는 경우에만 몇 가지 옵션을 변경할 수 있습니다. 더 높은 우선 순위의 경우는 실제적인 값이 기본적으로 사용됩니다. </p>
+<p>설치 프로그램은 다양한 형태의 고급 파티션 및 저장 장치를(대부분의 경우 함께) 지원합니다. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>논리 볼륨 관리자(LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>소프트웨어 RAID</em></span>
+  </p>
+<p>지원하는 RAID 레벨은 0, 1, 4, 5, 6, 10 입니다. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>암호화</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (실험적) </p>
+<p>자세한 정보는 <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">Wiki</a>를 참조하십시오. 현재 다중 경로는 설치 시작시 활성화된 경우에만 사용할 수 있습니다. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>다음 파일 시스템을 지원합니다. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>대부분의 경우 선택하는 기본 파일 시스템은 EXT4 입니다. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (모든 아키텍처에서 사용하지 못할 수도 있습니다) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (모든 아키텍처에서 사용하지 못할 수도 있습니다) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (옵션; 모든 아키텍처에서 사용할 수 있는 것은 없습니다) </p>
+<p>Reiser 파일 시스템은 더 이상 기본적으로 지원되지 않습니다. 설치 프로그램이 중 또는 낮은 debconf 우선 순위로 실행 시키면 <code class="classname">partman-reiserfs</code> 구성 요소를 선택하여 사용할 수 있습니다. 버전 3에서만 지원합니다. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>기존의 파티션을 인식하여 마운트 지점을 할당합니다. 새로운 qnx4 파티션을 만들 수 없습니다. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (읽기 전용) </p>
+<p>기존 NTFS 파티션 크기 조절 및 마운트 포인트를 할당할 수 있습니다. 새로운 NTFS 파티션을 만들 수 없습니다. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>파티션 프로그램에서는 2의 제곱 단위도 쓸 수 있고 (1 MiB = 1024 kiB = 1048576 B), 10의 제곱 단위도 (1 MB = 1000 kB = 1000000 B) 쓸 수 있습니다. 단위는 EB/EiB (엑사바이트/엑비바이트) 크기까지 지원합니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. 자동 파티션하기</h4></div></div></div>
+<p>자동 파티션하는 경우, 세가지 방법이 있습니다: 하드 디스크에서 직접 파티션을 만들거나(전통적인 방법), 논리 볼륨 관리를(LVM) 사용하거나, 암호화한 LVM을<a href="#ftn.id3334" class="footnote" name="id3334"><sup class="footnote">[7]</sup></a> 사용하는 것입니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>아키텍처에 따라(암호화한) LVM을 사용하는 옵션을 사용하지 못할 수도 있습니다. </p></td></tr>
+</table></div>
+<p>LVM이나 암호화한 LVM을 사용하는 경우, 설치 프로그램은 대부분의 파티션을 한 개의 큰 파티션 안에 만듭니다. 이 방법의 장점으로 이 큰 파티션 안의 파티션은 나중에 비교적 쉽게 크기를 바꿀 수 있습니다. 암호화한 LVM의 경우 특수한 암호를 알지 못하면 이 큰 파티션을 읽지 못하므로, (개인적인) 데이터에 대해 더 보안에 안전합니다. </p>
+<p>암호화된 LVM을 사용할 때, 설치 프로그램은 디스크에 임의의 데이터를 써 넣어서 디스크를 지웁니다. 이렇게 하면 보안을 더욱 높이겠지만(디스크의 어느 부분을 사용하고 있는지 추적하는 게 불가능하고, 예전에 설치했던 데이터를 지우기 때문입니다), 디스크 크기에 따라 시간이 오래 걸릴 수도 있습니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>LVM이나 암호화한 LVM을 사용해 자동 파티션을 하는 경우, LVM을 설정하는 동안 파티션 테이블의 일부를 바꿔야 합니다. 이렇게 하면 해당 하드 디스크에 있는 데이터가 전부 지워지고 되돌릴 수 없습니다. 설치 프로그램이 파티션 테이블을 디스크에 쓰기 전에 계속해도 좋을 지 확인 질문을 합니다. </p></td></tr>
+</table></div>
+<p>전체 디스크에 대해 파티션을 선택한 경우 <span class="phrase">(일반적인 파티션이나 LVM(또는 암호화한 LVM)에서)</span>, 먼저 선택한 디스크를 사용해도 되는지 묻습니다. 여러 디스크가 있는 경우 모든 디스크가 나열되어 올바르게 선택되어 있는지 확인하십시오. 순서는 평상시 사용하고 있는 것과 다를 수 있습니다. 디스크 크기를 확인할 수 있습니다. 전체 디스크에 대해 자동 파티션 하기를 (일반적인 파티션이나 LVM(또는 암호화한 LVM)에서)선택했다면, 사용하려는 디스크를 선택하라는 질문을 맨 처음에 받게 됩니다. 디스크가 모두 목록에 있는지 확인하십시오. 디스크가 여러 개 있을 경우 반드시 올바른 디스크를 선택하십시오. 목록에 나오는 순서는 경우에 따라 달라질 수 있습니다. 디스크 용량으로도 어떤 디스크인지 확인할 수 있습니다. </p>
+<p>여기서 결국, 디스크의 모든 데이터가 손실되었지만 디스크를 쓰기 전에 계속해도 좋을지 항상 질문을 확인합니다. <span class="phrase"> 일반적인 파티션 방법을 선택하면 종료하기 전에 취소할 수 있습니다. 반면 LVM(또는 암호화한 LVM)을 사용하는 경우 취소할 수 없습니다. </span>선택한 디스크에 있는 모든 데이터를 영영 잃어버리게 될 것입니다. 하지만 디스크에 바꾼 사항을 쓰기 전에 언제나 확인 질문을 합니다. 일반적인 파티션 방법을 사용한다면 끝날 때 바꾼 사항을 취소할 수 있습니다. 반면 LVM(또는 암호화한 LVM)을 사용하는 경우에는 취소가 불가능합니다. </p>
+<p>그 다음에 아래의 표에 나온 방식 중 하나를 선택할 수 있습니다. 이 방식은 각각 장단점이 있고, <a class="xref" href="apc.html" title="부록 C. 데비안에서 파티션 나누기">부록 C. <i> 데비안에서 파티션 나누기</i></a>에서 설명합니다. 잘 모르겠으면 첫번째를 선택하십시오. 명심해 둬야 할 점으로, 자동 파티션할 때는 어느정도 최소한의 빈 공간이 필요합니다. 최소 3GB의 공간이 없으면 (방식에 따라 이 최소 용량은 다릅니다) 자동 파티션은 실패합니다. 또한 작은 디스크에서는 아래의 파티션 방식을 전혀 볼 수 없습니다. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>파티션 방식</th>
+<th>최소 공간</th>
+<th>만들 파티션</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>모두 한 파티션에 설치</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, 스왑</td>
+</tr>
+<tr>
+<td>/home 파티션 분리</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, 스왑 </td>
+</tr>
+<tr>
+<td>/home, /var, /tmp 파티션 분리</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, 스왑 </td>
+</tr>
+<tr>
+<td>/var, /srv 파티션 분리; 스왑을 1G로 제한 (서버용)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, 스왑 </td>
+</tr>
+<tr>
+<td>작은 디스크 전용 방식</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, 스왑</td>
+</tr>
+</tbody>
+</table></div>
+<p>LVM(또는 암호화한 LVM)을 사용해 자동 파티션하는 경우, 설치 프로그램은 별도의 <code class="filename">/boot</code> 파티션을 만듭니다. 그 외의 파티션(스왑 파티션 포함)은 LVM 파티션 안에 만듭니다. </p>
+<p>EFI 모드에서 부팅하고 자동 파티션을 하면, EFI 부트로더가 사용하는 FAT32으로 포맷한 부팅 가능 파티션이 하나 더 생깁니다. 이 파티션을 EFI 시스템 파티션(ESP)이라고 합니다. 포맷 메뉴에서도 수동으로 파티션을 ESP로 만드는 항목이 하나 더 생깁니다. </p>
+<p>파티션 방법을 선택하면, 그 다음 화면에서 새로 만든 파티션 테이블이 나타납니다. 여기에는 파티션을 포맷할 형식과 마운트할 위치에 대한 정보도 들어 있습니다. </p>
+<p>파티션 목록은 다음과 같이 나타납니다: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      FREE SPACE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p> 위의 예에서는 하드드라이브가 2개이고 여러 개 파티션으로 나눠져 있습니다. 첫번째 디스크에는 빈 공간이 있습니다. 각 파티션 줄에는 파티션 번호, 종류, 크기, 추가 플래그, 파일시스템, 그리고 마운트 위치를(마운트 위치가 따로 있는 경우) 표시합니다. 주의: 위와 같은 파티션은 자동 파티션하면 만들 수 없고, 수동으로 만들면 이렇게 될 수도 있다는 걸 안내하는 것 뿐입니다. </p>
+<p>여기까지가 자동 파티션입니다. 자동으로 만든 파티션 테이블이 마음에 들면, 메뉴에서 <span class="guimenuitem">파티션 나누기를 마치고 바뀐 사항을 디스크에 쓰기</span>를 선택해서 새 파티션 테이블을 실제로 적용합니다(이 절의 맨 뒤 부분에서 설명합니다). 마음에 들지 않으면, <span class="guimenuitem">파티션에 바뀐 사항을 취소</span>를 선택해서 자동 파티션을 다시 실행하거나, 자동으로 만들어 준 파티션을 아래에서 설명하는 것처럼 수동으로 바꿀 수도 있습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. 수동 파티션하기</h4></div></div></div>
+<p>수동 파티션을 선택하면 기존 파티션 테이블을 마운트 위치없이 표시되는 것을 제외하고 위와 같은 화면이 표시됩니다. 파티션 테이블을 수동으로 만드는 방법과 새로운 데비안 시스템 파티션의 사용법에 대해서는 이 절의 나머지 부분에서 설명합니다. </p>
+<p>파티션도 없고 빈 공간도 없는 새 디스크라면, 새로운 파티션 테이블을 만들지 여부를 물어봅니다. (그래야 새 파티션을 만들 수 있습니다.) 그 다음에 <span class="quote">“<span class="quote">빈 공간</span>”</span>이라는 줄이 해당 디스크 이름 아래에 나타납니다. </p>
+<p>빈 공간을 선택하면 새 파티션을 만들 수 있습니다. 크기와 종류(주 파티션 아니면 논리 파티션), 위치와(빈 공간에서 처음 아니면 끝) 같은 일련의 간단한 질문에 응답해야 합니다. 그러면 새 파티션에 대한 자세한 정보를 얻을 수 있습니다. 주요 설정은 파일 시스템 파티션에 있는 경우 스왑 <span class="phrase">, 소프트웨어 RAID, LVM, 암호화한 파일 시스템 </span>으로 사용하거나 전혀 사용 여부를 결정 하는 <span class="guimenuitem">이용 방법:</span>입니다. 기타 설정은 마운트 포인트와 마운트 옵션, 부팅 가능 플래그 같은 파티션 용도에 따라 설정이 있습니다. 미리 선택된 기본값이 마음에 들지 않으면 자유롭게 원하는 것으로 변경하십시오. 예를 들어, 옵션 <span class="guimenuitem">이용 방법:</span>를 선택하면 스왑,<span class="phrase"> 소프트웨어 RAID, LVM, </span> 또는 사용하지 않기를 선택할 수 있습니다. 새 파티션이 마음에 들면, <span class="guimenuitem">파티션 준비를 마쳤습니다</span>를 선택하여 <span class="command"><strong>partman</strong></span>의 메인 화면으로 돌아갑니다. </p>
+<p>파티션에서 뭔가 바꾸려고 한다면, 해당 파티션을 선택하십시오. 그러면 파티션 설정 메뉴가 나타납니다. 새 파티션을 만들 때와 같은 화면이기 때문에, 여기서도 마찬가지의 같은 옵션을 설정합니다. 처음 보면 잘 이해가 되지 않을 수도 있는 부분이 있는데, 파티션의 크기 항목을 이용해서 파티션의 크기를 바꿀 수 있다는 점입니다. 이 기능이 동작하는 파티션은 fat16, fat32, ext2, ext3 및 스왑입니다. 이 메뉴에서 파티션을 지워 버릴 수도 있습니다. </p>
+<p>최소한 파티션을 두 개 만들도록 하십시오. 한 개는 <span class="emphasis"><em>루트</em></span> 파일 시스템이고 (<code class="filename">/</code>에 마운트합니다), 다른 하나는 <span class="emphasis"><em>스왑</em></span>입니다. 루트 파일 시스템을 마운트하지 않으면, 그 문제를 바로잡기 전에는 다음으로 진행하지 없습니다. </p>
+<p>EFI 모드에서 부팅했지만, EFI 시스템 파티션을 선택해 포맷하지 않았다면, <span class="command"><strong>partman</strong></span>에서 그 사실을 알아냅니다. EFI 시스템 파티션을 만들지 않으면 다음으로 진행하지 않습니다. </p>
+<p><span class="command"><strong>partman</strong></span>의 기능은 설치 프로그램 모듈에 따라 확장되지만, 시스템의 아키텍처에 따라 다릅니다. 모든 기능을 볼 수 없다면, 필요한 모듈을 모두 읽어들였는지 확인하십시오. (예를 들어 <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code>, 아니면 <code class="filename">partman-lvm</code>) </p>
+<p>파티션이 마음이 들면, 파티션 메뉴에서 <span class="guimenuitem">파티션 나누기를 마치고 바뀐 사항을 디스크에 쓰기</span>를 선택하십시오. 디스크에 바뀐 점에 대한 요약이 나타나고 이대로 파일 시스템을 만들지 확인합니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. 멀티디스크 장치 설정하기(소프트웨어 RAID)</h4></div></div></div>
+<p>컴퓨터에 하드 드라이브가 여러 개 있는 경우<a href="#ftn.id3427" class="footnote" name="id3427"><sup class="footnote">[8]</sup></a>, <span class="command"><strong>partman-md</strong></span> 명령으로 드라이브의 성능을 향상시키거나, 데이터 안정성을 높일 수 있습니다. 이렇게 하는 걸 <em class="firstterm">멀티디스크 장치</em>라고 합니다. (더 자주 쓰이는 다른 말로 <em class="firstterm">RAID</em>라고 합니다.) </p>
+<p>기본적으로 멀티디스크는 여러 디스크에 있는 여러 개의 파티션으로 하나의 <span class="emphasis"><em>논리</em></span> 장치를 만드는 걸 말합니다. 그러면 이 논리 장치는 일반 파티션처럼 사용할 수 있습니다. (예를 들어 <span class="command"><strong>partman</strong></span>에서 포맷하고 마운트 위치를 지정하고 따위를 할 수 있습니다.) </p>
+<p>어떤 종류의 멀티디스크 장치를 만드냐에 따라 어떤 이점이 있는지 달라집니다. 현재 지원하는 종류는: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> 주로 성능 향상이 목적입니다. RAID0는 들어오는 데이터를 <em class="firstterm">스트라이프(stripe)</em>로 나눠서 배열의 각 디스크에 똑같이 분산시킵니다. 이렇게 하면 읽기/쓰기 작업의 속도가 빨라집니다. 하지만 디스크중에 하나라도 망가지면, <span class="emphasis"><em>모든</em></span> 데이터를 잃게 됩니다. (망가지지 않은 디스크에 일부 데이터가 남아 있겠지만, 또 다른 부분이 망가진 디스크에 <span class="emphasis"><em>있었기</em></span> 때문입니다.) </p>
+<p> RAID0은 비디오를 편집하는 파티션에 많이 사용합니다. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd><p> 안정성을 최우선으로 할 때 적합합니다. RAID1은 여러 개의(보통 두개) 같은 크기의 파티션으로 구성되어 있고, 여기서 각 파티션은 정확히 같은 데이터를 담고 있습니다. 이게 근본적으로 3가지 의미가 있습니다. 첫째로 하나의 디스크가 망가지더라도, 나머지 디스에 데이터가 미러되어 있습니다. 둘째로 디스크의 전체 용량보다 작은 용량만 사용할 수 있습니다. (좀더 정확히 말해, RAID에서 가장 작은 파티션입니다.) 세번째로 파일 읽기는 로드 밸런싱으로 서버의 성능을 향상시켜, 파일서버와 같이 디스크 읽기가 쓰기보다 많은 경우 부담이 줄어듭니다. </p></dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> 속도, 안정성, 데이터 중첩을 적당히 조화시킨 것입니다. RAID5는 들어오는 모든 데이터를 스트라이프로 나누고 각각을 하나의 디스크가 아니라(즉 RAID0와는 달리) 모두에게 분배합니다. RAID0와는 다르게 RAID5는 디스크에 쓸 정보의 <em class="firstterm">패리티</em> 정보를 계산합니다. 패리티 디스크는 고정되어 있지 않고(고정되어 있으면 RAID4라고 합니다) 정기적으로 바뀝니다. 디스크중에 하나가 망가지면, 없어진 부분을 나머지 데이터와 패리티를 이용해서 계산해 냅니다. RAID5는 최소한 3개의 파티션이 있어야 합니다. 배열에 디스크를 하나 더 사용해서 망가진 디스크를 대체하도록 만들 수도 있습니다. </p>
+<p> 이렇게 RAID5는 RAID1과 비슷한 정도의 안정성을 가지면서, 데이터를 덜 중복합니다. 한편 패리티 계산 때문에 RAID0보다는 쓰는 속도가 느립니다. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> RAID5와 비슷하지만 패리티 장치를 하나가 아니라 두 개를 사용합니다. </p>
+<p> RAID6 어레이는 디스크 실패가 두 번 일어나도 살아남을 수 있습니다. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd><p> 입력 데이터를 <em class="replaceable"><code>n</code></em>개 복사물로 만든 다음 파티션에 분배해서 같은 데이터가 같은 장치에 저장되지 않도록 합니다. <em class="replaceable"><code>n</code></em>의 기본값은 2이지만 전문가 모드에서는 다른 값으로 설정할 수 있습니다. 사용하는 파티션 개수는 최소한 <em class="replaceable"><code>n</code></em>개입니다. RAID10은 복사물을 분배하는 레이아웃 방식이 여러가지가 있습니다. 기본 레이아웃은 니어 카피(Near copies)입니다. 니어 카피에서는 모든 복사물의 디스크 오프셋이 같습니다. 파 카피(Far copies)에서는 복사물의 오프셋이 다릅니다. 오프셋 카피(Offset copies)는 개개 복사물이 아니라 전체 스트라이프를 반복합니다. </p></dd>
+</dl></div>
+<p> 요약하면: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>종류</th>
+<th>장치 최소 개수</th>
+<th>예비 장치</th>
+<th>디스크가 망가져도 버티는지?</th>
+<th>사용 가능 공간</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>아니오</td>
+<td>아니오</td>
+<td>RAID에서 가장 작은 파티션의 크기 x 장치 개수</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>옵션</td>
+<td>예</td>
+<td>RAID에서 가장 작은 파티션의 크기</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>옵션</td>
+<td>예</td>
+<td>가장 작은 파티션의 크기 x (RAID의 장치 개수 - 1) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>옵션</td>
+<td>예</td>
+<td>가장 작은 파티션의 크기 x (RAID의 장치 개수 - 2) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>옵션</td>
+<td>예</td>
+<td>전체 파티션 나누기 단위 복사물의 개수(기본값 2) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>소프트웨어 RAID를 좀 더 알고 싶으시면, <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>를 읽어 보십시오. </p>
+<p>멀티디스크 장치를 만드려면, 구성할 파티션을 RAID에 사용한다고 표시해야 합니다. (<span class="guimenu">파티션 설정</span> 메뉴의 <span class="command"><strong>partman</strong></span>에서 <span class="guimenu">용도:</span> → <span class="guimenuitem">RAID의 물리 볼륨</span>을 선택하십시오. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>사용하려고 하는 파티션 방식에서 시스템이 부팅할 수 있도록 하십시오. 루트 파일 시스템으로 RAID를 사용하는 경우 <code class="filename">/boot</code>에 대한 파일 시스템을 따로 만드는 게 보통입니다. 보통 부트로는 <span class="phrase">(GRUB 포함)</span> RAID1의 미러링을 지원합니다. (스트리핑은 지원하지 않습니다!) 그러므로 <code class="filename">/</code>에는 RAID5를 사용하고 <code class="filename">/boot</code>에 RAID1을 사용하는 것도 한 가지 방법입니다. </p></td></tr>
+</table></div>
+<p>그 다음 <span class="command"><strong>partman</strong></span> 메뉴에서 <span class="guimenuitem">소프트웨어 RAID 설정</span>을 선택합니다. (최소한 한 파티션을 <span class="guimenuitem">RAID의 물리 볼륨</span>으로 표시해야만 메뉴가 나타납니다.) <span class="command"><strong>partman-md</strong></span>의 첫번째 화면에서 <span class="guimenuitem">멀티디스크 장치 만들기</span>를 선택하기만 하면 지원하는 멀티디스크 장치의 종류 목록이 나옵니다. 거기에서 하나를(예를 들어 RAID1) 고르십시오. 그 다음은 여기서 어떤 종류의 멀티디스크를 선택했냐에 따라 달라집니다. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0는 간단합니다. RAID 파티션의 목록이 나타나고 거기에서 멀티디스크를 구성할 파티션을 선택하기만 하면 됩니다. </p></li>
+<li class="listitem"><p>RAID1은 약간 더 까다롭습니다. 먼저 멀티디스크를 구성할 활성 장치의 개수 및 예비 장치의 개수를 입력합니다. 그리고 RAID 파티션 목록에서 무엇을 활성 파티션과 예비 파티션으로 할 지 결정합니다. 여기서 선택한 파티션 개수는 앞에서 입력한 개수와 일치해야 합니다. 걱정할 필요는 없습니다. 실수로 파티션 개수가 틀렸다고 해도, 개수가 맞아야 <code class="classname">debian-installer</code>가 다음으로 진행합니다. </p></li>
+<li class="listitem"><p>RAID5는 RAID1과 비슷한 설정을 하지만, 최소한 <span class="emphasis"><em>3개의</em></span> 활성 파티션을 사용해야 한다는 점이 다릅니다. </p></li>
+<li class="listitem"><p>RAID6는 RAID1과 비슷한 설정을 하지만, 최소한 <span class="emphasis"><em>4개의</em></span> 활성 파티션을 사용해야 한다는 점이 다릅니다. </p></li>
+<li class="listitem"><p>RAID10도 RAID1과 비슷한 설정을 하지만 전문가 모드에서는 다릅니다. 전문가 모드에서는 <code class="classname">debian-installer</code>에서 레이아웃을 물어봅니다. 레이아웃은 두 부분이 있습니다. 첫 번째는 레이아웃 종류입니다. 레이아웃 종류는 <code class="literal">n</code> (니어 카피, near copies), <code class="literal">f</code> (파 카피, far copies), <code class="literal">o</code> (오프셋 카피, offset copies) 중의 하나입니다. 두 번째 부분은 데이터의 복사물 개수입니다. 이 숫자는 최소한 활성 장치의 개수만큼이어야 합니다. 그래야 모든 카피가 다른 디스크에 분배됩니다. </p></li>
+</ul></div>
+<p>여러가지 종류의 멀티디스크를 동시에 사용하는 것도 물론 가능합니다. 예를 들어 3개의 200 GB 하드 드라이브를 멀티디스크에 사용할 때, 각 디스크에 100 GB 파티션이 두개씩 있다고 할 때, 각 3개 디스크의 첫번째 파티션을 RAID0로 묶고(빠른 300GB 비디오 편집 파티션) 나머지 3개 파티션을(2개 활성, 1개 예비) RAID1으로(<code class="filename">/home</code>에 사용할 안정성 높은 100GB 파티션) 사용할 수 있습니다. </p>
+<p>원하는 대로 멀티디스크 장치를 만든 다음에, <span class="command"><strong>partman-md</strong></span>에서 <span class="guimenuitem">마치기</span>를 선택하고 <span class="command"><strong>partman</strong></span>으로 돌아가 새로 만든 멀티디스크 장치에 파티션을 만들고 마찬가지로 마운트 위치와 같은 속성을 부여할 수 있습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. LVM (논리 볼륨 관리자) 설정하기</h4></div></div></div>
+<p>시스템 관리자나 <span class="quote">“<span class="quote">고급</span>”</span> 사용자 입장에서 컴퓨터를 사용한다면, 어떤 디스크 파티션이(보통 가장 중요한 파티션) 공간이 부족하고 다른 파티션은 공간이 남아서 데이터를 옮기고 심볼릭 링크를 걸고 하는 등의 작업으로 상황을 해결해야 했던 경험이 있을 겁니다. </p>
+<p>이러한 상황을 피하려면, LVM(Logical Volume Manager, 논리 볼륨 관리자)을 사용할 수 있습니다. 간단히 말해 LVM을 사용하면 여러 파티션을(<em class="firstterm">물리 볼륨</em>) 하나의 가상 디스크로(<em class="firstterm">볼륨 그룹</em>) 합칠 수 있고, 그걸 다시 가상 파티션으로(<em class="firstterm">논리 볼륨</em>) 나눌 수 있습니다. 중요한 점은 논리 볼륨이(그리고 그 밑에 있는 볼륨 그룹이) 여러 개의 물리 파티션에 걸쳐 있을 수 있다는 점입니다. </p>
+<p>기존의 160GB <code class="filename">/home</code> 파티션에 용량이 더 필요하다면, 300GB 디스크를 컴퓨터에 붙이고, 이 디스크를 현재 볼륨 그룹에 포함시키고, <code class="filename">/home</code>이 들어 있는 논리 볼륨 크기를 늘리면 됩니다. 그러면 파티션은 460GB가 되어 남는 공간이 더 생깁니다. 물론 이 예는 너무 간단하게 설명한 것입니다. 아직 읽지 않으셨다면 <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>를 참고하십시오. </p>
+<p>-"<code class="classname">debian-installer</code>의 LVM 설정은 아주 간단하고 <span class="command"><strong>partman</strong></span> 안에서 지원합니다. 먼저 LVM의 물리 볼륨으로 사용할 파티션을 표시합니다. 이 작업은 <span class="guimenu">파티션 설정</span> 메뉴에서 <span class="guimenu">용도:</span> <span class="guimenuitem">LVM의 물리 볼륨</span>을 선택합니다. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[주의]" src="images/warning.png"></td>
+<th align="left">주의</th>
+</tr>
+<tr><td align="left" valign="top"><p>주의하십시오. 새로운 LVM 방식으로 설정하면 LVM 타입 코드로 표시된 모든 파티션의 모든 데이터가 삭제됩니다. 즉 이미 디스크에 LVM을 사용하고 있고, 그 컴퓨터에 추가로 데비안을 설치하려는 경우, 기존의 LVM 설정이 모두 지워집니다! 파티션의 경우에도 마찬가지입니다. 파티션이 (어떤 이유에서이든) LVM 타입 코드로 잘못 표시되어 있으면서, 실제 내용이 다른 경우 (예를 들어 암호화된 볼륨) 그 내용도 삭제됩니다. 시스템에서 그러한 디스크를 먼저 제거한 다음 새로 LVM 설정을 해야 합니다. </p></td></tr>
+</table></div>
+<p><span class="command"><strong>partman</strong></span> 주화면으로 돌아간 다음, <span class="guimenuitem">LVM(논리 볼륨 관리자) 설정</span>이라는 옵션이 새로 나타납니다. 이 옵션을 선택하면, 파티션 테이블에 바꾼 사항을(있으면) 확인하고, 그 다음에 LVM 설정 메뉴가 나타납니다. 그 메뉴 위에 LVM 설정의 요약이 나타납니다. 메뉴는 상황에 따라 사용할 수 있는 동작만 표시합니다. 가능한 동작은: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">설정 내역 보기</span>: LVM 장치 구조, 이름, 논리 볼륨의 크기 등을 표시합니다 </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">볼륨 그룹 만들기</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">논리 볼륨 만들기</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">볼륨 그룹 삭제</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">논리 볼륨 삭제</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">볼륨 그룹 늘이기</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">볼륨 그룹 줄이기</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">마치기</span>: <span class="command"><strong>partman</strong></span> 주 화면으로 돌아갑니다 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>메뉴에서 이 옵션을 이용해 볼륨 그룹을 만들고 그 안에 논리 볼륨을 만드십시오. </p>
+<p><span class="command"><strong>partman</strong></span> 주 화면으로 돌아간 다음, 보통 파티션과 마찬가지로 방금 만든 논리 볼륨이 나타납니다. (또 보통 파티션과 마찬가지 방법으로 이용하면 됩니다.) </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. 암호화 볼륨 설정하기</h4></div></div></div>
+<p><code class="classname">debian-installer</code>에서 암호화 파티션을 설정할 수 있습니다. 암호화된 파티션에 파일을 쓰면 즉시 암호화된 형태로 장치에 저장됩니다. 암호화된 데이터에 접근하려면 파티션을 처음에 만들 때 사용한 <em class="firstterm">암호</em>를 입력해야 합니다. 이 기능은 노트북이나 하드 드라이브를 도난 당했을 때 비밀 데이터를 보호하는 목적으로 사용합니다. 훔친 사람은 하드 드라이브에 물리적으로는 접근할 수 있지만, 올바른 암호를 모르면 하드 드라이브의 데이터는 임의의 문자로 보입니다. </p>
+<p>암호화해야 할 가장 중요한 두 파티션은 데이터가 들어 있는 홈 파티션과, 동작중에 비밀 데이터가 저장될 수도 있는 스왑 파티션입니다. 물론, 그 외에 하고 싶은 파티션을 암호화할 수 있습니다. 예를 들어 메일 서버나 인쇄 서버가 데이터를 저장하는 <code class="filename">/var</code>라던지, 여러가지 임시 파일을 저장해 둘 수도 있는 <code class="filename">/tmp</code>를 암호화할 수 있습니다. 어떤 사람은 전체 시스템을 암호화하기도 합니다. 어떤 경우에도 암호화하지 말아야 하는 한 가지 예외는 <code class="filename">/boot</code> 파티션으로, 암호화한 파티션에서 커널을 읽어들이는 건 현재 불가능합니다. (이제 최신 버전의 GRUB에는 이런 기능이 있지만, 현재 <code class="classname">debian-installer</code>에 암호화한 <code class="filename">/boot</code> 파티션 지원이 없습니다. 그래서 설정 방법은 <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">별도 문서</a>에 있습니다.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>암호화한 파티션은 암호화하지 않은 경우보다 성능이 떨어집니다. 매번 읽고 쓸 때마다 암호화하고 암호화를 해제해야 하기 때문입니다. 성능 저하 정도는 CPU 속도, 암호화 방법 및 키 길이에 달려 있습니다. </p></td></tr>
+</table></div>
+<p>암호화를 사용하려면, 파티션 메뉴에서 빈 공간을 선택해서 새 파티션을 만들어야 합니다. 다른 방법은 기존 파티션을(예를 들어, 일반 파티션이나 LVM 논리 볼륨이나 RAID 볼륨) 선택하는 것입니다. <span class="guimenu">파티션 설정</span>에서, <span class="guimenu">용도:</span> 옵션에서 <span class="guimenuitem">암호화할 물리 볼륨</span> 메뉴를 선택해야 합니다. 그러면 메뉴가 해당 파티션에 대한 몇 가지 암호화 옵션이 나오도록 바뀝니다. </p>
+<p><code class="classname">debian-installer</code>에서 지원하는 암호화 방식은 <em class="firstterm">dm-crypt</em>(최근 리눅스 커널에 포함, LVM 물리 볼륨 사용 가능)입니다. </p>
+<p>암호화 방법으로 <strong class="userinput"><code>디바이스 매퍼(dm-crypt)</code></strong>를 선택했을 때 옵션을 봅니다. 마찬가지로 무언가 의심스러우면 기본값을 사용하십시오. 이미 보안을 염두에 두고 기본값이 들어 있습니다. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">암호화: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>이 옵션은 암호화 알고리즘을(<em class="firstterm">싸이퍼(cipher)</em>) 선택합니다. 이 알고리즘으로 파티션의 데이터를 암호화하는 데 사용합니다. <code class="classname">debian-installer</code>는 현재 다음과 같은 블록 싸이퍼를 지원합니다: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em>, 그리고 <em class="firstterm">twofish</em>입니다. 각 알고리즘이 얼마나 좋은지 설명하는 건 이 문서의 범위를 벗어난 얘기지만, 어느 것을 결정할 지 도움이 되는 조언을 하면, 2000년에 미국 표준 기술 연구소에서 21세기에 비밀 정보를 보호할 알고리즘으로 <span class="emphasis"><em>AES</em></span>를 선택했습니다. </p></dd>
+<dt><span class="term">키 크기: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>여기서는 암호화 키의 길이를 지정합니다. 키의 길이가 크면, 보통 그 암호화의 강력함이 더 증가합니다. 반면에 키 길이를 늘리면, 성능이 떨어집니다. 사용할 수 있는 키의 크기는 싸이퍼에 따라 다릅니다. </p></dd>
+<dt><span class="term">IV 알고리즘: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">초기화 벡터(Initialization Vector)</em> 혹은 <em class="firstterm">IV</em> 알고리즘은 암호화 기법에서 같은 키의 <em class="firstterm">일반 텍스트(clear text)</em>가 항상 유일한 <em class="firstterm">암호화된 텍스트(cipher text)</em>를 만들어 내도록 합니다. 이렇게 하면 공격하는 사람이 암호화된 데이터에 반복된 패턴을 통해 정보를 알아내지 못하게 됩니다. </p>
+<p>사용할 수 있는 여러 가지 방법 중에서, 기본값인 <strong class="userinput"><code>xts-plain64</code></strong>이 알려진 공격 방법에서 현재 가장 위험이 적은 방법입니다. 다른 방법은 예전에 설치한(새 알고리즘을 사용할 수 없는) 시스템과의 호환성을 유지할 경우에만 사용하십시오. </p>
+</dd>
+<dt><span class="term">암호화 키: <strong class="userinput"><code>암호</code></strong></span></dt>
+<dd>
+<p>여기서 이 파티션의 암호화 키 종류를 선택합니다. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">암호</span></dt>
+<dd><p>나중에 입력하게 되는 암호를 기준으로 암호화 키를 계산합니다<a href="#ftn.id3666" class="footnote" name="id3666"><sup class="footnote">[9]</sup></a>. </p></dd>
+<dt><span class="term">무작위 키</span></dt>
+<dd>
+<p>암호화한 파티션을 불러올 때마다 임의의 데이터를 만들어서 새 암호화 키를 만듭니다. 다시 말해서, 컴퓨터를 끌 때마다 키가 메모리에서 지워지면서 파티션에 들어 있는 데이터를 잃어버립니다. (물론 가능한 키를 모두 입력해서 추측해 낼 수 있지만, 해당 싸이퍼 알고리즘에 무언가 알려지지 않은 약점이 있지 않는한 그렇게 무작정 추측하는 건 평생 해도 다 못 합니다.) </p>
+<p>무작위 키는 스왑 파티션에 주로 사용합니다. 암호를 기억할 필요도 없고 컴퓨터를 끌 때 스왑 파티션에 들어 있는 비밀 정보를 지울 필요가 없기 때문입니다. 하지만, 이렇게 하면 최근의 리눅스 커널에 들어 있는 <span class="quote">“<span class="quote">디스크에 저장하는 절전(하이버네이션)</span>”</span> 기능을 사용하지 못하게 됩니다. 나중에 부팅할 때 스왑 파티션에 저장된 데이터를 복구할 방법이 없기 때문입니다. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">데이터 지우기: <strong class="userinput"><code>예</code></strong></span></dt>
+<dd><p>파티션에 암호화를 설정하기 전에 임의의 데이터로 채워 넣을 지 결정합니다. 이렇게 하지 않으면 공격자가 파티션의 어느 부분을 사용하고 있고, 어느 부분을 사용하지 않는지 알아챌 수 있기 때문에 이렇게 하기를 권장합니다. 또 예전에 설치한 데이터를 복구하기 어렵게 만듭니다<a href="#ftn.id3680" class="footnote" name="id3680"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>암호화 파티션에 사용할 파라미터를 선택했으면, 주 파티션 메뉴로 돌아갑니다. 이제 <span class="guimenu">암호화 볼륨 설정</span>이라는 새 메뉴 항목이 생깁니다. 이 항목을 선택하면, 데이터 지우기로 표시한 파티션을 지울 지 및 기타 동작에 대한(파티션 테이블을 쓰기 등) 확인 질문을 합니다. 파티션의 크기가 크면 시간이 좀 걸릴 수 있습니다. </p>
+<p>그 다음에 암호를 사용한다고 표시한 파티션에 대해 암호를 입력합니다. 좋은 암호는 8글자보다 길고, 영문자와 숫자와 기타 문자가 섞여 있고, 사전에 들어 있는 일반적인 단어가 들어 있으면 안 되고, 본인의 개인 정보에서 쉽게 유추할 수 있으면(생일, 취미, 애완동물 이름, 가족이나 친척 이름 등) 안 됩니다. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[주의]" src="images/warning.png"></td>
+<th align="left">주의</th>
+</tr>
+<tr><td align="left" valign="top"><p>암호를 입력하기 전에, 키보드를 올바르게 설정해서 원하는 문자가 입력되도록 해야 합니다. 잘 모르겠으면, 두번째 가상 콘솔로 바꿔서 프롬프트에서 미리 글자를 타이프해 보면 알 수 있습니다. 그래야 나중에 설치할 때 AZERTY 키보드 배치로 입력했던 암호가 QWERTY 키보드 배치에서 맞지 않는다든지 하는 일이 없습니다. 이런 상황은 여러가지 원인 때문에 일어날 수 있습니다. 설치할 때 키보드 배치를 바꾸었거나, 루트 파일 시스템의 암호를 입력할 때 아직 예전에 사용했던 키보드 배치를 설정하지 못한 상태일 경우에 이런 일이 일어날 수 있습니다. </p></td></tr>
+</table></div>
+<p>암호화 키를 만드는 데 암호 외의 방법을 사용한다면, 그 암호화 키를 이제 만들게 됩니다. 현재 설치 상태에서는 충분한 양의 엔트로피를 얻지 못했을 수도 있기 때문에, 키를 만드는 데 오래 걸릴 수 있습니다. 엔트로피를 만들어 내면 이 과정을 좀 더 빠르게 할 수 있습니다. 예를 들어서 키를 마구 누른다든지, 두번째 가상 콘솔로 가서 쉘로 바꾼 다음에 네트워크와 디스크를 사용한다던지(파일 다운로드, 큰 파일을 <code class="filename">/dev/null</code>로 보낸다든지 등) 하면 됩니다. 이 과정을 암호화할 모든 파티션에 대해서 반복합니다. </p>
+<p>주 파티션 메뉴로 돌아오면, 암호화한 파티션이 일반 파티션과 똑같이 설정할 수 있게 보입니다. 다음의 예제는 dm-crypt로 암호화한 볼륨입니다. </p>
+<div class="informalexample"><pre class="screen">
+암호화한 볼륨(<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB 리눅스 device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> 이제 해당 볼륨을 가리킬 마운트 위치를 지정하고 (기본값이 마음에 들지 않으면) 파일 시스템 종류를 설정하십시오. </p>
+<p>주의해야 할 사항이 있습니다. 괄호 안에 들어 있는 ID와(이 경우 <em class="replaceable"><code>sda_crypt0</code></em>) 각 암호화 볼륨에 지정한 마운트 위치입니다. 나중에 새 시스템으로 부팅할 때 이 정보가 필요합니다. 일반 부팅 과정과 암호화를 사용하는 부팅 과정의 다른 점은 뒤의 <a class="xref" href="ch07s02.html" title="7.2. 암호화 볼륨 마운트하기">7.2절. “암호화 볼륨 마운트하기”</a>에서 설명합니다. </p>
+<p>파티션 방법이 마음에 들면, 설치를 계속하십시오. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. 베이스 시스템 설치하기</h3></div></div></div>
+<p>이 단계는 문제가 발생할 가능성이 거의 없지만, 설치할 때 베이스 시스템 전체를 다운로드하고, 확인하고, 압축을 풀기 때문에 가장 많은 시간을 소모하는 단계이기도 합니다. 컴퓨터가 느리거나 네트워크 연결이 느리면 시간이 좀 걸릴 수 있습니다. </p>
+<p>베이스 시스템 설치 중에 패키지를 풀고 설정하면서 나오는 메시지는 <strong class="userinput"><code>tty4</code></strong>에서 표시합니다. 이 터미널은 <span class="keycap"><strong>왼쪽 Alt</strong></span>+<span class="keycap"><strong>F4</strong></span>을 누르면 이용할 수 있습니다. 설치 프로그램 화면으로 돌아가려면 <span class="keycap"><strong>왼쪽 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>을 누르십시오. </p>
+<p>이 단계에서 압축을 풀고 설정하는 메시지는 <code class="filename">/var/log/syslog</code> 파일에 저장합니다. 시리얼 콘솔에서 설치하는 경우 이 파일을 보면 됩니다. </p>
+<p>설치 도중에, Linux 커널을 설치합니다. 기본 우선순위에서는 설치 프로그램이 하드웨어에 가장 맞는 커널을 하나 선택합니다. 우선순위가 낮은 모드에서는, 사용 가능한 여러가지 커널 중에서 하나를 선택할 수 있습니다. </p>
+<p>패키지 관리 시스템을 사용하여 패키지를 설치할 때 기본적으로 해당 패키지가 권장하는 패키지도 설치됩니다. 추천 패키지는 선택한 소프트웨어의 핵심 기능에 꼭 필요하지는 않지만, 패키지 관리자 의견으로는 일반적으로 그 소프트웨어와 같이 설치하면 기능이 확장되는 패키지입니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>기술적인 이유 때문에 베이스 시스템 설치 중에 설치되는 패키지는 그 패키지의 <span class="quote">“<span class="quote">권장</span>”</span> 패키지를 설치하지 않습니다. 위에서 말한 규칙은 베이스 시스템을 설치한 다음부터 적용됩니다. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. 추가 소프트웨어 설치하기</h3></div></div></div>
+<p>이제 사용할 수는 있을 만한 상태이지만 아주 제한적인 시스템이 됩니다. 이 시스템에 추가로 소프트웨어를 설치해서 사용자의 필요에 맞게 시스템을 맞출 수 있고, 설치 프로그램에서 그 작업을 합니다. 컴퓨터나 네트워크가 느리면 이 작업은 베이스 시스템 설치보다도 더 오래 걸릴 수 있습니다. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. APT 설정하기</h4></div></div></div>
+<p>데비안 GNU/리눅스에서 패키지를 설치할 때 쓰는 프로그램의 하나는 <code class="classname">apt</code> 패키지에 있는 <span class="command"><strong>apt</strong></span>입니다. <a href="#ftn.id3723" class="footnote" name="id3723"><sup class="footnote">[11]</sup></a> <span class="command"><strong>aptitude</strong></span>나 <span class="command"><strong>synaptic</strong></span> 등의 패키지 관리 프로그램도 사용하는 사람이 많으며 이 프로그램은 <span class="command"><strong>apt</strong></span>에 의존합니다. 처음 사용자는 뒤에 언급한 프로그램을 사용하길 권장합니다. 패키지 검색 기능이나 상태 확인 등의 기능을 사용자 인터페이스에 내장하고 있기 때문입니다. </p>
+<p><span class="command"><strong>apt</strong></span>에서 패키지를 어디서 가져올 지 설정합니다. 설정한 내용은 <code class="filename">/etc/apt/sources.list</code>에 기록하고 설치가 끝난 다음 이 파일의 내용을 살펴보고 바꿀 수 있습니다. </p>
+<p>기본값 우선순위에서 설치한다면, 설정 대부분을 설치 프로그램이 자동으로 처리합니다. 사용하는 설치 방법에 따라 자동으로 설정하기도 하고, 설치 앞 단계에서 지정한 사항에 맞춰서 자동으로 설정하기도 합니다. 설치 프로그램에서 자동으로 보안 미러 사이트를 추가하고, 안정 버전 배포판을 설치한다면 <span class="quote">“<span class="quote">stable-updates</span>”</span> 업데이트 서비스에 대한 미러 사이트도 추가합니다. </p>
+<p>낮은 우선순위로 설치한다면(예를 들어 전문가 모드), 더 많은 결정을 직접 내릴 수 있게 됩니다. 보안 업데이트와 안정 업데이트 서비스를 사용할지 여부를 지정할 수 있고, 아카이브의 <span class="quote">“<span class="quote">contrib</span>”</span>, <span class="quote">“<span class="quote">non-free</span>”</span> 및 <span class="quote">“<span class="quote">non-free-firmware</span>”</span> 섹션의 패키지를 추가할 지도 결정할 수 있습니다. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. 여러 개의 DVD 이미지에서 설치하기</h5></div></div></div>
+<p>큰 모음의 일부인 DVD 이미지에서 설치하는 경우 설치 프로그램에서 추가로 설치 미디어를 읽을지 여부를 물어봅니다. 르허나 미디어가 더 있을 경우 더 읽어들이면 설치 프로그램에서 그 미디어에 들어 있는 패키지를 사용할 수 있습니다. </p>
+<p>추가 미디어가 없어도 문제가 없습니다. 추가 미디어가 꼭 필요하지는 않습니다. 하지만 (다음 섹션에서 설명하는) 네트워크 미러도 사용하지 않는 경우 태스크에 해당하는 패키지를 설치할 수 없을 수도 있습니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>패키지는 DVD 이미지에 유명한 패키지의 순서로 포함되어 있습니다. 즉 대부분의 사람은 이미지 모음의 첫번째 이미지만 사용하고, 이미지 모음의 마지막 이미지에 들어 있는 패키지를 사용하는 사람은 거의 없습니다. </p>
+<p>이 말은 즉, 전체 DVD 모음을 구입하거나, 다운로드하거나, 굽는 일은 돈 낭비가 될 수 있습니다. 대부분의 경우 설치할 때는 첫 1개 또는 2개 DVD로 설치한 다음 기타 패키지는 인터넷에서 미러 사이트를 이용해 설치하는 편이 좋습니다. </p>
+</td></tr>
+</table></div>
+<p>설치 미디어 여러 장을 읽어들이는 경우, 드라이브에 들어 있는 미디어에 없는 패키지가 필요할 때마다 설치 프로그램에서 알려 줍니다. 같은 모음에 속한 디스크만 읽어들어야 하니 주의하십시오. 읽어들이는 순서는 중요하지 않지만, 오름차 순으로 읽어들이면 실패할 가능성이 줄어듭니다. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. 네트워크 미러 사용하기</h5></div></div></div>
+<p>설치할 때 보통 패키지 공급 용도로 네트워크 미러를 사용할지 여부에 대한 질문을 받게 됩니다. 기본값을 사용해도 되지만 예외의 경우가 있습니다. </p>
+<p>전체 DVD 이미지를 사용해 설치하는 경우가 <span class="emphasis"><em>아니라면</em></span>, 네트워크 미러를 사용해야 합니다. 네트워크 미러를 사용하지 않으면 설치를 마쳤을 때 아주 최소한의 시스템만 설치하게 될 수 있습니다. 하지만 인터넷 연결이 느리다면 설치 단계에서 <code class="literal">데스크톱</code> 태스크를 선택하지 <span class="emphasis"><em>않는</em></span> 편이 좋습니다. </p>
+<p>DVD에서 설치하는 경우, 설치에 필요한 패키지는 첫번째 DVD에 모두 들어 있습니다. 네트워크 미러는 꼭 사용하지 않아도 됩니다. </p>
+<p>네트워크 미러를 추가하는 좋은 점은, 설치할 때 업데이트를 사용할 수 있다는 부분입니다. DVD 이미지를 만드는 동안 업데이트가 발생해서 포인트 릴리스에 포함되기도 합니다. 즉 설치할 시스템의 보안이나 안정성을 해치지 않고도 CD/DVD 모음을 더 오래동안 사용할 수 있습니다. </p>
+<p>정리하면, 네트워크 미러를 사용하는 게 항상 좋습니다. 단 인터넷 연결이 좋지 않다면 네트워크 미러를 사용하지 않는 게 좋습니다. 패키지의 현재 버전이 설치 미디어에 들어 있다면, 설치 프로그램은 항상 설치 미디어에 들어 있는 패키지를 이용합니다. 그러므로 미러 사이트를 사용할 경우 다운로드할 데이터의 크기는 </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>다음 설치 단계에서 선택하는 태스크, </p></li>
+<li class="listitem"><p>그 태스크에 필요한 패키지, </p></li>
+<li class="listitem"><p>그 패키지 중에 사용 중인 설치 미디어에 들어 있는 패키지, </p></li>
+<li class="listitem"><p>설치 미디어에 들어 있는 패키지의 업데이트 버전이 있다면 미러에 있는지 여부에 (일반 패키지 미러이든 보안 업데이트이든 안정 업데이트 미러이든 간에) 달려 있습니다. </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>그 의미는 이렇습니다. 네트워크 미러를 사용하지 않으려는 경우에도, 미러를 설정해 놓으면 보안 업데이트나 안정 업데이트가 있는 경우에 패키지를 인터넷에서 다운로드할 수 있습니다. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. 네트워크 미러 고르기</h5></div></div></div>
+<p>설치 중에 네트워크 미러를 사용하겠다고 선택했으면, 설치 프로그램의 앞 단계에서 선택한 국가 설정에 따라 미러의 목록이 표시됩니다. 기본값을 선택하면 대부분 잘 동작합니다. </p>
+<p>제공되는 기본값은 deb.debian.org입니다. 이 미러는 그 자체가 미러 사이트가 아니고 최신으로 업데이트되고 속도가 빠른 다른 미러로 리다이렉트됩니다. 이 미러 사이트는 TLS (https 프로토콜) 및 IPv6를 지원합니다. 이 서비스는 데비안 시스템 관리 팀에서 (DSA, Debian System Administration) 관리합니다. </p>
+<p><span class="quote">“<span class="quote">수동으로 정보 입력하기</span>”</span>를 선택해 수동으로 미러를 지정할 수도 있습니다.  그 다음에 미러 호스트 이름과 (필요하다면) 포트 번호를 지정할 수 있습니다. URL 베이스 값을 써야 합니다. 그러므로 IPv6 주소를 쓸 때 주소 앞뒤로 각괄호를 <span class="quote">“<span class="quote">[2001:db8:1]</span>”</span>처럼 써야 합니다. </p>
+<p>컴퓨터가 IPv6 전용 네트워크에 연결되어 있다면(대다수의 사용자는 보통 이런 경우가 아님) 해당 국가의 기본 미러 사이트를 선택해도 동작하지 않을 수도 있습니다. 목록의 모든 미러 사이트는 IPv4로 연결할 수 있지만, 아주 일부만 IPv6로 연결할 수 있습니다. 미러 사이트의 연결 상태는 시간이 지나면서 달라질 수 있지만, 이 연결 상태에 대한 정보는 설치 프로그램 안에 들어 있지 않습니다. 해당 국가의 기본 미러 사이트에 IPv6 연결이 없는 경우 다른 미러를 시도해 보거나 <span class="quote">“<span class="quote">수동으로 정보 입력</span>”</span> 옵션을 선택하십시오. 그 다음에 <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span>를 미러 이름으로 입력하십시오. 이 사이트는 IPv6에서 사용할 수 있습니다(빠른 사이트는 아니더라도). </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. 소프트웨어 선택 및 설치</h4></div></div></div>
+<p>설치 과정에서 소프트웨어를 추가로 선택해서 설치할 기회가 있습니다. <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+   개의 패키지에서 패키지를 일일이 선택하지 않고, 미리 정해진 소프트웨어의 묶음을 선택하고 설치하는 데 중점을 두고 있습니다. 그래야 설치를 빨리 마쳐서 컴퓨터를 다양한 용도로 사용할 수 있습니다. </p>
+<p>태스크는 <span class="quote">“<span class="quote">데스크톱 환경</span>”</span>, <span class="quote">“<span class="quote">웹서버</span>”</span>, <a href="#ftn.id3786" class="footnote" name="id3786"><sup class="footnote">[12]</sup></a> 등 컴퓨터로 할 수 있는 여러가지 작업을 대략적으로 나타냅니다. <a class="xref" href="apds02.html" title="D.2. 태스크마다 필요한 디스크 공간">D.2절. “태스크마다 필요한 디스크 공간”</a>에서 각 태스크마다 필요한 공간을 볼 수 있습니다. </p>
+<p>설치하는 컴퓨터의 특징에 따라 미리 태스크를 선택한 경우도 있습니다. 그게 마음에 들지 않으면 태스크 선택을 해제할 수도 있습니다. 여기에서 태스크를 하나도 선택하지 않을 수도 있습니다. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[작은 정보]" src="images/tip.png"></td>
+<th align="left">작은 정보</th>
+</tr>
+<tr><td align="left" valign="top"><p>설치 프로그램의 표준 사용자 인터페이스에서는, 스페이스바를 눌러서 태스크를 선택하고 해제할 수 있습니다. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><span class="quote">“<span class="quote">데스크톱 환경</span>”</span> 태스크는 그래픽 데스크톱 환경을 설치합니다. </p>
+<p>기본값으로 <code class="classname">debian-installer</code>에서는 <span class="phrase">그놈</span> 데스크톱 환경을 설치합니다. 설치할 때 다른 데스크톱 환경을 선택할 수도 있습니다. 여러가지 데스크톱을 설치하는 것도 가능하지만, 일부 데스크톱 조합은 같이 설치할 수 없을 수도 있습니다. </p>
+<p>이 기능은 원하는 원하는 데스크톱 환경에 필요한 패키지가 있을 경우에만 동작합니다. DVD 이미지나 기타 설치 방법을 네트워크 미러와 함께 이용하는 경우에는 어떤 데스크톱 환경이든 설치하는데 문제가 없습니다. </p>
+</td></tr>
+</table></div>
+<p>다양한 서버 태스크는 다음과 같이 소프트웨어를 설치합니다. 웹 서버: <code class="classname">apache2</code>, SSH 서버: <code class="classname">openssh</code>. </p>
+<p><span class="quote">“<span class="quote">표준 시스템 유틸리티</span>”</span> 태스크는 <span class="quote">“<span class="quote">표준</span>”</span> 우선 순위의 모든 패키지를 설치합니다. 리눅스 및 유닉스 시스템에 보통 들어 있는 수많은 유틸리티가 여기에 포함됩니다. 이 태스크는 선택해 놓아야 합니다(무슨 일을 하고 있는지 알고 있고 정말 최소한의 시스템을 원하는 경우가 아니라면). </p>
+<p>언어 선택을 할 때 <span class="quote">“<span class="quote">C</span>”</span>가 아닌 기본 로캘을 선택했다면, <span class="command"><strong>tasksel</strong></span>에서 그 로캘에 대한 지역화 태스크가 있는지 검사해서 관련된 지역화 패키지를 설치합니다. 해당 언어에서 사용하는 단어 목록 및 특별히 필요한 글꼴이 여기에 해당됩니다. 데스크톱 환경을 선택했다면 데스크톱 환경에 필요한 지역화 패키지도(이러한 패키지가 있다면) 설치합니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>데비안 Trixie부터, <code class="classname">debian-installer</code>에서 데비안 퓨어 블렌드를 직접 설치할 수 있습니다. 작업 목록의 맨 아래에 <span class="quote">“<span class="quote">설치할 데비안 블렌드 선택</span>”</span> 항목이 있어서, <span class="command"><strong>tasksel</strong></span>이 끝난 다음에, 추가 선택 대화 창이 나타납니다. </p>
+<p>해당 대화창에서 (<span class="command"><strong>blendsel</strong></span>), 작업 선택과 마찬가지로 어떤 블렌드를 설치할지 선택할 수 있습니다. </p>
+<p>데비안 퓨어 블렌드에 대한 더 많은 정보는 See <a class="ulink" href="https://www.debian.org/blends" target="_top">데비안 웹사이트</a>를 보십시오. </p>
+</td></tr>
+</table></div>
+<p>태스크를 선택했으면, <span class="guibutton">계속</span> 단추를 누르십시오. 그러면 <span class="command"><strong>apt</strong></span>에서 해당 태스크에 들어 있는 패키지를 설치합니다. 프로그램 중에 사용자가 설정해야 하는 프로그램이 있으면 설치하는 중에 알려 줍니다. </p>
+<p>데스크톱 태스크는 특히 매우 크므로 주의해야 합니다. netinst CD 이미지 및 (netinst CD에 없는 패키지가 들어 있는) 미러를 같이 쓰는 경우, 네트워크에서 수많은 패키지를 받아와야 할 수도 있습니다. 인터넷 연결이 느린 경우에는 받아오는 데 오래 걸릴 수도 있습니다. 패키지 설치를 일단 시작하면 취소하는 방법은 없습니다. </p>
+<p>패키지가 설치 이미지 안에 들어 있는 경우에도, 설치 이미지에 들어 있는 패키지보다 미러에 있는 패키지의 버전이 최신이면 미러에 있는 패키지를 받아 옵니다. 안정 버전 배포판을 설치하는 경우에는 주로 포인트 릴리스를 (안정 버전 릴리스 업데이트) 한 다음에 이런 일이 발생합니다. 테스팅 배포판을 설치하는 경우 오래된 CD 이미지를 사용하면 이런 일이 발생합니다. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. 시스템을 부팅 가능하게 만들기</h3></div></div></div>
+<p>디스크 없는(diskless) 워크스테이션에 설치하는 경우, 로컬 디스크에서 부팅하는 건 당연히 불가능한 방법이므로 이 단계는 건너 뜁니다. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. 다른 운영 체제 검색</h4></div></div></div>
+<p>부트 로더가 설치되기 전에 설치 프로그램이 이미 설치되어 있는 다른 OS의 검색을 시도합니다. 지원하는 OS가 있으면 부트 로더 설치 단계 동안에 그것을 통지합니다. 또한 데비안 이외에 다른 OS를 부팅할 수 있도록 컴퓨터를 설정합니다. </p>
+<p>한 컴퓨터에서 여러 개의 운영 체제를 부팅하는 일은 아직까지도 매우 복잡한 기술입니다. 다른 운영 체제를 자동으로 찾아내고 부트로더를 설정하는 일은 아키텍처마다 다르고, 서브 아키텍처마다 다르기도 합니다. 동작하지 않으면 부트로더의 문서에서 더 자세한 사항을 찾아보십시오. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3836"></a>6.3.7.2. 드라이브에 <span class="command"><strong>GRUB</strong></span> 부트로더 설치</h4></div></div></div>
+<p>amd64의 부트로더는 <span class="quote">“<span class="quote">GRUB</span>”</span>입니다. GRUB은 유연하고 안정적인 부트로더이고, 초보자와 오래된 사용자 모두에게 좋은 기본 부트로더입니다. </p>
+<p>기본값으로 GRUB은 주 드라이브의 UEFI 파티션/부트레코드에 설치합니다. 그래야 부팅 과정을 완전히 제어할 수 있습니다. 원하면 다른 위치에 설치할 수도 있습니다. 완전한 정보를 보려면 GRUB 안내서를 참고하십시오. </p>
+<p>GRUB을 아예 설치하지 않으려면, <span class="guibutton">뒤로 가기</span> 단추를 사용해서 메인 메뉴로 이동한 다음, 사용하고 싶은 부트로더를 선택하십시오. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. 부트로더 없이 계속</h4></div></div></div>
+<p>이 옵션은 부트로더를 설치하지 말고 설치를 마칠 때 사용할 수 있습니다. 이렇게 하는 경우는 아마도 해당 아키텍처나 서브 아키텍처에 부트로더가 없거나, 부트로더가 필요없는 경우일(예를 들어 기존 부트로더를 사용) 것입니다. </p>
+<p>부트로더를 수동으로 설정하려면, <code class="filename">/target/boot</code>에 설치한 커널의 이름을 확인해야 합니다. 또 이 디렉터리에 <em class="firstterm">initrd</em>가 있는지 확인하고, 있으면 아마도 부트로더가 그 <em class="firstterm">initrd</em>를 사용하도록 해야 할 것입니다. 그 외에 <code class="filename">/</code> 파일 시스템으로 사용하려는 디스크 및 파티션을 알아야 하고, <code class="filename">/boot</code>가 별도 파티션이면 <code class="filename">/boot</code> 파일시스템의 디스크 및 파티션도 알아야 합니다. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. 설치 마치기</h3></div></div></div>
+<p>이제 설치 프로그램이 할 몇 가지 작업은 데비안 설치 과정에서 마지막 단계입니다. 대부분은 <code class="classname">debian-installer</code>의 뒷정리입니다. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. 시스템 시계 맞추기</h4></div></div></div>
+<p>설치 프로그램에서 컴퓨터의 시계를 UTC로 맞출지 물어보기도 합니다. 다른 운영 체제를 설치했는지 따위를 이용해 자동으로 UTC로 맞출 지 여부를 판단하기 때문에, 이 질문은 보통 물어보지 않습니다. </p>
+<p>전문가 모드에서는 UTC로 맞출지 여부를 항상 선택할 수 있습니다.  <span class="phrase">DOS윈도우도 같이 사용하는 시스템은 보통 지역별 시각으로 맞춥니다. 듀얼 부팅을 하려면 UTC가 아니라 지역별 시각으로 맞추십시오.</span> </p>
+<p><code class="classname">debian-installer</code>가 여기에서 현재 시각을 시스템의 하드웨어 시계에 저장합니다. 앞에서 설정한 사항에 따라 UTC로 저장할 수도 있고 지역별 시각으로 저장할 수도 있습니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. 시스템 다시 시작</h4></div></div></div>
+<p>설치를 시작할 때 사용했던 부팅 미디어(CD, USB 메모리 등)를 검색 합니다. 그 다음에 새로 설치한 데비안 시스템으로 다시 시작합니다. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. 문제해결</h3></div></div></div>
+<p>여기에 목록이 나와 있는 컴포넌트는 일반적인 설치 과정과는 상관이 없습니다. 하지만 백그라운드에서 기다리면서 잘못된 부분이 있을 때 도움이 됩니다. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. 설치 로그 저장</h4></div></div></div>
+<p>설치가 성공적 이었으면, 설치할 때 만든 로그 파일은 새 데비안 시스템 <code class="filename">/var/log/installer/</code>에 자동으로 작성되고 있습니다. </p>
+<p>메인 메뉴에서 <span class="guimenuitem">디버깅 기록 저장</span>을 선택하면 로그 파일을 USB 메모리, 네트워크, 하드디스크 등등의 미디어에 저장할 수 있습니다. 설치 도중 심각한 문제가 발생했을 경우 다른 시스템에서 로그를 분석하거나, 로그를 설치 보고서에 첨부할 때 유용합니다. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. 쉘 사용하기 및 로그 보기</h4></div></div></div>
+<p>설치하는 도중에 쉘을 실행하려면 여러가지 방법이 있습니다. 대부분의 시스템에서 시리얼 콘솔로 설치하는 게 아니라면, 가장 쉬운 방법은 <span class="keycap"><strong>왼쪽 Alt</strong></span>+<span class="keycap"><strong>F2</strong></span>를 눌러<a href="#ftn.id3883" class="footnote" name="id3883"><sup class="footnote">[13]</sup></a> (맥 키보드에서는 <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>) 두번째 <span class="emphasis"><em>가상 콘솔</em></span>로 전환하는 것입니다. <span class="keycap"><strong>왼쪽 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>을 누르면 설치 프로그램으로 다시 돌아올 수 있습니다. </p>
+<p>그래픽 설치 프로그램은 <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. 그래픽 설치 프로그램 사용하기">6.1.1절. “그래픽 설치 프로그램 사용하기”</a> 부분도 보십시오. </p>
+<p>콘솔을 전환할 수 없다면, 메인 메뉴의 <span class="guimenuitem">쉘 실행</span> 항목을 이용해도 쉘을 시작할 수 있습니다. <span class="guibutton">뒤로 가기</span> 단추를 계속 눌러서 메인 메뉴로 돌아올 수 있습니다. 설치 프로그램으로 돌아오려면 <strong class="userinput"><code>exit</code></strong>를 입력해서 쉘을 닫으십시오. </p>
+<p>램디스크에서 부팅했기 때문에 이 쉘에서는 제한적인 유닉스 유틸리티만 사용할 수 있습니다. 어떤 프로그램이 있는지는 <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> 명령 및 <span class="command"><strong>help</strong></span>를 입력해서 알 수 있습니다. 쉘은 <span class="command"><strong>ash</strong></span>이라고 하는 본 쉘 호환 쉘이고 자동 완성이나 명령어 기록같은 훌륭한 기능도 일부 들어 있습니다. </p>
+<p>파일을 편집하거나 파일을 보려면, <span class="command"><strong>nano</strong></span> 텍스트 편집기를 사용하십시오. 설치 시스템의 로그 파일은 <code class="filename">/var/log</code> 디렉터리 안에 들어 있습니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>쉘에서는 실행할 수 있는 명령어로 무엇이든 할 수 있는 게 사실이지만, 쉘을 사용하는 옵션은 사실 뭔가 잘못된 경우에 대비해서 혹은 디버깅용으로 만들어 놓은 옵션입니다. </p>
+<p>쉘에서 수동으로 무언가를 할 경우에 설치 과정이 방해를 받아서 오류가 발생하거나 설치를 끝마치지 못할 수도 있습니다. 특히 스왑 파티션을 활성화하는 기능은 설치 프로그램에서 알아서 하도록 놔두고 쉘에서 직접 하지 않도록 하십시오. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. 네트워크 콘솔을 통해 설치</h3></div></div></div>
+<p>재미있는 컴포넌트 중의 하나로 <em class="firstterm">network-console</em>이 있습니다. 설치 작업의 많은 부분을 네트워크 SSH을 통해 수행하게 되어 있습니다. 네트워크를 사용해야 하기 때문에 최소한 네트워크 설정하기까지의 맨 처음 설치 작업은 콘솔에서 해야 합니다. (이 부분은 <a class="xref" href="ch04s06.html" title="4.6. 자동 설치">4.6절. “자동 설치”</a>에 따라 자동화할 수 있습니다.) </p>
+<p>이 컴포넌트는 주 설치 메뉴에는 기본으로 읽어들이지 않기 때문에, 이 컴포넌트를 읽어들이라고 지정해야 합니다. 광학 미디어에서 설치하는 경우에는 중간 우선 순위로 설치하거나 주 설치 메뉴가 나타나면 <span class="guimenuitem">설치 미디어에서 설치 프로그램 컴포넌트를 읽어들이기</span>을 선택하고 <span class="guimenuitem">network-console: SSH을 사용해 원격에서 설치하기</span> 추가 컴포넌트를 선택합니다. 성공적으로 읽어들이면 <span class="guimenuitem">SSH을 사용해 원격에서 설치하기</span> 메뉴 항목이 새로 생깁니다. </p>
+<p><span class="phrase">에서 새 항목을 선택한 후 </span> 설치 시스템에 연결하기 위한 새 암호(및 확인)를 입력하십시오. 여기까지 하면 지금 원격 로그인하라는 화면이 나옵니다. 사용자 이름은 <span class="emphasis"><em>installer</em></span>, 방금 입력한 암호를 사용하십시오. 이 화면에 있는 중요한 정보로 이 시스템의 핑거프린트가 있습니다. 이 핑거프린트를 원격에서 설치할 사람에게 안전하게 전달해야합니다.<span class="phrase">새로 생긴 이 항목을 선택한 다음에, </span>설치 시스템에 연결하는데 사용할 새 암호를 입력하게 됩니다. 여기까지 하면 <span class="emphasis"><em>installer</em></span> 사용자로 방금 입력한 암호를 이용해 원격에서 로그인할 수 있는 방법을 알려주는 화면을 표시합니다. 이 화면의 또 다른 중요한 정보는 시스템의 핑거프린트입니다. 이 핑거프린트를 <span class="quote">“<span class="quote">시스템을 원격에서 설치할 사람에게</span>”</span> 안전하게 전달해야 합니다. </p>
+<p>로컬에서 설정을 계속하려고 마음을 바꿨다면, 언제든지 <span class="keycap"><strong>Enter</strong></span>를 눌러서 메인 메뉴로 돌아갈 수 있습니다. 메인 메뉴에서 다른 컴포넌트를 선택하면 됩니다. </p>
+<p>이제 네트워크의 다른 한 편으로 가서 할 일입니다. 먼저 필요한 일은, 터미널을 UTF-8 인코딩을 쓰도록 설정하는 일입니다. UTF-8 인코딩이 설치 시스템에서 사용하는 인코딩입니다. UTF-8으로 설정하지 않아도 원격 설치가 가능하지만 창의 테두리라던지, 읽을 수 없는 ASCII가 아닌 문자처럼 표시가 깨질 수도 있습니다. 설치 시스템에 연결하려면 간단히 다음과 같은 명령을 사용하면 됩니다: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>install_host</code></em></code></strong>
+</pre></div>
+<p> 여기서 <em class="replaceable"><code>install_host</code></em>는 설치할 컴퓨터의 이름이나 IP 주소입니다. 실제로 로그인하기 전에 원격 시스템의 핑거프린트가 표시될 것이고, 이 핑거프린트가 올바른 지 확인해야 합니다. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>설치 프로그램에 들어 있는 <span class="command"><strong>ssh</strong></span> 서버는 연결 유지(keep-alive) 패킷을 보내지 않는 표준 설정을 사용합니다. 시스템에 대한 연결은 계속해서 열어 놓은 상태여야 합니다. 하지만(로컬 네트워크 설정에 따라) 일정 시간동안 아무 입력이 없으면 연결이 끊어질 수 있습니다. 이런 일이 벌어질 수 있는 흔한 상황이 SSH 클라이언트와 설치하는 서버 사이 어딘가에 NAT(Network Address Translation, 네트워크 주소 변환)가 있는 상황입니다. 연결이 어느 부분에서 끊어졌느냐에 따라 다시 연결했을 때 설치를 계속할 수도 있고 할 수 없을 수도 있습니다. </p>
+<p><span class="command"><strong>ssh</strong></span> 연결을 시작할 때 <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>값</code></em></code></strong> 옵션을 사용하면 연결이 끊어지는 일을 방지할 수 있습니다. 아니면 이 옵션을 <span class="command"><strong>ssh</strong></span> 설정 파일에 추가해도 효과가 같습니다. 하지만 이 옵션을 사용했을 때 <span class="emphasis"><em>이 옵션 때문에</em></span> 연결이 끊어지는 경우도 있습니다. (예를 들어 연결 유지(keep-alive) 패킷을 일시적인 네트워크 정지 시점에 보내는 경우 그렇습니다. 이러한 경우 <span class="command"><strong>ssh</strong></span> 연결은 다른 방법으로 복구합니다.) 그러니 이 옵션은 필요한 경우에만 사용해야 합니다. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[참고]" src="images/note.png"></td>
+<th align="left">참고</th>
+</tr>
+<tr><td align="left" valign="top"><p>여러 컴퓨터를 모두 설치하는 경우에 IP 주소 혹은 호스트 이름이 같은 경우, 그런 호스트는 <span class="command"><strong>ssh</strong></span>에서 연결을 거부합니다. 그 이유는 핑거프린트가 다르기 때문이고, 핑거프린트가 다르다는 건 스푸핑 공격의 징조입니다. 스푸핑이 아니라고 확신하는 경우, <code class="filename">~/.ssh/known_hosts</code>에서 해당 줄을 지우고<a href="#ftn.id3949" class="footnote" name="id3949"><sup class="footnote">[14]</sup></a> 다시 연결하면 됩니다. </p></td></tr>
+</table></div>
+<p>로그인한 다음에 최초 화면이 나오면 거기에서 <span class="guimenuitem">메뉴 시작</span>과 <span class="guimenuitem">쉘 시작</span> 중의 하나를 선택할 수 있습니다. 전자의 경우는 설치 프로그램의 메인 메뉴로 가게 되고, 거기에서 로컬에서와 마찬가지로 설치 작업을 계속할 수 있습니다. 후자는 쉘을 실행해서 원격 시스템을 살펴보고 문제점을 수정할 수 있습니다. 설치 메뉴는 한 개의 SSH 세션만 열어야 합니다. 하지만 쉘의 경우에는 여러 개를 열어도 됩니다. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[주의]" src="images/warning.png"></td>
+<th align="left">주의</th>
+</tr>
+<tr><td align="left" valign="top"><p>SSH을 통해 원격으로 설치를 시작하면, 다시 로컬 콘솔로 돌아가서 설치하면 안 됩니다. 그렇게 하면 새로 설치할 시스템의 설정이 망가질 수 있습니다. 설정이 망가지면 설치가 실패하거나 새로 설치한 시스템에 여러가지 문제가 발생할 수 있습니다. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3141" class="footnote"><p><a href="#id3141" class="para"><sup class="para">[4] </sup></a> 기술적인 용어로 언어에 대해 국가 코드가 다른만큼, 여러 로캘이 존재합니다. </p></div>
+<div id="ftn.id3149" class="footnote"><p><a href="#id3149" class="para"><sup class="para">[5] </sup></a>우선 순위가 중간 혹은 낮은에서는 선택한 언어로 유효한 지역 중 항상 마음에 드는 것을 선택할 수 있습니다(여러 개있는 경우). </p></div>
+<div id="ftn.id3155" class="footnote"><p><a href="#id3155" class="para"><sup class="para">[6] </sup></a>레가시 로캘은 UTF-8 문자 인코딩을 사용하지 않고, ISO 8859-1(서유럽 언어로 사용) 또는 EUC-JP(일어로 사용) 등의 오래전 문자 인코딩을 사용합니다.</p></div>
+<div id="ftn.id3334" class="footnote"><p><a href="#id3334" class="para"><sup class="para">[7] </sup></a> 설치 프로그램에서 LVM 볼륨 그룹을 256비트 AES 키를 이용해 암호화하고 커널의 <span class="quote">“<span class="quote">dm-crypt</span>”</span> 기능을 사용합니다. </p></div>
+<div id="ftn.id3427" class="footnote"><p><a href="#id3427" class="para"><sup class="para">[8] </sup></a> 물론 한 개의 물리 드라이브에 있는 여러개의 파티션에서 멀티디스크 장치를 만들 수도 있지만, 그렇게 해 봤자 좋은 점이 전혀 없습니다. </p></div>
+<div id="ftn.id3666" class="footnote"><p><a href="#id3666" class="para"><sup class="para">[9] </sup></a> 암호를 키로 사용한다는 건 현재는 파티션을 <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>로 설정한다는 뜻입니다. </p></div>
+<div id="ftn.id3680" class="footnote"><p><a href="#id3680" class="para"><sup class="para">[10] </sup></a> 하지만 3글자 약자 이름의 정보 기관 사람은 광자기 미디어를 여러 번 덮어 쓴다고 해도 데이터를 복구할 수 있다고 합니다. </p></div>
+<div id="ftn.id3723" class="footnote"><p><a href="#id3723" class="para"><sup class="para">[11] </sup></a>참고로 패키지를 실제로 설치하는 프로그램은 <span class="command"><strong>dpkg</strong></span>입니다. 하지만 이 프로그램은 저수준 도구에 가깝습니다. <span class="command"><strong>apt</strong></span>는 고수준 도구로 필요할 때 <span class="command"><strong>dpkg</strong></span>를 실행합니다. <span class="command"><strong>apt</strong></span>는 패키지를 설치 미디어, 네트워크 등 어디에서 가져올 지 판단합니다. 또 설치하려는 패키지가 제대로 동작하려면 필요한 다른 패키지까지 자동으로 설치합니다. </p></div>
+<div id="ftn.id3786" class="footnote"><p><a href="#id3786" class="para"><sup class="para">[12] </sup></a> 이 목록을 표시할 때, 설치 프로그램은 <span class="command"><strong>tasksel</strong></span>을 실행할 뿐입니다. <span class="command"><strong>tasksel</strong></span>은 시스템 설치를 끝낸 다음에도 언제든지 패키지를 설치하고 지울 때 실행할 수 있습니다. <span class="command"><strong>tasksel</strong></span> 외에도 <span class="command"><strong>aptitude</strong></span>처럼 패키지 설치와 제거를 더 자세히 하는 프로그램을 사용할 수도 있습니다. 설치를 모두 마치고 특정 패키지를 찾으려면 <strong class="userinput"><code>aptitude install <em class="replaceable"><code>패키지</code></em></code></strong> 명령을 실행하면 됩니다. 여기서 <em class="replaceable"><code>패키지</code></em>는 찾으려는 패키지의 이름입니다. </p></div>
+<div id="ftn.id3883" class="footnote"><p><a href="#id3883" class="para"><sup class="para">[13] </sup></a> <span class="keycap"><strong>스페이스 바</strong></span> 왼쪽에 있는 <span class="keycap"><strong>Alt</strong></span> 키와 펑션 키의 <span class="keycap"><strong>F2</strong></span>를 동시에 누르는 걸 말합니다. </p></div>
+<div id="ftn.id3949" class="footnote"><p><a href="#id3949" class="para"><sup class="para">[14] </sup></a>다음 명령어로 호스트의 해당 줄을 지울 수 있습니다: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>호스트이름</code></em>|<em class="replaceable"><code>IP 주소</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. 컴포넌트 소개 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. 없는 펌웨어 읽어들이기</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

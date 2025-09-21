@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Haladó lehetőségek</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apb.html" title="B. függelék - Automata telepítés előírással">
+<link rel="prev" href="apbs04.html" title="B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz)">
+<link rel="next" href="apc.html" title="C. függelék - Particionálás a Debian számára">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Haladó lehetőségek</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">B. függelék - Automata telepítés előírással</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Haladó lehetőségek</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Egyéni parancs futtatása telepítéskor</h3></div></div></div>
+<p>Az előíró eszközök egy nagyon erős és rugalmas lehetősége parancsok vagy szkriptek futtatása a telepítés egyes pontjain. </p>
+<p>Amikor a célrendszer fájlrendszere csatolva van, a <code class="filename">/target</code> könyvtárban érhető el. Ha telepítési CD/DVD-t használsz, az csatolás után a <code class="filename">/cdrom</code> könyvtárban érhető el. </p>
+<div class="informalexample"><pre class="screen"># A d-i előzetes konfigurálás alapvetően nem biztonságos. Az installer nem
+# ellenőrzi a puffer túlcsordulási kísérleteket vagy az előkonfigurációs fájl,
+# mint ez, értékeinek egyéb kihasználását. Csak megbízható forrásból
+# származó előkonfigurációs fájlokat használj! Hogy ezt hangsúlyozzuk,
+# és mert általában hasznos, itt van egy mód arra, hogy bármilyen
+# shell parancsot futtass automatikusan az installerben.
+
+# Ez az első parancs a lehető legkorábban fut le, közvetlenül azután,
+# hogy az előzetes konfigurálás beolvasásra került.
+#d-i preseed/early_command string anna-install some-udeb
+# Ez a parancs azonnal a partícionáló indulása előtt fut le. Hasznos lehet
+# dinamikus partícionáló előzetes konfigurálás alkalmazására, amely a
+# lemezek állapotától függ (ami nem biztos, hogy látható, amikor a
+# preseed/early_command fut).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Ez a parancs közvetlenül a telepítés befejezése előtt fut le,
+# amikor a /target könyvtár még használható.
+# Használhatod közvetlenül a /target környezetbe chroot-olva,
+# vagy egyszerűen használhatod az apt-install és in-target parancsokat
+# csomagok telepítésére és parancsok futtatására a célrendszeren.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Előírás használata alap értékek módosítására</h3></div></div></div>
+<p>Lehetőség van az előzetes konfigurálással megváltoztatni egy kérdés alapértelmezett válaszát, de mégis megjeleníteni a kérdést. Ehhez a(z) <em class="firstterm">seen</em> jelzőt <span class="quote">„<span class="quote">false</span>”</span> értékre kell állítani, miután beállítottad a kérdés értékét. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Ugyanez a hatás érhető el <span class="emphasis"><em>minden</em></span> kérdés esetén, ha a <code class="classname">preseed/interactive=true</code> paramétert állítod be az indítási promptnál. Ez hasznos lehet az előkonfigurációs fájl teszteléséhez vagy hibakereséséhez is. </p>
+<p>Figyelj arra, hogy a <span class="quote">„<span class="quote">d-i</span>”</span> tulajdonost csak az installerben használt változók esetén használd. Azoknál a változóknál, amelyek a célrendszeren telepített csomagokhoz tartoznak, az adott csomag nevét használd. Lásd a(z) <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Indító paraméterek használata kérdések előírt válaszára">B.2.2. szakasz - Indító paraméterek használata kérdések előírt válaszára</a> lábjegyzetét. </p>
+<p>Ha az előzetes konfigurálást indítási paraméterekkel végzed, az installer megkérdezheti a megfelelő kérdést a(z) <span class="quote">„<span class="quote">?=</span>”</span> operátor használatával, például: <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong> (vagy <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>). Ez természetesen csak azokra a paraméterekre lesz hatással, amelyek valóban megjelenő kérdésekhez tartoznak az installáció során, és nem a <span class="quote">„<span class="quote">belső</span>”</span> paraméterekre. </p>
+<p>Ha több hibakeresési információra van szükséged, használd a(z) <code class="classname">DEBCONF_DEBUG=5</code> indítási paramétert. Ez arra készteti a(z) <code class="classname">debconf</code>-ot, hogy sokkal részletesebb információt adjon minden változó aktuális beállításairól és az egyes csomagok telepítési szkriptjeinek előrehaladásáról. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Előíró fájlok lánc-betöltése</h3></div></div></div>
+<p>Más előíró fájlok is csatolhatók egy előíró fájlból. E fájlok beállításai felülírják a korábban betöltött fájlok beállításait. Ez lehetővé teszi például a helynek megfelelő általános hálózati beállítások elhelyezését egy fájlba és pontosabb beállításokat egyes konfigurációkhoz más fájlokba. </p>
+<div class="informalexample"><pre class="screen"># Több fájl is felsorolható, szóközökkel elválasztva; mindegyik betöltésre kerül.
+# A beillesztett fájlok saját preseed/include direktíváikat is tartalmazhatják.
+# Fontos: ha a fájlnevek relatívak, akkor ugyanabból a könyvtárból lesznek
+# betöltve, mint ahonnan az őket futtató előkonfigurációs fájl származik.
+#d-i preseed/include string x.cfg
+
+# Az installer opcionálisan ellenőrizheti az előkonfigurációs fájlok ellenőrző
+# összegét, mielőtt felhasználná őket. Jelenleg csak md5sumok
+# támogatottak, az md5summokat ugyanabban a sorrendben sorold fel,
+# mint a beillesztendő fájlok listáját.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Rugalmasabb megoldásként ez egy shell parancsot futtat, és ha az
+# előkonfigurációs fájlok neveit adja vissza, akkor azokat a fájlokat is beilleszti.
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# A legrugalmasabb módszer: ez letölt egy programot és lefuttatja azt. A
+# program használhat olyan parancsokat, mint a debconf-set, hogy módosítsa
+# a debconf adatbázist. Egynél több script is megadható, szóközzel elválasztva.
+# Fontos: ha a fájlnevek relatívak, akkor ugyanabból a könyvtárból lesznek
+# betöltve, mint ahonnan az őket futtató előkonfigurációs fájl származik.
+
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Lehetséges lánc-töltés initrd vagy fájl előíró szakaszból, hálózati előírásba a preseed/url beállításával a korábbi fájlokban. Ez egy hálózati előírás végrehajtását adja a hálózat feléledésekor. Ezt óvatosan kell tenni, mert 2 önálló előírás fut, így például kétszer lefuthat a preseed/early parancs, másodszor a hálózat feléledése után. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Az előkonfigurációs fájl tartalma (a(z) trixie verzióhoz) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> C. függelék - Particionálás a Debian számára</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

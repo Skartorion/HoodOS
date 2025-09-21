@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. Debian GNU/Linux unter Verwendung von PPP over Ethernet (PPPoE) installieren</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apd.html" title="Anhang D. Verschiedenes">
+<link rel="prev" href="apds04.html" title="D.4. Debian GNU/Linux über Parallel Line IP (PLIP) installieren">
+<link rel="next" href="ape.html" title="Anhang E. Administratives">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. Debian GNU/Linux unter Verwendung von PPP over Ethernet (PPPoE) installieren</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang D. Verschiedenes</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. Debian GNU/Linux unter Verwendung von PPP over Ethernet (PPPoE) installieren</h2></div></div></div>
+<p>In einigen Länder ist PPP over Ethernet (PPPoE) ein gängiges Protokoll für Breitbandverbindungen (ADSL oder Kabel) zum Internet-Anbieter (z.B. auch in Deutschland). Die Einrichtung einer Netzwerkverbindung über PPPoE wird standardmäßig vom Installer nicht unterstützt, aber es ist nicht schwer, dies zum Laufen zu bringen. Dieser Abschnitt erklärt, wie es geht. </p>
+<p>Die PPPoE-Verbindung, die während der Installation eingerichtet wird, ist auch nach dem Neustart im neu installierten System verfügbar (siehe <a class="xref" href="ch07.html" title="Kapitel 7. Das neue Debian-System starten">Kapitel 7, <i>Das neue Debian-System starten</i></a>). </p>
+<p>Um während der Installation die Möglichkeit zu haben, PPPoE einzurichten und zu nutzen, müssen Sie von einem der verfügbaren CD-ROM-/DVD-Images installieren. Von anderen Installationsmethoden (z.B. Netzwerk-Boot) wird PPPoE nicht unterstützt. </p>
+<p>Eine Installation über PPPoE hat viel mit jeder anderen Installation gemeinsam. Die folgenden Schritte erklären die Unterschiede. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Booten Sie den Installer mit dem Parameter <strong class="userinput"><code>modules=ppp-udeb</code></strong><a href="#ftn.id5228" class="footnote" name="id5228"><sup class="footnote">[22]</sup></a>. Dies sorgt dafür, dass die benötigte Komponente für die Einrichtung von PPPoE automatisch geladen und gestartet wird. </p></li>
+<li class="listitem"><p>Folgen Sie den normalen einführenden Schritten der Installation (Sprache, Land, Auswahl der Tastatur, Laden der zusätzlichen Installer-Komponenten<a href="#ftn.id5233" class="footnote" name="id5233"><sup class="footnote">[23]</sup></a>). </p></li>
+<li class="listitem"><p>Im nächsten Schritt folgt die Erkennung der Netzwerk-Hardware, um alle im System vorhandenen Ethernet-Karten zu identifizieren. </p></li>
+<li class="listitem">
+<p>Danach wird die eigentliche Einrichtung von PPPoE gestartet. Der Installer prüft alle erkannten Ethernet-Schnittstellen auf einen vorhandenen PPPoE-Konzentrator (eine Art Server, der PPPoE-Verbindungen bereitstellt). </p>
+<p>Es ist möglich, dass der Konzentrator beim ersten Versuch nicht gefunden wird. Dies kann gelegentlich bei langsamen oder überlasteten Netzen vorkommen oder bei fehlerbehafteten Servern. In den meisten Fällen ist ein zweiter Versuch, den Konzentrator zu erkennen, erfolgreich. Wählen Sie dazu <span class="guimenuitem">Konfiguriere und starte eine PPPoE-Verbindung</span> aus dem Hauptmenü des Installers. </p>
+</li>
+<li class="listitem"><p>Nachdem der Konzentrator gefunden wurde, werden Sie aufgefordert, die Einwahldaten (PPPoE-Benutzername und Passwort) einzugeben. </p></li>
+<li class="listitem"><p>Jetzt wird der Installer versuchen, mit den eingegebenen Daten eine PPPoE-Verbindung aufzubauen. Wenn die Daten korrekt sind, sollte die Verbindung hergestellt werden und der Installer sollte die Internetverbindung nutzen können, um (falls nötig) Pakete herunterzuladen. Sind die eingegebenen Daten nicht korrekt oder ein anderer Fehler tritt auf, bricht der Installer ab, aber Sie können erneut versuchen, PPPoE zu konfigurieren, indem Sie den Menüpunkt <span class="guimenuitem">Konfiguriere und starte eine PPPoE-Verbindung</span> auswählen. </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5228" class="footnote"><p><a href="#id5228" class="para"><sup class="para">[22] </sup></a> Siehe <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Der Start-Bildschirm (Boot-Screen)">Abschnitt 5.1.5, „Der Start-Bildschirm (Boot-Screen)“</a> bezüglich weiterer Informationen darüber, wie man einen Boot-Parameter hinzufügt. </p></div>
+<div id="ftn.id5233" class="footnote"><p><a href="#id5233" class="para"><sup class="para">[23] </sup></a> Das Installer-Modul <code class="classname">ppp-udeb</code> wird als eine der zusätzlichen Komponenten geladen. Wenn Sie mit mittlerer oder niedriger Priorität (Experten-Modus) installieren, können Sie <code class="classname">ppp-udeb</code> auch manuell auswählen, statt den <span class="quote">„<span class="quote">modules=ppp-udeb</span>“</span>-Parameter am Boot-Prompt einzugeben. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. Debian GNU/Linux über Parallel Line IP (PLIP) installieren </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> Anhang E. Administratives</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

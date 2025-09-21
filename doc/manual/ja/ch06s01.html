@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.1. インストーラーの動作</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch06.html" title="第6章 Debian インストーラーの使用法">
+<link rel="prev" href="ch06.html" title="第6章 Debian インストーラーの使用法">
+<link rel="next" href="ch06s02.html" title="6.2. コンポーネント入門">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.1. インストーラーの動作</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第6章 Debian インストーラーの使用法</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2365"></a>6.1. インストーラーの動作</h2></div></div></div>
+<p>このアーキテクチャでは、<code class="classname">debian-installer</code> は 2 つの異なるユーザーインターフェースをサポートしています。グラフィカルなものとテキストベースのものです。起動時のメニューで、<span class="quote">「<span class="quote">Install</span>」</span> オプションを選択しなければ、デフォルトでグラフィカルなインターフェースを使用します。グラフィカルインストーラーの起動については、<a class="xref" href="ch05s01.html#graphical" title="5.1.6. グラフィカルインストーラー">「グラフィカルインストーラー」</a> をご覧ください。 </p>
+<p>Debian Installer は各インストールタスクを実行するために、たくさんの特定用途コンポーネントから成ります。各コンポーネントは、必要ならユーザーに質問をして、そのタスクを実行します。この質問には優先度が設定されており、この優先度はインストーラの起動時に設定することができます。 </p>
+<p>デフォルトのインストールでは、不可欠な (優先度が高い) 質問しかしません。これにより、ユーザーの入力をほとんど行わず、高度な自動インストールを行うことができます。コンポーネントは自動的に順番に実行されます。どのコンポーネントを実行するかは、主に使用するインストール法やハードウェアに左右されます。インストーラーは、質問しない項目についてはデフォルト値を使用します。 </p>
+<p>問題がある場合はエラー画面を表示し、インストーラーメニューに、代替アクションを選択するように表示するかもしれません。いずれも問題なければ、ユーザーはインストールメニューを目にすることはなく、単に順番に各コンポーネントの質問に答えて行くだけでしょう。重大なエラー通知は優先度を<span class="quote">「<span class="quote">重要</span>」</span>に設定されているため、常に表示されます。 </p>
+<p>インストーラーが使用するデフォルト値は、<code class="classname">debian-installer</code> の起動時にパラメータで渡して指定できます。たとえば、強制的に静的ネットワーク設定をしたい場合 (デフォルトでは可能なら IPv6 オートネゴシエーションと DHCP を利用)、ブートパラメータに <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> を加えられます。利用できるオプションは <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Debian Installer パラメータ">「Debian Installer パラメータ」</a> を参照してください。 </p>
+<p>パワーユーザーは、メニュードリブンインターフェース (自動で順に各ステップを実行するインストーラーではなく、ユーザーが各ステップを制御する) の方が、満足するかもしれません。手動 (メニュー駆動) でインストーラーを使用するには、起動引数に <strong class="userinput"><code>priority=medium</code></strong> を加えてください。 </p>
+<p>ハードウェアをインストールする際に、オプションをカーネルモジュールへ渡す必要がある場合、<span class="quote">「<span class="quote">エキスパート</span>」</span>モードでインストーラーを起動する必要があります。これは、インストーラーを起動するコマンドに <span class="command"><strong>expert</strong></span> を使用する、あるいは起動引数に <strong class="userinput"><code>priority=low</code></strong> を加えることで行います。エキスパートモードでは <code class="classname">debian-installer</code> をフルコントロールできます。 </p>
+<p>テキストベース環境では、マウスはサポートされていません。ここでは、様々なダイアログでナビゲートするキーを紹介します。ボタンや選択肢が表示されている間は、<span class="keycap"><strong>Tab</strong></span> キーや<span class="keycap"><strong>右</strong></span>矢印は<span class="quote">「<span class="quote">前方</span>」</span>へ、<span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>Tab</strong></span> や <span class="keycap"><strong>左</strong></span>矢印は<span class="quote">「<span class="quote">後方</span>」</span>へ移動します。<span class="keycap"><strong>上</strong></span><span class="keycap"><strong>下</strong></span>矢印は、スクロールするリスト内の項目を選択し、またリスト自体もスクロールさせます。さらに、長いリストでは、タイプした文字で始まる項目に直接スクロールしますし、リストのスクロールに <span class="keycap"><strong>Pg-Up</strong></span> や <span class="keycap"><strong>Pg-Down</strong></span> も 使用できます。<span class="keycap"><strong>スペースバー</strong></span> は、チェックボックスのような項目を選択します。選択肢を有効にするには <span class="keycap"><strong>Enter</strong></span> を使用してください。 </p>
+<p>ダイアログには、追加ヘルプ情報があるものがあります。ヘルプがある場合、画面の最下行に表示されています。<span class="keycap"><strong>F1</strong></span> キーを押してアクセスできます。 </p>
+<p>エラーメッセージとログは第 4 コンソールにリダイレクトされます。このコンソールへは <span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> (左 <span class="keycap"><strong>Alt</strong></span> キーを押しながら <span class="keycap"><strong>F4</strong></span> ファンクションキーを押す) を押してアクセスしてください。<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> で、メインのインストーラープロセスに戻ります。 </p>
+<p>これらのメッセージは <code class="filename">/var/log/syslog</code> で見つけることもできます。インストールの後、このログはあなたの新システムの <code class="filename">/var/log/installer/syslog</code> にコピーされます。他のインストールメッセージは、インストール中には <code class="filename">/var/log/</code> に、インストールしたシステムでコンピュータが起動した後には <code class="filename">/var/log/installer/</code> にあります。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="gtk-using"></a>6.1.1. グラフィカルインストーラーの使用法</h3></div></div></div>
+<p>グラフィカルインストーラーは基本的にはテキストベースのインストーラーと同様に動作するため、インストールプロセスを通してこのマニュアルの案内を利用できます。 </p>
+<p>マウスよりもキーボードを使いたい場合には、2つのことを知っておく必要があります。省略されている一覧 (例えば大陸内の国の選択に利用されています) を展開するのに <span class="keycap"><strong>+</strong></span> や <span class="keycap"><strong>-</strong></span> キーを利用できます。項目を複数選択できる質問 (例えばタスクの選択) では選択後にタブで <span class="guibutton">Continue</span> ボタンに移動する必要があります。Enter を押した場合は <span class="guibutton">Continue</span> が作動するのではなく選択が切り替わります。 </p>
+<p>ダイアログに追加ヘルプ情報がある場合は、<span class="guibutton">Help</span> ボタンが表示されます。ヘルプ情報にはこのボタンを作動させるか <span class="keycap"><strong>F1</strong></span> キーを押してアクセスできます。 </p>
+<p>別のコンソールに切り替えるには X ウィンドウシステムと全く同じように <span class="keycap"><strong>Ctrl</strong></span> キーも使う必要があります。例えば VT2 (第一のデバッグ用シェル) に切り替えるには <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> を使います。グラフィカルインストーラー自体は VT5 で実行されているので、<span class="keycap"><strong>左 Alt</strong></span>+<span class="keycap"><strong>F5</strong></span> を使うと戻れます。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">第6章 Debian インストーラーの使用法 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 6.2. コンポーネント入門</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

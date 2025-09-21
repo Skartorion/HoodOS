@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Προσάρτηση κρυπτογραφημένων τόμων</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Κεφάλαιο 7. Μπαίνοντας στο καινούριο σας σύστημα Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Η στιγμή της αλήθειας">
+<link rel="next" href="ch07s03.html" title="7.3. Είσοδος στο Σύστημα">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Προσάρτηση κρυπτογραφημένων τόμων</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Κεφάλαιο 7. Μπαίνοντας στο καινούριο σας σύστημα Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Προσάρτηση κρυπτογραφημένων τόμων</h2></div></div></div>
+<p>Αν δημιουργήσατε κρυπτογραφημένους τόμους κατά την διάρκεια της εγκατάστασης και τους αποδώσατε σημεία προσάρτησης, θα σας ζητηθεί να εισάγετε την συνθηματική φράση για κάθε έναν από τους τόμους αυτούς στην εκκίνηση. </p>
+<p>Για κατατμήσεις κρυπτογραφημένες με χρήση dm-crypt θα δείτε το ακόλουθο προτρεπτικό στην διάρκεια της εκκίνησης: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p>. Στην πρώτη γραμμή του προτρεπτικού, <em class="replaceable"><code>part</code></em> είναι ο αριθμός της σχετικής κατάτμησης, πχ. sda2 ή md0. Θα αναρωτιέστε πιθανόν τώρα <span class="emphasis"><em>για ποιον τόμο</em></span> εισάγετε στην πραγματικότητα την συνθηματική φράση. Σχετίζεται με την κατάτμηση <code class="filename">/home</code>; Ή με την κατάτμηση <code class="filename">/var</code>; Φυσικά, αν έχετε μόνο έναν κρυπτογραφημένο τόμο αυτό είναι εύκολο και μπορείτε απλά να εισάγετε την συνθηματική φράση που χρησιμοποιήσατε κατά την ρύθμιση του τόμου. Αν έχετε ρυθμίσει περισσότερους από έναν κρυπτογραφημένους τόμους κατά την εγκατάσταση, οι σημειώσεις που κρατήσατε στο τελευταίο βήμα στην ενότητα <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Ρύθμιση Κρυπτογραφημένων Τόμων">Τμήμα 6.3.4.6, «Ρύθμιση Κρυπτογραφημένων Τόμων»</a> θα φανούν χρήσιμες. Αν δεν κρατήσατε μια σημείωση για την αντιστοίχιση ανάμεσα στις κατατμήσεις <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> και τα σημεία προσάρτησης από πριν, μπορείτε ακόμα να την βρείτε στα αρχεία <code class="filename">/etc/crypttab</code> και <code class="filename">/etc/fstab</code> του καινούριου σας συστήματος. </p>
+<p>Το προτρεπτικό μπορεί να μοιάζει κάπως διαφορετικό αν προσαρτήσετε ένα κρυπτρογραφημένο ριζικό σύστημα αρχείων. Αυτό εξαρτάται από το ποιο πρόγραμμα δημιουργίας του συστήματος αρχείων initramfs χρησιμοποιήθηκε για την δημιουργία της initrd που χρησιμοποιείται για την εκκίνηση του συστήματος. Το παράδειγμα που ακολουθεί είναι για έναν δίσκο μνήμης initrd που δημιουργήθηκε με το πρόγραμμα <code class="classname">initramfs-tools</code>: </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Όταν εισάγετε τον κωδικό πρόσβασης δεν εμφανίζονται καθόλου χαρακτήρες (ούτε καν αστερίσκοι). Προσέξτε, έχετε  μόνο <span class="emphasis"><em>μια προσπάθεια</em></span>. Αν εισάγετε λάθος κωδικό, θα εμφανιστεί ένα μήνυμα σφάλματος και η διαδικασία εκκίνησης θα παραλείψει τον συγκεκριμένο τόμο, προχωρώντας στην προσάρτηση του επόμενου συστήματος αρχείων. Παρακαλώ δείτε την ενότητα <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Επίλυση προβλημάτων">Τμήμα 7.2.1, «Επίλυση προβλημάτων»</a> για περισσότερες πληροφορίες. </p>
+<p>Μετά την εισαγωγή όλων των συνθηματικών φράσεων η εκκίνηση θα συνεχιστεί ως συνήθως. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Επίλυση προβλημάτων</h3></div></div></div>
+<p>Αν κάποιοι από τους κρυπτογραφημένους τόμους δεν ήταν δυνατόν να προσαρτηθούν λόγω της εισαγωγής λάθος συνθηματικής φράσης θα πρέπει να τους προσαρτήσετε με το χέρι μετά την εκκίνηση. Υπάρχουν αρκετές περιπτώσεις. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Η πρώτη περίπτωση αφορά την ριζική κατάτμηση. Αν δεν προσαρτηθεί σωστά, η διαδικασία εκκίνησης θα σταματήσει και θα πρέπει να επανεκκινήσετε τον υπολογιστή και να προσπαθήσετε ξανά. </p></li>
+<li class="listitem">
+<p>Η πιο εύκολη περίπτωση είναι αυτή των κρυπτογραφημένων τόμων για την αποθήκευση δεδομένων όπως οι κατάλογοι <code class="filename">/home</code> ή <code class="filename">/srv</code>. Μπορείτε απλά να τους προσαρτήσετε χειροκίνητα μετά την εκκίνηση. </p>
+<p>Για κρυπτογράφηση dm-crypt η κατάσταση είναι λίγο πιο περίπλοκη. Πρώτα θα πρέπει να καταγράψετε τους τόμους με το πρόγραμμα <span class="application">device mapper</span> και εκτελώντας: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p>. Αυτό θα "σαρώσει" όλους τους τόμους που αναφέρονται στο <code class="filename">/etc/crypttab</code> και θα δημιουργήσει κατάλληλες συσκευές στον κατάλογο <code class="filename">/dev</code> μετά την εισαγωγή των σωστών συνθηματικών φράσεων (οι τόμοι που είναι ήδη εγγεγραμμένοι θα παραλειφθούν, συνεπώς μπορείτε να επαναλάβετε αυτή την εντολή αρκετές φορές άφοβα). Μετά την πετυχημένη εγγραφή μπορείτε απλά να προσαρτήσετε τους τόμους με τον συνηθισμένο τρόπο: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Αν οι τόμοι που δεν περιέχουν αρχεία κρίσιμα για το σύστημα δεν μπορούν να προσαρτηθούν (<code class="filename">/usr</code> ή <code class="filename">/var</code>), το σύστημα είναι ακόμα εκκινήσιμο και μπορείτε να τους προσαρτήσετε χειροκίνητα όπως και στην προηγούμενη περίπτωση. Θα χρειαστεί όμως επίσης να επανεκκινήσετε και όσες υπηρεσίες τρέχουν συνήθως στο προκαθορισμένο από σας runlevel γιατί είναι πολύ πιθανόν να μην έχουν ξεκινήσει. Ο ευκολότερος τρόπος για αυτό είναι απλά να επανεκκινήσετε τον υπολογιστή σας. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Η στιγμή της αλήθειας  </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Είσοδος στο Σύστημα</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

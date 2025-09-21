@@ -1,0 +1,817 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Sử dụng mỗi thành phần</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Chương 6. Sử dụng trình cài đặt Debian">
+<link rel="prev" href="ch06s02.html" title="6.2. Giới thiệu về thành phần">
+<link rel="next" href="ch06s04.html" title="6.4. Nạp phần vững bị thiếu">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Sử dụng mỗi thành phần</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 6. Sử dụng trình cài đặt Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Sử dụng mỗi thành phần</h2></div></div></div>
+<p>Trong phần này có diễn tả mỗi thành phần cài đặt một cách chi tiết. Các thành phần đã được nhóm lại theo giai đoạn riêng dễ hiểu, được trình diễn theo thứ tự xuất hiện trong tiến trình cài đặt. Ghi chú rằng không phải tất cả các mô-đun sẽ được dùng trong mọi việc cài đặt; những mô-đun thật sự được dùng phụ thuộc vào phương pháp cài đặt và phần cứng riêng. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Thiết lập trình cài đặt Debian và cấu hình phần cứng</h3></div></div></div>
+<p>Giả sử là trình cài đặt Debian vừa mới khởi động, và bạn xem màn hình thứ nhất. Vào lúc đó, khả năng của <code class="classname">debian-installer</code> vẫn còn hơi bị hạn chế. Nó chưa biết nhiều về phần cứng, về ngôn ngữ ưa thích của bạn, ngay cả về công việc cần thực hiện. Không có sao đó, vì <code class="classname">debian-installer</code> hơi thông minh. Nó có khả năng thăm dò tự động phần cứng, tìm các thành phần còn lại của nó, và nâng cấp tự nó lên một hệ thống cài đặt có đủ khả năng. Tuy nhiên, bạn vẫn còn cần phải giúp đỡ <code class="classname">debian-installer</code> tập hợp vài thông tin nó không thể quyết định tự động (v.d. bằng cách chọn ngôn ngữ ưa thích, bố trí bàn phím thích hợp hay máy nhân bản riêng trên mạng). </p>
+<p>Bạn sẽ thấy biết rằng <code class="classname">debian-installer</code> thực hiện việc <em class="firstterm">phát hiện phần cứng</em> vài lần trong giao đoạn này. Lần đầu tiên nhằm mục đích tìm phần cứng cần thiết để tải các thành phần cài đặt (v.d. ổ đĩa CD-ROM hay thẻ mạng). Vì không phải tất cả các trình điều khiển luôn luôn sẵn sàng trong việc chạy đầu tiên này, việc phát hiện phần cứng cần phải được lặp lại vào điểm sau trong tiến trình. </p>
+<p>Trong khi phát hiện phần cứng, <code class="classname">debian-installer</code> cũng kiểm tra nếu trình điều khiển nào cho thiết bị phần cứng trong hệ thống đó cần thiết nạp phần vững không. Yêu cầu phần vững vẫn còn không sẵn sàng thì trình cài đặt hiển thị một hộp thoại cho phép nạp phần vững còn thiếu từ một vật chứa rời. Xem <a class="xref" href="ch06s04.html" title="6.4. Nạp phần vững bị thiếu">Phần 6.4, “Nạp phần vững bị thiếu”</a> để tìm chi tiết. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Kiểm tra bộ nhớ có sẵn / chế độ thiếu bộ nhớ</h4></div></div></div>
+<p>Một của những hành động thứ nhất của <code class="classname">debian-installer</code> là việc kiểm tra số lượng bộ nhớ có sẵn. Nếu không có đủ bộ nhớ có sẵn, thành phần này sẽ sửa đổi tiến trình cài đặt để (mong muốn) cho bạn khả năng cài đặt Debian GNU/Linux trên máy tính của mình. </p>
+<p>Để giảm bộ nhớ được chiếm, bộ cài đặt trước tiên sẽ tắt các bản dịch nên chỉ có khả năng cài đặt bằng tiếng Anh. Tất nhiên, bạn vẫn còn có khả năng chạy hệ thống đã bản địa hoá sau khi cài đặt xong.  </p>
+<p>Để giảm bộ nhớ thêm, bộ cài đặt sẽ nạp chỉ những thành phần chủ yếu để chạy xong tiến trình cài đặt cơ bản. Việc này cũng giảm khả năng của hệ thống cài đặt. Bạn sẽ có dịp tự nạp các thành phần thêm, nhưng ghi chú rằng mỗi thành phần bạn chọn sẽ chiếm bộ nhớ thêm thì có thể gây ra tiến trình cài đặt bị lỗi do hết bộ nhớ. </p>
+<p>If the installer runs in low memory mode, it is recommended to create a relatively large swap partition (1–2GB). The swap partition will be used as virtual memory and thus increases the amount of memory available to the system. The installer will activate the swap partition as early as possible in the installation process. Note that heavy use of swap will reduce performance of your system and may lead to high disk activity. </p>
+<p>Bất chấp những biện pháp này, vẫn còn có thể gặp hệ thống đông đặc, lỗi bất thường hay tiến trình bị giết bởi hạt nhân do hệ thống hết bộ nhớ (kết quả là thông điệp <span class="quote">“<span class="quote">Hết bộ nhớ</span>”</span> trên VT4 và trong bản ghi hệ thống). </p>
+<p>Chẳng hạn, người dùng đã thông báo rằng việc tạo một hệ thống tập tin dạng ext3 lớn bị lỗi trong chế độ thiếu bộ nhớ khi không có đủ sức chứa trao đổi. Nếu vùng trao đổi lớn hơn không quyết định vấn đề này, hãy thử tạo hệ thống tập tin dạng ext2 (thành phần chủ yếu của bộ cài đặt) thay thế. Vẫn có thể thay đổi phân vùng ext2 sang ext3 sa khi cài đặt. </p>
+<p>Có thể ép buộc trình cài đặt dùng mức bộ nhớ lowmem cao hơn mức dựa vào bộ nhớ còn rảnh, bằng cách dùng tham số khởi động <span class="quote">“<span class="quote">lowmem</span>”</span> như được diễn tả trong <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Tham số trình cài đặt Debian">Phần 5.3.2, “Tham số trình cài đặt Debian”</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Đặt tùy chọn địa phương hoá</h4></div></div></div>
+<p>Trong phần lớn trường hợp, trước tiên bạn sẽ được nhắc chọn các tùy chọn địa phương hoá cần dùng trong cả hai tiến trình cài đặt và hệ thống được cài đặt. Những tùy chọn địa phương hoá là ngôn ngữ, nơi ở và miền địa phương. </p>
+<p>Ngôn ngữ bạn chọn sẽ được dùng trong phần còn lại của tiến trình cài đặt, miễn là có sẵn bản dịch của các hộp thoại khác nhau. Nếu chưa có bản dịch sang ngôn ngữ đã chọn, trình cài đặt sẽ trở về ngôn ngữ mặc định: tiếng Anh. </p>
+<p>Vị trí địa lý (trong phần lớn các trường hợp là một quốc gia) sẽ được dùng về sau trong tiến trình cài đặt để chọn múi giờ đúng và một máy nhân bản Debian thích hợp với quốc gia đó. Tổ hợp ngôn ngữ và quốc gia thì giúp quyết định miền địa phương mặc định cho hệ thống của bạn, cũng chọn bố trí bàn phím đúng. </p>
+<p>Trước tiên, bạn sẽ được nhắc chọn ngôn ngữ ưa thích. Các tên ngôn ngữ được liệt kê bằng cả tiếng Anh (bên trái) lẫn tiếng gốc (bên phải); các tên bên phải cũng được in ra bằng chữ viết đúng của ngôn ngữ đó. Danh sách đó được sắp xếp theo tên tiếng Anh. Bên trên danh sách có một tùy chọn thêm cho bạn khả năng chọn miền địa phương <span class="quote">“<span class="quote">C</span>”</span> thay cho ngôn ngữ riêng. Việc chọn miền địa phương <span class="quote">“<span class="quote">C</span>”</span> sẽ gây ra tiến trình cài đặt tiếp tục lại bằng chỉ tiếng Anh; hệ thống đã cài đặt sẽ không có khả năng hỗ trợ địa phương hoá (không có ngôn ngữ khác v.v.) vì gói <code class="classname">locales</code> sẽ không được cài đặt. </p>
+<p>Bước kế tiếp là chọn vị trí địa lý. Nếu bạn đã chọn một ngôn ngữ nhận ra là ngôn ngữ chính thức của nhiều quốc gia<a href="#ftn.id3158" class="footnote" name="id3158"><sup class="footnote">[4]</sup></a>, thì trình cài đặt hiển thị một danh sách chứa chỉ những quốc gia đó. Để chọn một quốc gia vẫn còn không nằm trên danh sách đó, hãy chọn mục <span class="guimenuitem">Khác</span> (tùy chọn cuối cùng). Trình cài đặt sẽ hiển thị danh sách các lục địa; việc chọn một lục địa riêng thì dẫn tới danh sách các quốc gia thích hợp ở lục địa đó. </p>
+<p>If the language has only one country associated with it, a list of countries will be displayed for the continent or region the country belongs to, with that country selected as the default. Use the <span class="guibutton">Go Back</span> option to select countries on a different continent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Quan trọng là bạn chọn quốc gia ở, vì nó quyết định múi giờ nào được cấu hình cho hệ thống được cài đặt. </p></td></tr>
+</table></div>
+<p>Nếu bạn đã chọn một tổ hợp ngôn ngữ và quốc gia cho đó không có sẵn một miền địa phương, và có nhiều miền địa phương cho ngôn ngữ đó, thì trình cài đặt cho phép bạn chọn miền địa phương nào bạn thích làm miền địa phương mặc định cho hệ thống được cài đặt<a href="#ftn.id3166" class="footnote" name="id3166"><sup class="footnote">[5]</sup></a>. Trong các trường hợp khác, một miền địa phương mặc định sẽ được lập dựa vào ngôn ngữ và quốc gia được người dùng chọn. </p>
+<p>Bất cứ miền địa phương mặc định nào được chọn như diễn tả trong đoạn văn trước sẽ cũng sử dụng <em class="firstterm">UTF-8</em> (Unicode) làm bảng mã ký tự. (Ghi chú : tiếng Việt yêu cầu Unicode.) </p>
+<p>Nếu bạn đang cài đặt ở mức ưu tiên Thấp thì bạn có dịp chọn thêm miền địa phương, gồm có cái gọi là miền địa phương <span class="quote">“<span class="quote">thừa tự</span>”</span><a href="#ftn.id3172" class="footnote" name="id3172"><sup class="footnote">[6]</sup></a>, cần tạo ra cho hệ thống được cài đặt. Chọn thêm miền địa phương ở bước này thì bạn được hỏi miền địa phương nào nên làm mặc định cho hệ thống được cài đặt. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Chọn bàn phím</h4></div></div></div>
+<p>Bàn phím thường được thiết kế để nhập các ký tự đại diện ngôn ngữ riêng. Hãy chọn một bố trí bàn phím thích hợp với bàn phím hàng ngày của bạn, hoặc chọn điều tương tự nếu không có bố trí trùng. Một khi cài đặt xong hệ thống, bạn có khả năng chọn bố trí bàn phím trong phạm vị sự chọn rộng hơn (chạy tiện ích <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> với tư cách người chủ, một khi cài đặt xong). </p>
+<p>Hãy di chuyển vùng tô sáng tới bố trí bàn phím đã muốn, rồi bấm phím <span class="keycap"><strong>Enter</strong></span>. Dùng các phím mũi tên để di chuyển vùng tô sáng — chúng nằm tại cùng một vị trí trên mọi bố trí bàn phím ngôn ngữ quốc gia, vậy chúng không phụ thuộc vào cấu hình bàn phím. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Tìm ảnh ISO cài đặt Debian</h4></div></div></div>
+<p>Trong tiến trình cài đặt bằng phương pháp <span class="emphasis"><em>hd-media</em></span>, có một thời điểm khi bạn cần phải tìm và gắn kết ảnh ISO của trình cài đặt Debian, để lấy các tập tin cài đặt còn lại. Thành phần <span class="command"><strong>iso-scan</strong></span> thực hiện công việc dứt khoát này. </p>
+<p>At first, <span class="command"><strong>iso-scan</strong></span> automatically mounts all block devices (e.g. partitions and logical volumes) which have some known filesystem on them and sequentially searches for filenames ending with <code class="filename">.iso</code> (or <code class="filename">.ISO</code> for that matter). Beware that the first attempt scans only files in the root directory and in the first level of subdirectories (i.e. it finds <code class="filename">/<em class="replaceable"><code>whatever</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>whatever</code></em>.iso</code>, but not <code class="filename">/data/tmp/<em class="replaceable"><code>whatever</code></em>.iso</code>). After an iso image has been found, <span class="command"><strong>iso-scan</strong></span> checks its content to determine if the image is a valid Debian iso image or not. In the former case we are done, in the latter <span class="command"><strong>iso-scan</strong></span> seeks for another image. </p>
+<p>Trong trường hợp việc thử tìm ảnh ISO cài đặt không phải là thành công, thành phần <span class="command"><strong>iso-scan</strong></span> sẽ hỏi nếu bạn muốn thực hiện việc tìm kiếm tường tận hơn. Việc tìm kiếm đó không phải chỉ tìm trong những thư mục lên trên: nó thật sự đi qua toàn bộ hệ thống tập tin. </p>
+<p>Nếu thành phần <span class="command"><strong>iso-scan</strong></span> không tìm được ảnh ISO cài đặt của bạn, hãy khởi động lại về hệ điều hành đã có, rồi kiểm tra xem nếu ảnh có tên đúng (kết thúc bằng <code class="filename">.iso</code>), nếu nó nằm trong hệ thống tập tin do <code class="classname">debian-installer</code> chấp nhận, và nếu nó bị hỏng (thẩm tra tổng kiểm checksum). Người dùng UNIX kinh nghiệm có thể làm như thế, không cần khởi động lại, bằng bàn giao tiếp thứ hai. </p>
+<p>Note that the partition (or disk) hosting the ISO image can't be reused during the installation process as it will be in use by the installer. To work-around this, and provided that you have enough system memory, the installer can copy the ISO image into RAM before mounting it. This is controlled by the low priority <code class="literal">iso-scan/copy_iso_to_ram</code> debconf question (it is only asked if the memory requirement is met). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Cấu hình mạng</h4></div></div></div>
+<p>Khi bạn vào bước này, nếu trình cài đặt phát hiện nhiều thiết bị mạng trong máy tính, nó sẽ nhắc bạn chọn thiết bị nào là giao diện mạng <span class="emphasis"><em>chính</em></span>, tức là điều bạn muốn sử dụng để cài đặt. Các giao diện khác sẽ không được cấu hình vào lúc đó. Bạn có khả năng cấu hình giao diện thêm một khi cài đặt xong; xem trang hướng dẫn « man » <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatic network configuration</h5></div></div></div>
+<p>By default, <code class="classname">debian-installer</code> tries to configure your computer's network automatically as far as possible. If the automatic configuration fails, that may be caused by many factors ranging from an unplugged network cable to missing infrastructure for automatic configuration. For further explanation in case of errors, check the error messages on the fourth console. In any case, you will be asked if you want to retry, or if you want to perform a manual setup. Sometimes the network services used for autoconfiguration can be slow in their responses, so if you are sure everything is in place, simply start the autoconfiguration attempt again. If autoconfiguration fails repeatedly, you can instead choose the manual network setup. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Manual network configuration</h5></div></div></div>
+<p>The manual network setup in turn asks you a number of questions about your network, notably <code class="computeroutput">IP address</code>, <code class="computeroutput">Netmask</code>, <code class="computeroutput">Gateway</code>, <code class="computeroutput">Name server addresses</code>, and a <code class="computeroutput">Hostname</code>. Moreover, if you have a wireless network interface, you will be asked to provide your <code class="computeroutput">Wireless ESSID</code> (<span class="quote">“<span class="quote">wireless network name</span>”</span>) and a <code class="computeroutput">WEP key</code> or <code class="computeroutput">WPA/WPA2 passphrase</code>. Fill in the answers from <a class="xref" href="ch03s03.html" title="3.3. Thông tin cần thiết">Phần 3.3, “Thông tin cần thiết”</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Có vài chi tiết kỹ thuật có thể hữu ích: chương trình giả sử địa chỉ IP trên mạng là giá trị VÀ theo ví trị bit (bitwise AND) của địa chỉ IP của hệ thống và mặt nạ mạng. Địa chỉ quảng bá mặc định được tính như là HOẶC theo vị trí bit (bitwise OR) của địa chỉ IP của hệ thống với sự phủ định của mặt nạ mạnh. Nó sẽ cũng đoán cổng ra của bạn. Không tìm thấy thông tin này thì dùng những giá trị mặc định đã cung cấp: nếu có thể, bạn cũng có thể sửa đổi giá trị như vậy bằng cách chỉnh sửa tập tin <code class="filename">/etc/network/interfaces</code> một khi hệ thống được cài đặt. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 and IPv6</h5></div></div></div>
+<p>From Debian GNU/Linux 7.0 (<span class="quote">“<span class="quote">Wheezy</span>”</span>) onwards, <code class="classname">debian-installer</code> supports IPv6 as well as the <span class="quote">“<span class="quote">classic</span>”</span> IPv4. All combinations of IPv4 and IPv6 (IPv4-only, IPv6-only and dual-stack configurations) are supported. </p>
+<p>Autoconfiguration for IPv4 is done via DHCP (Dynamic Host Configuration Protocol). Autoconfiguration for IPv6 supports stateless autoconfiguration using NDP (Neighbor Discovery Protocol, including recursive DNS server (RDNSS) assignment), stateful autoconfiguration via DHCPv6 and mixed stateless/stateful autoconfiguration (address configuration via NDP, additional parameters via DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Thiết lập Người dùng và Mật khẩu</h3></div></div></div>
+<p>Đúng trước khi cấu hình đồng hồ, trình cài đặt sẽ cho phép bạn thiết lập tài khoản <span class="quote">“<span class="quote">root</span>”</span> và/hay một tài khoản cho người dùng đầu tiên. Một khi hoàn tất cài đặt thì cũng có thể tạo tài khoản người dùng bổ sung. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Lập mật khẩu chủ</h4></div></div></div>
+<p>Tài khoản <span class="emphasis"><em>chủ</em></span> (root) cũng được gọi là <span class="emphasis"><em>siêu người dùng</em></span>; nó là cách đăng nhập mà đi qua toàn bộ sự bảo vệ bảo mật trên máy tính. Tài khoản chủ nên được dùng chỉ để quản trị hệ thống, và trong thời lượng càng ngắn càng có thể. </p>
+<p>Mỗi mật khẩu bạn tạo phải chứa ít nhất 6 ký tự (nhiều hơn là mạnh hơn), gồm chữ cả hoa lẫn thường, cùng với ký tự chấm câu. Hãy rất cẩn thận khi đặt mật khẩu chủ (root) vì tài khoản đó có nhiều quyền quan trọng. Bạn nên tránh chọn từ nằm trong bất kỳ từ điển hay thông tin cá nhân có thể được đoán. </p>
+<p>Nếu người nào xin mật khẩu chủ của bạn, hãy rất cẩn thận. Bình thường, đừng cho ai biết mật khẩu chủ, trừ bạn quản lý máy có nhiều quản trị hệ thống. </p>
+<p>In case you do not specify a password for the <span class="quote">“<span class="quote">root</span>”</span> user here, this account will be disabled but the <span class="command"><strong>sudo</strong></span> package will be installed later to enable administrative tasks to be carried out on the new system. By default, the first user created on the system will be allowed to use the <span class="command"><strong>sudo</strong></span> command to become root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Tạo người dùng chuẩn</h4></div></div></div>
+<p>Hệ thống sẽ hỏi nếu bạn muốn tạo một tài khoản người dùng chuẩn tại điểm thời này. Tài khoản này nên là sự đăng nhập cá nhân chính của bạn. Bạn <span class="emphasis"><em>không</em></span> nên dùng tài khoản người chủ để làm việc hàng ngày hay như là sự đăng nhập cá nhân. </p>
+<p>Tại sao không? Một lý do là để tránh sử dụng các quyền của người chủ, vì các quyền này làm cho rất dễ dàng làm hại không thể sửa chữa. Một lý do khác là bạn có thể bị mắc mưu chạy chương trình <span class="emphasis"><em>Trojan</em></span> mà nhớ dịp các quyền của siêu người dùng để hại thậm sự bảo mật của hệ thống bạn một cách bí mật. Bất kỳ cuốn sách tốt về cách quản lý hệ thống UNIX sẽ diễn tả chủ đề này bằng chi tiết: đề nghị bạn đọc nó nếu bạn chưa quen với vấn đề này. </p>
+<p>Trước tiên, bạn sẽ được nhắc nhập họ tên của người dùng. Sau đó, bạn cần nhập tên của tài khoản người dùng, như tên của bạn hay tên riêng khác nào (tên của bạn là giá trị mặc định). Cuối cùng, bạn nên nhập mật khẩu dành cho tài khoản này. </p>
+<p>Nếu tại bất kỳ điểm thời sau khi cài đặt, bạn muốn tạo tài khoản thêm, hãy sử dụng lệnh <span class="command"><strong>adduser</strong></span> (thêm người dùng). </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Cấu hình Đồng hồ và Múi giờ</h3></div></div></div>
+<p>Trước tiên, trình cài đặt sẽ thử kết nối tới một máy phục vụ thời gian trên Internet (dùng giao thức thời gian <em class="firstterm">NTP</em>) để đặt đúng thời gian của hệ thống. Không thành công thì trình cài đặt giả sử ngày tháng và thời gian được lấy từ đồng hồ hệ thống khi khởi động hệ thống cài đặt là đúng. Bạn không thể tự đặt thời gian hệ thống trong khi cài đặt. </p>
+<p>Phụ thuộc vào vị trí được chọn về trước trong tiến trình cài đặt, bạn có thể xem danh sách các múi giờ thích hợp với vị trí đó đó. Nếu chỗ bạn chỉ có một múi giờ và bạn đang làm một việc cài đặt mặc định thì trình cài đặt không hỏi gì và hệ thống giả sử múi giờ đó. </p>
+<p>Trong chế độ cấp cao, hoặc khi cài đặt ở mức ưu tiên Vừa, bạn có tuỳ chọn bổ sung để chọn <span class="quote">“<span class="quote">Thời gian Thế giới</span>”</span> (UTC) làm múi giờ. </p>
+<p>Nếu (vì lý do nào) bạn muốn đặt cho hệ thống đã cài đặt một múi giờ mà <span class="emphasis"><em>không</em></span> tương ứng với địa điểm đã chọn, có hai tùy chọn. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Tùy chọn đơn giản nhất là chỉ chọn một múi giờ khác sau khi cài đặt xong và bạn đã khởi động hệ thống mới. Câu lệnh để làm như thế là: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Hoặc có thể đặt múi giờ ở đầu thật của tiến trình cài đặt, bằng cách gửi tham số <strong class="userinput"><code>time/zone=<em class="replaceable"><code>giá_trị</code></em></code></strong> khi bạn khởi chạy tiến trình cài đặt. Giá trị nên là múi giờ hợp lệ (xem /usr/share/zoneinfo)  v.d. <strong class="userinput"><code>Asia/Saigon</code></strong> hay <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Đối với tiến trình tự động cài đặt, cũng có thể đặt múi giờ dùng chức năng chèn sẵn. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Phân vùng và chọn điểm lắp</h3></div></div></div>
+<p>Ở thời điểm này, sau khi việc phát hiện phần cứng đã được thực hiện lần cuối cùng, <code class="classname">debian-installer</code> nên có khả năng đầy đủ, được tùy chỉnh thích hợp với sự cần của người dùng riêng và sẵn sàng làm việc thật. Như tên phần này ngụ ý, công việc chính của vài thành phần kế tiếp là phân vùng đĩa, tạo hệ thống tập tin, gán điểm lắp và (tùy chọn) cấu hình các tùy chọn rất liên quan đến nhau như LVM, thiết bị RAID và thiết bị đã mật mã. </p>
+<p>Nếu bạn chưa quen với công việc phân vùng, hoặc chỉ muốn biết thêm, xem <a class="xref" href="apc.html" title="Phụ lục C. Phân vùng cho Debian">Phụ lục C, <i>Phân vùng cho Debian</i></a>. </p>
+<p>Trước tiên, bạn sẽ nhận dịp phân vùng tự động hoặc toàn bộ đĩa, hoặc sức chứa còn rảnh có sẵn trên đĩa. Tiến trình này cũng được gọi như là phân vùng <span class="quote">“<span class="quote">đã hướng dẫn</span>”</span>. Nếu bạn không muốn phân vùng tự động, hãy chọn mục <span class="guimenuitem">Bằng tay</span> trong trình đơn. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Tùy chọn phân vùng được hỗ trợ</h4></div></div></div>
+<p>Công cụ phân vùng được dùng trong <code class="classname">debian-installer</code> có nhiều chức năng. Nó cho phép bạn tạo nhiều lược đồ phân vùng khác nhau, dùng các bảng phân vùng, hệ thống tập tin và thiết bị khối cấp cao khác nhau. </p>
+<p>Chính xác những tuỳ chọn sẵn sàng thì phụ thuộc vào kiến trúc, mà cũng vào các nhân tố khác. Chẳng hạn, trên hệ thống có vùng nhớ nội bộ bị hạn chế, một số tuỳ chọn nào đó có thể là không sẵn sàng. Giá trị mặc định cũng có thể biến đổi. Kiểu bảng phân vùng dùng theo mặc định có thể (v.d.) là khác cho đĩa cứng dung tích lớn sơ với đĩa cứng nhỏ. Một số tuỳ chọn nào đó chỉ có thể được thay đổi khi cài đặt ở mức ưu tiên Debconf « vừa » hoặc « thấp »; ở mức ưu tiên « cao » thì dùng giá trị mặc định thích hợp. </p>
+<p>Trình cài đặt hỗ trợ nhiều phương pháp khác nhau đối với phân vùng cấp cao và sử dụng thiết bị lưu trữ, mà trong nhiều trường hợp cũng có thể được sử dụng với nhau. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Quản lý Khối Tin Hợp Lý (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>RAID phần mềm</em></span>
+  </p>
+<p>Hỗ trợ các lớp RAID 0, 1, 4, 5, 6, 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Mật mã</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Đa đường dẫn</em></span> (vẫn thực nghiệm) </p>
+<p>Xem <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">Wiki của chúng ta</a> để tìm thông tin. Hiện thời chỉ hỗ trợ chức năng đa đường dẫn nếu khả năng hỗ trợ đó được hiệu lực khi trình cài đặt được khởi động. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Hỗ trợ những hệ thống tập tin theo đây. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Hệ thống tập tin mặc định được chọn trong phần lớn các trường hợp là ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (không phải sẵn sàng trên mọi kiến trúc) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (không phải sẵn sàng trên mọi kiến trúc) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (vẫn tuỳ chọn; không sẵn sàng trên mọi kiến trúc) </p>
+<p>Hỗ trợ hệ thống tập tin Reiser không còn sẵn sàng lại theo mặc định. Khi trình cài đặt chạy ở mức ưu tiên Debconf « vừa » hay « thấp » thì cũng có thể hiệu lực nó bằng cách chọn thành phần <code class="classname">partman-reiserfs</code>. Chỉ hỗ trợ phiên bản 3 của hệ thống tập tin đó. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Mỗi phân vùng đã tồn tại sẽ được nhân ra, và có thể lập điểm gắn kết cho nó. Không thể tạo được phân vùng qnx4 mới. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (chỉ-đọc) </p>
+<p>Đối với phân vùng NTFS đã tồn tại, cũng có thể thay đổi kích cỡ và gán điểm lắp. Không thể tạo được phân vùng NTFS mới. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>The partitioner accepts units as power-of-ten (1 MB = 1000 kB = 1000000 B), as well as power-of-two (1 MiB = 1024 kiB = 1048576 B). Unit prefixes are supported until EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Phân vùng hướng dẫn</h4></div></div></div>
+<p>Nếu bạn chọn tiến trình phân vùng đã hướng dẫn, có lẽ bạn có ba tùy chọn nữa: tạo phân vùng một cách trực tiếp trên đĩa cứng (phương pháp truyền thống), hoặc tạo phân vùng bằng khả năng quản lý khối tin hợp lý (LVM), hoặc tạo phân vùng bằng LVM đã mật mã<a href="#ftn.id3352" class="footnote" name="id3352"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Tùy chọn sử dụng LVM (đã mật mã) có lẽ không sẵn sàng trên mọi kiến trúc. </p></td></tr>
+</table></div>
+<p>Khi sử dụng LVM hoặc LVM đã mật mã, bộ cài đặt sẽ tạo phần lớn phân vùng bên trong cùng một phân vùng lớn; lợi ích của phương pháp này là các phân vùng bên trong phân vùng lớn này có thể được thay đổi kích cỡ hơi dễ dàng về sau. Trong trường hợp LVM đã mật mã, phân vùng lớn sẽ không có khả năng đọc nếu người dùng không có cụm từ khoá đặc biệt, thì cung cấp bảo mật thêm cho dữ liệu (riêng) của bạn. </p>
+<p>Khi sử dụng LVM đã mật mã, bộ cài đặt sẽ cũng tự động xoá đĩa bằng cách ghi dữ liệu ngẫu nhiên vào nó. Việc này cải tiến thêm bảo mật (vì nó tạo trường hợp không thể tìm biết phần đĩa nào hoạt động và đảm bảo mọi vết của bản cài đặt trước đã được xoá hoàn toàn), nhưng có thể kéo dài một lát phụ thuộc vào kích cỡ của đĩa. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nếu bạn chọn tiến trình phân vùng đã hướng dẫn bằng LVM hoặc LVM đã mật mã, một số thay đổi trong bảng phân vùng sẽ cần phải được ghi vào đĩa đã chọn trong khi LVM được thiết lập. Các thay đổi này có kết quả là xoá hết dữ liệu nằm trên đĩa cứng đã chọn, và bạn không thể hủy bước này. Tuy niên, bộ cài đặt sẽ nhắc bạn xác nhận các thay đổi này trước khi ghi vào đĩa. </p></td></tr>
+</table></div>
+<p>Nếu bạn chọn tiến trình phân vùng theo hướng dẫn<span class="phrase"> (hoặc kiểu truyền thống hoặc bằng LVM (đã mã hóa))</span> cho toàn bộ đĩa, trước tiên bạn sẽ được nhắc chọn đĩa bạn muốn dùng. Hãy kiểm tra xem tất cả các đĩa được liệt kê và, nếu bạn có nhiều đĩa, hãy chắc rằng bạn đã chọn đúng đĩa. Thứ tự liệt kê chúng có thể khác với thứ tự bạn đã quen. Kích cỡ của đĩa có thể giúp đỡ bạn nhận diện chúng. </p>
+<p>Mọi dữ liệu nằm trên đĩa bạn chọn sẽ bị mất hoàn toàn, nhưng bạn sẽ luôn luôn được nhắc xác nhận thay đổi trước khi ghi vào đĩa.<span class="phrase"> Nếu bạn đã chọn phương pháp phân vùng truyền thống, bạn sẽ có khả năng hủy các thay đổi đến ngay khi kết thúc; còn khi sử dụng LVM (đã mã hóa), không thể thực hiện việc này.</span> </p>
+<p>Next, you will be able to choose from the schemes listed in the table below. All schemes have their pros and cons, some of which are discussed in <a class="xref" href="apc.html" title="Phụ lục C. Phân vùng cho Debian">Phụ lục C, <i>Phân vùng cho Debian</i></a>. If you are unsure, choose the first one. Bear in mind that guided partitioning needs a certain minimal amount of free space to operate with. If you don't give it at least about 3GB of space (depends on chosen scheme), guided partitioning will fail. Also, on small disks you will probably not see all of the schemes mentioned below. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Bố trí phân vùng</th>
+<th>Chỗ tối thiểu</th>
+<th>Phân vùng đã tạo</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Mọi tập tin trên một phân vùng</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, trao đổi</td>
+</tr>
+<tr>
+<td>Phân vùng /home riêng</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, trao đổi </td>
+</tr>
+<tr>
+<td>Các phân vùng /home, /var, và /tmp riêng</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, trao đổi </td>
+</tr>
+<tr>
+<td>Separate /srv and /var partitions; swap limited to 1GB (for server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Scheme especially for small disks</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, trao đổi</td>
+</tr>
+</tbody>
+</table></div>
+<p>Nếu bạn chọn tiến trình phân vùng đã hướng dẫn bằng LVM (đã mật mã), trình cài đặt sẽ cũng tạo một phân vùng <code class="filename">/boot</code> riêng. Các phân vùng khác, bao gồm phân vùng trao đổi, sẽ được tạo bên trong phân vùng LVM. </p>
+<p>If you have booted in EFI mode then within the guided partitioning setup there will be an additional partition, formatted as a FAT32 bootable filesystem, for the EFI boot loader. This partition is known as an EFI System Partition (ESP). There is also an additional menu item in the formatting menu to manually set up a partition as an ESP. </p>
+<p>Sau khi bạn chọn bố trí, màn hình kế tiếp sẽ hiển thị bảng phân vùng mới, gồm có thông tin về trạng thái kiểu định dạng và gắn kết của mỗi phân vùng. </p>
+<p>Danh sách các phân vùng có thể hình như : </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      FREE SPACE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p>
+[primary=chính; swap=trao đổi; FREE SPACE=sức chứa còn rảnh; logical=hợp lý (không phải vật lý)]
+
+Mẫu này hiển thị hai đĩa cứng kiểu được chia ra vài phân vùng;
+đĩa thứ nhất có sức chứa còn rảnh. Mỗi dòng phân vùng có dạng:
+số hiệu phân vùng, kiểu nó, kích cỡ nó, cờ tùy chọn nào,
+hệ thống tập tin, điểm láp (nếu có).
+
+Ghi chú : thiết lập riêng này không thể được tạo khi dùng khả năng
+phân vùng đã hướng dẫn, nhưng nó có phải hiển thị trường hợp khác
+có thể được đạt khi tự phân vùng. </p>
+<p>Ở đây kết thúc tiến trình phân vùng đã hướng dẫn. Nếu bạn thấy bảng phân vùng đã tạo ra là ổn định, sau đó bạn có khả năng chọn mục <span class="guimenuitem">Phân vùng xong và ghi các thay đổi vào đĩa</span> trong trình đơn, để thực hiện bảng phân vùng mới (như được diễn tả tại cuối phần này). Còn nếu bạn chưa thỏa chí, bạn có thể chọn mục <span class="guimenuitem">Hủy các bước thay đổi phân vùng</span> để chay lại tiến trình phân vùng đã hướng dẫn, hoặc sửa đổi các thay đổi đã đề nghị (như được diễn tả bên dưới) cho việc tự phân vùng. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Phân vùng bằng tay</h4></div></div></div>
+<p>Một màn hình tương tự với hình được hiển thị đúng trên đây sẽ được trình bày nếu bạn chọn phân vùng bằng tay, trừ là bảng phân vùng đã có sẽ được hiển thị mà không có điểm lắp. Phần còn lại của tiết đoạn này sẽ diễn tả cách thiết lập bằng tay bảng phân vùng và cách sử dụng phân vùng cho hệ thống Debian mới. </p>
+<p>Nếu bạn chọn một đĩa rỗng không có phân vùng, cũng không có sức chứa rảnh, bạn sẽ được nhắc tạo một bảng phân vùng mới (cần thiết để tạo phân vùng mới). Sau đó, một dòng mới tên <span class="quote">“<span class="quote">CHỖ TRỐNG</span>”</span> nên xuất hiện trong bảng, bên dưới tên đĩa đã chọn. </p>
+<p>Nếu bạn chọn một phần sức chứa còn rảnh, bạn sẽ có dịp tạo một phân vùng mới. Tiến trình sẽ hỏi vài câu về kích cỡ, kiểu (chính hay hợp lý) và vị trí (đầu hay cuối của sức chứa còn rảnh) của phân vùng mới này. Sau đó, bạn sẽ xem toàn cảnh chi tiết về phân vùng mới. Thiết lập chính là <span class="guimenuitem">Dùng làm:</span>, mà quyết định nếu phân vùng sẽ chứa hệ thống tập tin, được dùng như là vùng trao đổi,<span class="phrase"> RAID phần mềm, LVM, hệ thống tập tin đã mật mã,</span> hoặc không được dùng bằng cách nào cả. Các thiết lập khác gồm điểm lắp, các tùy chọn lắp, cờ khả năng khởi động; những thiết lập được hiển thị phụ thuộc vào mục đích của phân vùng. Nếu bạn không thích những giá trị mặc định định sẵn, chỉnh sửa nhé. Chẳng hạn, bằng cách chọn tùy chọn <span class="guimenuitem">Dùng làm:</span>, bạn có khả năng chọn hệ thống tập tin khác cho phân vùng này, gồm tùy chọn dùng phân vùng cho vùng trao đổi,<span class="phrase"> RAID phần mềm, LVM,</span> hoặc không dùng nó bằng cách nào cả. Khi phân vùng mới ổn thỏa, hãy chọn <span class="guimenuitem">Phân vùng đã được thiết lập</span> rồi tiến trình sẽ trở về màn hình chính của <span class="command"><strong>partman</strong></span>. </p>
+<p>Muốn sửa đổi phân vùng này thì đơn giản hãy chọn phân vùng, việc đó hiển thị trình đơn cấu hình phân vùng. Đây là cùng một màn hình với điều cho khả năng tạo phân vùng mới, vì thế bạn có thể sửa đổi cùng những tùy chọn. Bạn cũng có khả năng thay đổi kích cỡ của phân vùng bằng cách chọn mục hiển thị kích cỡ phân vùng. Những hệ thống tập tin được biết là hoạt động được trong trường hợp này là ít nhất fat16, fat32, ext2, ext3 và vùng trao đổi. Trình đơn này cũng cho bạn có khả năng xoá phân vùng. </p>
+<p>Hãy kiểm tra xem bạn đã tạo ít nhất hai phân vùng: một điều cho hệ thống tập tin <span class="emphasis"><em>gốc</em></span> (mà phải được gắn kết như là <code class="filename">/</code>) và điều khác cho bộ nhớ <span class="emphasis"><em>trao đổi</em></span>. Nếu bạn quên gắn kết hệ thống tập tin gốc, chương trình <span class="command"><strong>partman</strong></span> sẽ không cho phép bạn tiếp tục, cho đến khi bạn sửa trường hợp này. </p>
+<p>If you boot in EFI mode but forget to select and format an EFI System Partition, <span class="command"><strong>partman</strong></span> will detect this and will not let you continue until you allocate one. </p>
+<p>Các khả năng của chương trình <span class="command"><strong>partman</strong></span> có thể được kéo dài bằng mô-đun cài đặt, phụ thuộc vào kiến trúc của hệ thống bạn. Vì vậy nếu bạn không thể xem mọi tính năng đã diễn tả, hãy kiểm tra xem nếu bạn đã tải mọi mô-đun cần thiết chưa (v.d. <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code>, hay <code class="filename">partman-lvm</code>). </p>
+<p>Sau khi bạn thấy trường hợp phân vùng là ổn thỏa, hãy chọn <span class="guimenuitem">Phân vùng xong và ghi các thay đổi vào đĩa</span> trong trình đơn phân vùng. Bạn sẽ xem bản tóm tắt các thay đổi trên đĩa, và được nhắc xác nhận các hệ thống tập tin nên được tạo như được yêu cầu. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Cấu hình thiết bị đa đĩa (RAID phần mềm)</h4></div></div></div>
+<p>Có nhiều đĩa cứng<a href="#ftn.id3446" class="footnote" name="id3446"><sup class="footnote">[8]</sup></a> trong máy tính thì bạn có thể sử dụng công cụ <span class="command"><strong>partman-md</strong></span> để thiết lập các ổ đĩa bằng một cách tăng hiệu suất và/hay tăng tính đáng tin cậy của dữ liệu. Kết quả được gọi là <em class="firstterm">Thiết bị Đa Đĩa</em> (hoặc theo biến thể nổi tiếng nhất <em class="firstterm">RAID phần mềm</em>). </p>
+<p>Thiết bị đa đĩa là cơ bản một bộ phân vùng nằm trên nhiều đĩa khác nhau, được kết hợp với nhau để tạo một thiết bị <span class="emphasis"><em>hợp lý</em></span>. Vì vậy thiết bị này có thể được dùng như một phân vùng chuẩn (tức là trong chương trình <span class="command"><strong>partman</strong></span> bạn có thể định dạng nó, gán điểm lắp v.v.). </p>
+<p>Lợi ích kết quả cũng phụ thuộc vào loại thiết bị MD được tạo. Hiện thời hỗ trợ những loại MD: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Mục đích chính là tăng hiệu suất. RAID0 chia tách tất cả các dữ liệu gửi đến ra các <em class="firstterm">lát</em> khác nhau, và phân phối chúng một cách đều đặn trên mỗi đĩa trong mảng đó. Bố trí này có thể tăng tốc độ của thao tác đọc/ghi, nhưng mà nếu chỉ một đĩa thất bại thì bạn mất <span class="emphasis"><em>tất cả</em></span> (một phần thông tin vẫn còn nằm trên các đĩa đang hoạt động, phần khác <span class="emphasis"><em>đã</em></span> nằm trên đĩa chết). </p>
+<p> Bình thường RAID0 dùng làm một phân vùng để chỉnh sửa ảnh động (một thao tác cần rất nhiều tài nguyên). </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> RAID1 thích hợp với thiết lập quan tâm chính với sự đáng tin cậy. Nó bao gồm vài (thường là hai) phân vùng kích cỡ đều mà mỗi phiên bản chứa chính xác cùng một tập hợp dữ liệu. Về cơ bản có ba kết quả. Đầu tiên, nếu một đĩa thất bại, bạn vẫn còn có dữ liệu trùng trên đĩa còn lại. Thứ hai, bạn chỉ có thể sử dụng một phần của khả năng thật (chính xác hơn, phần này là kích cỡ của phiên bản nhỏ nhất trong RAID đó). Thứ ba, các thao tác đọc tập tin được cân bằng theo trọng tải qua các đĩa, mà có thể tăng hiệu suất trên một máy phục vụ (v.d. máy phục vụ tập tin) mà thường phải thực hiện nhiều thao tác đọc đĩa hơn ghi. </p>
+<p> Tuỳ chọn bạn cũng có thể gán một đĩa bổ sung trong mảng, để thay thế đĩa chết trong trường hợp đó. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p>RAID5 thoả hiệp hữu ích tốc độ, sự đáng tin cậy và sự thừa dư dữ liệu. Mảng kiểu này chia tách tất cả các dữ liệu gửi đến ra các lát, và phân phối chúng một cách đều đặn trên tất cả trừ một đĩa ra (tương tự với RAID0). Khác với RAID0, mảng RAID5 cũng tính thông tin <em class="firstterm">tính chẵn lẻ</em>, mà được ghi vào đĩa còn lại. Đĩa chẵn lẻ không phải tĩnh (có thì được gọi là RAID4), nhưng biến đổi định kỳ, để thông tin tính chẵn lẻ được phân phối đều đặn trên tất cả các đĩa. Nếu một đĩa thất bại, phần thông tin còn thiếu vẫn có thể được tính từ dữ liệu còn lại và tính chẵn lẻ của nó. Mảng RAID5 phải bao gồm ít nhất ba phân vùng hoạt động. Tuỳ chọn bạn có thể gán một đĩa bổ sung trong mảng, để thay thế đĩa chết trong trường hợp đó. </p>
+<p> Như bạn thấy ở đây, mảng RAID5 có mức tin cậy tương tự với RAID1, còn làm ít sự thừa dư hơn. Mặt khác, so với RAID0 nó có thể chạy chậm hơn một ít khi ghi dữ liệu, do tính thông tin chẵn lẻ. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Mảng RAID6 tương tự với RAID5 trừ nó sử dụng hai thiết bị chẵn lẻ thay cho một. </p>
+<p> Một mảng RAID6 có khả năng phục hồi sau khi hai đĩa thất bại. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> Mảng RAID10 kết hợp chức năng chia dữ liệu ra các lát (như RAID0) và bảo tồn dữ liệu trùng (như RAID1). Nó tạo <em class="replaceable"><code>n</code></em> bản sao của dữ liệu gửi đến, và phân phối chúng qua các phân vùng khác nhau để mỗi thiết bị chứa nhiều nhất một bản sao. Giá trị mặc định của <em class="replaceable"><code>n</code></em> là 2, nhưng nó có thể được đặt thành một số khác trong chế độ cấp cao. Số các phiên bản được dùng phải là ít nhất <em class="replaceable"><code>n</code></em>. Mảng RAID10 có vài bố trí khác nhau để phân phối các bản sao dữ liệu. Mặc định là các bản sao <span class="emphasis"><em>ở gần</em></span>. Bố trí các bản sao ở gần thì phân phối tất cả các bản sao theo khoảng cùng một hiệu số trên mọi đĩa. Bố trí các bản sao <span class="emphasis"><em>ở xa</em></span> thì phân phối tất cả các bản sao theo hiệu số khác nhau trên mọi đĩa. Bản sao ở hiệu số chỉ sao chép lát dữ liệu, không phải bản sao riêng. </p>
+<p> Mảng RAID10 có thể được dùng để gây ra sự đáng tin cậy và sự thừa dư mà không cần tính chẵn lẻ. </p>
+</dd>
+</dl></div>
+<p> Để tóm tắt: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Kiểu</th>
+<th>Thiết bị tối thiểu</th>
+<th>Thiết bị phụ tùng</th>
+<th>Vẫn còn hoạt động sau khi đĩa thất bại ?</th>
+<th>Chỗ sẵn sàng</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>không</td>
+<td>không</td>
+<td>Kích cỡ của phân vùng nhỏ nhất được nhân số thiết bị trong RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>tùy chọn</td>
+<td>có</td>
+<td>Kích cỡ của phân vùng nhỏ nhất trong RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>tùy chọn</td>
+<td>có</td>
+<td>Kích cỡ của phân vùng nhỏ nhất nhận lên (số thiết bị trong RAID trừ một) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>tùy chọn</td>
+<td>có</td>
+<td>Kích cỡ của phân vùng nhỏ nhất nhận lên (số thiết bị trong RAID trừ hai) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>tùy chọn</td>
+<td>có</td>
+<td>Tổng số các phiên bản chia cho số các bản sao đoạn (mặc định là hai) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Muốn biết thêm về RAID kiểu phần mềm, hãy xem tài liệu RAID phần mềm Thế Nào <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>Để tạo một thiết bị đa đĩa, bạn cần phải chuẩn bị bằng cách đánh dấu các phân vùng đã muốn. (Làm như thế trong trình <span class="command"><strong>partman</strong></span>, trong trình đơn <span class="guimenu">Thiết lập phân vùng</span> nơi bạn nên chọn mục <span class="guimenu">Dùng làm:</span> → <span class="guimenuitem">khối tin vật lý cho RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Make sure that the system can be booted with the partitioning scheme you are planning. In general it will be necessary to create a separate file system for <code class="filename">/boot</code> when using RAID for the root (<code class="filename">/</code>) file system. Most boot loaders <span class="phrase">(including grub)</span> do support mirrored (not striped!) RAID1, so using for example RAID5 for <code class="filename">/</code> and RAID1 for <code class="filename">/boot</code> can be an option. </p></td></tr>
+</table></div>
+<p>Sau đó, bạn nên chọn mục <span class="guimenuitem">Cấu hình RAID phần mềm</span> trong trình đơn <span class="command"><strong>partman</strong></span> chính. (Trình đơn này sẽ xuất hiện chỉ sau khi bạn đánh dấu ít nhất một phân vùng sẽ được dùng là <span class="guimenuitem">khối tin vật lý cho RAID</span>.) Trên màn hình thứ nhất của tiện ích <span class="command"><strong>partman-md</strong></span>, đơn giản hãy chọn mục <span class="guimenuitem">Tạo thiết bị đa đĩa (MD)</span>. Bạn sẽ xem danh sách các thiết bị đa đĩa được hỗ trợ, trong đó bạn nên chọn một thiết bị (v.d. RAID1). Kết quả phụ thuộc vào kiểu thiết bị đa đĩa bạn đã chọn. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 là đơn giản — bạn sẽ xem danh sách các phân vùng RAID sẵn sàng, và công việc duy nhất của bạn là việc chọn những phân vùng sẽ tạo thành thiết bị đa đĩa. </p></li>
+<li class="listitem"><p>RAID1 phức tạp hơn một chút. Trước tiên, bạn sẽ được nhắc nhập số các thiết bị hoạt động và số các thiết bị bổ sung sẽ cộng lại để làm thiết bị đa đĩa (MD). Sau đó, trong danh sách các phân vùng RAID sẵn sàng, bạn cần phải chọn những phân vùng nên hoạt động, và những phân vùng là phụ tùng. Số đếm phân vùng đã chọn phải bằng với số được cung cấp về trước vài giây. Đừng lo lăng: nếu bạn làm lỗi, chọn số phân vùng khác, <code class="classname">debian-installer</code> không cho phép bạn tiếp tục cho đến khi bạn sửa vấn đề. </p></li>
+<li class="listitem"><p>RAID5 có thủ tục thiết lập tương tự với RAID1, trừ bạn cần phải sử dụng ít nhất <span class="emphasis"><em>ba</em></span> phân vùng hoạt động. </p></li>
+<li class="listitem"><p>RAID6 có thủ tục thiết lập tương tự với RAID1, trừ bạn cần thiết ít nhất <span class="emphasis"><em>bốn</em></span> phân vùng hoạt động. </p></li>
+<li class="listitem"><p>RAID10 lại có thủ tục thiết lập tương tự với RAID1 trừ trong chế độ cấp cao. Trong chế độ cấp cao, <code class="classname">debian-installer</code> sẽ nhắc bạn tạo bố trí. Bố trí có hai phần khác nhau. Phần trước là kiểu bố trí: <code class="literal">n</code> (sao chép ở gần), hay <code class="literal">f</code> (bản sao ở xa), hay <code class="literal">o</code> (sao chép theo hiệu số). Phần sau là số các bản sao dữ liệu cần làm. Số này không thể vượt quá số các thiết bị hoạt động, để phân phối mỗi bản sao trên một đĩa riêng. </p></li>
+</ul></div>
+<p>Rất có thể sử dụng đồng thời vài kiểu thiết bị đa đĩa (MD). Chẳng hạn, nếu bạn có ba đĩa cứng 200 GB cả dành cho thiết bị đa đĩa, mỗi đĩa chứa hai phân vùng 100 GB, trong trường hợp này bạn có khả năng kết hợp phân vùng thứ nhất trên cả ba đĩa cứng để tạo RAID0 (phân vùng soạn thảo ảnh động 300 GB nhanh) và sử dụng ba phân vùng khác (2 hoạt động và 1 phụ tùng) như là RAID1 (phân vùng 100 GB hơi đáng tin cậy cho <code class="filename">/home</code>). </p>
+<p>Sau khi bạn thiết lập được các thiết bị đa đĩa, bạn có thể <span class="guimenuitem">Kết thúc</span> tiện ích <span class="command"><strong>partman-md</strong></span> để lùi lại về trình <span class="command"><strong>partman</strong></span>, để tạo hệ thống tập tin trên các thiết bị đa đĩa mới, và gán cho chúng những thuộc tính thường như điểm lắp. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Cấu hình Bộ Quản lý Khối Tin Hợp Lý (LVM)</h4></div></div></div>
+<p>Nếu bạn làm việc với máy tính tại lớp quản trị hệ thống hay người dùng <span class="quote">“<span class="quote">cấp cao</span>”</span>, chắc là bạn đã xem trường hợp mà phân vùng nào (thường điều quan trọng nhất) không có đủ sức chứa còn rảnh, còn phân vùng khác nào được dùng rất ít, nên bạn phải quản lý trường hợp đó bằng cách di chuyển các thứ, tạo liên kết tượng trưng v.v. </p>
+<p>Để tránh trường hợp như vậy, bạn có thể sử dụng Bộ Quản Lý Khối Tin Hợp Lý (LVM). Nói đơn giản, bằng LVM bạn có thể kết hợp các phân vùng (<em class="firstterm">khối tin vật lý</em> trong thuật ngữ LVM) để tạo một đĩa ảo (được gọi như là <em class="firstterm">nhóm khối tin</em>), mà do đó có thể được chia cho nhiều phân vùng ảo (<em class="firstterm">khối tin hợp lý</em>). Điểm có ích là khối tin hợp lý (và các nhóm khối tin cơ sở) có thể chiều dài qua vài đĩa vật lý. </p>
+<p>Như thế thì khi bạn thấy biết cần thiết sức chứa thêm cho phân vùng <code class="filename">/home</code> 160GB cũ, bạn có thể thêm đơn giản một đĩa 300GB mới vào máy tính, nối lại nó với nhóm khối tin tồn tại, rồi thay đổi kích cỡ của khối tin hợp lý chứa hệ thống tập tin <code class="filename">/home</code> và thì đấy — các người dùng lại có chỗ còn rảnh trên phân vùng 460GB đã gia hạn. (Mẫu này là hơi đơn giản.) Có thông tin chi tiết trong tài liệu LVM Thế Nào <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>. </p>
+<p>Tiến trình thiết lập LVM trong <code class="classname">debian-installer</code> là hơi đơn giản, hoàn toàn được hỗ trợ bên trong <span class="command"><strong>partman</strong></span>. Đầu tiên, bạn cần phải đánh dấu (những) phân vùng cần dùng như là khối tin vật lý cho LVM.. (Làm như thế trong trình đơn <span class="guimenu">Thiết lập phân vùng</span> nơi bạn nên chọn mục <span class="guimenu">Dùng làm:</span> → <span class="guimenuitem">khối tin vật lý cho LVM</span>.) </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Be aware: the new LVM setup will destroy all data on all partitions marked with an LVM type code. So, if you already have an LVM on some of your disks, and want to install Debian additionally to that machine, the old (already existing) LVM will be wiped out! The same counts for partitions, which are (for any reason) misleadingly marked with an LVM type code, but contain something different (like an encrypted volume). You need to remove such disks from the system, before performing a new LVM setup! </p></td></tr>
+</table></div>
+<p>Khi bạn trở về màn hình <span class="command"><strong>partman</strong></span> chính, bạn sẽ xem một tùy chọn mới <span class="guimenuitem">Cấu hình Bộ Quản lý Khốí tin Hợp lý</span>. Khi bạn chọn mục đó, tiến trình sẽ nhắc bạn xác nhận thay đổi nào sắp làm trong bảng phân vùng, sau đó sẽ hiển thị trình đơn cấu hình LVM. Bên trên trình đơn có hiển thị một bản tóm tắt cấu hình LVM. Trình đơn chính nó tùy thuộc ngữ cảnh, chỉ hiển thị những hành động hợp lệ. Những hành động có thể là: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Hiển thị chi tiết cấu hình</span>: hiển thị cấu trúc thiết bị LVM, các tên và kích cỡ của khối tin hợp lý, v.v. </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Tạo nhóm khối tin</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Tạo khối tin hợp lệ</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Xóa nhóm khối tin</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Xóa khối tin hợp lệ</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Kéo dài nhóm khối tin</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Giảm nhóm khối tin</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Kết thúc</span>: trở về màn hình <span class="command"><strong>partman</strong></span> chính </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Hãy sử dụng những tùy chọn trong trình đơn đó để tạo một nhóm khối tin, rồi tạo các khối tin hợp lý bên trong nó. </p>
+<p>Sau khi bạn lùi lại về màn hình <span class="command"><strong>partman</strong></span> chính, khối tin hợp lý đã tạo nào sẽ được hiển thị đúng như phân vùng chuẩn (bạn cũng nên thao tác nó như vậy). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Cấu hình khối tin được mật mã</h4></div></div></div>
+<p><code class="classname">debian-installer</code> cho bạn khả năng thiết lập khối tin được mật mã. Mỗi tập tin bạn ghi vào phân vùng như vậy được lưu mật mã ngay vào thiết bị đó. Chỉ người dùng nhập <em class="firstterm">cụm từ mật khẩu</em> được nhập để tạo phân vùng gốc có quyền truy cập dữ liệu đã mật mã trên nó. Tính năng này bảo vệ dữ liệu nhạy cảm, trong trường hợp máy tính xách tay hay đĩa cứng bị mất cắp. Kẻ trộm có thể truy cập đĩa cứng một cách vật lý, nhưng mà nếu ta không biết cụm từ mật khẩu đúng, dữ liệu nằm trên đĩa cứng sẽ hình như ký tự ngẫu nhiên thôi. </p>
+<p>The two most important partitions to encrypt are: the home partition, where your private data resides, and the swap partition, where sensitive data might be stored temporarily during operation. Of course, nothing prevents you from encrypting any other partitions that might be of interest. For example <code class="filename">/var</code> where database servers, mail servers or print servers store their data, or <code class="filename">/tmp</code> which is used by various programs to store potentially interesting temporary files. Some people may even want to encrypt their whole system. Generally the only exception here is the <code class="filename">/boot</code> partition which must remain unencrypted, because historically there was no way to load the kernel from an encrypted partition. (GRUB is now able to do that, but <code class="classname">debian-installer</code> currently lacks native support for encrypted <code class="filename">/boot</code>. The setup is therefore covered in a <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separate document</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ghi chú rằng phân vùng được mật mã có hiệu suất ít hơn phân vùng không mật mã, vì dữ liệu cần phải được giải mật mã hay mật mã trong mỗi việc đọc hay ghi. Tác động hiệu suất phụ thuộc vào tốc độ của CPU, kiểu mật mã và độ dài của khoá. </p></td></tr>
+</table></div>
+<p>Để sử dụng khả năng mật mã, bạn cần phải tạo một phân vùng mới bằng cách chọn một phần sức chứa còn rảnh trong trình đơn phân vùng chính. Hoặc có thể chọn một phân vùng tồn tại (v.d. một phân vùng chuẩn, một khối tin hợp lý LVM hay một khối tin RAID). Trong trình đơn <span class="guimenu">Thiết lập phân vùng</span>, bạn cần chọn mục <span class="guimenuitem">khối tin vật lý cho sự mật mã</span> tại tùy chọn <span class="guimenu">Dùng làm:</span>. Trình đơn lúc đó thay đổi để hiển thị vài tùy chọn mật mã cho phân vùng đó. </p>
+<p>The encryption method supported by <code class="classname">debian-installer</code> is <em class="firstterm">dm-crypt</em> (included in newer Linux kernels, able to host LVM physical volumes). </p>
+<p>Let's have a look at the options available when you select encryption via <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. As always: when in doubt, use the defaults, because they have been carefully chosen with security in mind. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Mật mã: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Tùy chọn này cho bạn khả năng chọn thuật toán mật mã (<em class="firstterm">cipher</em>) sẽ được dùng để mật mã dữ liệu nằm trên phân vùng đó. <code class="classname">debian-installer</code> hiện thời hỗ trợ những thuật toán mật mã khối này: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em>, <em class="firstterm">twofish</em>. Khả năng của mỗi thuật toán ở ngoại phạm vị của tài liệu này, nhưng mà thông tin có thê giúp đỡ bạn quyết định là trong năm 2000, <span class="emphasis"><em>AES</em></span> được chọn bởi Viện Tiêu Chuẩn và Kỹ Thuật Quốc Gia Mỹ (American National Institute of Standards and Technology) là thuật toán mật mã tiêu chuẩn để bảo vệ thông tin nhạy cảm trong thế kỷ thứ hai mươi mốt. </p></dd>
+<dt><span class="term">Dài khoá:<strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Ở đây bạn có khả năng xác định độ dài của khoá mật mã. Khoá dài hơn thường mật mã mạnh hơn. Mặt khác, khoá dài hơn thường cũng giảm hiệu suất. Những độ dài khoá sẵn sàng phụ thuộc vào thuật toán mật mã. </p></dd>
+<dt><span class="term">Thuật toán IV: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>Thuật toán <em class="firstterm">Véc-tơ sở khởi</em> hay <em class="firstterm">IV</em> được dùng khi mật mã để đảm bảo việc áp dụng thuật toán cho cùng một <em class="firstterm">đoạn thô</em> với cùng một khoá sẽ luôn luôn tạo <em class="firstterm">đoạn mật mã</em> duy nhất. Mục đích là chặn người tấn công suy luận thông tin nào ra mẫu xảy ra nhiều lần trong dữ liệu đã mật mã. </p>
+<p>Trong những xen kẽ được cung cấp, <strong class="userinput"><code>xts-plain64</code></strong> hiện thời khó nhất bị tấn công bằng cách được biết. Hãy dùng xen kẽ khác chỉ khi bạn cần phải chắc là tương thích với hệ thống được cài đặt trước mà không có khả năng dùng thuật toán mới hơn. </p>
+</dd>
+<dt><span class="term">Khoá mật mã: <strong class="userinput"><code>Cụm từ mật khẩu</code></strong></span></dt>
+<dd>
+<p>Ở đây bạn có thể chọn kiểu khoá mật mã cho phân vùng này. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Cụm từ mật khẩu</span></dt>
+<dd><p>Khoá mật mã sẽ được tính<a href="#ftn.id3691" class="footnote" name="id3691"><sup class="footnote">[9]</sup></a> dựa vào cụm từ mật khẩu bạn có thể nhập vào lúc sau trong tiến trình. </p></dd>
+<dt><span class="term">Khoá ngẫu nhiên</span></dt>
+<dd>
+<p>Một khoá mật mã mới sẽ được tạo ra từ dữ liệu ngẫu nhiên khi nào bạn thử lắp phân vùng được mật mã. Tức là khi nào tắt máy tính, nội dung của phân vùng này sẽ bị mất khi khoá bị xoá bỏ ra bộ nhớ. (Tất nhiên, bạn có thể thử đoán khoá đó, dùng chương trình đoán, sự tấn công sức mạnh vũ phu, nhưng mà nếu thuật toán mật mã không có sở đoản chưa được biết, sự tấn công kiểu này không thể thành công trong đời sống của bạn.) </p>
+<p>Khoá ngẫu nhiên có ích đối với phân vùng trao đổi, vì bạn không cần nhớ cụm từ mật khẩu hoặc nhớ xoá sạch thông tin nhạy cảm ra phân vùng trao đổi trước khi tắt máy tính. Tuy nhiên, bạn sẽ cũng <span class="emphasis"><em>không</em></span> có khả năng dùng chức năng <span class="quote">“<span class="quote">ngưng đến đĩa</span>”</span> (suspend-to-disk) do hạt nhân Linux mới hơn cung cấp, vì không thể phục hồi dữ liệu được ngưng đã được ghi vào phân vùng trao đổi, khi khởi động lại. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Xoá bỏ dữ liệu : <strong class="userinput"><code>có</code></strong></span></dt>
+<dd><p>Quyết định nếu nội dung của phân vùng này nên được ghi đè bằng dữ liệu ngẫu nhiên trước khi thiết lập mật mã. Khuyên bạn dùng tính năng này, nếu không thì người tấn công có thể tím biết phần nào của phân vùng đang được dùng hay không. Hơn nữa, tính năng này làm cho khó hơn việc phục hồi dữ liệu còn lại của bản cài đặt trước.<a href="#ftn.id3706" class="footnote" name="id3706"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Sau khi bạn chọn những tham số thích hợp với những phân vùng đã mật mã, hãy trở về trình đơn phân vùng chính. Lúc đó, nên có một mục trình đơn mới: <span class="guimenu">Cấu hình khối tin đã mật mã</span>. Sau khi chọn nó, bạn sẽ được nhắc xác nhận việc xoá bỏ dữ liệu nằm trên phân vùng nào được đánh dấu để bị xoá sạch, cũng có lẽ một số hành động khác, như việc ghi một bảng phân vùng mới. Đối với phân vùng lớn, có thể kéo dài một lát. </p>
+<p>Sau đó, bạn sẽ được nhắc nhập một cụm từ mật khẩu cho phân vùng nào được cấu hình để sử dụng nó. Cụm từ mật khẩu tốt:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>có độ dài hơn 8 ký tự (dài hơn là mạnh hơn)</p></li>
+<li class="listitem"><p>phối hợp với nhau cả chữ hoa/thường, chữ số và ký tự khác</p></li>
+<li class="listitem"><p>không chứa từ nào nằm trong từ điển, hay từ nào liên quan dễ đến bạn (v.d. ngày sinh, sở thích, tên của gia đình hay bạn bè): không chứa từ nào chương trình có thể tìm kiếm hoặc người khác có thể đoán.</p></li>
+</ul></div>
+<p> </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Trước khi nhập cụm từ mật khẩu nào, bạn nên chắc là bàn phím được cấu hình đúng, để tạo ra những ký tự thích hợp. Nếu chưa chắc, bạn có thể chuyển đổi sang bàn giao tiếp ảo thứ hai, rồi gõ một số chữ tại dấu nhắc. Sự thử ra này đảm bảo bạn sẽ không bị ngạc nhiên sau này, chẳng hạn bằng cách thử nhập cụm từ mật khẩu bằng bố trí bàn phím tiếng Việt, khi bạn đã sử dụng bố trí tiếng Anh (hay bố trí tiếng Việt khác) để nhập cụm từ mật khẩu gốc trong khi cài đặt. Có lẽ bạn đã chuyển đổi sang bố trí khác vào lúc nào trong tiến trình cài đặt, hoặc bố trí thường dùng chưa được thiết lập khi bạn nhập cụm từ mật khẩu cho hệ thống tập tin gốc. Khuyên bạn luôn luôn kiểm tra xem bố trí bàn phím nào được dùng, trước khi nhập mật khẩu kiểu nào. </p></td></tr>
+</table></div>
+<p>Nếu bạn đã chọn dùng phương pháp khác với cụm từ mật khẩu để tạo những khoá mật mã, chúng sẽ được tạo ra vào lúc này. Vì hạt nhân có lẽ chưa tập hợp đủ dữ liệu ngẫu nhiên trong giai đoạn cài đặt sớm này, tiến trình này có thể mất nhiều thời gian. Bạn có thể tăng tốc độ bằng cách tạo ra dữ liệu ngẫu nhiên: v.d. bấm phím ngẫu nhiên, hoặc chuyển đổi sang trình bao trên bàn giao tiếp ảo thứ nhất rồi tạo ra giao thông trên mạng và đĩa (tải về tập tin, nạp tập tin lớn vào <code class="filename">/dev/null</code>). Tiến trình này được lặp lại cho mỗi phân vùng cần mật mã. </p>
+<p>After returning to the main partitioning menu, you will see all encrypted volumes as additional partitions which can be configured in the same way as ordinary partitions. The following example shows a volume encrypted via dm-crypt. </p>
+<div class="informalexample"><pre class="screen">
+Encrypted volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Now is the time to assign mount points to the volumes and optionally change the file system types if the defaults do not suit you. </p>
+<p>Pay attention to the identifiers in parentheses (<em class="replaceable"><code>sda2_crypt</code></em> in this case) and the mount points you assigned to each encrypted volume. You will need this information later when booting the new system. The differences between the ordinary boot process and the boot process with encryption involved will be covered later in <a class="xref" href="ch07s02.html" title="7.2. Gắn kết khối tin đã mật mã">Phần 7.2, “Gắn kết khối tin đã mật mã”</a>. </p>
+<p>Một khi bạn thấy sơ đồ phân vùng là ổn thoả, hãy tiếp tục cài đặt. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Cài đặt Hệ thống Cơ bản</h3></div></div></div>
+<p>Mặc dù giai đoạn này là đơn giản nhất, nó chiếm một phần đáng kể của tiến trình cài đặt vì nó tải về, thẩm tra và giải nén toàn bộ hệ thống cơ bản. Nếu máy tính hay sự kết nối mạng của bạn có chạy chậm, giai đoạn này có thể kéo dài một lát. </p>
+<p>Trong khi cài đặt hệ thống cơ bản, các thông điệp về cách giải nén gói và thiết lập được chuyển tiếp tới thiết bị cuối <strong class="userinput"><code>tty4</code></strong>. Có thể truy cập nó bằng cách bấm tổ hợp phím <span class="keycap"><strong>Alt trái</strong></span>+<span class="keycap"><strong>F4</strong></span>, và lùi lại về tiến trình cài đặt chính bằng <span class="keycap"><strong>Alt trái</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Các thông điệp kiểu giải nén/thiết lập được tạo ra trong giải đoạn này cũng được lưu vào bản ghi hệ thống <code class="filename">/var/log/syslog</code>. Bạn vẫn có khả năng kiểm tra những thông điệp ở đó nếu tiến trình cài đặt được chạy qua bàn giao tiếp nối tiếp. </p>
+<p>Trong khi cài đặt cơ bản, một hạt nhân Linux sẽ được cài đặt. Tại ưu tiên mặc định, trình cài đặt sẽ chọn cho bạn hạt nhân khớp tốt nhất phần cứng của bạn. Trong chế độ ưu tiên thấp hơn, bạn có khả năng chọn trong danh sách các hạt nhân có sẵn. </p>
+<p>Khi gói phần mềm được cài đặt dùng hệ thống quản lý gói thì mặc định là nó cũng cài đặt những gói do gói đó khuyến khích. Các gói khuyến khích không phải cần thiết cho chức năng lõi của phần mềm được chọn, nhưng mà chúng có phải tăng cường phần mềm đó thì (theo ý kiến của nhà duy trì gói) bình thường nên được cài đặt cùng với phần mềm đó. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vì lý do kỹ thuật, gói nào được cài đặt trong khi cài đặt hệ thống cơ bản thì được cài đặt mà không có các gói <span class="quote">“<span class="quote">Khuyến khích</span>”</span> tương ứng. Quy tắc nêu trên chỉ có hiệu lực sau thời điểm này trong quá trình cài đặt. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Cài đặt phần mềm thêm</h3></div></div></div>
+<p>Ở điểm thời này, bạn có một hệ thống có ích nhưng còn bị hạn chế. Phần lớn người dùng sẽ muốn cài đặt thêm phần mềm vào hệ thống, để điều hưởng tinh nó để tương thích với những nhu cầu của họ, và trình cài đặt cung cấp khả năng đó. Bước này có thể mất ngay cả lâu hơn tiến trình cài đặt hệ thống cơ bản nếu máy tính hay mạng có chạy chậm. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Cấu hình apt</h4></div></div></div>
+<p>One of the tools used to install packages on a Debian GNU/Linux system is the program <span class="command"><strong>apt</strong></span>, from the <code class="classname">apt</code> package<a href="#ftn.id3756" class="footnote" name="id3756"><sup class="footnote">[11]</sup></a>. Other front-ends for package management, like <span class="command"><strong>aptitude</strong></span> and <span class="command"><strong>synaptic</strong></span>, are also in use. These front-ends are recommended for new users, since they integrate some additional features (package searching and status checks) in a nice user interface. </p>
+<p>Chương trình <span class="command"><strong>apt</strong></span> phải được cấu hình để biết cần lấy gói từ đâu.  Kết quả của việc cấu hình này được ghi vào tập tin <code class="filename">/etc/apt/sources.list</code>, và bạn có thể xem lại nó và sửa đổi nó sau khi cài đặt xong. </p>
+<p>Nếu bạn đang cài đặt ở mức ưu tiên mặc định, trình cài đặt sẽ tự động quản lý phần lớn tiến trình cấu hình, dựa vào phương pháp cài đặt bạn dùng và có thể dùng các sự chọn bạn đã làm trước. Trong phần lớn trường hợp, trình cài đặt sẽ tự động thêm một máy nhân bản bảo mật và, nếu bạn đang cài đặt bản phát hành ổn định, một máy nhân bản cho dịch vụ cập nhật <span class="quote">“<span class="quote">stable-updates</span>”</span>. </p>
+<p>If you are installing at a lower priority (e.g. in expert mode), you will be able to make more decisions yourself. You can choose whether or not to use the security and/or stable-updates services, and you can choose to add packages from the <span class="quote">“<span class="quote">contrib</span>”</span>, <span class="quote">“<span class="quote">non-free</span>”</span>, and <span class="quote">“<span class="quote">non-free-firmware</span>”</span> sections of the archive. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Installing from more than one DVD image</h5></div></div></div>
+<p>If you are installing from a DVD image that is part of a larger set, the installer will ask if you want to scan additional installation media. If you have such additional media available, you probably want to do this so the installer can use the packages included on them. </p>
+<p>If you do not have any additional media, that is no problem: using them is not required. If you also do not use a network mirror (as explained in the next section), it can mean that not all packages belonging to the tasks you select in the next step of the installation can be installed. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Packages are included on DVD images in the order of their popularity. This means that for most uses only the first image of a set is needed and that only very few people actually use any of the packages included on the last images of a set. </p>
+<p>It also means that buying or downloading and burning a full DVD set is just a waste of money as you'll never use most of them. In most cases you are better off getting only the first 1 to 2 DVDs and installing any additional packages you may need from the Internet by using a mirror. </p>
+</td></tr>
+</table></div>
+<p>If you do scan multiple installation media, the installer will prompt you to exchange them when it needs packages from one that isn't currently in the drive. Note that only discs that belong to the same set should be scanned. The order in which they are scanned does not really matter, but scanning them in ascending order will reduce the chance of mistakes. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Sử dụng máy nhân bản mạng</h5></div></div></div>
+<p>Một câu sẽ được hỏi trong phần lớn tiến trình cài đặt là có nên dùng máy nhân bản mạng làm nguồn gói, hay không. Trong phần lớn trường hợp, trả lời mặc định là tốt, nhưng vẫn có một số ngoại lệ. </p>
+<p>If you are <span class="emphasis"><em>not</em></span> installing from a DVD image, you really should use a network mirror as otherwise you will end up with only a very minimal system. However, if you have a limited Internet connection it is best <span class="emphasis"><em>not</em></span> to select the <code class="literal">desktop</code> task in the next step of the installation. </p>
+<p>If you are installing from DVD, any packages needed during the installation should be present on the first DVD image. Use of a network mirror is optional. </p>
+<p>One advantage of adding a network mirror is that updates, that have occurred since the DVD images were created and have been included in a point release, will become available for installation, thus extending the life of your DVD set without compromising the security or stability of the installed system. </p>
+<p>In summary: selecting a network mirror is generally a good idea, except if you do not have a good Internet connection. If the current version of a package is available from installation media, the installer will always use that. The amount of data that will be downloaded if you do select a mirror thus depends on </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>những tác vụ bạn chọn trong bước tiếp theo của tiến trình cài đặt, </p></li>
+<li class="listitem"><p>những gói nào cần thiết cho các tác vụ đó, </p></li>
+<li class="listitem"><p>which of those packages are present on the installation media you have scanned, and </p></li>
+<li class="listitem"><p>whether any updated versions of packages included on the installation media are available from a mirror (either a regular package mirror, or a mirror for security or stable-updates). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Note that the last point means that, even if you choose not to use a network mirror, some packages may still be downloaded from the Internet if there is a security or stable-updates update available for them and those services have been configured. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Choosing a network mirror</h5></div></div></div>
+<p>Unless you chose not to use a network mirror, you will be presented with a list of network mirrors based upon your country selection earlier in the installation process. Choosing the offered default is usually fine. </p>
+<p>The offered default is deb.debian.org, which is not a mirror itself but will redirect to a mirror that should be up-to-date and fast. These mirrors support TLS (https protocol) and IPv6. This service is maintained by the Debian System Administration (DSA) team. </p>
+<p>A mirror can also be specified by hand by choosing <span class="quote">“<span class="quote">enter information manually</span>”</span> . You can then specify a mirror host name and an optional port number. This actually has to be a URL base, i.e. when specifying an IPv6 address, one has to add square brackets around it, for instance <span class="quote">“<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>If your computer is on an IPv6-only network (which is probably not the case for the vast majority of users), using the default mirror for your country might not work. All the mirrors in the list are reachable via IPv4, but only some of them can be used via IPv6. As connectivity of individual mirrors can change over time, this information is not available in the installer. If there is no IPv6 connectivity for the default mirror for your country, you can either try some of the other mirrors offered to you or choose the <span class="quote">“<span class="quote">enter information manually</span>”</span> option. You can then specify <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span> as the mirror name, which is an alias for a mirror available via IPv6, although it will probably not be the fastest possible one. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Lựa chọn và Cài đặt Phần mềm</h4></div></div></div>
+<p>Trong tiến trình cài đặt, bạn có dịp chọn phần mềm thêm cần cài đặt. Hơn là chọn mỗi gói phần mềm riêng trong <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    gói sẵn sàng, giai đoạn này của tiến trình cài đặt tập trung vào công việc chọn và cài đặt tập hợp phần mềm định sẵn để thiết lập nhanh máy tính của bạn để thực hiện nhiều tác vụ khác nhau. </p>
+<p>These tasks loosely represent a number of different jobs or things you want to do with your computer, such as <span class="quote">“<span class="quote">Desktop environment</span>”</span>, <span class="quote">“<span class="quote">Web server</span>”</span>, or <span class="quote">“<span class="quote">SSH server</span>”</span><a href="#ftn.id3818" class="footnote" name="id3818"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Sức chứa trên đĩa cần thiết cho công việc">Phần D.2, “Sức chứa trên đĩa cần thiết cho công việc”</a> lists the space requirements for the available tasks. </p>
+<p>Một số tác vụ nào đó có thể được chọn sẵn, dựa vào các đặc tính của máy tính vào đó bạn đang cài đặt hệ thống. Không đồng ý với các sự chọn này thì bạn vẫn có khả năng bỏ chọn điều nào. Tại điểm thời này, bạn ngay cả có thể chọn không cài đặt gì cả. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Mẹo]" src="images/tip.png"></td>
+<th align="left">Mẹo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Trong giao diện người dùng chuẩn của trình cài đặt, bạn có thể sử dụng phím dài để (bỏ) chọn công việc nào. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>The <span class="quote">“<span class="quote">Desktop environment</span>”</span> task will install a graphical desktop environment. </p>
+<p>By default, <code class="classname">debian-installer</code> installs the <span class="phrase">Gnome</span>  desktop environment. It is possible to interactively select a different desktop environment during the installation. It is also possible to install multiple desktops, but some combinations of desktop may not be co-installable. </p>
+<p>Note that this will only work if the packages needed for the desired desktop environment are actually available. Installing any of the available desktop environments this way should work fine if you are using a DVD image or any other installation method with a network mirror. </p>
+</td></tr>
+</table></div>
+<p>The various server tasks will install software roughly as follows. Web server: <code class="classname">apache2</code>; SSH server: <code class="classname">openssh</code>. </p>
+<p>The <span class="quote">“<span class="quote">Standard system utilities</span>”</span> task will install any package that has a priority <span class="quote">“<span class="quote">standard</span>”</span>. This includes a lot of common utilities that are normally available on any Linux or Unix system. You should leave this task selected unless you know what you are doing and want a really minimal system. </p>
+<p>Trong khi chọn ngôn ngữ, nếu một miền địa phương mặc định khác với <span class="quote">“<span class="quote">C</span>”</span> được chọn (v.d. « vi.UTF-8 ») thì <span class="command"><strong>tasksel</strong></span> kiểm tra có công việc địa phương hoá nào được xác định cho miền địa phương đó (v.d. « Tiếng Việt ») và tự động thử cài đặt những gói địa phương hoá có liên quan. Gồm có (v.d.) gói chứa danh sách từ hay phông chữ đặc trưng ngôn ngữ của bạn. Nếu một môi trường làm việc được chọn thì cũng cài đặt các gói địa phương hoá thích hợp (nếu có). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Starting with Debian Trixie, <code class="classname">debian-installer</code> allows to install Debian Pure Blends directly. There is an entry <span class="quote">“<span class="quote">Choose a Debian Blend for installation</span>”</span> at the bottom of the tasks list, which enables an additional choices dialog to appear, after <span class="command"><strong>tasksel</strong></span> has finished. </p>
+<p>In that dialog (<span class="command"><strong>blendsel</strong></span>), you can choose which blend to install, similar to this tasks selection. </p>
+<p>See <a class="ulink" href="https://www.debian.org/blends" target="_top">the Debian website</a> for more information about Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>Một khi chọn các tác vụ, hãy bấm <span class="guibutton">Continue</span>. Tại thời điểm này, chương trình <span class="command"><strong>apt</strong></span> sẽ cài đặt các gói thuộc về những tác vụ đã chọn. Nếu một chưng trình nào đó cần thêm thông tin từ người dùng, nó sẽ nhắc bạn trong quá trình này. </p>
+<p>You should be aware that especially the Desktop task is very large. Especially when installing from a netinst CD image in combination with a mirror for packages not on the netinst, the installer may want to retrieve a lot of packages over the network. If you have a relatively slow Internet connection, this can take a long time. There is no option to cancel the installation of packages once it has started. </p>
+<p>Even when packages are included on the installation image, the installer may still retrieve them from the mirror if the version available on the mirror is more recent than the one included on the image. If you are installing the stable distribution, this can happen after a point release (an update of the original stable release); if you are installing the testing distribution this will happen if you are using an older image. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Cho hệ thống khả năng khởi động</h3></div></div></div>
+<p>If you are installing a diskless workstation, obviously, booting off the local disk isn't a meaningful option, and this step will be skipped. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Phát hiện hệ điều hành khác</h4></div></div></div>
+<p>Trước khi cài đặt bộ nạp khởi động, trình cài đặt sẽ thử dò tìm hệ điều hành khác được cài đặt trên cùng một máy. Tìm được một hệ điều hành được hỗ trợ thì nó thông báo cho bạn trong bước cài đặt bộ nạp khởi động, và máy tính cũng được cấu hình để khởi động hệ điều hành khác đó, thêm vào Debian. </p>
+<p>Ghi chú rằng nhiều hệ điều hành khởi động trên cùng một máy chưa được hiểu hoàn toàn. Cách hỗ trợ tự động khả năng phát hiện và thiết lập bộ tải khởi động để khởi động hệ điều hành khác có thay đổi theo kiến trúc và ngay cả theo kiến trúc phụ. Nếu nó không hoạt động được, bạn nên xem tài liệu hướng dẫn sử dụng bộ nạp khởi động riêng để tìm thông tin thêm. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3866"></a>6.3.7.2. Install the <span class="command"><strong>Grub</strong></span> Boot Loader on the drive</h4></div></div></div>
+<p>The amd64 boot loader is called <span class="quote">“<span class="quote">grub</span>”</span>. Grub is a flexible and robust boot loader and a good default choice for new users and old hands alike. </p>
+<p>By default, grub will be installed on the UEFI partition/the Boot Record of the primary drive, where it will take over complete control of the boot process. If you prefer, you can install it elsewhere. See the grub manual for complete information. </p>
+<p>Không muốn cài đặt GRUB thì bấm <span class="guibutton">Go Back</span> để trở về trình đơn chính, và từ đó, chọn bộ nạp khởi động đã muốn. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Tiếp tục không có bộ nạp khởi động</h4></div></div></div>
+<p>Tùy chọn này có thể được dùng để làm xong tiến trình cài đặt ngay cả khi không có bộ nạp khởi động cần cài đặt, hoặc vì kiến trúc/kiến trúc phụ không cung cấp, hoặc vì không muốn nó (v.d. bạn sẽ dùng bộ nạp khởi động đã có). </p>
+<p>Nếu bạn định tự cấu hình bộ nạp khởi động, bạn nên kiểm tra xem tên của hạt nhân đã được cài đặt vào <code class="filename">/target/boot</code>. Bạn cũng nên kiểm tra xem nếu thư mục đó chứa <em class="firstterm">initrd</em> không; nếu có, bạn rất có thể phải báo bộ nạp khởi động sử dụng nó. Thông tin khác cần thiết là tên đĩa và phân vùng đã chọn cho hệ thống tập tin <code class="filename">/</code>, và nếu bạn đã chọn cài đặt <code class="filename">/boot</code> vào phân vùng riêng, tên hệ thống tập tin <code class="filename">/boot</code>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Cài đặt xong</h3></div></div></div>
+<p>Đây là bước cuối cùng trong tiến trình cài đặt Debian, trong đó trình cài đặt sẽ làm bất cứ công việc nào còn lại. Phần lớn là làm sạch sau <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Đặt đồng hồ hệ thống</h4></div></div></div>
+<p>Có lẽ trình cài đặt sẽ hỏi bạn nếu đồng hồ của máy tính được đặt thành thời gian thế giới (UTC) không. Bình thường trình đó tránh hỏi câu này, nếu có thể, và thử tính biết nếu đồng hồ được đặt thành thời gian thế giới (UTC) dựa vào thứ như hệ điều hành khác đã được cài đặt. </p>
+<p>In expert mode you will always be able to choose whether or not the clock is set to UTC.  <span class="phrase">Systems that (also) run Windows are normally set to local time. If you want to dual-boot, select local time instead of UTC.</span> </p>
+<p>Ở điểm thời này, <code class="classname">debian-installer</code> sẽ cũng thử lưu thời gian hiện thời vào đồng hồ phần cứng của hệ thống. Việc này sẽ được làm theo hoặc UTC hoặc giờ cục bộ, phụ thuộc vào sự chọn mới làm. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Khởi động lại hệ thống</h4></div></div></div>
+<p>You will be prompted to remove the boot media (CD, USB stick, etc) that you used to boot the installer. After that the system will be rebooted into your new Debian system. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Khắc phục sự số</h3></div></div></div>
+<p>Những thành phần được liệt kê trong phần này thường không được dùng trong tiến trình cài đặt, vì chúng đợi phía sau để giúp đỡ người dùng nếu họ gặp khó khăn. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Lưu bản ghi cài đặt</h4></div></div></div>
+<p>Cài đặt thành công thì các tập tin theo dõi được tạo trong tiến trình cài đặt sẽ được tự động lưu vào thư mục <code class="filename">/var/log/installer/</code> trong hệ thống Debian mới. </p>
+<p>Choosing <span class="guimenuitem">Save debug logs</span> from the main menu allows you to save the log files to a USB stick, network, hard disk, or other media. This can be useful if you encounter fatal problems during the installation and wish to study the logs on another system or attach them to an installation report. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Sử dụng trình bao và xem bản ghi</h4></div></div></div>
+<p>Có vài phương pháp khác nhau cho bạn sử dụng để tuy cấp trình bao trong khi chạy tiến trình cài đặt. Trên phần lớn hệ thống, nếu bạn không cài đặt qua bàn giao tiếp nối tiếp, phương pháp dễ nhất là chuyển đổi sang <span class="emphasis"><em>bàn giao tiếp ảo</em></span> thứ hai bằng cách bấm tổ hợp phím <span class="keycap"><strong>Alt trái</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3913" class="footnote" name="id3913"><sup class="footnote">[13]</sup></a> (trên bàn phím Mac, tổ hợp phím <span class="keycap"><strong>option</strong></span>+<span class="keycap"><strong>F2</strong></span>: các máy Mac mới hơn cũng có từ « alt » trên phím <span class="keycap"><strong>option</strong></span>.). Rồi bấm tổ hợp phím <span class="keycap"><strong>Alt trái</strong></span>+<span class="keycap"><strong>F1</strong></span> để trở về bộ cài đặt chính nó. </p>
+<p>Đối với trình cài đặt đồ họa, xem thêm <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Using the graphical installer">Phần 6.1.1, “Using the graphical installer”</a>. </p>
+<p>Nếu bạn không thể chuyển đổi bàn giao tiếp, trình đơn chính cũng có mục <span class="guimenuitem">Chạy trình bao</span> có thể dùng để khởi chạy một trình bao. Bạn có thể tới trình đơn chính từ phần lớn hộp thoại, bằng cách bấm cái nút <span class="guibutton">Go Back</span> một hay nhiều lần. Gõ lệnh <strong class="userinput"><code>exit</code></strong> (thoát) để đóng trình bao, và trở về trình cài đặt. </p>
+<p>Vào lúc này, bạn được khởi động từ đĩa RAM nên có sẵn một bộ tiện ích UNIX bị hạn chế để sử dụng. Có thể xem các chương trình sẵn sàng bằng cách chạy lệnh <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> (ls = liệt kê) hay <span class="command"><strong>help</strong></span> (trợ giúp). Trình bao này là bộ nhái trình bao Bourne tên <span class="command"><strong>ash</strong></span> có một số tính năng tốt đẹp như khả năng tự động gõ và lược sử. </p>
+<p>Để soạn thảo và xem tập tin, hãy dùng trình soạn thảo văn bản <span class="command"><strong>nano</strong></span>. Các tập tin ghi lưu cho hệ thống cài đặt nằm trong thư mục <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Mặc dù bạn có thể sử dụng bất cứ lệnh có sẵn trong trình bao, tùy chọn dùng trình bao chỉ sẵn sàng để giúp đỡ trong trường hợp bị lỗi hay gỡ lỗi. </p>
+<p>Việc tự chạy lệnh từ trình bao có thể gây trở ngạy cho tiến trình cài đặt nên gây ra lỗi hay việc cài đặt chưa hoàn thành. Đặc biệt bạn phải cho phép trình cài đặt kích hoạt vùng trao đổi, không bao giờ tự làm như thế từ trình bao. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installation over network-console</h3></div></div></div>
+<p>Một của những thành phần hay hơn là <em class="firstterm">network-console</em>. Nó cho bạn khả năng làm phần lớn tiến trình cài đặt qua mạng thông qua SSH. Việc sử dụng mạng ngụ ý là bạn sẽ phải thực hiện những bước cài đặt đâù tiên từ bàn điều khiển, ít nhất đến khi thiết lập khả năng chạy mạng (dù bạn có thể tự động hoá phần đó bằng phần <a class="xref" href="ch04s06.html" title="4.6. Cài đặt tự động">Phần 4.6, “Cài đặt tự động”</a>.) </p>
+<p>This component is not loaded into the main installation menu by default, so you have to explicitly ask for it. If you are installing from optical media, you need to boot with medium priority or otherwise invoke the main installation menu and choose <span class="guimenuitem">Load installer components from installation media</span> and from the list of additional components select <span class="guimenuitem">network-console: Continue installation remotely using SSH</span>. Successful load is indicated by a new menu entry called <span class="guimenuitem">Continue installation remotely using SSH</span>. </p>
+<p><span class="phrase">Sau khi chọn mục nhập mới này, bạn</span>  sẽ được nhắc nhập một mật khẩu mới sẽ được sử dụng để kết nối đến hệ thống cài đặt và để xác nhận nó. Đó là tất cả thôi. Lúc này bạn nên xem màn hình hướng dẫn bạn đăng nhập từ xa với tư cách là người dùng <span class="emphasis"><em>installer</em></span> với mật khẩu mới cung cấp. Một chi tiết quan trọng khác cần thấy biết trên màn hình này là vân tay của hệ thống này. Bạn cần phải truyền vân tay này một cách bảo mật cho người sẽ tiếp tục cài đặt từ xa. </p>
+<p>Nếu bạn chọn tiếp tục cài đặt cục bộ, vào lúc nào bạn có thể bấm phím <span class="keycap"><strong>Enter</strong></span>, mà sẽ mang bạn về trình đơn chính nơi bạn có thể chọn thành phần khác. </p>
+<p>Tại đầu khác, bạn cần phải cấu hình thiết bị cuối để sử dụng bảng mã UTF-8, vì hệ thống cài đặt sử dụng đó. Nếu bạn không làm như thế, vẫn còn có thể cài đặt từ xa, nhưng mà bạn có thể gặp một số đồ tạo tác lạ như viền hộp thoại bị hủy hay ký tự khác ASCII không thể đọc. Cách kết nối đến hệ thống cài đặt là dễ như gõ : </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>máy_cài_đặt</code></em></code></strong>
+</pre></div>
+<p> mà <em class="replaceable"><code>máy_cài_đặt</code></em> là hoặc tên hoặc địa chỉ IP của máy tính đang được cài đặt. Trước khi thật đăng nhập, vân tay của hệ thống ở xa sẽ được hiển thị, và bạn sẽ phải xác nhận nếu nó là đúng không. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Trình phục vụ trình bao bảo mật <span class="command"><strong>ssh</strong></span> trong tiến trình cài đặt có dùng một cấu hình mặc định mà không giữ các gói tin bảo tồn kết nối. Về nguyên tắc, kết nối đến hệ thống đang được cài đặt nên được giữ mở vô hạn. Tuy nhiên, trong một số trường hợp (phụ thuộc vào thiết lập mạng cục bộ), kết nối có thể bị mất sau một giai đoạn hoạt động. Một trường hợp thường gặp vấn đề này là khi có một dạng NAT (đặt địa chỉ mạng) ở vị trí giữa trình khách và hệ thống đang được cài đặt. Phụ thuộc vào điểm thời mất kết nối, bạn có thể hay không thể tiếp tục lại tiến trình cài đặt sau khi tái kết nối. </p>
+<p>Có lẽ bạn có thể tránh mất kết nối bằng cách thêm tùy chọn <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>giá_trị</code></em></code></strong> khi khởi chạy kết nối <span class="command"><strong>ssh</strong></span>, hoặc bằng cách thêm tùy chọn đó vào tập tin cấu hình <span class="command"><strong>ssh</strong></span>. Tuy nhiên, ghi chú rằng trong một số trường hợp, việc thêm tùy chọn này cũng có thể <span class="emphasis"><em>gây ra</em></span> kết nối bị mất (v.d. nếu các gói tin bảo tồn kết nối được gửi trong khi kết nối bị dừng ngắn, không thì <span class="command"><strong>ssh</strong></span> phục hồi kết nối) vậy chỉ dùng nó khi cần thiết. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nếu bạn cài đặt vào vài máy tính lần lượt, và chúng có cùng một địa chỉ IP hay tên máy, phần mềm <span class="command"><strong>ssh</strong></span> sẽ từ chối kết nối đến máy như vậy. Lý do là nó sẽ có vân tay khác, mà thường ngụ ý sự tấn công lừa gạt. Nếu bạn có chắc là nó không phải ngụ ý sự tấn công, bạn sẽ cần phải xoá dòng tương ứng ra tập tin liệt kê các máy được biết <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3976" class="footnote" name="id3976"><sup class="footnote">[14]</sup></a> rồi thử lại. </p></td></tr>
+</table></div>
+<p>Sau khi đăng nhập, bạn sẽ xem màn hình đầu tiên chứa hai khả năng: <span class="guimenuitem">Khởi chạy trình đơn</span> và <span class="guimenuitem">Khởi chạy hệ vỏ</span>. Điều thứ nhất mang bạn tới trình đơn cài đặt chính, nơi bạn có thể tiếp tục cài đặt như thường. Còn điều thứ hai khởi chạy một trình bao nơi bạn có thể thẩm tra và có lẽ sửa chữa hệ thống ở xa. Bạn nên sở khởi chỉ một phiên chạy SSH cho trình đơn cài đặt, nhưng có thể chạy nhiều phiên chạy cho các trình bao. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Cảnh báo]" src="images/warning.png"></td>
+<th align="left">Cảnh báo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Sau khi bạn đã khởi chạy tiến trình cài đặt một cách từ xa thông qua SSH. bạn không nên trở về phiên chạy cài đặt đang chạy trên bàn điều khiển cục bộ. Làm như thế có thể hỏng cơ sở dữ liệu chứa cấu hình của hệ thống mới, mà lần lượt có thể gây ra việc cài đặt bị lỗi hay lỗi trong hệ thống đã được cài đặt. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3158" class="footnote"><p><a href="#id3158" class="para"><sup class="para">[4] </sup></a> Nói kỹ thuật, khi một ngôn ngữ thuộc về nhiều miền địa phương có các mã quốc gia khác nhau. </p></div>
+<div id="ftn.id3166" class="footnote"><p><a href="#id3166" class="para"><sup class="para">[5] </sup></a>Ở mức ưu tiên Vừa và Thấp, bạn lúc nào cũng có dịp chọn miền địa phương đã muốn trong những điều sẵn sàng cho ngôn ngữ được chọn (nếu có nhiều điều).</p></div>
+<div id="ftn.id3172" class="footnote"><p><a href="#id3172" class="para"><sup class="para">[6] </sup></a>Miền địa phương thừa tự là miền địa phương cũ, sử dụng một bảng mã ký tự cũ như ISO 8859-1 (dùng bởi các ngôn ngữ vùng Tây Âu) hay EUC-JP (dùng bởi tiếng Nhật) thay cho UTF-8.</p></div>
+<div id="ftn.id3352" class="footnote"><p><a href="#id3352" class="para"><sup class="para">[7] </sup></a> Bộ cài đặt sẽ mật mã hoá nhóm khối tin LVM bằng một khoá AES 256 bit, và sử dụng khả năng hỗ trợ <span class="quote">“<span class="quote">dm-crypt</span>”</span> của hạt nhân. </p></div>
+<div id="ftn.id3446" class="footnote"><p><a href="#id3446" class="para"><sup class="para">[8] </sup></a> Thật là bạn có thể cấu tạo một thiết bị MD ngay cả từ các phân vùng nằm trên cùng một ổ đĩa vật lý, nhưng bố trí đó không có lợi ích. </p></div>
+<div id="ftn.id3691" class="footnote"><p><a href="#id3691" class="para"><sup class="para">[9] </sup></a> Dùng cụm từ mật khẩu là khoá hiện thời có nghĩa là phân vùng sẽ được thiết lập bằng <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3706" class="footnote"><p><a href="#id3706" class="para"><sup class="para">[10] </sup></a> Tuy nhiên, đừng giả sử nhà chuyên môn không thể phục hồi dữ liệu, ngay cả sau khi vật chứa quang từ bị ghi lại vài lần.</p></div>
+<div id="ftn.id3756" class="footnote"><p><a href="#id3756" class="para"><sup class="para">[11] </sup></a> Note that the program which actually installs the packages is called <span class="command"><strong>dpkg</strong></span>. However, this program is more of a low-level tool. <span class="command"><strong>apt</strong></span> is a higher-level tool, which will invoke <span class="command"><strong>dpkg</strong></span> as appropriate. It knows how to retrieve packages from your installation media, the network, or wherever. It is also able to automatically install other packages which are required to make the package you're trying to install work correctly. </p></div>
+<div id="ftn.id3818" class="footnote"><p><a href="#id3818" class="para"><sup class="para">[12] </sup></a> You should know that to present this list, the installer is merely invoking the <span class="command"><strong>tasksel</strong></span> program. It can be run at any time after installation to install more packages (or remove them), or you can use a more fine-grained tool such as <span class="command"><strong>aptitude</strong></span>. If you are looking for a specific single package, after installation is complete, simply run <strong class="userinput"><code>aptitude install <em class="replaceable"><code>package</code></em></code></strong>, where <em class="replaceable"><code>package</code></em> is the name of the package you are looking for. </p></div>
+<div id="ftn.id3913" class="footnote"><p><a href="#id3913" class="para"><sup class="para">[13] </sup></a> Tức là: bấm đồng thời phím sửa đổi <span class="keycap"><strong>Alt</strong></span> bên trái <span class="keycap"><strong>phím dài</strong></span> và phím chức năng <span class="keycap"><strong>F2</strong></span>. </p></div>
+<div id="ftn.id3976" class="footnote"><p><a href="#id3976" class="para"><sup class="para">[14] </sup></a> Lệnh này sẽ gỡ bỏ mục nhập đã tồn tại đối với một máy: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>tên_máy</code></em>|<em class="replaceable"><code>địa_chỉ_IP</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Giới thiệu về thành phần </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Nạp phần vững bị thiếu</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

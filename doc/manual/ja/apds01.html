@@ -1,0 +1,168 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.1. Linux のデバイス</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apd.html" title="付録D 雑多な事柄">
+<link rel="prev" href="apd.html" title="付録D 雑多な事柄">
+<link rel="next" href="apds02.html" title="D.2. タスクに必要なディスクの空き容量">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.1. Linux のデバイス</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録D 雑多な事柄</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linuxdevices"></a>D.1. Linux のデバイス</h2></div></div></div>
+<p>Linux では、<code class="filename">/dev</code> に特別なファイルがいろいろとあります。このファイルはデバイスファイルと呼ばれ、通常のファイルと異なる振る舞いをします。デバイスファイルの一般的なものは、ブロックデバイスとキャラクタデバイスです。このファイルは、ハードウェアにアクセスする実際のドライバ (Linux カーネルの一部) へのインターフェースです。その他、あまり一般的ではありませんが、<em class="firstterm">パイプ</em> というデバイスファイルの形式もあります。以下に、最も重要なデバイスファイルを一覧します。 </p>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sda</code></td>
+<td>第 1 ハードディスク</td>
+</tr>
+<tr>
+<td><code class="filename">sdb</code></td>
+<td>第 2 ハードディスク</td>
+</tr>
+<tr>
+<td><code class="filename">sda1</code></td>
+<td>最初のハードディスクの最初のパーティション</td>
+</tr>
+<tr>
+<td><code class="filename">sdb7</code></td>
+<td>2番目のハードディスクの7番目のパーティション</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sr0</code></td>
+<td>第 1 CD-ROM</td>
+</tr>
+<tr>
+<td><code class="filename">sr1</code></td>
+<td>第 1 CD-ROM</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">ttyS0</code></td>
+<td>シリアルポート 0、または COM1</td>
+</tr>
+<tr>
+<td><code class="filename">ttyS1</code></td>
+<td>シリアルポート 1、または COM2</td>
+</tr>
+<tr>
+<td><code class="filename">psaux</code></td>
+<td>PS/2 マウスデバイス</td>
+</tr>
+<tr>
+<td><code class="filename">gpmdata</code></td>
+<td>疑似デバイス、GPM (マウス) デーモンからのリピータデータ</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">cdrom</code></td>
+<td>CD-ROM ドライブへのシンボリックリンク</td>
+</tr>
+<tr>
+<td><code class="filename">mouse</code></td>
+<td>マウスデバイスファイルへのシンボリックリンク</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">null</code></td>
+<td>書き込まれたものをすべて消してしまうデバイス</td>
+</tr>
+<tr>
+<td><code class="filename">zero</code></td>
+<td>無限に 0 を読み出せるデバイス</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="device-mouse"></a>D.1.1. マウスのセットアップ</h3></div></div></div>
+<p>(gpm が動いている) Linux コンソールと X ウィンドウ環境の両方で、マウスを使用できます。通常、<code class="filename">gpm</code> や X サーバ自体をインストールするだけです。どちらも、マウスデバイスとして <code class="filename">/dev/input/mice</code> を使用するように設定されています。正しいマウスプロトコルは、gpm では <strong class="userinput"><code>exps2</code></strong>、X では <strong class="userinput"><code>ExplorerPS/2</code></strong> とされています。それぞれの設定ファイルは <code class="filename">/etc/gpm.conf</code> と <code class="filename">/etc/X11/xorg.conf</code> です。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">付録D 雑多な事柄 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> D.2. タスクに必要なディスクの空き容量</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

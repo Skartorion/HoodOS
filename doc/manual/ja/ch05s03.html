@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. 起動パラメータ</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch05.html" title="第5章 インストールシステムの起動">
+<link rel="prev" href="ch05s02.html" title="5.2. アクセシビリティ">
+<link rel="next" href="ch05s04.html" title="5.4. インストールプロセスのトラブルシューティング">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. 起動パラメータ</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第5章 インストールシステムの起動</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. 起動パラメータ</h2></div></div></div>
+<p>起動パラメータとは Linux カーネルのパラメータのことで、一般には周辺機器を適切に扱うために用います。ほとんどの場合、カーネルは周辺機器の情報を自動的に検出します。しかし、場合によっては少々カーネルを助けてあげないといけないこともあるのです。 </p>
+<p>システムを初めて起動する場合は、デフォルトの起動パラメータを試して (つまりなにもパラメータを設定せずに)、正確に動作するか観察してください。たいていはうまくいくと思います。なにか問題が起こったら、そのハードウェアに関する情報をシステムに伝えるためのパラメータを調べ、あとで再起動します。 </p>
+<p>多くの起動パラメータの情報は (曖昧なハードウェア用の tips 込みで)、<a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a> で見つけられます。本節は、最も顕著なパラメータの概要だけを含んでいます。いくつか共通のものは <a class="xref" href="ch05s04.html" title="5.4. インストールプロセスのトラブルシューティング">「インストールプロセスのトラブルシューティング」</a> 以下に含まれています。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. シリアルコンソールを起動</h3></div></div></div>
+<p>起動の際にシリアルコンソールを使うと、通常カーネルはこちらを自動検出します。ただし、シリアルコンソールから起動させたいコンピュータに、ビデオカード (フレームバッファ) とキーボードもついている場合には、カーネルに <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> という引数を渡す必要があると思います。<em class="replaceable"><code>device</code></em> は利用したいシリアルデバイスで、通常 <code class="filename">ttyS0</code> のようになります。 </p>
+<p>通信速度やパリティといった、シリアルポート用のパラメータを指定する必要があるかもしれません。例えば <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>。他の速度としては 57600 や 115200 が代表的です。このオプションを必ず <span class="quote">「<span class="quote">---</span>」</span> に続けて指定するようにしてください。そうすることで (インストーラーでそのブートローダがサポートされている場合) ブートローダでの設定がインストールしたシステムにコピーされるようになります。 </p>
+<p>インストーラーが使用する端末タイプと、端末エミュレータが一致するのを保証するため、パラメータ <strong class="userinput"><code>TERM=<em class="replaceable"><code>type</code></em></code></strong> を追加できます。インストーラーは以下の端末タイプしかサポートしないことに注意してください。<code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code>, <code class="literal">dumb</code> です。<code class="classname">debian-installer</code> でのシリアルコンソールのデフォルトは、<strong class="userinput"><code>vt102</code></strong> です。上記の端末タイプを提供しない IPMI や QEMU/KVM のような仮想化ツールを使用している場合、内部で <span class="command"><strong>screen</strong></span> セッションを開始できます。これにより、<code class="literal">vt102</code> によく似た <code class="literal">screen</code> 端末タイプに変換できます。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Debian Installer パラメータ</h3></div></div></div>
+<p>インストールシステムは、おそらく便利だと思われる、追加起動パラメータ<a href="#ftn.id1992" class="footnote" name="id1992"><sup class="footnote">[3]</sup></a>をいくつか認識します。 </p>
+<p>多くのパラメータは、カーネルコマンドラインオプションの制限を避けたり、パラメータの入力を簡単にするため、<span class="quote">「<span class="quote">短縮形</span>」</span> を持っています。パラメータに短縮形がある場合、(通常の)長い形式の後にかっこで囲っています。本マニュアルの例は、通常、短縮形も使用しています。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>このパラメータには、表示するメッセージのもっとも低い優先度を設定します。 </p>
+<p>デフォルトのインストールでは、<strong class="userinput"><code>priority=high</code></strong> を使用します。優先度が「高」のものと、「重要」のもののメッセージを表示し、「標準」や、「低」のメッセージはスキップします。問題にぶつかった場合、インストーラーは必要な優先度に調整します。 </p>
+<p>起動パラメータに <strong class="userinput"><code>priority=medium</code></strong> を追加すると、インストールメニューが表示され、インストールについて、さらに多くの制御を行うことができます。<strong class="userinput"><code>priority=low</code></strong> を使った場合は、すべてのメッセージを表示します (<span class="emphasis"><em>expert</em></span> 起動法と等価)。<strong class="userinput"><code>priority=critical</code></strong> の場合は、インストールシステムは重要なメッセージだけを表示し、大騒ぎせずに正しい設定をしようとします。 </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>この起動パラメータはインストーラーで使うユーザインターフェースを制御します。現在有効な設定は以下の通りです。</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> デフォルトのフロントエンドは <strong class="userinput"><code>DEBCONF_FRONTEND=newt</code></strong> です。シリアルコンソールでインストールするには、<strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> とすべきでしょう。専用に調整されている種類のインストールメディアでは限られたフロントエンドしか選択できないようになっている場合がありますが、<strong class="userinput"><code>newt</code></strong> フロントエンドと <strong class="userinput"><code>text</code></strong> フロントエンドは、デフォルトインストールメディアのほとんどで利用可能です。サポートしているアーキテクチャでは、グラフィカルインストーラーが <strong class="userinput"><code>gtk</code></strong> フロントエンドを使用します。 </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>この起動パラメータに 2 を設定すると、インストーラーの起動プロセス中に詳細なログを出力します。3 を設定すると、起動プロセスの要所でデバッグ用のシェルが利用できます。(シェルを終了すると起動プロセスを継続します) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>デフォルトです。</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>通常よりも詳細です。</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>デバッグ情報を大量に表示します。</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>詳細なデバッグを行うよう、ブートプロセスの様々な箇所でシェルが実行されます。起動を続けるにはシェルから抜けてください。 </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>これによりインストーラーは、ローカルファイルと同様に、指定したホストとポートを持つリモートの syslog に対して、ログメッセージを転送します。指定しない場合、ポートのデフォルト値を、標準 syslog ポートの 514 とします。 </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>インストーラーが、利用可能なメモリを元に算出するデフォルト値よりも、より高レベルな低メモリ (lowmem) レベルに強制するのに使用できます。有効な値は、1 か 2 です。<a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. 利用可能なメモリのチェック / 低メモリモード">「利用可能なメモリのチェック / 低メモリモード」</a> もご覧ください。 </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>インストーラーが tty2, tty3 の対話シェルを提供しないようにします。物理的セキュリティが限られている、無人インストールの際に便利です。 </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>いくつかのアーキテクチャでは、多くの言語でインストールを行うために、カーネルフレームバッファを使用します。フレームバッファが問題となるシステムの場合、パラメータ <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong> によってこの機能を無効にできます。bterm や bogl に関するエラーメッセージや、真っ暗な画面、インストールが始まって数分後にフリーズがおきたら問題の兆候です。 </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>テーマ (theme) はインストーラーのユーザインターフェースがどのように見えるか (色、アイコンなど) を決定します。どのテーマが利用できるかはフロントエンドによって異なります。現在、newt と gtk のフロントエンドには、(デフォルトの見た目のほかに) 目の不自由な方向けにデザインされた <span class="quote">「<span class="quote">dark</span>」</span> テーマのみがあります。起動時のパラメータに、<strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> と指定してテーマを設定してください (このためのブートメニューのキーボードショートカット <strong class="userinput"><code>d</code></strong> もあります)。 </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>デフォルトで <code class="classname">debian-installer</code> は、IPv6 オートネゴシエーションや DHCP により、ネットワークの設定を自動検出します。検出に成功すると、確認する機会がなく検出値を変更できません。自動設定が失敗する場合のみ、手動ネットワーク設定を行えます。 </p>
+<p>ローカルネットワークに IPv6 ルータや DHCP サーバがあるのに、それを回避したい場合 (例: 誤った値を返す等)、ネットワークの自動設定をせず (v4, v6 とも)、手動で情報を入力するには、<strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> パラメータを使用できます。 </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>PCMCIA サービスが原因で問題が発生する場合、<strong class="userinput"><code>false</code></strong> を設定することで、起動しないようにすることができます。いくつかのラップトップコンピュータには、そういう行儀悪さがあることが知られています。 </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>preconfiguration ファイルをダウンロードする URL を指定します。これは自動インストールで使用します。<a class="xref" href="ch04s06.html" title="4.6. 自動インストール">「自動インストール」</a> を参照してください。 </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>自動インストールで読み込む preconfiguration ファイルの PATH を指定します。<a class="xref" href="ch04s06.html" title="4.6. 自動インストール">「自動インストール」</a> を参照してください。 </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>preseed 中に質問を表示する場合には、<strong class="userinput"><code>true</code></strong> を設定します。事前設定ファイルのテストやデバッグに便利でしょう。これは、起動パラメータに渡すパラメータには影響を及ぼしませんが、特殊な文法が使えるようになります。詳細は、<a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. preseed を用いたデフォルト値変更">「preseed を用いたデフォルト値変更」</a> をご覧ください。 </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>通常 preseed の前に行われる質問を、ネットワークの設定が終わるまで遅らせます。自動インストールでこのパラメータを使用する際には、<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. 自動モード">「自動モード」</a> をご覧ください。 </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>シリアル端末や管理コンソールからインストール中に、通常の仮想コンソール (VT1 から VT6) は、通常 <code class="filename">/etc/inittab</code> で無効にされています。これを回避するには <strong class="userinput"><code>true</code></strong> をセットしてください。 </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>デフォルトで <code class="classname">debian-installer</code> は、再起動の前にインストールに使用した光学メディアを、自動的に排出します。自動的にそのようなメディアから起動しないようなシステムでは、これは必要ありませんし、特定の状況下では、困ることになる可能性もあります。例えば、光学ドライブがメディアを再び差し込むことができず、手で挿入するようユーザがいなければいけないのに、行うユーザがそこにいないなど。大半のスロットローディング、スリムライン、キャディタイプのドライブは、自動的にメディアをリロードできません。 </p>
+<p><strong class="userinput"><code>false</code></strong> に設定すると、自動排出を無効にできます。また、システムの初期インストール後に、光学ドライブから自動起動しないことを保証する必要があります。 </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p>このオプションを <strong class="userinput"><code>false</code></strong> にすると、インストール中でも、またインストール後でも、<span class="quote">「<span class="quote">推奨</span>」</span> パッケージを自動的にインストールしないように、パッケージ管理システムを設定します。<a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. 基本システムのインストール">「基本システムのインストール」</a> をご覧ください。 </p>
+<p>これにより、より無駄のないシステムを得られますが、通常可能であると期待する機能が欠落するかもしれないことに注意してください。完全な機能が必要な場合には、推奨パッケージを手でインストールすることになるでしょう。そのためこのオプションは、経験豊富なユーザにしか有用ではないでしょう。 </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>デフォルトでは、既知の gpg キーで認証されたリポジトリが、インストーラーには必要です。この認証を無効にするのに <strong class="userinput"><code>true</code></strong> と設定してください。<span class="bold"><strong>警告: 危険です。お勧めしません。</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>通常のインストールではなく、レスキューモードを実行する場合、<strong class="userinput"><code>true</code></strong> にセットしてください。<a class="xref" href="ch08s06.html" title="8.6. 起動しなくなってしまったシステムの回復">「起動しなくなってしまったシステムの回復」</a> をご覧ください。 </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. 起動パラメータで質問に答える</h3></div></div></div>
+<p>例外的に、インストール中の質問に起動パラメータで答を与えることができます。 これは、特殊な状況でのみ便利です。この方法の概要は、<a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. preseed が質問するブートパラメータの利用">「preseed が質問するブートパラメータの利用」</a> にあります。特殊な例を以下に示します。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>インストール中やインストール後で使用する、言語・国・ロケールを指定する方法はふたつあります。 </p>
+<p>最初の、最も簡単な方法は <code class="literal">locale</code> パラメータを渡すことだけです。言語や国はその値から導かれます。例えば、言語にドイツ語、国にスイスを指定する場合、<strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> とします (インストールしたシステムのデフォルトロケールは <code class="literal">de_CH.UTF-8</code> にセットされます)。制限は、言語、国、ロケールのすべての組み合わせを、この方法で得られるわけではないということです。 </p>
+<p>ふたつ目のもっと柔軟な選択肢は、<code class="literal">language</code> と <code class="literal">country</code> を別々に指定することです。この場合、特定のデフォルトロケールをインストールしたシステムに指定するため、任意に <code class="literal">locale</code> を加えられます。例: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong> </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>デフォルトではロードされないインストーラーコンポーネントを、自動的に読み込むのに使用します。追加コンポーネントの例として、<code class="classname">openssh-client-udeb</code> (インストール中に <span class="command"><strong>scp</strong></span> コマンドを使用できる) <span class="phrase">や、<code class="classname">ppp-udeb</code> (<a class="xref" href="apds05.html" title="D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール">「PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール」</a> をご覧ください) </span>が便利です。 </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>IPv6 オートネゴシエーションや DHCP を無効にし、静的ネットワーク設定を強制するには、<strong class="userinput"><code>true</code></strong> と設定します。 </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>デフォルトでインストーラーは、Debian のミラーサイトからファイルをダウンロードするのに http プロトコルを使用し、通常の優先度ではインストール中に ftp に変更できません。このパラメータに <strong class="userinput"><code>ftp</code></strong> と設定すると、インストーラに ftp を使用するように強制できます。一覧から ftp ミラーを選択できず、ホスト名を手入力しなければならないことに注意してください。 </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p><code class="literal">kde-desktop</code> タスクのような、タスク一覧に表示されないタスクを選択するのに使用します。さらなる情報は <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. ソフトウェアの選択・インストール">「ソフトウェアの選択・インストール」</a> をご覧ください。 </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. カーネルモジュールへパラメータを渡す</h3></div></div></div>
+<p>カーネル内にコンパイルされているドライバの場合、カーネルのドキュメントに記載されている方法でパラメータを渡せます。しかし、ドライバがモジュールとしてコンパイルされており、インストールしたシステムの起動時に、インストール時と比べてカーネルモジュールの読み込みが若干異なる場合、通常の方法ではモジュールにパラメータを渡せません。代わりに、インストーラーが認識できる特殊文法を使って適切な設定ファイルにパラメータを格納しなければなりません。パラメータは実際にモジュールをロードする際に利用されます。パラメータは自動的にインストールしたシステムに伝播します。 </p>
+<p>モジュールにパラメータを渡さなければならないというのは、本当にまれな状況だということに注意してください。ほとんどの場合、カーネルはシステムにあるハードウェアから得られる値を検出し、適切な値を設定してくれます。しかしある状況下では、未だにパラメータを手で設定しなければなりません。 </p>
+<p>モジュールにパラメータを設定する文法は以下のようになります。</p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>module_name</code></em>.<em class="replaceable"><code>parameter_name</code></em>=<em class="replaceable"><code>value</code></em>
+</pre></div>
+<p> 1 つないし複数のモジュールに、複数のパラメータを渡す場合は繰り返してください。例えば、古い 3Com のネットワークインターフェースカードで BNC (coax) を使用し、IRQ 10 を設定する場合は、以下のようにします。 </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. カーネルモジュールのブラックリスト化</h3></div></div></div>
+<p>時には、カーネルや udev が自動的にモジュールを読み込むのを防ぐために、ブラックリストに載せる必要があるかもしれません。目的の 1 つには、特定のモジュールが、あなたのハードウェアで問題を起こす場合が挙げられます。またカーネルに、同じデバイスに対して複数の異なるドライバがある場合もあります。ドライバが衝突したり、間違ったドライバを先に読み込んでしまうと、デバイスが正しく動作しない原因となります。 </p>
+<p><strong class="userinput"><code><em class="replaceable"><code>module_name</code></em>.blacklist=yes</code></strong> といった文法でモジュールをブラックリストに指定できます。これでそのモジュールが <code class="filename">/etc/modprobe.d/blacklist.local</code> にあるブラックリストに指定され、インストール中・インストールしたシステムの双方で、ブラックリストが有効になります。 </p>
+<p>インストールシステム自体が、モジュールをまだ読み込んでいる可能性があることに注意してください。エキスパートモードでインストールを行い、ハードウェア検出時にモジュールの一覧からモジュールの選択を外すことで、モジュールの読み込みを防げます。 </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id1992" class="footnote"><p><a href="#id1992" class="para"><sup class="para">[3] </sup></a> 現在のカーネル (2.6.9 以降) では、コマンドラインオプションを 32 個と環境オプションを 32 個使用できます。それを越えると、カーネルはパニックしてしまいます。また、カーネルコマンドライン全体で 255 文字という制限もあります。いずれも、制限を超えた場合は暗黙のうちに切り詰められる可能性があります。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. アクセシビリティ </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. インストールプロセスのトラブルシューティング</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Diagnosticar Problemas no Processo de Instalação</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Capítulo 5. Arrancar o Sistema de Instalação">
+<link rel="prev" href="ch05s03.html" title="5.3. Parâmetros de Arranque">
+<link rel="next" href="ch06.html" title="Capítulo 6. Utilizar o Instalador Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Diagnosticar Problemas no Processo de Instalação</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 5. Arrancar o Sistema de Instalação</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Diagnosticar Problemas no Processo de Instalação</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Fiabilidade de meios ópticos</h3></div></div></div>
+<p>Por vezes, e especialmente com leitores mais antigos, o instalador pode falhar o arranque a partir do disco óptico. O instalador pode também — mesmo após ter arrancado com sucesso a partir de tal disco — falhar o reconhecimento do disco ou durante a instalação retornar erros ao ler a partir deste. </p>
+<p>Existem muitas causas possíveis diferentes para estes problemas. Podemos apenas listar alguns dos problemas usuais e disponibilizar sugestões gerais acerca de como lidar com eles. O resto é consigo. </p>
+<p>Existem duas coisas muito simples que deve tentar primeiro. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Se o disco não arrancar, verifique se foi inserido corretamente e se não está sujo. </p></li>
+<li class="listitem"><p>Se o instalador falhar o reconhecimento do disco, tente apenas correr a opção <span class="guimenuitem">Detetar e montar o meio de instalação</span> uma segunda vez. É conhecido que alguns problemas relacionados com DMA em leitores de CD-ROM muito antigos se resolvem desta forma. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Se isto não funcionar, então tente as sugestões nas subseções abaixo. A maioria, mas não todas, das sugestões discutidas são válidas quer para CD-ROM quer para DVD. </p>
+<p>Se não puder pôr a instalação a funcionar a partir do disco óptico, tente um dos outros métodos de instalação que estão disponíveis. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2793"></a>5.4.1.1. Problemas usuais</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Alguns leitores de CD-ROM antigos não suportam a leitura a partir de discos que foram gravados a altas velocidades com um gravador de CDs moderno. </p></li>
+<li class="listitem"><p>Alguns leitores de CD-ROM muito antigos não trabalham corretamente se o <span class="quote">“<span class="quote">acesso direto à memória</span>”</span> (DMA) estiver ativo para eles. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2801"></a>5.4.1.2. Como investigar e talvez resolver problemas</h4></div></div></div>
+<p>Se o disco óptico falhar o arranque, tente as sugestões listadas abaixo. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Verifique se a sua BIOS/UEFI na realidade suporta arrancar a partir de discos ópticos (apenas problemático para sistemas muito antigos) e que o arranque a partir desse meio está ativado na BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>Se fez o download de uma imagem iso, verifique se o md5sum dessa imagem coincide com o que está listado para a imagem no ficheiro <code class="filename">MD5SUMS</code> que deverá estar presente no mesmo local de a partir de onde obteve a imagem. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> De seguida, verifique se o md5sum do disco gravado também coincide. O seguinte comando deverá funcionar. Utiliza o tamanho da imagem para ler o número de bytes correto a partir do disco. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Se, após o instalador ter arrancado com sucesso, o disco não for detetado, simplesmente tentar novamente poderá resolver o problema. Se tiver mais de um leitor óptico, tente mudar o disco para o outro leitor. Se isso não funcionar ou se o disco for reconhecido mas existirem erros quando ler a partir dele, tente as sugestões listadas abaixo. Para isto serão necessários alguns conhecimentos básicos de Linux. Para executar quaisquer dos comandos, deve primeiro mudar para a segunda consola virtual (VT2) e ativar lá a shell. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Mude para o VT4 ou veja o conteúdo de <code class="filename">/var/log/syslog</code> (utilize o <span class="command"><strong>nano</strong></span> como editor) para ver alguma mensagem de erro específica. Depois disso, veja a saída de <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Verifique na saída de <span class="command"><strong>dmesg</strong></span> se o seu leitor óptico foi reconhecido. Deverá ver algo como (estas linhas não têm necessariamente de ser consecutivas): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Se não vir algo como isso, existe a possibilidade do controlador a que o seu leitor está ligado não tenha sido reconhecido ou não seja suportado. Se souber qual o controlador que é necessário para este leitor, deve tentar carregá-lo manualmente utilizando o <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Verifique se existe um nó de dispositivo para o seu leitor óptico em <code class="filename">/dev/</code>. No exemplo acima, isto será <code class="filename">/dev/sr0</code>. Deverá também existir um <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Utilize o comando <span class="command"><strong>mount</strong></span> para verificar se o disco óptico já está montado; caso não esteja, tente montá-lo manualmente: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Verifique se existe alguma mensagem de erro após este comando. </p>
+</li>
+<li class="listitem">
+<p>Verifique se o DMA está atualmente ativo: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Um <span class="quote">“<span class="quote">1</span>”</span> na primeira coluna após <code class="literal">using_dma</code> significa que está ativado. Se estiver, tente desabilitá-lo: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Assegure-se que está no diretório para o dispositivo que corresponde ao seu leitor óptico. </p>
+</li>
+<li class="listitem"><p>Se existirem quaisquer problemas durante a instalação, tente verificar a integridade do meio de instalação usando a opção perto do fundo no menu principal do instalador. Esta opção também pode ser utilizada como um teste para verificar se o disco pode ser lido com fiabilidade. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2853"></a>5.4.2. Configuração de arranque</h3></div></div></div>
+<p>Se tiver problemas e o kernel bloquear durante o processo de arranque, não reconhecer periféricos que tenha, ou os drivers não forem devidamente reconhecidos, a primeira coisa a verificar são os parâmetros de arranque, como discutido na <a class="xref" href="ch05s03.html" title="5.3. Parâmetros de Arranque">Secção 5.3, “Parâmetros de Arranque”</a>. </p>
+<p>Em alguns casos, alguns problemas podem ser causados por falta de firmware de dispositivo (veja a <a class="xref" href="ch02s02.html" title="2.2. Dispositivos que Necessitam de Firmware">Secção 2.2, “Dispositivos que Necessitam de Firmware”</a> e a <a class="xref" href="ch06s04.html" title="6.4. Carregar Firmware em Falta">Secção 6.4, “Carregar Firmware em Falta”</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2860"></a>5.4.3. Software para Sintetizar Voz</h3></div></div></div>
+<p>Se o software de síntese de voz não funcionar, existe provavelmente um problema com a sua placa de som, normalmente devido ao controlador não estar incluído no instalador, ou porque tem nomes invulgares nos nomes de níveis de mistura que são definidos como sem som por predefinição. Deve submeter um relatório de bug que inclua a saída dos seguintes comandos, corra na mesma máquina mas onde seja conhecido que o sistema Linux tenha o som a funcionar (e.g., um live CD). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Problemas comuns de Instalação em <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Existem alguns problemas de instalação usuais que podem ser resolvidos ou evitados ao passar alguns parâmetros de arranque ao instalador. </p>
+<p>Se o seu ecrã começar a mostrar uma imagem estranha enquanto o seu kernel arranca, e.g. toda branca, toda preta, ou imagem de pixels coloridos, o seu sistema poderá ter uma placa gráfica problemática que não muda corretamente para o modo framebuffer. Neste caso, pode utilizar o parâmetro de arranque <strong class="userinput"><code>vga=normal nomodeset</code></strong>, para desabilitar a consola framebuffer. Durante a instalação apenas estará disponível um conjunto limitado de linguagens devido às caraterísticas limitadas da consola. Para mais detalhes, veja a <a class="xref" href="ch05s03.html" title="5.3. Parâmetros de Arranque">Secção 5.3, “Parâmetros de Arranque”</a> . </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2883"></a>5.4.4.1. Bloqueio do Sistema Durante a Fase de Configuração de PCMCIA</h4></div></div></div>
+<p>Alguns modelos de portáteis muito antigos produzidos pela Dell, são conhecidos por bloquearem quando a deteção de dispositivo PCMCIA tenta aceder a alguns endereços de hardware. Outros portáteis poderão mostrar problemas idênticos. Se experimentou tal problema e não necessita do suporte PCMCIA durante a instalação, poderá desativar PCMCIA utilizando o parâmetro de arranque <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Pode depois configurar a PCMCIA após a instalação estar concluída e excluir a gama de recursos que causa o conflito. </p>
+<p>Em alternativa, poderá iniciar o instalador em modo expert. Ser-lhe-á pedido para introduzir o intervalo de recursos que o seu hardware necessita. Por exemplo, se tem um dos portáteis Dell mencionados acima deverá introduzir <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>. Há uma lista com os intervalos mais comuns no <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a>. Note que tem de omitir as virgulas, se alguma, quando introduz estes valores no instalador. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Interpretar as Mensagens de Arranque do Kernel</h3></div></div></div>
+<p>Durante a sequência de arranque, poderá ver muitas mensagens sob a forma <code class="computeroutput">can't find <em class="replaceable"><code>alguma coisa</code></em> </code>, ou <code class="computeroutput"><em class="replaceable"><code>alguma coisa</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>alguma coisa</code></em></code>, ou até <code class="computeroutput">this driver release depends on <em class="replaceable"><code>alguma coisa</code></em></code>. A maioria destas mensagens são inofensivas. Visualiza-as porque o kernel para o sistema de instalação é feito para correr em computadores com muitos dispositivos periféricos diferentes. Obviamente, nenhum computador terá todos os dispositivos periféricos possíveis, então o sistema operativo poderá emitir algumas queixas enquanto procura por periféricos que não possui. Poderá também verificar uma pausa no sistema por algum tempo. Isto acontece quando aguarda pela resposta de um dispositivo, e o mesmo não está presente no seu sistema. Se achar que o tempo que demora a arrancar o sistema é inaceitavelmente longo, poderá depois criar um kernel personalizado <span class="phrase">(veja a <a class="xref" href="ch08s05.html" title="8.5. Compilando um Novo Kernel">Secção 8.5, “Compilando um Novo Kernel”</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Relatar Problemas de Instalação</h3></div></div></div>
+<p>Se avançar através da fase inicial de arranque mas não conseguir completar a instalação, poderá ser útil a opção <span class="guimenuitem">Guardar logs de debug</span> no menu. Permite-lhe guardar os registos de erros do sistema e informação de configuração do instalador para um meio de armazenamento, ou fazer o download destes utilizando um navegador da web. Esta informação poderá fornecer pistas acerca do que correu mal e de como o corrigir. Se estiver a submeter um relato de bug, poderá querer adicionar esta informação ao relato de bug. </p>
+<p>Outras mensagens pertinentes de instalação podem ser encontradas em <code class="filename">/var/log/</code> durante a instalação, e <code class="filename">/var/log/installer/</code> após o computador ter iniciado para o sistema instalado. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Submeter Relatórios de Instalação</h3></div></div></div>
+<p>Se ainda tiver problemas, por favor submeta um relatório de instalação (em Inglês, sempre que possível). Nós também encorajamos que sejam enviados relatórios de instalação mesmo que a instalação tenha sucesso, para que possamos obter tanta informação quanto possível sobre o maior número de configurações de hardware. </p>
+<p>Note que o seu relatório de instalação será publicado no Debian Bug Tracking System (BTS) e encaminhado para uma mailing list pública. Assegure-se que utiliza um endereço de e-mail que não se importa que seja tornado público. </p>
+<p>Se tem um sistema Debian funcional, a forma mais fácil de enviar um relatório de instalação é instalar os pacotes <code class="classname">installation-report</code> e <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>), configure o <code class="classname">reportbug</code> como é explicado na <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Enviar E-Mails Para Fora do Sistema">Secção 8.4.2, “Enviar E-Mails Para Fora do Sistema”</a>, e corra o comando <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Em alternativa pode utilizar este modelo quando preencher relatórios de instalação, e arquivar o relatório como relato de bug contra o pseudo-pacote <code class="classname">installation-reports</code>, enviando-o para <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Método de arranque: &lt;Como arrancou o instalador? CD/DVD? Pen USB? Rede?&gt;
+Versão da imagem: &lt;o melhor é o URL completo da imagem que obteve&gt;
+Data: &lt; Data e hora da instalação&gt;
+
+Máquina: &lt;Descrição da máquina (p.e. IBM Thinkpad R32)&gt;
+Processador:
+Memória:
+Partições: &lt;df -Tl irá servir; é preferida a tabela de partições em bruto&gt;
+
+Saída de lspci -knn (ou lspci -nn):
+
+Checklist da Instalação do Sistema Base:
+[O] = OK, [E] = Erro (por favor descreva abaixo), [ ] = não foi tentado
+
+Arranque inicial:                  [ ]
+Detetar placa de rede:             [ ]
+Configurar rede:                   [ ]
+Detetar meio de instalação:        [ ]
+Carregar módulos do instalador:    [ ]
+Detetar discos:                    [ ]
+Particionar discos:                [ ]
+Instalar o sistema base:           [ ]
+Configurar relógio/fuso horário:   [ ]
+Configurar utilizador/password:    [ ]
+Instalar tarefas:                  [ ]
+Instalar gestor de arranque:       [ ]
+Total da instalação:               [ ]
+
+Comentários/Problemas:
+
+&lt;Descrição da instalação, em prosa, e quaisquer pensamentos, comentários
+      e ideias que tenha tido durante a instalação inicial.&gt;
+
+</pre></div>
+<p> No relatório de bug, descreva qual é o problema, incluindo as últimas mensagens visíveis do kernel no caso do kernel bloquear. Descreva os passos que tomou que levaram o sistema ao estado do problema. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Parâmetros de Arranque </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> Capítulo 6. Utilizar o Instalador Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

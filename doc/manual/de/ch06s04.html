@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Fehlende Firmware nachladen</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch06.html" title="Kapitel 6. Den Debian-Installer verwenden">
+<link rel="prev" href="ch06s03.html" title="6.3. Die einzelnen Komponenten">
+<link rel="next" href="ch06s05.html" title="6.5. Anpassungen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Fehlende Firmware nachladen</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 6. Den Debian-Installer verwenden</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Fehlende Firmware nachladen</h2></div></div></div>
+<p>Wie in <a class="xref" href="ch02s02.html" title="2.2. Hardware, die Firmware erfordert">Abschnitt 2.2, „Hardware, die Firmware erfordert“</a> erwähnt, existiert teilweise Hardware, die es erfordert, dass Firmware in das Gerät geladen wird. In den meisten Fällen wird das Gerät nicht funktionieren, wenn diese Firmware nicht vorhanden ist; manchmal sind Basisfunktionen hiervon nicht betroffen, so dass das Laden der Firmware nur zum Aktivieren von erweiterter Funktionalität erforderlich ist. </p>
+<p>Beginnend mit Debian GNU/Linux 12.0 und gemäß dem <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Allgemeinen Beschluß in 2022 über nicht-freie Firmware</a> können offizielle Installationsmedien (wie die netinst-Images) nicht-freie Firmware-Pakete enthalten. Aber selbst wenn diese Pakete verfügbar sind, könnten trotzdem noch Firmware-Dateien fehlen. Oder Sie könnten netboot-Dateien verwenden, die keine solche Firmware-Pakete enthalten. </p>
+<p>Wenn ein Gerätetreiber Firmware anfordert, die nicht verfügbar ist, wird der <code class="classname">debian-installer</code> einen Dialog anzeigen, der anbietet, die fehlende Firmware nachzuladen. Wenn Sie dies auswählen, durchsucht der <code class="classname">debian-installer</code> verfügbare Geräte entweder nach einzelnen Firmware-Dateien oder nach Paketen, die Firmware enthalten. Gefundene Firmware wird in das dafür passende Verzeichnis (<code class="filename">/lib/firmware</code>) kopiert und das Treibermodul wird erneut geladen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Welche Geräte durchsucht und welche Dateisysteme dabei unterstützt werden, ist abhängig von der Systemarchitektur, der Installationsmethode und dem Fortschritt der Installation. Speziell während der frühen Schritte der Installation wird das Nachladen der Firmware höchstwahrscheinlich mit einem FAT-formatierten USB-Stick erfolgreich sein. <span class="phrase">Auf i386- und amd64-Systemen kann Firmware auch von einer MMC- oder SD-Karte geladen werden.</span> </p></td></tr>
+</table></div>
+<p>Beachten Sie, dass es auch möglich ist, das Laden der Firmware zu überspringen, wenn Sie wissen, dass das Gerät auch ohne funktioniert oder dass es während der Installation nicht benötigt wird. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3459"></a>6.4.1. Einen Datenträger vorbereiten</h3></div></div></div>
+<p>Die gängigste Methode, um solche Firmware zu laden, ist von einem Wechseldatenträger, wie einem USB-Stick. Um einen USB-Stick (oder ein anderes Medium wie eine Festplattenpartition) für diesen Zweck vorzubereiten, müssen Sie die Firmware-Dateien oder -Pakete entweder im Wurzelverzeichnis des Datenträgers oder in einem Verzeichnis namens <code class="filename">/firmware</code> ablegen. Das empfohlene Dateisystem ist FAT, da ziemlich sicher ist, dass dies während der frühen Installationsschritte bereits unterstützt wird. </p>
+<p>Tar-Archive (tarballs) und Zip-Dateien, die aktuelle Pakete für die gängigste Firmware enthalten, sowie die zugehörigen Metadaten (<code class="filename">dep11</code>-Verzeichnis), die eine saubere Detektion durch den Installer sicherstellen, sind verfügbar unter: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Laden Sie einfach das Tar- oder Zip-Archiv für das passende Release herunter und entpacken Sie es in das Dateisystem auf Ihrem Datenträger. </p>
+<p>Es ist auch möglich, einzelne Firmware-Dateien auf den Datenträger zu kopieren. Solche Dateien könnten Sie zum Beispiel von einem bereits installierten System bekommen oder von dem Hersteller Ihrer Hardware. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3470"></a>6.4.2. Firmware und das zu installierende System</h3></div></div></div>
+<p>Jede Firmware, die während der Installation geladen wird, wird auch automatisch auf das zu installierende System kopiert. In den meisten Fällen wird so sichergestellt, dass das Gerät, das die Firmware benötigt, auch nach dem Neustart in das neu installierte System korrekt funktioniert. Allerdings besteht die entfernte Möglichkeit, dass aufgrund von Versionsinkompatibilitäten die Firmware nicht geladen werden kann, wenn in dem installierten System ein anderer Kernel läuft als im Installer. </p>
+<p>Wurde die Firmware aus einem Firmware-Paket geladen, wird der <code class="classname">debian-installer</code> dieses Paket ebenfalls auf das zu installierende System kopieren und auch automatisch den non-free-firmware-Bereich des Paketarchivs zu APTs Konfigurationsdatei <code class="filename">sources.list</code> hinzufügen. Das hat den Vorteil, dass die Firmware auf dem neu installierten System automatisch aktualisiert wird, wenn später einmal eine neue Version verfügbar ist. </p>
+<p>Falls das Laden der Firmware während der Installation abgebrochen wurde, wird das entsprechende Gerät wahrscheinlich auch in dem neu installierten System nicht funktionieren, so lange Sie die Firmware (oder das Firmware-Paket) nicht von Hand nachinstalliert haben. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wenn die Firmware aus einer einzelnen Firmware-Datei nachgeladen wurde, wird sie im installierten System <span class="emphasis"><em>nicht</em></span> automatisch auf aktuellem Stand gehalten, außer Sie installieren das passende Firmware-Paket (falls es ein solches gibt) von Hand nach, nachdem die Debian-Installation abgeschlossen ist. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Das installierte System vervollständigen</h3></div></div></div>
+<p>Abhängig davon, wie die Installation durchgeführt wurde, ist die Notwendigkeit zur Installation von Firmware eventuell nicht erkannt worden, die entsprechende Firmware-Datei war vielleicht nicht verfügbar, oder Sie haben sich entschieden, die Firmware in dem Moment nicht zu installieren. In einigen Fällen kann es auch - trotz erfolgreich verlaufener Installation - beim nächsten Neustart trotzdem zu einem schwarzen Bildschirm oder einer verkrüppelten Anzeige kommen. Wenn das passiert, können Sie folgendes versuchen: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Geben Sie die Option <code class="code">nomodeset</code> auf der Kernel-Befehlszeile im Bootloader an. Dies könnte helfen, das System in einem reduzierten <span class="quote">„<span class="quote">Fallback-Grafikmodus</span>“</span> zu booten.</p></li>
+<li class="listitem"><p>Verwenden Sie die Tastenkombination <span class="keycap"><strong>Strg</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span>, um auf die virtuelle Konsole VT2 umzuschalten; Sie könnten so einen funktionsfähigen Login-Prompt bekommen.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Die einzelnen Komponenten </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Anpassungen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

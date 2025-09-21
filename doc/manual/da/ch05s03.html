@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Opstartsparametre</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Kapitel 5. Opstart af installationssystemet">
+<link rel="prev" href="ch05s02.html" title="5.2. Tilgængelighed">
+<link rel="next" href="ch05s04.html" title="5.4. Fejlsøgning af installationsprocessen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Opstartsparametre</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Kapitel 5. Opstart af installationssystemet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Opstartsparametre</h2></div></div></div>
+<p>Opstartsparametre er parametre for Linuxkernen, som generelt bruges til at sikre at perifære enheder håndteres korrekt. I de fleste tilfælde kan kernen automatisk registrere information om dine perifære enheder. Dog skal du i nogle tilfælde hjælpe kernen lidt. </p>
+<p>Hvis dette er den første gang du starter systemet op, så prøv standardparametrene for opstart (dvs. prøv uden at angive parametre) og se om det virker korrekt. Det vil det sikkert. Hvis ikke så kan du genstarte senere og kigge efter eventuelle specielle parametre som informerer dit system om dit udstyr. </p>
+<p>Information om mange opstartsparametre kan findes i <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, inklusive fif for sjældent udstyr. Dette afsnit indeholder kun en skitse med de mest indlysende parametre. Nogle gængse problemstillinger er inkluderet nedenfor i <a class="xref" href="ch05s04.html" title="5.4. Fejlsøgning af installationsprocessen">Afsnit 5.4, “Fejlsøgning af installationsprocessen”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Boot serial console</h3></div></div></div>
+<p>Hvis du starter op med en seriel konsol, vil kernen generelt registrere dette automatisk. Hvis du har et videokort (framebuffer) og et tastatur der også er tilsluttet computeren, som du ønsker at starte op via seriel konsol, så skal du måske sende argumentet <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> til kernen, hvor <em class="replaceable"><code>device</code></em> er din serielle enhed, hvilket normalt ligner noget ala <code class="filename">ttyS0</code>. </p>
+<p>Det kan være nødvendigt at angive parametre for den serielle port, såsom hastighed og paritet, for eksempel <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; andre typiske hastigheder kan være 57600 eller 115200. Vær opmærksom på at angive denne indstilling efter <span class="quote">“<span class="quote">---</span>”</span>, så at den kopieres ind i opstartsindlæserens konfiguration for det installerede system (hvis understøttet af installationsprogrammet for opstartsindlæseren). </p>
+<p>For at sikre at terminaltypen brugt af installationsprogrammet matcher din terminalemulator kan parameteren <strong class="userinput"><code>TERM=<em class="replaceable"><code>type</code></em></code></strong> tilføjes. Bemærk at installationsprogrammet kun understøtter de følgende terminaltyper: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> og <code class="literal">dumb</code>. Standarden for seriel konsol i <code class="classname">debian-installer</code> er <strong class="userinput"><code>vt102</code></strong>. Hvis du bruger en IPMI-konsol eller et virtualiseringsværktøj, som ikke selv tilbyder konvertering til sådanne terminaltyper, f.eks. QEMU/KVM, så kan du starte den inden i en <span class="command"><strong>screen</strong></span>-session. Den vil udføre oversættelse til <code class="literal">screen</code>-terminaltypen, som er meget tæt på <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Parametre for Debian-installationsprogrammet</h3></div></div></div>
+<p>Installationssystemet genkender nogle få yderligere opstartsparametre<a href="#ftn.id1994" class="footnote" name="id1994"><sup class="footnote">[3]</sup></a> hvilket kan være nyttigt. </p>
+<p>Et antal parametre har en <span class="quote">“<span class="quote">kort form</span>”</span> som hjælper med at undgå begrænsningerne i kernens indstillinger for kommandolinjen og gør indtastning af parametre nemmere. Hvis en parameter har en kort form, så vil den blive vist i parenteser bag den (normale) lange form. Eksempler i denne manual vil normalt også bruge den korte form. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (prioritet)</span></dt>
+<dd>
+<p>Denne parameter angiver den laveste prioritet beskeder kan have for at blive vist. </p>
+<p>Standardinstallationen bruger <strong class="userinput"><code>priority=high</code></strong>. Dette betyder at beskeder med både høj og kritisk prioritet bliver vist, mens beskeder med mellem og lav prioritet udelades. Hvis der opstår problemer, justerer installationsprogrammet prioriteten efter behov. </p>
+<p>Hvis du tilføjer <strong class="userinput"><code>priority=medium</code></strong> som opstartsparameter, vil du få vist installationsmenuen og opnå yderligere kontrol over installationen. Når <strong class="userinput"><code>priority=low</code></strong> bruges, vises alle beskeder (dette svarer til opstartsmetoden <span class="emphasis"><em>expert</em></span>. Med <strong class="userinput"><code>priority=critical</code></strong> vil installationssystemet kun vise kritiske beskeder og forsøge at udføre tingene korrekt uden hensyn til unødvendige detaljer. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Denne opstartsparameter kontroller typen af brugergrænseflade brugt af installationsprogrammet. De aktuelt mulige parameterindstillinger er: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> Standardbrugerfladen er <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> kan foretrækkes for serielle konsolinstallationer. Nogle specialiserede typer af installationsmedier tilbyder måske kun et begrærset udvalg af brugerflader, men brugerfladerne <strong class="userinput"><code>newt</code></strong> og <strong class="userinput"><code>text</code></strong> er tilgængelige på de fleste gængse installationsmedier. På arkitekturer som understøtter det, bruger det grafiske installationsprogram brugerfladen <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Angivelse af denne opstartsparameter til 2 vil medføre at installationsprogrammets opstartsprogram bliver udførligt logget. Indstilligen 3 vil gøre fejlsøgningsskaller tilgængelige på strategiske steder i opstartsprocessen. (Afslut skallerne for at fortsætte opstartsprocessen.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Dette er standarden.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Mere uddybende end normalt.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Masser af fejlsøgningsinformation.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Skaller køres på forskellige steder i opstartsprocessen for at tillade detaljeret fejlsøgning. Afslut skallen for at fortsætte opstarten. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Får installationsprogrammet til at sende logbeskeder til en ekstern systemlog på den angivne vært og port samt til en lokal fil. Hvis ikke angivet, er portstandarden systemloggens standardport 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Kan bruges til at tvinge installationsprogrammet til et lowmen-niveau højere end det installationsprogrammet sætter som standard baseret på tilgængelig hukommelse. Mulige værdier er 1 og 2. Se også <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Kontroller tilgænglig hukommelse / tilstand for lav hukommelse">Afsnit 6.3.1.1, “Kontroller tilgænglig hukommelse / tilstand for lav hukommelse”</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Forhindrer installationsprogrammet i at tilbyder interaktive skaller på tty2 og tty3. Nyttig for installationer der ikke overvåges og hvor fysisk sikkerhed er begrænset. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Nogle arkitekturer bruger kerneframebufferen til at tilbyder installation i et antal sprog. Hvis framebuffer medfører et problem på dit system, så kan du deaktivere funktionen med parameteren <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Symptomer på problemer er fejlbeskeder om bterm eller bogl, en blank skærm eller at installationen fryser efter et par minutter. </p></dd>
+<dt><span class="term">debian-installer/theme (tema)</span></dt>
+<dd><p>Et tema bestemmer hvordan brugergrænsefladen for installationsprogrammet ser ud (farver, ikoner etc.). Hvilke temaer der er tilgængelige afviger per brugerflade. Aktuelt har både newt- og gtk-brugerfladerne (udover standardudseendet) kun et yderligere tema navngivet <span class="quote">“<span class="quote">dark</span>”</span>, der blev designet for visuelt synshæmmede brugere. Angiv temaet ved at starte med <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (der er også genvejstasten <strong class="userinput"><code>d</code></strong> til dette i opstartsmenuen). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>Som standard vil <code class="classname">debian-installer</code> automatisk søge efter netværkskonfiguration via automatisk IPv6-konfiguration og DHCP. Hvis søgningen lykkes, vil du ikke få mulighed for at gennemse eller ændre de indhentede indstillinger. Du kan kun komme til manuel netværksopsætning den automatiske konfiguration mislykkes. </p>
+<p>Hvis du har en IPv6-router eller en DHCP-server på dit lokale netværk, men ønsker at undgå den fordi den f.eks. giver forkerte svar, så kan du bruge parameteren <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> til at forhindre automatisk konfiguration af netværket (hverken v4 eller v6) og indtaste informationen manuelt. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Sæt til <strong class="userinput"><code>false</code></strong> for at forhindre opstart af PCMCIA-tjenester, hvis dette medfører problemer. Nogle bærbare er kendt for denne opførsel. </p></dd>
+<dt><span class="term">preseed/url (adresse)</span></dt>
+<dd><p>Angiv adressen for en prækonfigurationsfil for at hente og bruge den for automatisering af installationen. Se <a class="xref" href="ch04s06.html" title="4.6. Automatisk installation">Afsnit 4.6, “Automatisk installation”</a>. </p></dd>
+<dt><span class="term">preseed/file (fil)</span></dt>
+<dd><p>Angiv stien til en forhåndskonfigurationsfil til indlæsning for automatisering af installationen. Se <a class="xref" href="ch04s06.html" title="4.6. Automatisk installation">Afsnit 4.6, “Automatisk installation”</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Sæt til <strong class="userinput"><code>true</code></strong> for at vise spørgsmål selv hvis de er blevet forudfyldt. Kan være nyttig for test eller fejlsøgning af en forhåndskonfigureret fil. Bemærk at dette ikke vil have effekt på parametre som sendes som opstartsparametre, men for disse kan en speciel syntaks bruges. Se <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Brug af forhåndskonfiguration til at ændre standardværdier">Afsnit B.5.2, “Brug af forhåndskonfiguration til at ændre standardværdier”</a> for detaljer. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Forsink spørgsmål som der normalt stilles før forudfyldning er muligt indtil efter at netværket er konfigureret. Se <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Auto-tilstand">Afsnit B.2.3, “Auto-tilstand”</a> for detaljer om brugen af denne til automatisering af installationer. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Under installationer fra seriel eller håndteringskonsol er de regulære virtuelle konsoller (VT1 til VT6) normalt deaktiveret i <code class="filename">/etc/inittab</code>. Sæt til <strong class="userinput"><code>true</code></strong> for at forhindre dette. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>Som standard, før genstart, så skubber <code class="classname">debian-installer</code> automatisk det optiske medie ud, som blev brugt under installationen. Dette kan være unødvendigt, hvis systemet ikke automatisk starter op fra et sådant medie. I nogle tilfælde kan det endda være uønsket, for eksempel hvis det optiske drev ikke kan genindsætte mediet selv og hvis brugeren ikke er der til at gøre det manuelt. Mange slot-indlæsende og tynde drev samt drev i caddy-stil kan ikke genindlæse mediet automatisk. </p>
+<p>Sæt til <strong class="userinput"><code>false</code></strong> for at deaktivere automatisk skub ud, og vær opmærksom på at du skal sikre at systemet ikke automtatisk starter op fra det optiske drev efter den oprindelige installation. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (anbefalinger)</span></dt>
+<dd>
+<p>Ved at angive denne indstilling til <strong class="userinput"><code>false</code></strong>, vil pakkehåndteringssystemet blive konfigureret til ikke automatisk at installere <span class="quote">“<span class="quote">Recommends (anbefalinger)</span>”</span>, både under installationen og for det installerede system. Se også <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Installation af basissystemet">Afsnit 6.3.5, “Installation af basissystemet”</a>. </p>
+<p>Bemærk at denne indstilling giver et mindre omfattende system, men kan også resultere i at funktioner mangler, som du ellers normalt ville forvente var tilgængelige. Du skal måske installere nogle af de anbefalede pakker for at få den fulde funktionalitet. Denne indstilling bør derfor kun bruges af meget erfarne brugere. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Som standard kræver installationsprogrammet at arkiver godkendes med en kendt gpg-nøgle. Angiv som <strong class="userinput"><code>true (sand)</code></strong> for at deaktivere den godkendelse. <span class="bold"><strong>Advarsel: usikker, kan ikke anbefales.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>Angiv til <strong class="userinput"><code>true (sand)</code></strong> for at gå i redningstilstand fremfor at udføre en normal installation. Se <a class="xref" href="ch08s06.html" title="8.6. Gendannelse af et ødelagt system">Afsnit 8.6, “Gendannelse af et ødelagt system”</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Brug af opstartsparametre til at besvare spørgsmål</h3></div></div></div>
+<p>Med nogle undtagelser, kan en værdi angives ved opstartsprompten for spørgsmål stillet under installationen, dog er dette kun virkelig nyttigt i specifikke tilfælde. Generelle instruktioner om hvordan dette udføres kan findes i <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Brug af opstartsparametre til at forhåndskonfigurere spørgsmål">Afsnit B.2.2, “Brug af opstartsparametre til at forhåndskonfigurere spørgsmål”</a>. Nogle specifikke eksempler vises nedenfor. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (sprog), </span><span class="term">debian-installer/country (land), </span><span class="term">debian-installer/locale (sted)</span>
+</dt>
+<dd>
+<p>Der er to måder at angive sproget på, land og sted at bruge for installationen og det installerede system. </p>
+<p>Den første og nemmeste måde er kun at sende parameteren <code class="literal">locale</code>. Sprog og land vil så blive udledt fra dens værdi. Du kan for eksempel bruge <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> til at vælge tysk som sprog og Schweitz som land (<code class="literal">de_CH.UTF-8</code> vil blive angivet som standardsted for det installerede system). Begrænsningen er at ikke alle mulige kombinationer af sprog, land og sted kan opnås på denne måde. </p>
+<p>Den anden, mere fleksible indstilling er at angive <code class="literal">sprog</code> og <code class="literal">land</code> adskilt. I dette tilfælde kan <code class="literal">sted</code> valgfrit tilføjes for at angive et specifikt standardsted for det installerede system. Eksempel: <strong class="userinput"><code>language=en country=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (moduler)</span></dt>
+<dd><p>Kan bruges til automatisk at indlæse installationskomponenter, som ikke indlæses som standard. Eksempler på valgfrie komponenter, som kan være nyttige er <code class="classname">openssh-client-udeb</code> (så du kan bruge <span class="command"><strong>scp</strong></span> under installationen)<span class="phrase"> og <code class="classname">ppp-udeb</code> (se <a class="xref" href="apds05.html" title="D.5. Installation af Debian GNU/Linux med brug af PPP over Ethernet (PPPoE)">Afsnit D.5, “Installation af Debian GNU/Linux med brug af PPP over Ethernet (PPPoE)”</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Angiv som <strong class="userinput"><code>true (sand)</code></strong> hvis du ønsker at deaktivere automatisk IPv6-konfiguration og DHCP og i stedet for fremtvinge statisk netværkskonfiguration. </p></dd>
+<dt><span class="term">mirror/protocol (protokol)</span></dt>
+<dd><p>Som standard vil installationsprogrammet bruge http-protokollen til at hente filer fra Debian-spejle og ændring af dette til ftp er ikke muligt under installationer med normal prioritet. Ved at angive denne parameter til <strong class="userinput"><code>ftp</code></strong>, så kan du tvinge installationsprogrammet til at bruge den protokol i stedet for. Bemærk at du ikke kan vælge et ftp-spejl fra en liste, du skal indtaste værtsnavnet manuelt. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (opgaver)</span></dt>
+<dd><p>Kan bruges til at vælge opgaver, som ikke er tilgængelige fra den interaktive opgaveliste, såsom opgaven <code class="literal">kde-desktop</code>. Se <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Valg af og installation af programmer">Afsnit 6.3.6.2, “Valg af og installation af programmer”</a> for yderligere information. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Sende parametre til kernemoduler</h3></div></div></div>
+<p>Hvis drivere er kompileret ind i kernen, så kan du sende parametre til dem som beskrevet i kernedokumentationen. Dog er det ikke muligt at sende parametre til moduler, som du normalt ville gøre, hvis drivere er kompileret som moduler og fordi kernemoduler indlæses en smule anderledes under installation end under opstart fra et installeret system. I stedet skal du bruge en speciel syntaks der genkendes af installationsprogrammet, som så vil sikre at parametrene er gemt i de korrekte konfigurationsfiler og vil derfor blive brugt når modulerne rent faktisk indlæses. Parametrene vil også automatisk blive videregivet til konfigurationen for det installerede system. </p>
+<p>Bemærk at det er ret sjældent at parametere skal sendes til moduler. I de fleste tilfælde vil kernen kunne finde frem til udstyret i et system og angive gode standarder via denne metode. I nogle situationer kan det dog være nødvendigt at angive parametre manuelt. </p>
+<p>Syntaksen for brug af modulparametre er: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>module_name</code></em>.<em class="replaceable"><code>parameter_name</code></em>=<em class="replaceable"><code>value</code></em>
+</pre></div>
+<p> Hvis du skal sende flere parametre til den samme eller forskellige moduler, så gentag bare dette. For eksmepel, for at angive at et gammelt 3Com-netværksgrænsefladekort skal bruge BNC-forbindelsen (coax) og IRQ 10, skal du skrive: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Sortliste kernemoduler</h3></div></div></div>
+<p>Undertiden kan det være nødvendigt at sortliste et modul for at forhindre det i at blive indlæst automatisk af kernen og udev. En årsag kunne være at et specifik modul medfører problemer med dit udstyr. Kernen viser også undertiden to forskellige drivere for den samme enhed. Dette kan medføre at enheden ikke fungerer korrekt, hvis driverne er i konflikt eller hvis den forkerte driver indlæses først. </p>
+<p>Du kan sortliste et modul med den følgende syntaks: <strong class="userinput"><code><em class="replaceable"><code>modulnavn</code></em>.blacklist=yes</code></strong>. Dette vil gøre, at modulet bliver sortlistet i <code class="filename">/etc/modprobe.d/blacklist.local</code> både under installationen og for det installerede system. </p>
+<p>Bemærk at et modul stadig kan blive indlæst af selve installationssystemet. Du kan forhindre dette i at ske ved at køre installationen i eksperttilstand og fravælge modulet fra listen over moduler vist under detektionsfaserne for udstyret. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id1994" class="footnote"><p><a href="#id1994" class="para"><sup class="para">[3] </sup></a> med aktuelle kerner (2.6.9 eller nyere) kan du bruge 32 kommandolinjeindstillinger og 32 miljøindstillinger. Hvis disse tal overskrides går kernen i panik. Der er også en grænse på 255 tegn for hele kernekommandolinjen, alt over denne grænse kan blive afkortet. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Tilgængelighed </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Fejlsøgning af installationsprocessen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

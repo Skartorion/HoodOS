@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. 加载缺失的固件</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch06.html" title="第 6 章 使用 Debian 安装程序">
+<link rel="prev" href="ch06s03.html" title="6.3. 使用单独的组件">
+<link rel="next" href="ch06s05.html" title="6.5. 个性化配置">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. 加载缺失的固件</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 6 章 使用 Debian 安装程序</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. 加载缺失的固件</h2></div></div></div>
+<p>正如 <a class="xref" href="ch02s02.html" title="2.2. 需要固件的设备">第 2.2 节 “需要固件的设备”</a> 里面所说，有些设备需要加载固件。大部分情况下，如果没有固件设备就无法工作；有时没有固件不会影响基本的功能，但增强功能就无法使用。 </p>
+<p>根据 <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022 年关于非自由固件的一般性决议</a>，从 Debian GNU/Linux 12.0 开始，官方安装映像（如网络安装映像）可以包含非自由固件软件包。即使包含了那些固件软件包，仍可能缺少一些固件文件。或者您也可以使用 netboot 文件，它不包含固件软件包。 </p>
+<p>如果没有设备驱动程序所需的固件，<code class="classname">debian-installer</code> 将显示对话框要求加载缺失的固件。假如选取了选项，<code class="classname">debian-installer</code> 将扫描现有设备松散的固件文件或包含固件的软件包。如果搜索到，固件会被复制到正确的位置 (<code class="filename">/lib/firmware</code>)，然后加载驱动程序模块。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>具体哪些设备会被扫描和支持哪个文件系统，取决于系统的架构、安装方法和安装的阶段。特别是在安装的早期阶段，从 FAT 格式的 U 盘加载固件更容易成功。<span class="phrase">在 i386 和 amd64 上固件可以从 MMC 或 SD 卡加载。</span> </p></td></tr>
+</table></div>
+<p>假如了解设备毋需固件也可以工作，或者设备在安装时并不需要使用，您可以跳过加载固件。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3410"></a>6.4.1. 准备介质</h3></div></div></div>
+<p>这些固件通常是从移动介质，比如 U 盘来加载。制作这种 U 盘（或者其他的介质，比如硬盘分区）时，固件文件或软件包必须放置在文件系统的根目录或者名为 <code class="filename">/firmware</code> 的目录下。推荐使用 FAT 文件系统，因为在安装过程的早期阶段它肯定能被支持。 </p>
+<p>包含常见固件的最新版本软件包的 tar 包和 zip 文件，以及确保它可以被安装程序正常检测到的与之对应的元数据（<code class="filename">dep11</code> 目录），可以从这里获得：</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> 下载对应版本的压缩包或 zip 文件，然后解压到介质的文件系统里面。 </p>
+<p>也可以复制单独的固件文件到介质。要求不严的固件还可以从已经安装的系统或硬件制造商那里获得。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3421"></a>6.4.2. 固件和安装好的系统</h3></div></div></div>
+<p>任何安装期间加载的固件会自动被复制到安装好的系统。多数情况下这可以保证需要固件的设备可以在系统重新启动之后正常工作。然而，如果安装好的系统运行在与安装程序不同的内核版本，有可能由于版本的偏差造成固件不能加载。 </p>
+<p>如果固件从一个固件软件包加载，<code class="classname">debian-installer</code> 会为安装好的系统也安装该软件包，并自动添加软件包仓库的 non-free-firmware 分区到 APT 的 <code class="filename">sources.list</code>。这样做的优点在于如果有固件的新版本存在会自动更新。 </p>
+<p>如果安装过程中跳过加载固件，相关的设备可能无法在安装好的系统中工作，直到手动安装好固件或软件包。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>如果固件从不严格的固件文件加载，复制到安装好的系统的固件将<span class="emphasis"><em>不会</em></span>自动更新，除非对应的固件软件包(如果有的话)在系统安装之后安装。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. 完善已安装的系统</h3></div></div></div>
+<p>取决于安装方式，可能有某些必需的固件在安装时没有检测到，对应的固件不可用，或者您当时选择不安装某些固件。有些情况下，一次成功的安装仍然可能在重启后黑屏或者出现显示错误。如果出现这种情况，可以尝试以下的临时解决办法： </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>在内核命令行中添加 <code class="code">nomodeset</code>。这可能可以帮助系统进入到<span class="quote">“<span class="quote">fallback graphics</span>”</span>模式。</p></li>
+<li class="listitem"><p>使用 <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> 组合键切换到 VT2，这可能可以提供一个可以使用的登录提示符。</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. 使用单独的组件 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. 个性化配置</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. Tham số khởi động</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Chương 5. Khởi động Hệ thống Cài đặt">
+<link rel="prev" href="ch05s02.html" title="5.2. Khả năng truy cập">
+<link rel="next" href="ch05s04.html" title="5.4. Giải đáp thắc mắc trong tiến trình cài đặt">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. Tham số khởi động</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 5. Khởi động Hệ thống Cài đặt</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. Tham số khởi động</h2></div></div></div>
+<p>Tham số khởi động là tham số hạt nhân Linux thường được dùng để đảm bảo thiết bị ngoại vi được xử lý cho đúng. Bình thường, hạt nhân có khả năng phát hiện tự động thông tin về các ngoại của máy tính. Tuy nhiên, trong một số trường hợp, bạn cần phải giúp đỡ hạt nhân một ít. </p>
+<p>Nếu đây là lần đầu tiên khởi động hệ thống này, hãy thử nhập các tham số khởi động mặc định (tức là không thử đặt tham số thêm) và theo dõi hoạt động. Rất có thể là máy sẽ hoạt động được vậy bạn không cần thêm gì. Nếu không, bạn có thể khởi động lại sau, cũng tìm tham số đặc biệt có thể báo hệ thống biết về phần cứng đó. </p>
+<p>Thông tin về nhiều tham số khởi động khác nhau nằm trong tài liệu dấu nhắc khởi động Linux Thế Nào <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top"> Linux BootPrompt HOWTO</a>, gồm có mẹo về phần cứng không thường. Phần này chứa chỉ bản tóm tắt các tham số nổi bật nhất. Một số vấn đề thường cũng được bao gồm bên dưới trong <a class="xref" href="ch05s04.html" title="5.4. Giải đáp thắc mắc trong tiến trình cài đặt">Phần 5.4, “Giải đáp thắc mắc trong tiến trình cài đặt”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. Boot serial console</h3></div></div></div>
+<p>If you are booting with a serial console, generally the kernel will autodetect this. If you have a videocard (framebuffer) and a keyboard also attached to the computer which you wish to boot via serial console, you may have to pass the <strong class="userinput"><code>console=<em class="replaceable"><code>device</code></em></code></strong> argument to the kernel, where <em class="replaceable"><code>device</code></em> is a serial device of the target, which is usually something like <code class="filename">ttyS0</code>. </p>
+<p>You may need to specify parameters for the serial port, such as speed and parity, for instance <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>; other typical speeds may be 57600 or 115200. Be sure to specify this option after <span class="quote">“<span class="quote">---</span>”</span>, so that it is copied into the bootloader configuration for the installed system (if supported by the installer for the bootloader). </p>
+<p>In order to ensure the terminal type used by the installer matches your terminal emulator, the parameter <strong class="userinput"><code>TERM=<em class="replaceable"><code>type</code></em></code></strong> can be added. Note that the installer only supports the following terminal types: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code> and <code class="literal">dumb</code>. The default for serial console in <code class="classname">debian-installer</code> is <strong class="userinput"><code>vt102</code></strong>. If you are using an IPMI console, or a virtualization tool which does not provide conversion into such terminals types itself, e.g. QEMU/KVM, you can start it inside a <span class="command"><strong>screen</strong></span> session. That will indeed perform translation into the <code class="literal">screen</code> terminal type, which is very close to <code class="literal">vt102</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. Tham số trình cài đặt Debian</h3></div></div></div>
+<p>The installation system recognizes a few additional boot parameters<a href="#ftn.id2564" class="footnote" name="id2564"><sup class="footnote">[3]</sup></a> which may be useful. </p>
+<p>Một số tham số có <span class="quote">“<span class="quote">dạng ngắn</span>”</span> giúp đỡ tránh sự hạn chế của các tùy chọn dòng lệnh hạt nhân và làm cho dễ hơn nhập tham số. Tham số có dạng ngắn thì được hiển thị trong dấu ngoặc đúng sau dạng dài (chuẩn). Các mẫu thí dụ trong sổ tay này cũng thường dùng dạng ngắn. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>Tham số này đặt ưu tiên thấp nhất cho những thông điệp cần hiển thị. </p>
+<p>Bản cài đặt mặc định tùy theo ưu tiên cao <strong class="userinput"><code>debconf/priority=high</code></strong>. Có nghĩa là hiển thị những thông điệp có ưu tiên cả cao lẫn tới hạn, còn bỏ qua những thông điệp ưu tiên vừa và thấp. Nếu gặp lỗi, trình cài đặt điều chỉnh ưu tiên như cần thiết. </p>
+<p>Nếu bạn thêm ưu tiên vừa <strong class="userinput"><code>debconf/priority=medium</code></strong> là tham số khởi động, bạn sẽ thấy trình đơn cài đặt, giành thêm khả năng điều khiển tiến trình cài đặt. Còn khi dùng ưu tiên thấp <strong class="userinput"><code>debconf/priority=low</code></strong>, mọi thông điệp được hiển thị (nó tương đương với phương pháp khởi động <span class="emphasis"><em>nhà chuyên môn</em></span>). Với ưu tiên tới hạn <strong class="userinput"><code>debconf/priority=critical</code></strong>, hệ thống cài đặt sẽ hiển thị chỉ những thông điệp nghiêm trọng, sẽ cố gắng làm việc đúng, không tương tác nhiều. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>Tham số khởi động này điều khiển kiểu giao diện người dùng được dùng cho bộ cài đặt. Các giá trị tham số hiện thời có thể: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong> (không tương tác)</p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> (văn bản)</p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong> (trình newt)</p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong> (trình gtk)</p></li>
+</ul></div>
+<p> Giao diện mặc định là <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>. <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong> có lẽ thích hợp hơn cho tiến trình cài đặt bằng bàn điều khiển nối tiếp. Một số bộ cài đặt chỉ cung cấp hạn chế trong một số giao diện, nhưng hầu như <strong class="userinput"><code>newt</code></strong> và <strong class="userinput"><code>text</code></strong> có sẵn trên vật chứa cài đặt mặc định. Trên các kiến trúc có hỗ trợ, bộ cài đặt kiểu đồ họa thì sử dụng giao diện <strong class="userinput"><code>gtk</code></strong>. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>Việc đặt tham số khởi động này (gỡ lỗi khởi động) thành 2 sẽ gây ra tiến trình khởi động trình cài đặt sẽ được ghi lưu một cách chi tiết. Còn việc đặt nó thành 3 làm cho trình bao gỡ lỗi sẵn sàng tại một số điểm thời có ích trong tiến trình khởi động. (Hãy thoát khỏi trình bao để tiếp tục lại tiến trình khởi động.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>Đây là giá trị mặc định.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>Chi tiết hơn cấp thường.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>Xuất rất nhiều thông tin gỡ lỗi.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>Chạy trình bao tại một số điểm thời khác nhau trong tiến trình khởi động, để cho khả năng gỡ lỗi chi tiết. Hãy thoát khỏi trình bao để tiếp tục lại khởi động. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>Làm cho trình cài đặt gửi thông điệp nhật ký đến máy chủ nhật ký syslog ở xa bằng tên và cổng được chỉ định cùng lúc với lưu vào tập tin cục bộ. Nếu không chỉ ra, cổng sẽ mặc định là cổng syslog chuẩn 514. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>Có thể dùng để ép buộc tiến trình cài đặt lên mức lowmem (ít bộ nhớ) cao hơn mức được đặt theo mặc định bởi tiến trình cài đặt, dựa vào bộ nhớ còn rảnh. Giá trị có thể là 1 và 2. Xem thêm <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. Kiểm tra bộ nhớ có sẵn / chế độ thiếu bộ nhớ">Phần 6.3.1.1, “Kiểm tra bộ nhớ có sẵn / chế độ thiếu bộ nhớ”</a>. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>Ngăn cản trình cài đặt cung cấp trình bao tương tác trên tty2 và tty3. Có ich đối với tiến trình cài đặt không có người theo dõi mà cũng có thể bị xâm nhập. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>Một số kiến trúc riêng sử dụng bộ đệm khung (framebuffer) của hạt nhân để cung cấp khả năng cài đặt bằng nhiều ngôn ngữ khác nhau. Nếu bộ đếm khung gây ra lỗi trên hệ thống, bạn vẫn có thể tắt tính năng này bằng tham số <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Trường hợp ngụ ý sự khó là thông điệp lỗi về <code class="filename">bterm</code> hay <code class="filename">bogl</code>, màn hình trống hay hệ thống đông đặc trong vòng vài phút sau khi khởi chạy tiến trình cài đặt. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>A theme determines how the user interface of the installer looks (colors, icons, etc.). Which themes are available may differ per frontend. Currently both the newt and gtk frontend have (apart from the default look) only one additional theme named <span class="quote">“<span class="quote">dark</span>”</span> theme, which was designed for visually impaired users. Set this theme by booting with <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong> (there is also the keyboard shortcut <strong class="userinput"><code>d</code></strong> for this in the boot menu). </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>By default, the <code class="classname">debian-installer</code> automatically probes for network configuration via IPv6 autoconfiguration and DHCP. If the probe succeeds, you won't have a chance to review and change the obtained settings. You can get to the manual network setup only in case the automatic configuration fails. </p>
+<p>If you have an IPv6 router or a DHCP server on your local network, but want to avoid them because e.g. they give wrong answers, you can use the parameter <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> to prevent any automatic configuration of the network (neither v4 nor v6) and to enter the information manually. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>Đặt thành <strong class="userinput"><code>false</code></strong> (khởi chạy PCMCIA là sai) để ngăn cản khởi chạy dịch vụ PCMCIA, nếu nó gây ra lỗi. Một số máy tính xách tay là nổi tiếng do trường hợp lỗi này. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>Hãy xác định địa chỉ Mạng của tập tin cấu hình sẵn cần tải về và sử dụng để tự động hoá tiến trình cài đặt. Xem <a class="xref" href="ch04s06.html" title="4.6. Cài đặt tự động">Phần 4.6, “Cài đặt tự động”</a>. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>Hãy xác định đường dẫn đến tập tin cấu hình sẵn cần nạp để tự động hoá tiến trình cài đặt. Xem <a class="xref" href="ch04s06.html" title="4.6. Cài đặt tự động">Phần 4.6, “Cài đặt tự động”</a>. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>Đặt thành <strong class="userinput"><code>true</code></strong> (đúng) để hiển thị câu hỏi thậm chí nếu nó đã được chèn sẵn. Có thể hữu ích để thử hay gỡ lỗi tập tin cấu hình sẵn. Ghi chú rằng nó sẽ không có tác động những tham số được gửi qua dưới dạng tham số khởi động, nhưng cho chúng cũng có thể dùng cú pháp đặc biệt. Xem thêm <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Dùng khả năng chèn sẵn để thay đổi giá trị mặc định">Phần B.5.2, “Dùng khả năng chèn sẵn để thay đổi giá trị mặc định”</a>. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>Hoãn các câu bình thường được hỏi trước khi có khả năng chèn sẵn, đến sau khi mạng được cấu hình. Xem <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Chế độ tự động">Phần B.2.3, “Chế độ tự động”</a> để tìm chi tiết về cách sử dụng tùy chọn này để tự động hoá tiến trình cài đặt. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>Trong khi cài đặt từ bàn giao tiếp kiểu nối tiếp hay quản lý, những bàn giao tiếp ảo bình thường (VT1 đến VT6) thông thường bị tắt trong <code class="filename">/etc/inittab</code>. Đặt thành <strong class="userinput"><code>true</code></strong> (đúng) để ngăn cản trường hợp này. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>By default, before rebooting, <code class="classname">debian-installer</code> automatically ejects the optical media used during the installation. This can be unnecessary if the system does not automatically boot off such media. In some cases it may even be undesirable, for example if the optical drive cannot reinsert the media itself and the user is not there to do it manually. Many slot loading, slim-line, and caddy style drives cannot reload media automatically. </p>
+<p>Đặt thành <strong class="userinput"><code>false</code></strong> (sai) để tắt khả năng đầy ra tự động; cũng ghi nhớ rằng bạn có lẽ sẽ cần phải đảm bảo hệ thống không khởi động tự động từ ổ đĩa quang sau khi việc cài đặt ban đầu. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (khuyến khích)</span></dt>
+<dd>
+<p>Bằng cách lập tuỳ chọn này thành <strong class="userinput"><code>false</code></strong> (sai), hệ thống quản lý gói phần mềm sẽ được cấu hình để không phải tự động cài đặt các gói có nhãn <span class="quote">“<span class="quote">Khuyên</span>”</span>, cả hai trong tiến trình cài đặt và cho hệ thống được cài đặt. Xem thêm <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. Cài đặt Hệ thống Cơ bản">Phần 6.3.5, “Cài đặt Hệ thống Cơ bản”</a>. </p>
+<p>Ghi chú rằng tuỳ chọn này cho phép bạn baỏ tồn một hệ thống nhỏ hơn, mà cũng có thể gây ra một số tính năng còn thiếu mà bạn bình thường mong đợi sẵn sàng. Trong trường hợp đó, bạn cần phải tự cài đặt một số gói khuyến khích để được chức năng đầy đủ. Vì thế tuỳ chọn này chỉ nên được sử dụng bởi người dùng cấp cao. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>Mặc định là tiến trình cài đặt cần thiết xác thực với kho lưu, dùng một khoá GPG đã biết. Đặt thành <strong class="userinput"><code>true</code></strong> (đúng) để tắt chức năng xác thực này. <span class="bold"><strong>Cảnh báo : không bảo mật thì không khuyến khích.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>(Cứu/bật) Đặt thành <strong class="userinput"><code>true</code></strong> (đúng) để vào chế độ cứu, hơn là chạy tiến trình cài đặt chuẩn. Xem <a class="xref" href="ch08s06.html" title="8.6. Phục hồi hệ thống bị hỏng">Phần 8.6, “Phục hồi hệ thống bị hỏng”</a>. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. Dùng tham số khởi động để trả lời câu hỏi</h3></div></div></div>
+<p>Trừ vài thứ, ở dấu nhắc khởi động vẫn có khả năng đặt giá trị cho bất cứ câu nào được hỏi trong tiến trình cài đặt, dù khả năng này thật chỉ có ích trong một số trường hợp riêng. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (ngôn ngữ), </span><span class="term">debian-installer/country (quốc gia), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>Có hai phương pháp ghi rõ ngôn ngữ, quốc gia và miền địa phương cần dùng cho tiến trình cài đặt và hệ thống được cài đặt. </p>
+<p>Phương pháp trước (cũng dễ hơn) là gửi chỉ tham số <code class="literal">locale</code> (miền địa phương). Ngôn ngữ và quốc gia thì bắt nguồn từ miền địa phương đó. Chẳng hạn, bạn có thể sử dụng tham số <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> để lập ngôn ngữ thành tiếng Đức và quốc gia thành Thuỵ Sĩ (<code class="literal">de_CH.UTF-8</code> sẽ được đặt làm miền địa phương mặc định cho hệ thống được cài đặt). Tuy nhiên, chỉ có thể truy cập đến những miền địa phương có sẵn trong hệ thống thôi. </p>
+<p>Phương pháp sau (dẻo hơn) là ghi rõ từng tham số<code class="literal">language</code> (ngôn ngữ) và <code class="literal">country</code> (quốc gia). Trong trường hợp này, tham số <code class="literal">locale</code> (miền địa phương) cũng có thể được thêm để ghi rõ một miền địa phương mặc định cho hệ thống được cài đặt. Thí dụ : <strong class="userinput"><code>language=vi country=AU locale=vi.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>Có thể được dùng để tự động nạp các thành phần cài đặt không được nạp theo mặc định. Các thành phần tùy chọn có thể hữu ích là (v.d.) <code class="classname">openssh-client-udeb</code> (để sử dụng <span class="command"><strong>scp</strong></span> trong khi cài đặt)<span class="phrase"> và <code class="classname">ppp-udeb</code> (xem <a class="xref" href="apds05.html" title="D.5. Cài đặt Debian GNU/Linux dùng PPP qua Ethernet (PPPoE)">Phần D.5, “Cài đặt Debian GNU/Linux dùng PPP qua Ethernet (PPPoE)”</a>)</span>. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>Set to <strong class="userinput"><code>true</code></strong> if you want to disable IPv6 autoconfiguration and DHCP and instead force static network configuration. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>Mặc định là trình cài đặt sử dụng giao thức HTTP để tải các tập tin xuống máy nhân bản Debian. Không thể thay đổi sang FTP trong khi cài đặt ở mức ưu tiên bình thường. Bằng cách lập tham số này thành <strong class="userinput"><code>ftp</code></strong>, bạn ép buộc trình cài đặt sử dụng giao thức FTP thay cho HTTP. Ghi chú rằng bạn không thể chọn một máy nhân bản FTP từ danh sách: bạn cần phải tự gõ tên máy. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p>Có thể được dùng để chọn các công việc không sẵn sàng trong danh sách công việc tương tác, v.d. công việc  <code class="literal">kde-desktop</code>. Xem <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. Lựa chọn và Cài đặt Phần mềm">Phần 6.3.6.2, “Lựa chọn và Cài đặt Phần mềm”</a> để tìm thông tin thêm. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. Gửi tham số cho mô-đun hạt nhân</h3></div></div></div>
+<p>Nếu trình điêu khiển nào được biên dịch vào hạt nhân, bạn có khả năng gửi tham số cho chúng, như được diễn tả trong tài liệu hướng dẫn về cách sử dụng hạt nhân. Tuy nhiên, nếu trình điều khiển được biên dịch dạng mô-đun, vì mô-đun hạt nhân được nạp khác trong tiến trình cài đặt so sánh với tiến trình khởi động hệ thống đã cài đặt, không thể gửi tham số cho mô-đun như bình thường. Thay vào đó, bạn cần phải sử dụng cú pháp đặc biệt được bộ cài đặt chấp nhận sẽ đảm bảo các tham số được lưu vào tập tin cấu hình đúng thì được dùng khi mô-đun thật được nạp. Các tham số này cũng sẽ tự động được gồm trong cấu hình cho hệ thống đã cài đặt. </p>
+<p>Ghi chú rằng lúc bây giờ hơi ít khi cần phải gửi tham số cho mô-đun. Trong phần lớn trường hợp, hạt nhân có thể thăm dò phần cứng của hệ thống thì đặt các giá trị mặc định có ích. Tuy nhiên, trong một số trường hợp riêng, vẫn cần phải tự đặt tham số. </p>
+<p>Để đặt tham số cho mô-đun, hãy sử dụng cú pháp: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>tên_mô-đun</code></em>.<em class="replaceable"><code>tên_tham_số</code></em>=<em class="replaceable"><code>giá_trị</code></em>
+</pre></div>
+<p> Nếu bạn cần phải gửi nhiều tham số cho cùng một mô-đun hay nhiều mô-đun khác nhau, đơn giản hãy lặp lại câu lệnh này. Chẳng hạn, để đặt một thẻ giao diện mạng 3Com cũ sử dụng bộ kết nối BNC (co-ax) và IRQ10, bạn cần gửi: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. Cấm mô-đun hạt nhân</h3></div></div></div>
+<p>Đôi khi cần phải cấm một mô-đun để ngăn cản nó tự động được nạp bởi hạt nhân và trình <code class="filename">udev</code>. Một lý do có thể là mô-đun đó gây ra vấn đề với phần cứng. Hạt nhân cũng đôi khi liệt kê hai trình điều khiển khác nhau cho cùng một thiết bị. Trường hợp này có thể gây ra thiết bị đó không hoạt động được nếu những trình điều khiển xung đột, hoặc nếu trình điều khiển không đúng được nạp trước. </p>
+<p>Bạn có khả năng cấm mô-đun bằng cú pháp này: <strong class="userinput"><code><em class="replaceable"><code>tên_mô-đun</code></em>.blacklist=yes</code></strong> (danh sách màu đen = có). Câu lệnh này sẽ gây ra mô-đun đó bị cấm trong tập tin <code class="filename">/etc/modprobe.d/blacklist.local</code>, cả hai trong tiến trình cài đặt, và trên hệ thống được cài đặt. </p>
+<p>Ghi chú rằng mô-đun đó vẫn còn có thể được nạp bởi hệ thống cài đặt chính nó. Bạn vẫn có thể ngăn cản việc này cảy ra, bằng cách chạy tiến trình cài đặt trong chế độ chuyên môn và bỏ chọn mô-đun đó trong danh sách các mô-đun được hiển thị trong những giải đoạn phát hiện phần cứng. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2564" class="footnote"><p><a href="#id2564" class="para"><sup class="para">[3] </sup></a> With current kernels (2.6.9 or newer) you can use 32 command line options and 32 environment options. If these numbers are exceeded, the kernel will panic. Also there is a limit of 255 characters for the whole kernel command line, everything above this limit may be silently truncated. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. Khả năng truy cập </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. Giải đáp thắc mắc trong tiến trình cài đặt</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

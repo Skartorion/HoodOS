@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. preseed の利用</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apb.html" title="付録B preseed を利用したインストールの自動化">
+<link rel="prev" href="apbs01.html" title="B.1. 概要">
+<link rel="next" href="apbs03.html" title="B.3. 事前設定ファイルの作成">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. preseed の利用</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録B preseed を利用したインストールの自動化</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. preseed の利用</h2></div></div></div>
+<p>事前設定ファイルを最初に作成し、使用する場所に配置する必要があります。事前設定ファイルの作成は本付録で後ほど扱います。network preseed の場合や、ファイルを USB メモリから読み込む場合、簡単に正しい位置に事前設定ファイルを配置できます。インストール ISO イメージにファイルを含めたければ、イメージを再度マスタリングする必要があります。initrd に含まれている事前設定ファイルを取り出す方法は、この文書では扱いません。<code class="classname">debian-installer</code> の開発者向け文書を当たってください。 </p>
+<p>事前設定ファイルの手本にできる事前設定ファイルのサンプルは、<span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span> から取得できます。このファイルは、この付録にある設定の断片を元にしています。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. 事前設定ファイルの読み込み</h3></div></div></div>
+<p>initrd preseed を使用する場合、<code class="filename">preseed.cfg</code> というファイルが initrd のルートディレクトリに確実にある必要があります。インストーラは、このファイルがあるか自動的にチェックし、読み込みます。 </p>
+<p>他の preseed 方法では、起動時にどのファイルを読み込むか、インストーラに指定する必要があります。通常、カーネルのブートパラメータで渡して行います。これは起動時に手動で与えるか、ブートローダ設定ファイル <span class="phrase">(例: <code class="filename">syslinux.cfg</code>) を編集し、カーネルへの append 行の最後にパラメータを追加します。</span> </p>
+<p>ブートローダの設定で事前設定ファイルを指定する場合、設定を変更すれば、インストーラの起動時に ENTER を押す必要はありません。<span class="phrase">syslinux ではこの設定をするのに、<code class="filename">syslinux.cfg</code> でタイムアウトを <code class="literal">1</code> にします。</span> </p>
+<p>インストーラが確実に正しい事前設定ファイルを取得するのに、このファイルのチェックサムを指定できます。現在、これには md5sum 値の指定が必要です。指定した値と事前設定ファイルの値は一致しなければなりません。一致しない場合は、インストーラは事前設定ファイルを使用しません。 </p>
+<div class="informalexample"><pre class="screen">ブートパラメータの設定:
+- netboot の場合:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- または
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- リマスタリングしたインストールイメージで起動する場合:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- USB メディアで起動する場合 (事前設定ファイルを USB メモリの
+  トップレベルディレクトリに置くこと):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>ブートパラメータに渡す際に、<code class="filename">preseed/url</code> は <code class="filename">url</code> に、<code class="filename">preseed/file</code> は <code class="filename">file</code> に、<code class="filename">preseed/file/checksum</code> は <code class="filename">preseed-md5</code> に短縮できることに注意してください。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. preseed が質問するブートパラメータの利用</h3></div></div></div>
+<p>事前設定ファイルを preseed の各段階で使用できない場合でも、preseed の値をインストーラ起動時のコマンドラインに与えることで、インストールを自動で行えます。 </p>
+<p>preseed を使用せず指定した質問への答を設定したい場合にも、ブートパラメータを使用します。有用な使用法のサンプルが、このマニュアルの別の場所にあります。 </p>
+<p><code class="classname">debian-installer</code> 内部で使用する値をセットするには、<strong class="userinput"><code><em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong> のように本付録の例にある preseed 変数を渡すだけです。値がターゲットシステムのパッケージを設定することがある場合、<em class="firstterm">owner</em><a href="#ftn.id3979" class="footnote" name="id3979"><sup class="footnote">[19]</sup></a> 変数を、あらかじめ用意し、<strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong> で使用する必要があります。owner を指定しない場合、変数の値はターゲットシステムの debconf データベースにコピーされず、関連パッケージの設定中使用されません。 </p>
+<p>通常、この方法で答をあらかじめ設定しておくと、質問してきません。質問のデフォルト値を指定しているのに、まだ質問してくる場合には、<span class="quote">「<span class="quote">=</span>」</span> 演算子の代わりに、<span class="quote">「<span class="quote">?=</span>」</span> を使用してください。<a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. preseed を用いたデフォルト値変更">「preseed を用いたデフォルト値変更」</a> もご覧ください。 </p>
+<p>ブートプロンプトによく使用される変数には、短いエイリアスがあることに注意してください。有効なエイリアスは、本サンプル内で完全な変数名の代わりに使用しています。例えば <code class="literal">preseed/url</code> 変数には <code class="literal">url</code> というエイリアスがあります。もう一つ、<code class="literal">tasks</code> というエイリアスがあり、これは <code class="literal">tasksel:tasksel/first</code> に変換されます。 </p>
+<p>ブートオプションの <span class="quote">「<span class="quote">---</span>」</span> は特別な意味を持ちます。最後の <span class="quote">「<span class="quote">---</span>」</span> に続きカーネルパラメータがあると、(インストーラがサポートするブートローダの場合) インストール済みのブートローダの設定にコピーされます。インストーラは、(事前設定オプションのような) オプションを認識すると、自動的にフィルタをかけます。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>現在の Linux カーネル (2.6.9 以降) では、最大 (インストーラがデフォルトで指定するオプションを含め) コマンドラインオプションを 32 個、環境オプションを 32 個受け取れます。この数を超えると、カーネルはパニック (クラッシュ) してしまいます (以前のカーネルではこの数字がもっと少ないです)。 </p></td></tr>
+</table></div>
+<p>ほとんどのインストールでは、ブートローダ設定ファイルにある (<code class="literal">vga=normal</code> のような) デフォルトオプションを安全に削除できるかもしれません。これにより preseed 用にもっとオプションを追加できます。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注記]" src="images/note.png"></td>
+<th align="left">注記</th>
+</tr>
+<tr><td align="left" valign="top"><p>ブートパラメータに空白を含んだ値を設定するのは、引用符で囲んだとしてもいつもうまくいくとは限りません。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. 自動モード</h3></div></div></div>
+<p>ブートプロンプトでの非常に簡単なコマンドラインで、自動インストールに対して任意の複雑なカスタマイズを行えるよう組み合わせる、Debian インストーラの機能がいくつかあります。 </p>
+<p>これは起動時の選択から<code class="literal">インストールの自動化</code>を使うことで有効化できます。アーキテクチャや起動方法によっては <code class="literal">auto</code> とも呼ばれます。ここでは、<code class="literal">auto</code> パラメータではなく、起動時の選択でそれを選択して起動時のプロンプトに以下のパラメータを付加するという意味になります。<span class="phrase">起動パラメータの追加方法についての情報は、<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. ブート画面">「ブート画面」</a>を見てください。</span> </p>
+<p>これを説明するため、以下にブートプロンプトで使用できる例を示します。</p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> これは、DNS で <code class="literal">autoserver</code> の名前解決ができ (おそらく DHCP でローカルドメイン追加後)、そのマシンが DHCP サーバであることを前提にしています。<code class="literal">example.com</code> というドメインのサイトが、普通のまともな DHCP を設定していれば、<code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code> から、preseed ファイルを取得するようになります。 </p>
+<p>URL (<code class="literal">d-i/trixie/./preseed.cfg</code>) の最後の部分は、<code class="literal">auto-install/defaultroot</code> から取られています。デフォルトでは、将来のバージョンでコードネームを指定して移行していけるように、<code class="literal">trixie</code> ディレクトリが含まれています。<code class="literal">/./</code> は、その後に続くパスが確定するように、ルートからの相対パスを示します (preseed/include や preseed/run で使用)。これにより、完全な URL や / で始まるパス、前回 preseed が見つかった場所からの相対パスでファイルを指定できます。スクリプトの階層構造を壊さずに新しい場所に移動できる (例えば ウェブサーバで開始し、USB メモリにコピーする)、よりポータブルなスクリプトを構成するのに便利です。このサンプルでは、preseed ファイルの <code class="literal">preseed/run</code> に <code class="literal">/scripts/late_command.sh</code> が設定されている場合、<code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code> からファイルを取得します。 </p>
+<p>手元に DHCP や DNS のインフラがない場合や、<code class="filename">preseed.cfg</code> のデフォルトパスを使用したくない場合でも、きちんとした URL を使用でき、<code class="literal">/./</code> 要素を使用しない場合は、パスの開始点を決定できます (例えば URL の 3 つ目の <code class="literal">/</code>)。以下は、手元のネットワークインフラから最低限必要な物のサンプルです。</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> この方法は次のように動作します。 </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>URL が見つからない場合、http だと仮定します。 </p></li>
+<li class="listitem"><p>ホスト名セクションにピリオドがなければ、DHCP から引き出して追加します。 </p></li>
+<li class="listitem"><p>ホスト名の後に <code class="literal">/</code> がなければ、デフォルトパスを追加します。 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>URL を指定するのに加えて、<code class="classname">debian-installer</code> 自身の振る舞いには直接影響しない設定も追加できますが、読み込んだ preseed ファイルの <code class="literal">preseed/run</code> で指定した、スクリプトに渡すことができます。現在のところ、<code class="literal">classes</code> というエイリアスを持つ、<code class="literal">auto-install/classes</code> のサンプルのみです。以下のように使用します。</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> classes にはこのサンプルでは、インストールするシステムのタイプや、地域化を指定するのに使用できます。 </p>
+<p>この概念はもちろん拡張でき、もしそうする場合、auto-install 名前空間を使用するのが妥当です。ですから、次にあなたのスクリプトで使用する <code class="literal">auto-install/style</code> のような物かもしれません。これが必要だと思うのなら、名前空間の衝突を避けるために <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> メーリングリストで提案してください。おそらくパラメータのエイリアスが追加されます。 </p>
+<p><code class="literal">auto</code> ブートの選択肢は、まだ全てのアーキテクチャで定義されてはいません。カーネルのコマンドラインに、単にパラメータを 2 つ <code class="literal">auto=true priority=critical</code> を追加すると、同じ効果を得られます。<code class="literal">auto</code> カーネルパラメータは <code class="literal">auto-install/enable</code> のエイリアスで、<code class="literal">true</code> に設定するとロケールやキーボードの質問を preseed で行えるよう遅らせます。また、<code class="literal">priority</code> は <code class="literal">debconf/priority</code> のエイリアスで、<code class="literal">critical</code> に設定すると、優先度の低い質問を抑制するようになります。 </p>
+<p>自動インストールが preseed (事前設定)なしで実行されると、システムはユーザに preseed の場所指定を促します。 したがって、事前設定が行われている場合には通常、非対話形式でインストールに移行します。 しなしながら、initrd にある <code class="literal">preseed.cfg</code> を使用して defaults を改変しようとすると、まるで事前設定がなされていないときのようにおてんばな結果になります。 その場合、deconf の変数 <code class="literal"> auto-install/cloak_initrd_preseed</code> を <code class="literal">true</code> (例えば、initrd 内の <code class="literal">preseed.cfg</code>) に設定すると要求した振る舞いになります。 </p>
+<p>DHCP を使用してインストールの自動化を行う際に、関連する追加オプションは以下の通りです。<code class="literal">interface=auto netcfg/dhcp_timeout=60</code> これはマシンが最初の使用可能 NIC を選択し、DHCP 問い合わせに対する返答をもっと我慢強く待つようになります。 </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[ヒント]" src="images/tip.png"></td>
+<th align="left">ヒント</th>
+</tr>
+<tr><td align="left" valign="top"><p>スクリプトやクラスのサンプルを含む、フレームワークの使用法についての大規模なサンプルが、<a class="ulink" href="http://hands.com/d-i/" target="_top">開発者のウェブサイト</a>にあります。そこで得られるサンプルでも、事前設定の独創的な使用を成し遂げる、たくさんのすばらしい効果があります。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. preseed で利用できるエイリアス</h3></div></div></div>
+<p>以下のエイリアスは、(自動モード) preseed の際に、役に立つ場合があります。これらは単に、質問名の短いエイリアスであることに注意してください。そのうえで、常に値を指定する必要があります。例えば、<code class="literal">auto=true</code> や <code class="literal">interface=eth0</code> のようにです。 </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. ブートプロンプトの preseed の例</h3></div></div></div>
+<p>ここではブートプロンプトの見た目の例を示します (これを必要に応じて調整してください<span class="phrase">、<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. ブート画面">「ブート画面」</a>もご覧ください</span>)。 </p>
+<div class="informalexample"><pre class="screen"># To set French as language and France as country:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# To set English as language and Germany as country, and use a German keyboard layout:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# To install the MATE desktop:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# To install the web-server task:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. 事前設定ファイルを指定するための DHCP の利用方法</h3></div></div></div>
+<p>事前設定ファイルをネットワークからダウンロードするよう指定するのに、DHCP も使用できます。DHCP はファイル名の指定ができます。通常これは netboot のファイルですが、URL 形式になっていると、network preseed をサポートするインストールメディアが、URL からファイルをダウンロードし、事前設定ファイルとして使用します。以下は、ISC DHCP サーバのバージョン 3 用 dhcpd.conf で設定するサンプルです。 </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>上記の例は、<span class="quote">「<span class="quote">d-i</span>」</span> を名乗る DHCP クライアントにこのファイル名を渡すよう制限されており、通常の DHCP クライアントではなく、インストーラにのみ影響を与えることに注意してください。この文字列で、ネットワーク上の全マシンに preseed でインストールするのではなく、特定のホストに対して行うようにもできます。 </p>
+<p>DHCP preseed を使用するよい方法は、自分のネットワークには、Debian ミラーサイトのような preseed の値のみ指定することです。自分のネットワークにこの方法でインストールすると、選択したよいミラーサイトから自動で取得しますが、インストールの残りのプロセスはインタラクティブに行われます。DHCP preseed を用いた Debian の完全自動インストールは、充分注意しなければ行うべきではありません。 </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3979" class="footnote"><p><a href="#id3979" class="para"><sup class="para">[19] </sup></a> debconf 変数 (やテンプレート) の所有者 (owner) は、debconf テンプレートに含まれるように、通常パッケージ名です。インストーラ自体が使用する値は、<span class="quote">「<span class="quote">d-i</span>」</span> になっています。テンプレートや変数は、複数の owner を持て、パッケージを完全削除する際に debconf データベースから削除できるかどうかを決定するのに利用されます。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. 概要 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> B.3. 事前設定ファイルの作成</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

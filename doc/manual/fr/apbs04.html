@@ -1,0 +1,692 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Contenu du fichier de préconfiguration (pour trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Annexe B. Automatisation de l'installation par préconfiguration">
+<link rel="prev" href="apbs03.html" title="B.3. Créer un fichier de préconfiguration">
+<link rel="next" href="apbs05.html" title="B.5. Options complexes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Contenu du fichier de préconfiguration (pour trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Annexe B. Automatisation de l'installation par préconfiguration</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Contenu du fichier de préconfiguration (pour trixie)</h2></div></div></div>
+<p>Les éléments de configuration utilisés dans cette annexe sont aussi disponibles en tant que fichier dans <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Les exemples donnés ici sont valables pour l'architecture Intel x86. Si vous utilisez une autre architecture, certains exemples, comme la préconfiguration du clavier ou du programme d'amorçage, ne seront pas corrects et vous devrez les modifier avec les valeurs adéquates. </p>
+<p>Les différents composants de l'installateur Debian sont décrits dans la <a class="xref" href="ch06s03.html" title="6.3. Utilisation des composants">Section 6.3, « Utilisation des composants »</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Localisation</h3></div></div></div>
+<p>Lors d'une installation normale, les questions à propos de la localisation sont posées en premier. Ces valeurs ne peuvent être donc préconfigurées uniquement par l'initrd ou les paramètres du noyau. Le mode auto (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Le mode auto">Section B.2.3, « Le mode auto »</a>) inclut un paramètre <code class="literal">auto-install/enable=true</code> (normalement via l'alias <code class="literal">auto</code>). Cela reporte les questions à propos de la localisation et elles peuvent ainsi être préconfigurées avec n'importe quelle méthode. </p>
+<p>Une locale peut être choisie pour indiquer à la fois la langue et le pays. Toute combinaison d'une langue reconnue par l'installateur et d'un pays valable est acceptée. Si la combinaison ne forme pas une locale valable, l'installateur choisira automatiquement une locale correspondant à la langue sélectionnée. Pour indiquer une locale sous forme de paramètre d'amorçage, écrivez : <strong class="userinput"><code>locale=<em class="replaceable"><code>fr_FR.UTF-8</code></em></code></strong>. </p>
+<p>Cette méthode, très simple à utiliser, ne permet pas de préconfigurer toutes les combinaisons possibles de pays, de langue et de locale <a href="#ftn.id4311" class="footnote" name="id4311"><sup class="footnote">[20]</sup></a>. Ces valeurs peuvent être préconfigurées individuellement. La langue et le pays peuvent être spécifiés en tant que paramètres d'amorçage. </p>
+<div class="informalexample"><pre class="screen"># Préconfigurer la locale seule définit la langue, le pays et la locale.
+d-i debian-installer/locale string en_US.UTF-8
+
+# Les valeurs peuvent être préconfigurées individuellement.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# On peut aussi demander la création d'autres locales.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, fr_FR.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>La configuration du clavier consiste à sélectionner une carte clavier et à choisir, pour les claviers non latins, une touche qui permet de basculer d'une carte non latine à une carte US. Seules quelques cartes de base sont disponibles pendant l'installation. Une fois le système installé, vous pourrez choisir des cartes plus évoluées avec la commande <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Choix du clavier :
+d-i keyboard-configuration/xkb-keymap select fr(latin9)
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Pour éviter la configuration du clavier, préconfigurez <code class="classname">keymap</code> avec <strong class="userinput"><code>skip-config</code></strong>. La carte clavier du noyau restera active. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Synthèse vocale</h3></div></div></div>
+<p>When installing with software speech synthesis (i.e. <code class="literal">speakup.synth=soft</code> passed on the kernel command line), the sound board and the voice to be used can be preseeded. </p>
+<p>Since speech synthesis is started very early, this can only be preseeded from initrd or the kernel command line. </p>
+<p>Preseeding <code class="literal">espeakup/voice</code> also enables configuring the installed system with speech accessibility features. This takes effect even if software speech synthesis was not actually enabled inside the installer. </p>
+<div class="informalexample"><pre class="screen"># Which ALSA card to be used for software speech.
+# Can be a number from 0, or an ID as seen in
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Which espeak-ng voice to be used
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Configuration du réseau</h3></div></div></div>
+<p>Bien sûr, si vous récupérez le fichier de préconfiguration sur le réseau, cela ne marchera pas ! Mais c'est parfait si vous amorcez à partir d'un disque optique ou d'une clé USB. Vous pouvez aussi ajouter des paramètres réseau aux paramètres du noyau si vous récupérez le fichier de préconfiguration sur le réseau. </p>
+<p>Si, quand vous amorcez par le réseau, vous avez besoin d'une interface particulière avant de charger le fichier de préconfiguration, utilisez un paramètre comme celui-ci : <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Quand vous utilisez la préconfiguration de type <span class="quote">« <span class="quote">network</span> »</span> (avec <span class="quote">« <span class="quote">preseed/url</span> »</span>), il n'est pas possible normalement de préconfigurer le réseau. Cependant on peut utiliser l'astuce suivante. Pour définir par exemple l'adresse statique de l'interface réseau, il suffit de forcer la configuration du réseau à s'exécuter une nouvelle fois après que le fichier de préconfiguration a été chargé. Le script <span class="quote">« <span class="quote">preseed/run</span> »</span> suivant fera l'affaire : </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Les variables debconf suivantes traitent de la configuration du réseau. </p>
+<div class="informalexample"><pre class="screen"># Interdire toute configuration réseau. C'est utile pour des
+# installations à partir de CD sur des machines sans réseau.
+# Les questions et les avertissements à propos du réseau ainsi
+# que les temps d'attente sont fastidieux.
+#d-i netcfg/enable boolean false
+
+# Netcfg choisira une interface connectée si possible. Cela empêchera
+# d'afficher une liste s'il y a plusieurs interfaces.
+d-i netcfg/choose_interface select auto
+
+# Pour utiliser une interface particulière :
+#d-i netcfg/choose_interface select eth1
+
+# Pour augmenter le délai de détection de lien (par défaut, 3 secondes).
+# Valeur en seconde :
+#d-i netcfg/link_wait_timeout string 10
+
+# Quand le serveur dhcp est lent et que l'installateur s'arrête pour
+# l'attendre, ceci peut être utile :
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Par défaut, la configuration du réseau est automatique.
+# Si vous préférez configurer vous-même le réseau, décommentez cette ligne
+# et les lignes suivantes sur la configuration du réseau.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Si vous voulez que le fichier de préconfiguration fonctionne aussi bien
+# avec que sans serveur dhcp, décommentez ces lignes et les lignes sur la
+# configuration du réseau. 
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Configuration du réseau.
+#
+# exemple pour IPv4
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# exemple pour IPv6
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+
+# Remarquez que les valeurs données par DHCP, nom de domaine ou nom de 
+# machine, prennent le pas sur les valeurs déclarées ici. Cependant,
+# cette déclaration empêche que les questions ne soient posées, même si les
+# valeurs viennent de dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# Si vous voulez imposer un nom d'hôte, quelque soit le nom retourné par le
+# serveur DHCP ou l'entrée DNS inverse donnée pour l'adresse IP, vous pouvez
+# décommenter et modifier la ligne qui suit..
+#d-i netcfg/hostname string somehost
+
+
+# Supprimer le dialogue irritant sur la clé WEP.
+d-i netcfg/wireless_wep string
+# Et l'étonnant nom de machine DHCP que certains FAI utilisent comme mot de
+# passe.
+#d-i netcfg/dhcp_hostname string radish
+
+# Si vous souhaitez désactiver complètement la recherche de microprogramme
+# (c'est à dire ne pas utiliser les fichiers ou paquets de firmware
+# disponibles sur l'image d'installation) :
+#d-i hw-detect/firmware-lookup string never
+
+# Si pour le réseau ou pour un autre matériel vous avez besoin d'un
+# microprogramme (<span class="quote">« <span class="quote">firmware</span> »</span>) non libre, vous pouvez forcer
+# l'installateur à le télécharger, en évitant la demande de confirmation.
+# Vous pouvez aussi désactiver la question en mettant ce paramètre à
+# <span class="quote">« <span class="quote">false</span> »</span>.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>La commande <span class="command"><strong>netcfg</strong></span> détermine automatiquement le masque réseau quand la variable <code class="classname">netcfg/get_netmask</code> n'est pas préconfigurée. Quand c'est le cas, cette variable doit être positionnée à <code class="literal">seen</code> pour les installations automatiques. De même, la commande <span class="command"><strong>netcfg</strong></span> choisit une adresse convenable si la variable <code class="classname">netcfg/get_gateway</code> n'est pas définie. Ainsi, pour ne pas utiliser de passerelle, vous pouvez positionner cette variable à <span class="quote">« <span class="quote">none</span> »</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Console réseau</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Pour utiliser le composant <span class="quote">« <span class="quote">network-console</span> »</span> et faire une
+# installation par SSH, vous pouvez vous servir des commandes suivantes.
+# Elles n'ont de sens que si vous avez l'intention de poursuivre 
+# l'installation <span class="quote">« <span class="quote">manuellement</span> »</span>.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>Plus d'informations à propos de la console réseau sont disponible dans la <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Installation par le réseau avec network-console">Section 6.3.10, « Installation par le réseau avec network-console »</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Valeurs pour les miroirs</h3></div></div></div>
+<p>Selon la méthode d'installation choisie, vous pouvez utiliser un miroir pour installer le système de base, pour télécharger des composants supplémentaires de l'installateur et pour configurer le fichier <code class="filename">/etc/apt/sources.list</code>. </p>
+<p>Le paramètre <code class="classname">mirror/suite</code> détermine la distribution du système à installer. </p>
+<p>Le paramètre <code class="classname">mirror/udeb/suite</code> détermine la distribution des composants supplémentaires de l'installateur. On s'en sert uniquement quand ces composants sont récupérés sur le réseau et qu'ils doivent correspondre à la distribution utilisée pour construire l'<span class="emphasis"><em>initrd</em></span> nécessaire à la méthode d'installation. En général, il n'est pas nécessaire de donner une valeur à ce paramètre car l'installateur la détermine automatiquement. </p>
+<div class="informalexample"><pre class="screen"># Protocole pour les miroirs :
+# Si vous utilisez ftp, il n'est pas nécessaire d'indiquer la chaîne
+# mirror/country.
+# Le protocole par défaut est http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Distribution à installer.
+#d-i mirror/suite string testing
+# Distribution à utiliser pour charger les composants de l'installateur
+# (facultatif).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Configuration des comptes</h3></div></div></div>
+<p>Le mot de passe de <span class="quote">« <span class="quote">root</span> »</span> et le nom et le mot de passe d'un premier utilisateur peuvent être préconfigurés. Pour les mots de passe, vous pouvez utiliser simplement du texte ou bien utiliser le <span class="emphasis"><em>hachage</em></span> crypt(3). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertissement]" src="images/warning.png"></td>
+<th align="left">Avertissement</th>
+</tr>
+<tr><td align="left" valign="top"><p>Il faut être conscient que la préconfiguration des mots de passe n'est pas entièrement sécurisée. On peut en effet lire le fichier de préconfiguration quand on y a accès et donc connaître les mots de passe. Le hachage des mots de passe peut être plus sûr si le hachage n'est pas faible, comme le sont les algorithmes MD5 et DES qui permettent les attaques par force brute. Les algorithmes recommandés pour le hachage des mots de passe sont SHA-256 et SHA-512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Ne pas créer de compte root (l'utilisateur ordinaire utilisera sudo).
+#d-i passwd/root-login boolean false
+# On peut aussi ne pas créer de compte d'utilisateur.
+#d-i passwd/make-user boolean false
+
+#Le mot de passe de root en clair...
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# ... ou chiffré avec un hachage crypt(3)
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+
+# Vous pouvez aussi présélectionner le nom de l'utilisateur et son
+# identifiant de connexion
+#d-i passwd/user-fullname string Utilisateur Debian
+#d-i passwd/username string debian
+# Mot de passe de l'utilisateur en clair...
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# ... ou chiffré avec un hachage crypt(3)
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Préciser l'UID du premier utilisateur.
+#d-i passwd/user-uid string 1010
+
+# Le compte sera ajouté à certains groupes. Pour contrôler ces groupes,
+# utilisez cette ligne par exemple :
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Les variables <code class="classname">passwd/root-password-crypted</code> et <code class="classname">passwd/user-password-crypted</code> peuvent être aussi préconfigurées avec la valeur <span class="quote">« <span class="quote">!</span> »</span>. Dans ce cas, l'identifiant correspondant est désactivé. Cette méthode convient pour le compte root. Mais il faut pouvoir autoriser la gestion administrative ou la connexion du superutilisateur d'une autre manière, par exemple authentification avec clé SSH, ou <span class="command"><strong>sudo</strong></span>. </p>
+<p>Un hachage SHA-512 avec crypt(3) pour le mot de passe peut être obtenu de la manière suivante (commande disponible dans le paquet <code class="classname">whois</code> : </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Configuration du fuseau horaire</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Cette commande permet de régler l'horloge matérielle sur UTC :
+d-i clock-setup/utc boolean true
+
+# Vous pouvez mettre toute valeur acceptée pour $TZ.
+# Voyez ce que contient /usr/share/zoneinfo/ pour les valeurs possibles.
+d-i time/zone string Europe/Paris
+
+# La ligne suivante autorise l'utilisation de NTP pour régler l'horloge
+# pendant l'installation :
+d-i clock-setup/ntp boolean true
+# Le serveur NTP à utiliser. Le serveur par défaut est presque
+# toujours correct.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Partitionnement</h3></div></div></div>
+<p>Préconfigurer le partitionnement du disque dur est limité aux possibilités offertes par <code class="classname">partman-auto</code>. Vous pouvez partitionner un disque entier ou seulement un espace libre sur ce disque. La disposition du disque peut être indiquée par un schéma prédéfini, un schéma inclus dans un fichier de schémas ou un schéma mis dans le fichier de préconfiguration. </p>
+<p>La préconfiguration de schémas complexes de partitionnement, utilisant RAID, LVM ou le chiffrement, est possible mais sans la flexibilité offerte lors d'une installation standard. </p>
+<p>Les exemples donnés par la suite n'offrent qu'une information élémentaire sur l'utilisation des schémas. Pour des précisions, consultez les fichiers <code class="filename">partman-auto-recipe.txt</code> et <code class="filename">partman-auto-raid-recipe.txt</code> qui font partie du paquet <code class="classname">debian-installer</code>. Ces deux fichiers sont aussi disponibles dans le répertoire source de <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top">l'<code class="classname">installateur Debian</code></a>. Il faut noter que les fonctionnalités disponibles peuvent changer d'une version à l'autre de l'installateur. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertissement]" src="images/warning.png"></td>
+<th align="left">Avertissement</th>
+</tr>
+<tr><td align="left" valign="top"><p>L'identification des disques dépend de l'ordre de chargement des pilotes des disques. Si le système possède plusieurs disques, assurez-vous que le bon sera choisi avant de préconfigurer son partitionnement. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Exemples de partitionnement</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Si le système possède un espace libre, vous pouvez ne partitionner que
+# cet espace.
+# Mais il faut que partman-auto/method (ci-dessous) ne soit pas définie.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Vous pouvez aussi choisir un disque entier. Si le système ne possède
+# qu'un seul disque, l'installateur le choisira automatiquement. Si le
+# système possède plusieurs disques, le nom du disque doit être
+# donné selon le format traditionnel (par exemple, /dev/sda,
+# mais pas /dev/discs/disc0/disc).
+# Par exemple, pour utiliser le premier disque SCSI/SATA :
+#d-i partman-auto/disk string /dev/sda
+# Il faudra aussi indiquer la méthode à utiliser.
+# Actuellement les méthodes disponibles sont :
+# - regular : utilisation des types de partition habituels.
+# - lvm :     utilisation de LVM pour le partitionnement du disque.
+# - crypto :  utilisation de LVM à l'intérieur d'une partition chiffrée.
+d-i partman-auto/method string lvm
+
+# Vous pouvez définir la quantité d'espace qui sera utilisée
+# par le groupe LVM.
+# Cela peut être une taille associée à son unité (par exemple 20 GB),
+# un pourcentage d'espace libre ou le mot "max".
+d-i partman-auto-lvm/guided_size string max
+
+# Si l'un des disques à partitionner automatiquement contient une ancienne
+# configuration LVM, l'utilisateur recevra normalement un avertissement.
+# Cet avertissement peut être évité :  
+d-i partman-lvm/device_remove_lvm boolean true
+# De même pour un Raid logiciel existant déjà :
+d-i partman-md/device_remove_md boolean true
+# Et aussi pour la confirmation concernant la création de partitions lvm :
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# Vous pouvez choisir l'un des schémas prédéfinis :
+# - atomic : tous les fichiers dans une seule partition
+# - home : partition /home distincte
+# - multi : partitions /home, /var et /tmp séparées
+# - server : partitions /var et /srv séparées, swap limitée à 1 Go
+# - small_disk : schéma dédié aux petits disques (moins de 10 Go)
+d-i partman-auto/choose_recipe select atomic
+
+# ...ou donner vous-même votre schéma.
+# Si vous avez la possibilité d'obtenir un schéma dans l'environnement de
+# l'installateur, vous pouvez simplement pointer sur lui.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Sinon, vous pouvez mettre un schéma dans le fichier de préconfiguration
+# (une seule ligne logique). L'exemple suivant crée une petite partition
+# /boot, une partition swap convenable, et utilise le reste de l'espace libre
+# pour la partition racine :
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# Une documentation complète sur le format des schémas se trouve dans le
+# fichier <code class="filename">partman-auto-recipe.txt</code>, disponible dans le
+# paquet « debian-installer » ou dans les sources de l'installateur.
+# On trouve aussi dans ce document la manière d'indiquer les étiquettes
+# de systèmes de fichiers, les noms de groupes de volumes ainsi que les
+# noms de périphériques physiques à inclure dans les groupes de volumes.
+
+## Partitionnement pour EFI
+# Si votre système nécessite une partition EFI, vous pouvez ajouter ceci au
+# schéma précédent, en tant que premier élément :
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# Le fragment ci-dessus correspond à l'architecture amd64, 
+# certains détails peuvent varier en fonction des architectures.
+# Le paquet « partman-auto » dans le dépôt de sources de D-I
+# peut contenir des exemples à adapter.
+
+# Si vous avez indiqué la méthode à utiliser, partman créera automatiquement
+# les partitions sans demander de confirmation.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Forcer l'amorçage avec UEFI (la compatibilité avec le BIOS sera perdue),
+# cela n'est pas fait par défaut.
+#d-i partman-efi/non_efi_system boolean true
+# S'assurer que la table de partitionnement est en GPT,
+# cela est nécessaire pour l'EFI.
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# Quand le chiffrage de disque est activé,
+# ne pas effacer les partitions avant.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Partitionnement et RAID logiciel</h4></div></div></div>
+<p>Il est aussi possible de préconfigurer le partitionnement d'un RAID logiciel. Les niveaux 0, 1, 5, 6 et 10 sont acceptés, de même que la gestion d'ensemble en mode dégradé et l’indication de périphériques de rechange. </p>
+<p>Si vous utilisez RAID 1, vous pouvez préconfigurer grub pour qu'il s'installe sur tous les périphériques de l'ensemble, voyez la <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Installation du programme d'amorçage">Section B.4.12, « Installation du programme d'amorçage »</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertissement]" src="images/warning.png"></td>
+<th align="left">Avertissement</th>
+</tr>
+<tr><td align="left" valign="top"><p>Il est facile de se tromper avec ce type de partitionnement automatique. C'est aussi une nouvelle fonctionnalité qui a été relativement peu testée par les développeurs de l'installateur. Il revient à chacun de trouver les bonnes formules. Consultez le fichier <code class="filename">/var/log/syslog</code> si vous rencontrez des problèmes. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># La méthode à indiquer est "raid".
+#d-i partman-auto/method string raid
+# Indiquez les disques à partitionner. Ils auront tous les mêmes
+# caractéristiques, et donc cela ne fonctionnera que s'ils ont tous
+# la même taille.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Ensuite, indiquez les partitions physiques à utiliser. 
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Enfin vous devez indiquer comment seront utilisées les partitions que
+# vous venez de définir. N'oubliez pas de donner les bons numéros pour
+# les partitions logiques. Les niveaux RAID 0, 1, 5, 6 et 10 sont acceptés.
+# Les noms des périphériques sont séparés par un caractère « # ». 
+# Paramètres :
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Une documentation complète se trouve dans le
+# fichier <code class="filename">partman-auto-raid-recipe.txt</code>, disponible dans le
+# paquet « debian-installer » ou dans les sources de l'installateur.
+
+# Pour que partman partitionne automatiquement sans demander de confirmation :
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Contrôler le montage des partitions</h4></div></div></div>
+<p>Les systèmes de fichiers sont normalement montés en utilisant une clé appelée identifiant unique universel, UUID. Même si le nom du périphérique change, cet identifiant permet de monter le système de fichiers sur le bon périphérique. La lecture de ces identifiants est difficile. Aussi l'installateur peut monter des systèmes de fichiers en utilisant les noms traditionnels des périphériques ou les étiquettes que vous leur avez attribuées. Quand vous demandez un montage par étiquette, tout système de fichiers sans étiquette sera monté en utilisant un UUID. </p>
+<p>Pour les périphériques dont les noms sont stables, comme les volumes logiques LVM, les noms traditionnels seront toujours utilisés à la place des UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertissement]" src="images/warning.png"></td>
+<th align="left">Avertissement</th>
+</tr>
+<tr><td align="left" valign="top"><p>Les noms traditionnels des périphériques peuvent changer en fonction de l'ordre dans lequel ils sont découverts par le noyau au moment du démarrage. Un mauvais système de fichiers peut être ainsi monté sur un périphérique. De même les étiquettes peuvent créer des conflits si vous branchez un nouveau disque ou un périphérique USB. Si cela arrive, le comportement du système devient aléatoire. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Par défaut, les UUID sont utilisés, mais vous pouvez choisir <span class="emphasis"><em>traditional</em></span> pour
+# utiliser les noms traditionnels des périphériques, ou <span class="emphasis"><em>label</em></span> pour utiliser des
+# étiquettes.
+# En l'absence d'étiquette, l'UUID est utilisé.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Installation du système de base</h3></div></div></div>
+<p>Peu d'éléments peuvent être préconfigurés à cette étape de l'installation. Les seules questions posées concernent l'installation du noyau. </p>
+<div class="informalexample"><pre class="screen"># Configurer APT pour empêcher l'installation des paquets recommandés.
+# Cette option qui peut conduire à un système incomplet est réservée à des
+# utilisateurs expérimentés.
+#d-i base-installer/install-recommends boolean false
+
+# Version du noyau à installer (nom du paquet). Utilisez <span class="emphasis"><em>none</em></span> si vous ne voulez
+# pas installer de noyau.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Configuration d'Apt</h3></div></div></div>
+<p>La création du fichier <code class="filename">/etc/apt/sources.list</code> et les principales options de configuration se font automatiquement à partir de la méthode d'installation choisie et des réponses aux précédentes questions. Vous pouvez aussi ajouter d'autres sources (locales par exemple). </p>
+<div class="informalexample"><pre class="screen"># Choisissez si vous voulez analyser un autre support d’installation
+# (par défaut : non (false)).
+d-i apt-setup/cdrom/set-first boolean false
+# Vous pouvez installer des microprogrammes non libres.
+#d-i apt-setup/non-free-firmware boolean true
+# Vous pouvez installer des logiciels des distributions non-free et contrib.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Décommentez cette ligne si vous ne souhaitez pas qu'une image d'installation
+# DVD ou BD soit active dans le sources.list du système installé
+# (les images de CD ou netinst sont désactivées
+# quelque soit la valeur de ce paramètre)
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Décommentez cette ligne si vous n'utilisez pas de miroir sur le réseau.
+#d-i apt-setup/use_mirror boolean false
+# Choisissez les services de mise à jour et les miroirs à utiliser.
+# Les valeurs ci-après sont les valeurs par défaut :
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Autres sources disponibles, local[0-9]
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Activer des lignes deb-src
+#d-i apt-setup/local0/source boolean true
+# URL de la clé publique de la source locale. Vous devez indiquer une clé ; sinon
+# apt se plaindra que la source n'est pas authentifiée et laissera la ligne du
+# fichier sources.list en commentaire.
+#d-i apt-setup/local0/key string http://local.server/key
+# ou vous pouvez fournir cette clé en chiffrant son contenu avec
+# la commande `base64 -w0` et en l'écrivant ainsi :
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# Le fichier de clé fourni est vérifié. S'il est au format PGP ASCII avec armure,
+# il sera enregistré avec l'extension « .asc »,
+# sinon l'extension « .gpg » sera utilisée.
+# Le format « keybox database » n'est pas encore pris en charge.
+# (consultez generators/60local dans les sources de apt-setup)
+
+# Par défaut, l'installateur demande que les dépôts soient authentifiés par
+# une clé gpg connue. On peut se servir de cette commande pour désactiver
+# cette authentification.
+# Attention : cette commande n'est pas sécurisée ni recommandée.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Décommentez pour ajouter la configuration multiarch pour i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Choix des paquets</h3></div></div></div>
+<p>Vous pouvez installer toute combinaison de tâches parmi celles disponibles. Pour l'heure, les tâches disponibles sont les suivantes : </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (outils standards) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (environnement graphique de bureau) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (bureau Gnome) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (bureau Xfce) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (bureau KDE Plasma) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (bureau Cinnamon) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (bureau MATE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (bureau LXDE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (serveur web) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (serveur SSH) </p></li>
+</ul></div>
+<p>Vous pouvez aussi choisir de n'installer aucune tâche et forcer l'installation de paquets par un autre moyen. Il est recommandé de toujours inclure la tâche <span class="emphasis"><em>standard</em></span>. </p>
+<p>Si vous ne voulez pas voir les écrans de tasksel, utilisez la préconfiguration de <code class="classname">pkgsel/run_tasksel</code> (dans ce cas, aucun paquet n'est installé par tasksel). </p>
+<p>Si vous voulez installer des paquets particuliers en plus des paquets installés par les tâches, vous pouvez utiliser le paramètre <code class="classname">pkgsel/include</code>. Séparez les valeurs par des virgules ou des espaces. Vous pouvez ainsi l'utiliser facilement sur la ligne de commande du noyau. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Ou choisissez de ne pas afficher les écrans de tasksel
+# (ce qui n'installe aucun paquet)
+#d-i pkgsel/run_tasksel boolean false
+
+# Paquets supplémentaires
+#d-i pkgsel/include string openssh-server build-essential
+# Mise à jour des paquets après debootstrap.
+# Valeurs autorisées : none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# Vous pouvez choisir si vous souhaitez signaler les logiciels que
+# vous avez installés et ceux que vous utilisez. Par défaut, rien n'est signalé.
+# Mais l'envoi de rapport d'installation aide le projet à connaître les logiciels
+# populaires qui devraient être inclus sur le premier DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Installation du programme d'amorçage</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub est le programme d'amorçage (pour x86).</span>
+
+
+# Le paramètre suivant est sans danger : il installe grub sur la
+# partition UEFI ou le secteur d'amorçage s'il n'existe aucun autre système
+# d'exploitation sur la machine.
+d-i grub-installer/only_debian boolean true
+
+# Ce paramètre installe grub sur la partition UEFI ou le secteur d'amorçage
+# même s'il existe un autre système d'exploitation, ce qui est moins sûr car
+# il pourrait ne pas savoir amorcer cet autre système.
+d-i grub-installer/with_other_os boolean true
+
+# En raison, entre autres, des clés USB, la position du disque principal ne
+# peut pas être déterminée de façon sûre dans le cas général, elle doit donc
+# être spécifiée :
+#d-i grub-installer/bootdev  string /dev/sda
+# Pour installer grub sur le premier périphérique
+# (présumant que ce n'est pas une clé USB) :
+#d-i grub-installer/bootdev  string default
+
+# Vous pouvez aussi l'installer ailleurs que sur la partition UEFI
+# ou le secteur d'amorçage.
+# Décommentez et modifiez les lignes suivantes :
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Pour installer grub sur plusieurs disques :
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Mot de passe facultatif pour grub, soit en clair (simple texte) :
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# soit chiffré avec un hachage MD5, voyez grub-md5-crypt(8) :
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Si le programme d'amorçage permet d'ajouter des paramètres d'amorçage au
+# système installé, vous pouvez utiliser l'option suivante.
+# Note : les options passées à l'installateur sont ajoutées automatiquement.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>Un mot de passe chiffré avec un hachage MD5 pour <code class="classname">grub</code> peut être créé avec la commande <span class="command"><strong>grub-md5-crypt</strong></span> ou avec la commande donnée dans l'exemple de la <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Configuration des comptes">Section B.4.6, « Configuration des comptes »</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Pour terminer l'installation</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Lors d'une installation à partir d'une console série, les consoles virtuelles
+# (VT1-VT6) sont désactivées dans /etc/inittab. Décommentez la ligne suivante
+# pour empêcher la désactivation.
+#d-i finish-install/keep-consoles boolean true
+
+# Pour éviter le dernier message disant que l'installation est terminée :
+d-i finish-install/reboot_in_progress note
+
+# Pour empêcher l'éjection du disque au moment du redémarrage,
+# c'est utile parfois :
+#d-i cdrom-detect/eject boolean false
+
+# Pour arrêter l'installateur quand il a terminé, mais sans redémarrer
+# le système installé :
+#d-i debian-installer/exit/halt boolean true
+# Pour éteindre la machine au lieu de simplement l'arrêter :
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Les autres questions</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Selon les logiciels que vous avez installés et s'il y a eu des problèmes
+# pendant le processus d'installation, d'autres questions peuvent être posées.
+# Vous pouvez bien sûr les préconfigurer ! Pour obtenir la liste de toutes
+# les questions possibles, faites une installation, et exécutez ces 
+# commandes :
+#   debconf-get-selections --installer &gt; fichier
+#   debconf-get-selections &gt;&gt; fichier
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4311" class="footnote"><p><a href="#id4311" class="para"><sup class="para">[20] </sup></a> Si la valeur de <code class="literal">locale</code> est préconfigurée avec <strong class="userinput"><code>en_NL</code></strong>, la locale du système installé sera par défaut <code class="literal">en_US.UTF-8</code>. Si la locale voulue est <code class="literal">en_GB.UTF-8</code>, il faudra préconfigurer les valeurs individuellement. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Créer un fichier de préconfiguration </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Options complexes</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

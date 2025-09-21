@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Hardware- und Betriebssystem-Setup vor der Installation</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch03.html" title="Kapitel 3. Bevor Sie Debian GNU/Linux installieren">
+<link rel="prev" href="ch03s05.html" title="3.5. Im Voraus partitionieren für eine Multiboot-Installation">
+<link rel="next" href="ch04.html" title="Kapitel 4. Systeminstallations-Medien beschaffen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Hardware- und Betriebssystem-Setup vor der Installation</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 3. Bevor Sie Debian GNU/Linux installieren</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Hardware- und Betriebssystem-Setup vor der Installation</h2></div></div></div>
+<p>Dieses Kapitel wird Sie durch die Hardware-Einstellungen leiten, die Sie eventuell vor der Installation von Debian durchführen müssen. Dies beinhaltet das Überprüfen und eventuell Ändern von BIOS/UEFI/Firmware-Einstellungen für Ihr System. Das <span class="quote">„<span class="quote">BIOS/UEFI</span>“</span> oder die <span class="quote">„<span class="quote">System-Firmware</span>“</span> ist die von der Hardware genutzte interne Software; sie ist meistens höchst kritisch in den Boot-Prozess involviert (direkt nach dem Einschalten). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Das BIOS/UEFI-Setup-Menü aufrufen</h3></div></div></div>
+<p>Das BIOS/UEFI bietet Basisfunktionen, die benötigt werden, um den Rechner zu starten und dem Betriebssystem Zugriff auf die Hardware zu ermöglichen. Möglicherweise hat Ihr System ein BIOS/UEFI-Setup-Menü, in dem das BIOS/UEFI konfiguriert wird. Um das Setup-Menü aufzurufen, müssen Sie eine Taste oder Tastenkombination drücken, direkt nachdem der Computer eingeschaltet wurde. Oft ist es die <span class="keycap"><strong>Entf</strong></span>- oder die <span class="keycap"><strong>F2</strong></span>-Taste, aber einige Hersteller verwenden auch andere Tasten. Üblicherweise wird direkt nach dem Start angezeigt, welche Taste für den Aufruf des Setup-Menüs zu drücken ist. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Auswahl des Boot-Laufwerks</h3></div></div></div>
+<p>Im BIOS/UEFI-Setup-Menü können Sie einstellen, welche Laufwerke/Geräte in welcher Reihenfolge nach einem startfähigen Betriebssystem durchsucht werden sollen (Boot Device Selection). Zu möglichen Einstellungen gehören die internen Festplatten, die CD-/DVD-ROM-Laufwerke und USB-Massenspeicher wie USB-Sticks oder externe USB-Festplatten. Auf modernen Systemen gibt es oft auch die Möglichkeit, via PXE über das Netzwerk zu booten. </p>
+<p>Abhänigig von dem Installationsmedium (CD-/DVD-ROM, USB-Stick, Netzwerk-Boot), das Sie nutzen möchten, sollten Sie die passenden Boot-Geräte aktivieren, falls sie noch nicht aktiviert sind. </p>
+<p>Die meisten BIOS/UEFI-Versionen erlauben, beim Systemstart ein Boot-Menü aufzurufen, in dem Sie das zu verwendende Gerät für den nächsten Boot-Vorgang auswählen können. Falls diese Möglichkeit verfügbar ist, zeigt das BIOS/UEFI gewöhnlich beim Systemstart eine kurze Nachricht wie <span class="quote">„<span class="quote">Press <span class="keycap"><strong>F12</strong></span> for boot menu</span>“</span> an. Die für dieses Menü zu verwendende Taste variiert letztlich von System zu System; üblich sind <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> oder <span class="keycap"><strong>F8</strong></span>. Ein Gerät aus dieser Liste auszuwählen ändert nicht die im BIOS/UEFI fest eingestellte Reihenfolge, d.h. Sie können einmalig von einem USB-Stick booten, und trotzdem die Reihenfolge so eingestellt lassen, dass die interne Festplatte das primäre Boot-Laufwerk beim normalen Start ist. </p>
+<p>Wenn Ihr BIOS/UEFI die Möglichkeit eines Boot-Menüs nicht bietet, um vorübergehend ein anderes Gerät zum Booten zu verwenden, müssen Sie im BIOS/UEFI die Einstellungen so ändern, dass das Gerät, von dem der <code class="classname">debian-installer</code> starten soll, das primäre Boot-Gerät ist. </p>
+<p>Unglücklicherweise enthalten einige Computer fehlerbehaftete BIOS/UEFI-Versionen. Den <code class="classname">debian-installer</code> von einem USB-Stick zu starten könnte fehlschlagen, selbst wenn im BIOS/UEFI-Setup-Menü eine entsprechende Option vorhanden ist und der Stick als primäres Boot-Gerät eingestellt ist. Auf einigen dieser Systeme ist die Verwendung eines USB-Sticks als Boot-Medium nicht möglich; bei anderen ist es unter Umständen möglich, indem der Gerätetyp im BIOS/UEFI-Setup von dem Standardwert <span class="quote">„<span class="quote">USB harddisk</span>“</span> oder <span class="quote">„<span class="quote">USB stick</span>“</span> in <span class="quote">„<span class="quote">USB ZIP</span>“</span> oder <span class="quote">„<span class="quote">USB CDROM</span>“</span> geändert wird. <span class="phrase">Speziell wenn Sie ein isohybrid-Installations-Image auf einem USB-Stick verwenden (siehe <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Einen USB-Stick vorbereiten mit einem Hybrid-CD/DVD-Image">Abschnitt 4.3.1, „Einen USB-Stick vorbereiten mit einem Hybrid-CD/DVD-Image“</a>), kann das Ändern des Gerätetyps in <span class="quote">„<span class="quote">USB CDROM</span>“</span> bei einigen BIOS/UEFI-Versionen helfen, die von einem USB-Stick im <span class="quote">„<span class="quote">USB harddisk</span>“</span>-Modus nicht booten würden.</span> Sie müssen eventuell Ihre BIOS-Konfiguration noch anpassen, um <span class="quote">„<span class="quote">USB legacy support</span>“</span> zu aktivieren. </p>
+<p>Falls Sie das BIOS/UEFI nicht anpassen können, um direkt von einem USB-Stick zu booten, besteht trotzdem die Möglichkeit, ein ISO-Image zu verwenden, das Sie auf einen Stick kopiert haben. Starten Sie den <code class="classname">debian-installer</code> wie in <a class="xref" href="ch04s04.html" title="4.4. Dateien vorbereiten für das Booten von Festplatte">Abschnitt 4.4, „Dateien vorbereiten für das Booten von Festplatte“</a> beschrieben; wenn die Festplatten nach einem Installer-ISO-Image durchsucht wurden, wählen Sie das USB-Speichergerät und dort dann das Installations-Image aus. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Systeme mit UEFI-Firmware</h3></div></div></div>
+<p>UEFI (<span class="quote">„<span class="quote">Unified Extensible Firmware Interface</span>“</span>) ist eine neue Art von System-Firmware, die auf vielen modernen Systemen genutzt wird und - unter anderem - das klassische PC-BIOS ersetzen soll. </p>
+<p>Derzeit haben die meisten PC-Systeme, die UEFI verwenden, ein sogenanntes <span class="quote">„<span class="quote">Compatibility Support Module</span>“</span> (CSM, Kompatibilitätsmodul) in der Firmware, das exakt die gleichen Schnittstellen an ein Betriebssystem zur Verfügung stellt wie ein klassiches PC-BIOS, so dass Software, die für das klassische BIOS geschrieben wurde, unverändert weiter genutzt werden kann. Nichtsdestotrotz soll UEFI eines Tages das alte PC-BIOS ganz ersetzen, ohne dabei vollständig rückwärtskompatibel zu sein; es gibt sogar bereits jetzt eine Reihe von Systemen mit UEFI, die kein CSM haben. </p>
+<p>Auf Systemen mit UEFI gibt es ein paar Dinge, die in Betracht gezogen werden sollten, wenn ein Betriebssystem installiert werden soll. Der Weg, wie die Firmware ein Betriebssystem lädt, ist fundamental unterschiedlich zwischen dem klassischen BIOS (oder UEFI im CSM-Modus) und nativem UEFI. Ein wesentlicher Unterschied ist die Art, wie Festplattenpartitionen auf der Platte gespeichert werden. Während das klassische BIOS und UEFI im CSM-Modus eine DOS-Partitionstabelle verwenden, nutzt UEFI ein anderes Partitionierungsschema namens <span class="quote">„<span class="quote">GUID Partition Table</span>“</span> (GPT). Auf jeweils einer Festplatte kann aus praktischen Gründen immer nur eine der beiden eingesetzt werden, daher müssen bei einem Multi-Boot-Setup (System mit mehreren verschiedenen installierten Betriebssystemen) alle Systeme den gleichen Partitionstabellentyp nutzen. Das Booten von einer Festplatte mit GPT ist nur im nativen UEFI-Modus möglich, aber GPT ist mehr und mehr im Kommen, da die Festplatten immer größer werden und die klassische DOS-Partitionstabelle keine Platten größer als 2 Terabyte adressieren kann; GPT jedoch erlaubt erheblich größere Festplatten. Der andere große Unterschied zwischen BIOS (oder UEFI im CSM-Modus) und nativem UEFI ist der Ort, wo der Boot-Code abgelegt ist und welches Format er haben muss. Das bedeutet, dass für beide Systeme unterschiedliche Bootloader erforderlich sind. </p>
+<p>Letzteres ist wichtig, wenn der <code class="classname">debian-installer</code> auf einem UEFI-System mit CSM gebootet wird, weil der <code class="classname">debian-installer</code> überprüft, ob er auf einem BIOS- oder einem nativen UEFI-System gestartet wurde und danach den entsprechenden Bootloader installiert. Normalerweise funktioniert dies, aber in Multi-Boot-Umgebungen kann es ein Problem geben. Bei einigen UEFI-Systemen mit CSM kann der Standard-Boot-Modus für das Booten von Wechseldatenträgern ein anderer sein als beim Booten von fest eingebauter Festplatte; wenn also der Installer von einem USB-Stick in einem anderen Modus gebootet wird, als wenn ein anderes, bereits installiertes Betriebssystem von Festplatte startet, könnte der falsche Bootloader installiert werden und das System nach Abschluß der Installation nicht mehr boot-fähig sein. Bei der Auswahl eines Boot-Gerätes in einem Menü in der Firmware bieten einige Systeme zwei separate Auswahlen für jedes Gerät an, so dass der Benutzer auswählen kann, ob im CSM- oder im nativen UEFI-Modus gebootet werden soll. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Secure Boot</h3></div></div></div>
+<p>Ein anderes Problem mit Bezug zu UEFI ist der sogenannte <span class="quote">„<span class="quote">Secure Boot</span>“</span>-Mechanismus. Secure Boot ist eine Funktion in UEFI-Implementationen, die es der Firmware nur erlaubt, Code zu laden und auszuführen, wenn dieser kryptografisch mit bestimmten Schlüsseln signiert ist; so wird jeglicher (möglicherweise bösartiger) Boot-Code, der nicht oder mit unbekannten Schlüsseln signiert ist, blockiert. In der Praxis ist der einzige Schlüssel, der auf den meisten UEFI-Systemen mit Secure Boot standardmäßig akzeptiert wird, ein Schlüssel von Microsoft, der genutzt wird, um den Windows-Bootloader zu signieren. Debian enthält einen von Microsoft signierten <span class="quote">„<span class="quote">shim</span>“</span>-Bootloader, daher sollte es auf Systemen mit aktiviertem Secure Boot korrekt funktionieren. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Deaktivieren der <span class="quote">„<span class="quote">Fast boot</span>“</span>/<span class="quote">„<span class="quote">Fast startup</span>“</span>-Funktionalität in Windows</h3></div></div></div>
+<p>Windows bietet eine Funktionalität (in Windows 8 <span class="quote">„<span class="quote">Fast boot</span>“</span> genannt, <span class="quote">„<span class="quote">Fast startup</span>“</span> in Windows 10), um die für das Booten des Systems benötigte Zeit zu verkürzen. Windows fährt dabei das System nicht wirklich vollständig herunter, wenn Sie ein Herunterfahren anfordern, und aufgrunddessen findet beim nächsten Start natürlich auch kein echter System-Kaltstart statt. Stattdessen wird etwas ähnliches wie ein partielles Suspend-to-disk durchgeführt (der Systemzustand wird eingefroren und in einem speziellen Bereich der Festplatte gespeichert; in früheren Windows-Versionen bot der <span class="quote">„<span class="quote">Ruhezustand</span>“</span> eine ähnliche Funktionalität), um die <span class="quote">„<span class="quote">Boot</span>“</span>-Zeit zu reduzieren. Solange Windows das einzige Betriebssystem auf dem Rechner ist, ist dies unproblematisch, aber es kann zu Problemen und Datenverlust führen, wenn Sie ein Dual-Boot-System haben, bei dem ein anderes Betriebssystem parallel zu Windows auf die gleichen Dateisysteme zugreift. In diesem Fall kann sich der echte Status des Dateisystems von dem unterscheiden, den Windows nach seinem nächsten <span class="quote">„<span class="quote">Booten</span>“</span> vermutet; dies kann bei den nächsten Schreibzugriffen zu einer Beschädigung des Dateisystems führen. Um in einem Dual-Boot-System eine Beschädigung der Dateisysteme zu vermeiden, muss daher die <span class="quote">„<span class="quote">Fast boot</span>“</span>/<span class="quote">„<span class="quote">Fast startup</span>“</span>-Funktionalität in Windows deaktiviert werden. </p>
+<p>Desweiteren wurde berichtet, dass diese Funktion manchmal durch Windows-Updates automatisch wieder aktiviert worden ist, nachdem sie vom Benutzer ausgeschaltet wurde. Es wird daher empfohlen, diese Einstellung regelmäßig zu kontrollieren. </p>
+<p>Es könnte auch nötig sein, <span class="quote">„<span class="quote">fast boot</span>“</span> zu deaktivieren, um Zugriff auf das UEFI-Setup erhalten und so ein anderes Betriebssystem oder den <code class="classname">debian-installer</code> zum Starten auswählen zu können. Auf einigen UEFI-Systemen könnte die Firmware die zum Booten benötigte Zeit reduzieren, indem Tastatur-Controller oder USB-Hardware nicht initialisiert werden. In diesen Fällen ist es erforderlich, Windows zu booten und dort die <span class="quote">„<span class="quote">fast boot</span>“</span>-Funktionalität zu deaktivieren, damit Sie die Möglichkeit erhalten, die Boot-Reihenfolge zu ändern. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Hardware-Probleme, auf die Sie achten sollten</h3></div></div></div>
+<p><b>USB-Bios-Support und Tastaturen. </b>Falls Sie keine PS/2-Tastatur haben, sondern lediglich ein USB-Modell, müssen Sie bei sehr alten PCs möglicherweise <span class="quote">„<span class="quote">Legacy keyboard emulation</span>“</span> im BIOS aktivieren, um die Tastatur im Menü des Bootloaders nutzen zu können, aber dies ist bei modernen Computersystemen kein Problem mehr. Falls Ihre Tastatur im Bootloader-Menü keine Funktion hat, konsultieren Sie das Handbuch Ihres Mainboards und schauen Sie im BIOS nach Optionen für <span class="quote">„<span class="quote">Legacy keyboard emulation</span>“</span> oder <span class="quote">„<span class="quote">USB keyboard support</span>“</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Im Voraus partitionieren für eine Multiboot-Installation </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> Kapitel 4. Systeminstallations-Medien beschaffen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

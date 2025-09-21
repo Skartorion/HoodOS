@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Titkosított kötetek csatolása</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch07.html" title="7. fejezet - Az új Debian rendszer indítása">
+<link rel="prev" href="ch07s01.html" title="7.1. Az igazság pillanata">
+<link rel="next" href="ch07s03.html" title="7.3. Bejelentkezés">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Titkosított kötetek csatolása</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">7. fejezet - Az új Debian rendszer indítása</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Titkosított kötetek csatolása</h2></div></div></div>
+<p>Ha a telepítéskor titkosított köteteket hoztál létre és csatolási pontokhoz rendelted ezeket, az indításkor meg kell adnod majd a jelmondatokat ezekhez. </p>
+<p>A dm-crypt által titkosított partíciókhoz az alábbi felhívás jelenik meg indításkor: </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> A felhívás 1. sorában a <em class="replaceable"><code>part</code></em> az adott partíció neve, például sda2 vagy md0. Valószínűleg érdekel <span class="emphasis"><em>mely kötet számára</em></span> kell megadni a jelmondatot. Ez a <code class="filename">/home</code>? Vagy a <code class="filename">/var</code>? Természetesen, ha csak 1 titkosított kötet van, ez könnyű és csak meg kell adni a kötet beállításakor megadott jelmondatot. Ha több titkosított kötet került beállításra a telepítés során, a <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Titkosított kötetek beállítása">6.3.4.6. szakasz - Titkosított kötetek beállítása</a> részben leírtak segítenek. Ha nem jegyezted le a <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> és a csatolási pontok közti térképet, az új rendszerben lévő <code class="filename">/etc/crypttab</code> és <code class="filename">/etc/fstab</code> fájlokban megleled. </p>
+<p>A beviteli jel kissé eltérhet ha titkosított gyökér fájlrendszer van csatolva. Ez függ a rendszer indítására használt initrd-t előállító inintramfs készítőtől. A lenti példa <code class="classname">initramfs-tools</code> használatával előállított initrd-t mutat: </p>
+<div class="informalexample"><pre class="screen">Indítás: <span class="emphasis"><em>gyökér fájlrendszer csatolása</em></span>... ...
+Indítás: /scripts/local-top futtatása...
+Add meg a LUKS jelmondatot:
+</pre></div>
+<p>
+
+</p>
+<p>A jelmondat megadásakor semmilyen karakter nem jelenik meg (csillag sem). Rossz jelmondat megadása kétszer javítható. A 3. kísérlet után az indító folyamat kihagyja e kötetet és folytatja a következő fájlrendszer csatolását. Lásd a <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. Hibaelhárítás">7.2.1. szakasz - Hibaelhárítás</a> részt több adatért. </p>
+<p>A jelmondatok megadása után az indítás a szokásos módon folyik tovább. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. Hibaelhárítás</h3></div></div></div>
+<p>Ha egyes titkosított kötetek rossz jelmondat megadása miatt nem csatolhatók, kézzel kell csatolni őket az indítás után. Több eset van. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Az első a gyökér partíció esete. Ha csatolása nem sikerül, az indító folyamat leáll, így újra kell indítani a gépet és ismét megpróbálni. </p></li>
+<li class="listitem">
+<p>A legegyszerűbb esetben a titkosított kötetek olyan adatokat tartalmaznak, mint a <code class="filename">/home</code> vagy a <code class="filename">/srv</code>. Ezeket manuálisan fel lehet csatlakoztatni miután a rendszer elindult. </p>
+<p>A dm-crypt esetén kicsit trükkösebb. Először regisztrálni kell a köteteket az <span class="application">eszköz-térképezővel</span> így:</p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Ez átnézi a <code class="filename">/etc/crypttab</code> fájlban lévő összes kötetet és létrehozza a megfelelő eszközöket a <code class="filename">/dev</code> könyvtárban a jól megadott jelmondat után. (A már regisztrált köteteket kihagyja, így e parancs többször is gond nélkül futtatható.) A sikeres regisztráció után, egyszerűen csatold a köteteket a szokott módon: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/csatolási_pont</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Ha egy nem-kritikus rendszer fájlokat tartalmazó kötet (például <code class="filename">/usr</code> vagy <code class="filename">/var</code>) csatolása nem sikerül, a rendszer még mindig elindul és a kötetek kézzel csatolhatók, mint az előző esetben. De (újra) el kell indítani az alap futási szintből futó szolgáltatásokat is, mert így valószínűleg nem indultak el. Ennek legkönnyebb módja a gép újraindítása. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Az igazság pillanata </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Bejelentkezés</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

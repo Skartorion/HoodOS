@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. Структура каталогов</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Приложение C. Разметка дисков в Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Дисковые разделы Debian и их размеры">
+<link rel="next" href="apcs03.html" title="C.3. Рекомендуемые схемы разметки">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. Структура каталогов</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Приложение C. Разметка дисков в Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. Структура каталогов</h2></div></div></div>
+<p>Debian GNU/Linux придерживается стандарта <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> для каталогов и имён файлов. Этот стандарт позволяет пользователям и программному обеспечению быть уверенным в расположении файлов и каталогов. Уровень корневого каталога представляется просто косой чертой <code class="filename">/</code>. На корневом уровне, все системы Debian содержат следующие каталоги: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Каталог</th>
+<th>Содержит</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>необходимые исполняемые файлы</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>статичные файлы системного загрузчика</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>файлы устройств</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>настройки системы данной машины</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>домашние каталоги пользователей</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>необходимые библиотеки общего пользования и модули ядра</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>содержит точки монтирования для съёмных носителей</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>точка монтирования для временно монтируемой файловой системы</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>виртуальный каталог для системной информации</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>домашний каталог суперпользователя</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>изменяемые данные времени выполнения</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>необходимые системные исполняемые файлы</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>виртуальный каталог для системной информации</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>временные файлы</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>вторичная иерархия</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>изменяемые данные</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Данные сервисов, предоставляемых системой</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>дополнительное программное обеспечение</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Далее следует список важных предположений относительно каталогов и разделов. Заметьте, что дисковое пространство может использоваться совершенно по-разному, в зависимости от настроек системы и специфики решаемых задач. Приводимые здесь рекомендации являются лишь отправной точкой в решении задачи разметки. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>The root partition <code class="filename">/</code> must always physically contain <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib</code>, <code class="filename">/dev</code> and <code class="filename">/usr</code>, otherwise you won't be able to boot. This means that you should provide at least 700–850MB of disk space for the root partition including <code class="filename">/usr</code>, or 5–6GB for a workstation or a server installation. </p></li>
+<li class="listitem"><p>Каталог <code class="filename">/var</code> содержит: все изменяющиеся данные типа новостных статей, сообщений электронной почты, веб-сайтов, баз данных, кэша системы управления пакетами и т.д. Размер каталога целиком зависит от степени использования компьютера, но для большинства людей он определяется работой с системой управления пакетами. Если вы собираетесь установить всё, что предлагает Debian, при чём сразу, то 2 или 3 гигабайта для <code class="filename">/var</code> должно хватить. Если вы собираетесь производить установку по частям (то есть, установить службы и утилиты, потом программы для работы с текстом, потом X, ...), то можно уложиться в 300–500 МБ. Если пространство жёсткого диска дорого и вы не планируете делать глобальных обновлений системы, то вам будет достаточно 30 или 40 МБ. </p></li>
+<li class="listitem"><p>Каталог <code class="filename">/tmp</code> содержит: временные данные создаваемые запущенными программами. Обычно достаточно 40–100 МБ. Некоторые приложения — управление резервным копированием, утилиты работы с CD/DVD и мультимедийными данными — могут использовать <code class="filename">/tmp</code> для временного хранения файлов. Если вы планируете использовать данные приложения, то должны выделить пространство под <code class="filename">/tmp</code> согласно вашим потребностям. </p></li>
+<li class="listitem"><p>Каталог <code class="filename">/home</code> содержит: отдельный подкаталог для каждого пользователя, где хранятся личные данные. Его размер зависит от количества пользователей в системе и какие файлы они будут хранить в своих каталогах. В зависимости от планируемого использования вы должны зарезервировать около 100 МБ для каждого пользователя, но можете изменить это значение согласно своим требованиям. Выделите больше места, если планируете хранить много мультимедийных файлов (картинок, MP3, фильмов) в своём домашнем каталоге. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Дисковые разделы Debian и их размеры </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Рекомендуемые схемы разметки</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

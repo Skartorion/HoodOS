@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. 安装前的硬件和操作系统的相关设置</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch03.html" title="第 3 章 开始安装 Debian GNU/Linux 之前">
+<link rel="prev" href="ch03s05.html" title="3.5. 为多重启动系统事先分区">
+<link rel="next" href="ch04.html" title="第 4 章 获取系统安装介质">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. 安装前的硬件和操作系统的相关设置</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 3 章 开始安装 Debian GNU/Linux 之前</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. 安装前的硬件和操作系统的相关设置</h2></div></div></div>
+<p>在本节中，我们将讨论安装之前有关硬件设置的一些问题。如果这些问题的确存在的话，您就需要在安装 Debian 前先做一些准备工作了。一般来说，准备工作包括：检查或者可能修改系统中 BIOS/UEFI/系统固件(system firmware)的设定。所谓<span class="quote">“<span class="quote">BIOS/UEFI</span>”</span> 或 <span class="quote">“<span class="quote">系统固件</span>”</span>就是硬件运行所需的核心软件。它在系统引导过程(即开机之后)中起到了至关重要的作用。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. BIOS/UEFI 设置菜单的使用</h3></div></div></div>
+<p>BIOS/UEFI 为启动机器提供了基本的功能，并允许您的操作系统可以访问硬件。系统提供了 BIOS/UEFI 设置菜单，通过它可以配置 BIOS/UEFI。要进入 BIOS/UEFI 设置菜单，您需要在打开计算机的时候按下某组合键。通常这会是 <span class="keycap"><strong>Delete</strong></span> 或 <span class="keycap"><strong>F2</strong></span> 键，但也有厂商使用其他的键。一般在开机的时候会有信息显示使用哪些键可以进入设置界面。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. 选择引导设备</h3></div></div></div>
+<p>在 BIOS/UEFI 设置菜单上，您可以选择用什么次序来检测设备上的可引导操作系统。供选择的通常有内置硬盘、CD/DVD-ROM 驱动器和 USB 存储设备，如 U 盘和外置硬盘。在新的系统上还可能会有使用 PXE 打开网络引导。 </p>
+<p>根据不同的安装介质(CD/DVD ROM、U 盘、网络引导)，您可以选择打开哪些没有打开的引导设备。 </p>
+<p>多数 BIOS/UEFI 版本允许在启动时调出引导菜单选择本次会话中所使用的引导设备。如果有这项功能，BIOS/UEFI 通常启动时会显示一条类似 <span class="quote">“<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>”</span> 的信息。具体的按键会因系统的不同而不同；常用的键有 <span class="keycap"><strong>F12</strong></span>、<span class="keycap"><strong>F11</strong></span> 和 <span class="keycap"><strong>F8</strong></span>。从这个菜单选择的设备不会影响 BIOS/UEFI 中默认的引导次序，就是说，可以从 U 盘启动一次，而将内置硬盘作为主引导设备。 </p>
+<p>如果您的 BIOS/UEFI 不提供引导菜单选择当前的启动设备，您只好从 BIOS/UEFI 设置中将 <code class="classname">debian-installer</code> 设备设为主引导设备。 </p>
+<p>很不幸，有些计算机的 BIOS/UEFI 版本可能会有错误。即使将 BIOS/UEFI 的主设备改成从 U 盘引导，也无法令 <code class="classname">debian-installer</code> 成功启动。有些系统完全不能从 U 盘介质进行引导；其他的引导需要将 U 盘引导默认从 <span class="quote">“<span class="quote">USB harddisk</span>”</span> 或 <span class="quote">“<span class="quote">USB stick</span>”</span> 改成 <span class="quote">“<span class="quote">USB ZIP</span>”</span> 或 <span class="quote">“<span class="quote">USB CDROM</span>”</span> 才行。<span class="phrase"> 特别是在您在 U 盘上使用 isohybrid 安装映像（参阅<a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. 使用混合 CD/DVD 映像制作 U 盘">第 4.3.1 节 “使用混合 CD/DVD 映像制作 U 盘”</a>），将设备类型改成 <span class="quote">“<span class="quote">USB CDROM</span>”</span> 有助于解决不能从 U 盘硬盘模式下的引导问题。</span>您会需要配置您的 BIOS/UEFI，来允许<span class="quote">“<span class="quote">USB 旧版支持</span>”</span>。 </p>
+<p>如果您无法更改 BIOS/UEFI 以从 U 盘直接启动，您仍然可以选择将 ISO 复制到该盘中。按<a class="xref" href="ch04s04.html" title="4.4. 为从硬盘引导准备文件">第 4.4 节 “为从硬盘引导准备文件”</a>启动 <code class="classname">debian-installer</code>，并在扫描硬盘驱动器发现安装程序 ISO 映像后，选择 USB 设备并选择安装映像。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. 具有 UEFI 固件的系统</h3></div></div></div>
+<p>UEFI（<span class="quote">“<span class="quote">统一可扩展固件接口</span>”</span>）是一种新型系统固件，用于许多现代系统，并且 - 与其他用途一起 - 旨在取代传统的 PC BIOS。 </p>
+<p>目前，大多数使用 UEFI 的 PC 系统在固件中也有一个所谓的<span class="quote">“<span class="quote">兼容支持模块</span>”</span>（CSM），它提供与经典的 PC BIOS 完全相同的操作系统接口，以便软件编写对于经典的 PC BIOS 可以不变地使用。尽管如此，UEFI 旨在有一天完全取代旧的 PC BIOS，而不会完全向后兼容，并且已经有很多具有 UEFI 但没有 CSM 的系统。 </p>
+<p>在使用 UEFI 的系统上，安装操作系统时需要考虑几件事情。固件加载操作系统的方式在经典 BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间完全不同。一个主要的区别是，硬盘分区在硬盘上的记录方式。虽然经典的 BIOS 和 UEFI 在 CSM 模式下使用 DOS 分区表，但是原生 UEFI 使用不同的分区方案，称为 <span class="quote">“<span class="quote">GUID分区表</span>”</span>（GPT）。在单个磁盘上，为了所有的实际目的，只能使用两个中的一个，并且在一个磁盘上使用不同操作系统的多引导设置的情况下，所有系统都必须使用相同类型的分区表。使用 GPT 从磁盘引导只能在原生 UEFI 模式下进行，但随着硬盘大小的增长，使用 GPT 变得越来越普遍，因为传统的 DOS 分区表无法寻址大于 2TB 的磁盘，而 GPT 允许更大的磁盘。BIOS（或 CSM 模式下的 UEFI）和原生 UEFI 之间的另一个主要区别是存储引导代码的位置，以及以哪种格式。这意味着每个系统都需要不同的引导加载程序。 </p>
+<p>后者在有 CSM 的 UEFI 系统上，在启动 <code class="classname">debian-installer</code> 时变得很重要，因为 <code class="classname">debian-installer</code> 会检查它是在 BIOS 还是在原生 UEFI 系统上启动，然后安装相应的引导加载程序。通常情况下，这很简单，但在多引导环境中可能会出现问题。在一些具有 CSM 的 UEFI 系统上，可移动设备的默认启动模式可能与从硬盘启动时实际使用的不同，因此当从 U 盘启动安装程序时，模式可能与启动另一个已经安装在硬盘上的操作系统不同，这可能会安装错误的引导加载程序，并且在完成安装后系统可能无法启动。当从固件启动菜单中选择启动设备时，某些系统为每个设备提供两个独立的选择，以便用户可以选择是在 CSM 还是原生 UEFI 模式下进行。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. 安全引导</h3></div></div></div>
+<p>另一个与 UEFI 相关的主题是所谓的<span class="quote">“<span class="quote">安全引导</span>”</span>机制。安全启动是 UEFI 实现的一个功能，仅允许固件加载和执行使用某些密钥签名的代码，从而阻止任何（潜在的恶意）未签名或用未知密钥签名的引导代码。实际上，大多数 UEFI 的安全启动默认仅接受微软的签名，其用于签署 Windows 启动加载程序。Debian包含一个由Microsoft签名的<span class="quote">“<span class="quote">shim</span>”</span>启动加载程序，因此可以在启用了安全引导的系统上正常工作。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. 禁用 Windows 的<span class="quote">“<span class="quote">快速引导</span>”</span>/<span class="quote">“<span class="quote">快速启动</span>”</span>功能</h3></div></div></div>
+<p>Windows 提供了一个（在 Windows 8 中名为<span class="quote">“<span class="quote">快速引导</span>”</span>，在 Windows 10 中名为<span class="quote">“<span class="quote">快速启动</span>”</span>）的功能，来减少系统启动时间。从技术上讲，当启用此功能时，Windows 在执行关机命令后不会进行真正的关机和真正的冷启动，而是执行类似于部分挂起到磁盘的操作，以减少<span class="quote">“<span class="quote">引导</span>”</span>时间。只要 Windows 是机器上唯一的操作系统，这就没问题，但当您有双引导时，若另一个操作系统与 Windows 访问相同的文件系统，这就有可能会导致问题和数据丢失。在这种情况下，文件系统的真实状态可能与 Windows 认为在<span class="quote">“<span class="quote">启动</span>”</span>之后的情况不同，并且可能在进一步写入文件系统时导致文件系统损坏。因此，在双引导设置中，为了避免文件系统损坏，必须在 Windows 中禁用<span class="quote">“<span class="quote">快速引导</span>”</span>/<span class="quote">“<span class="quote">快速启动</span>”</span>功能。 </p>
+<p>进一步，Windows 更新机制已知（有时）会自动启动这些特性，即使此前已经被用户关闭了。建议定期再次检查这个设置。 </p>
+<p>也可能需要禁用<span class="quote">“<span class="quote">快速启动</span>”</span>，甚至需要允许访问 UEFI 设置。来选择启动另一个操作系统或 <code class="classname">debian-installer</code>。在某些 UEFI 系统上，固件将会不初始化键盘控制器或 USB 硬件，以减少<span class="quote">“<span class="quote">启动</span>”</span>时间。在这些情况下，有必要启动到 Windows 并禁用此功能，以允许更改引导顺序。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. 需要留心的硬件问题</h3></div></div></div>
+<p><b>USB BIOS 支持与键盘. </b>假如您没有 PS/2 规格的键盘，而只有 USB 键盘，在一些很老的 PC 上您需要在 BIOS 设置里面打开 legacy keyboard emulation 设置，使得在引导菜单中可以使用键盘。当然新系统中不会遇到这种问题。如果您的键盘无法在引导菜单下工作，请参考主板手册，并在 BIOS 中查看 <span class="quote">“<span class="quote">Legacy keyboard emulation</span>”</span> 或 <span class="quote">“<span class="quote">USB keyboard support</span>”</span> 选项。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. 为多重启动系统事先分区 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 第 4 章 获取系统安装介质</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

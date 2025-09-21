@@ -1,0 +1,278 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Dùng khả năng chèn sẵn</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn">
+<link rel="prev" href="apbs01.html" title="B.1. Giới thiệu">
+<link rel="next" href="apbs03.html" title="B.3. Tạo tập tin định cấu hình sẵn">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Dùng khả năng chèn sẵn</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Dùng khả năng chèn sẵn</h2></div></div></div>
+<p>You will first need to create a preconfiguration file and place it in the location from where you want to use it. Creating the preconfiguration file is covered later in this appendix. Putting it in the correct location is fairly straightforward for network preseeding or if you want to read the file off a usb-stick. If you want to include the file in an installation ISO image, you will have to remaster the image. How to get the preconfiguration file included in the initrd is outside the scope of this document; please consult the developers' documentation for <code class="classname">debian-installer</code>. </p>
+<p>Bạn có khả năng tạo tập tin cấu hình sẵn riêng dựa vào tập tin cấu hình sẵn mẫu sẵn sàng tại <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Tập tin mẫu này lần lượt dựa vào những đoạn cấu hình nằm trong phụ lục này. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Tải tập tin định cấu hình sẵn</h3></div></div></div>
+<p>Nếu bạn đang dùng khả năng chèn sẵn kiểu initrd, bạn chỉ cần phải chắc là một tập tin tên <code class="filename">preseed.cfg</code> nằm trong thư mục gốc của initrd đó. Trình cài đặt sẽ kiểm tra tự động nếu có tập tin này không, cũng sẽ tải nó. </p>
+<p>For the other preseeding methods you need to tell the installer what file to use when you boot it. This is normally done by passing the kernel a boot parameter, either manually at boot time or by editing the bootloader configuration file <span class="phrase">(e.g. <code class="filename">syslinux.cfg</code>) and adding the parameter to the end of the append line(s) for the kernel.</span> </p>
+<p>Nếu bạn có phải xác định tập tin cấu hình sẵn trong cấu hình bộ nạp khởi động, thì cũng có thể sửa đổi cấu hình để tránh yêu cầu bấm phím <span class="keycap"><strong>Enter</strong></span> để khởi động trình cài đặt. <span class="phrase">Đối với syslinux có nghĩa là lập thời hạn (timeout) thành <code class="literal">1</code> trong tập tin <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Để chắc là trình cài đặt nhận tập tin cấu hình sẵn đúng, bạn có tùy chọn xác định tổng kiểm (checksum) cho tập tin đó. Hiện thời nó cần phải là tổng kiểu md5sum, và nếu được xác định, nó phải khớp với tập tin cấu hình sẵn, nếu không thì trình cài đặt sẽ từ chối dùng nó. </p>
+<div class="informalexample"><pre class="screen">Boot parameters to specify:
+- if you're netbooting:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- or
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- if you're booting a remastered installation image:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- if you're installing from USB media (put the preconfiguration file in the
+  toplevel directory of the USB stick):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Ghi chú rằng địa chỉ Mạng <code class="filename">preseed/url</code> có thể được thu ngắn thành <code class="filename">url</code>, địa chỉ tập tin <code class="filename">preseed/file</code> dạng ngắn là <code class="filename">file</code> và địa chỉ tập tin tổng kiểm <code class="filename">preseed/file/checksum</code> thành <code class="filename">preseed-md5</code>, khi chúng được dùng làm tham số khởi động. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Dùng tham số khởi động để chèn sẵn câu hỏi</h3></div></div></div>
+<p>Nếu tập tin cấu hình sẵn không thể được dùng để chèn sẵn một số bước riêng, tiến trình cài đặt vẫn còn có thể được tự động hoá hoàn toàn, vì bạn còn có khả năng gửi các giá trị chèn sẵn cho hạt nhân trên dòng lệnh khi khởi động trình cài đặt. </p>
+<p>Các tham số khởi động cũng có thể được dùng nếu bạn không thật muốn sử dụng khả năng chèn sẵn, nhưng chỉ muốn cung cấp trả lời cho một câu hỏi riêng. Một số mẫu có ích về trường hợp này nằm trong phần khác của tài liệu này. </p>
+<p>Để đặt một giá trị cần sử dụng bên trong <code class="classname">debian-installer</code>, chỉ cần gửi <strong class="userinput"><code><em class="replaceable"><code>đường_dẫn/đến/biến</code></em>=<em class="replaceable"><code>giá_trị</code></em></code></strong> cho bất cứ biến chèn sẵn nào được liệt kê trong những mẫu của phụ lục này. Nếu giá trị nào sẽ được dùng để cấu hình gói cho hệ thống đích, bạn cần phải thêm (vào đầu chuỗi) <em class="firstterm">cái sở hữu</em> (owner)<a href="#ftn.id4573" class="footnote" name="id4573"><sup class="footnote">[19]</sup></a> biến đó như thế: <strong class="userinput"><code><em class="replaceable"><code>cái_sở_hữu</code></em>:<em class="replaceable"><code>đường_dẫn/đến/biến</code></em>=<em class="replaceable"><code>giá_trị</code></em></code></strong>. Không xác định cái sở hữu thì giá trị cho biến đó sẽ không được sao chép vào cơ sở dữ liệu debconf trong hệ thống đích nên vô ích trong tiến trình cấu hình gói liên quan. </p>
+<p>Bình thường, chèn sẵn một câu hỏi bằng cách này có nghĩa là người dùng sẽ không được nhắc với câu hỏi đó. Để đặt một giá trị mặc định nào đó cho câu hỏi, nhưng vẫn còn nhắc người dùng với cau hỏi đó, dùng toán tử <span class="quote">“<span class="quote">?=</span>”</span> thaycho <span class="quote">“<span class="quote">=</span>”</span>. Xem thêm <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Dùng khả năng chèn sẵn để thay đổi giá trị mặc định">Phần B.5.2, “Dùng khả năng chèn sẵn để thay đổi giá trị mặc định”</a>. </p>
+<p>Ghi chú rằng một số biến thường được đặt tại dấu nhắc khởi động cũng có biệt hiệu ngắn hơn. Biệt hiệu sẵn sàng thì được dùng trong những mẫu thí dụ trong phụ lục này, thay cho biến đầy đủ. Thí dụ, biến <code class="literal">preseed/url</code> có biệt hiệu <code class="literal">url</code>, và biệt hiệu <code class="literal">tasks</code> đại diện <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Hai dấu trừ <span class="quote">“<span class="quote">---</span>”</span> trong những tùy chọn khởi động thì có nghĩa đặc biệt. Các tham số khởi động xuất hiện sau <span class="quote">“<span class="quote">---</span>”</span> cuối cùng có thể được sao chép vào cấu hình của bộ nạp khởi động cho hệ thống đã cài đặt (nếu hỗ trợ bởi bộ cài đặt cho bộ nạp khởi động đó). Bộ cài đặt sẽ tự động lọc ra bất cứ tùy chọn nào nó nhận ra. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Các hạt nhân Linux hiện thời (2.6.9 và sau) chấp nhận số tối đa là 32 tùy chọn dòng lệnh và 32 biến môi trường, gồm bất cứ tùy chọn nào được thêm theo mặc định cho bộ cài đặt. Vược quá số này thì hạt nhân không thể phục hồi (sụp đổ). (Đối với hạt nhân sớm hơn thì số tối đa là nhỏ hơn.)  </p></td></tr>
+</table></div>
+<p>Đối với phần lớn tiến trình cài đặt, một số tùy chọn mặc định riêng nằm trong tập tin cấu hình của bộ nạp khởi động, v.d. <code class="literal">vga=normal</code>, có thể được gỡ bỏ an toàn, mà có thể cho bạn có khả năng thêm tùy chọn nữa để chèn sẵn. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Có lẽ không phải luôn luôn có khả năng xác định giá trị chứa dấu cách cho tham số khởi động, thậm chí nếu bạn định giới chúng bằng dấu trích dẫn. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Chế độ tự động</h3></div></div></div>
+<p>There are several features of Debian Installer that combine to allow fairly simple command lines at the boot prompt to result in arbitrarily complex customized automatic installs. </p>
+<p>This is enabled by using the <code class="literal">Automated install</code> boot choice, also called <code class="literal">auto</code> for some architectures or boot methods. In this section, <code class="literal">auto</code> is thus not a parameter, it means selecting that boot choice, and appending the following boot parameters on the boot prompt. <span class="phrase">See <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Màn hình khởi động">Phần 5.1.5, “Màn hình khởi động”</a> for information on how to add a boot parameter.</span> </p>
+<p>Để làm rõ ý, ở đây có một số mẫu thí dụ có thể được dùng ở dấu nhắc khởi động: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p>
+[auto	tự động
+url		địa chỉ URL
+server	máy phục vụ]
+Mẫu này nhờ máy phục vụ DHCP hỗ trợ máy tính quyết định giá trị của <code class="literal">autoserver</code> bằng DNS, có thể sau khi thêm miền cục bộ nếu DHCP đã cung cấp. Nếu mẫu này được dùng ở nơi Mạng có miền <code class="literal">mẫu.com</code> có thiết lập DHCP chuẩn, kết quả là tập tin chèn sẵn được lấy từ <code class="literal">http://autoserver.mẫu.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Phần cuối cùng của địa chỉ đó (<code class="literal">d-i/trixie/./preseed.cfg</code>) được lấy từ giá trị <code class="literal">auto-install/defaultroot</code>. Mặc định là nó gồm thư mục <code class="literal">trixie</code> để cho các phiên bản sau có khả năng xác định tên mã riêng và cho phép mọi người nâng cấp một cách được điều khiển. Phần <code class="literal">/./</code> được dùng để ngụ ý một thư mục gốc vào đó các đường dẫn phụ có thể được neo (để sử dụng trong <code class="literal">preseed/include</code> và <code class="literal">preseed/run</code>). Bố trí này cho phép xác định tập tin hoặc dạng địa chỉ Mạng đầy đủ hoặc đường dẫn bắt đầu với dấu xuyệc / thì được neo, hoặc ngay cả đường dẫn tương đối với vị trí của tập tin đã lấy cuối cùng. Nó có thể được sử dụng để cấu tạo các văn lệnh có khả năng di động hơn mà toàn bộ phân cấp văn lệnh có thể được di chuyển sang vị trí khác, không ngắt nó, chẳng hạn khi sao chép các tập tin vào thanh USB từ máy phục vụ Mạng. Trong mẫu thí dụ này, nếu tập tin chèn sẵn đặt biến <code class="literal">preseed/run</code> thành giá trị <code class="literal">/scripts/late_command.sh</code> thì tập tin sẽ được lấy từ <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Nếu không có hạ tầng cơ sở cục bộ kiểu DHCP hay DNS, hoặc nếu bạn không muốn sử dụng đường dẫn mặc định đến <code class="filename">preseed.cfg</code>, bạn vẫn còn có khả năng sử dụng một địa chỉ Mạng dứt khoát; không sử dụng yếu tố <code class="literal">/./</code> thì nó được neo vào đầu của đường dẫn (tức là dấu xuyệc <code class="literal">/</code> thứ ba trong địa chỉ đó). Ở đây có một mẫu thí dụ chỉ cần sự hỗ trợ tối thiểu của hạ tầng cơ sở cục bộ : </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/đường_dẫn/đến/tập_tin_chèn_sẵn.của_tôi</code></em>
+</pre></div>
+<p> Nó hoạt động như thế: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>địa chỉ Mạng thiếu giao thức thì <code class="literal">http</code> được giả sử, </p></li>
+<li class="listitem"><p>phần tên máy không chứa dấu chấm thì miền bắt nguồn từ DHCP được phụ thêm, và </p></li>
+<li class="listitem"><p>không có dấu xuyệc <code class="literal">/</code> nằm sau tên miền thì đường dẫn mặc định được thêm. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Thêm vào việc xác định địa chỉ Mạng, bạn cũng có khả năng xác định thiết lập không có tắc động trực tiếp ứng xử của <code class="classname">debian-installer</code> chính nó, nhưng vẫn còn có thể được gửi cho văn lệnh nào được ghi rõ bằng <code class="literal">preseed/run</code> trong tập tin chèn sẵn đã nạp. Hiện thời, mẫu duy nhất của trường hợp này là <code class="literal">auto-install/classes</code>, mà có biệt hiệu là <code class="literal">classes</code>. Dùng được như thế: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>mẫu.com</code></em> classes=<em class="replaceable"><code>hạng_A;hạng_B</code></em>
+</pre></div>
+<p> Những hạng này có thể, chẳng hạn, ngụ ý kiểu hệ thống cần cài đặt hay bản địa hoá cần dùng. </p>
+<p>Tất nhiên có thể kéo dài khái niệm này, có lẽ bằng cách dùng miền tên <code class="literal">auto-install</code> nên dùng mẫu như <code class="literal">auto-install/style</code> để dùng trong văn lệnh. Nếu bạn muốn làm việc như thế, hãy gửi lá thư cho hộp thư chung khởi động Debian <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, để chúng ta tránh sự xung đột giữa các tên miền, và có thể thêm biệt hiệu cho tham số đó để giúp đỡ bạn. </p>
+<p>The <code class="literal">auto</code> boot choice is not yet defined on all arches. The same effect may be achieved by simply adding the two parameters <code class="literal">auto=true priority=critical</code> to the kernel command line. The <code class="literal">auto</code> kernel parameter is an alias for <code class="literal">auto-install/enable</code> and setting it to <code class="literal">true</code> delays the locale and keyboard questions until after there has been a chance to preseed them, while <code class="literal">priority</code> is an alias for <code class="literal">debconf/priority</code> and setting it to <code class="literal">critical</code> stops any questions with a lower priority from being asked. </p>
+<p>When an Automatic install is selected without also specifying a preseed configuration, the user will be prompted to provide a preseed location. Alternatively, if a preseed configuration has been specified, then that prompt is normally suppressed in order to enable a fully non-interactive install. However, if the intent is to modify defaults by using a <code class="literal">preseed.cfg</code> in an initrd, then the result should really behave as though no preseeding has yet been specified, even though it has. In that case, the debconf variable <code class="literal">auto-install/cloak_initrd_preseed</code> can be set to <code class="literal">true</code> (e.g. in the initrd's <code class="literal">preseed.cfg</code>). to get the required behaviour. </p>
+<p>Tùy chọn thêm có thể có ích khi cố gắng tự động hoá việc cài đặt chạy với dịch vụ DHCP là: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> (giao diện là tự động, thời hạn netcf/dhcp là 60) mà làm cho máy chọn NIC thứ nhất sẵn sàng và đợi nhiều thời gian hơn để nhận trả lời cho truy vấn DHCP của nó. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Mẹo]" src="images/tip.png"></td>
+<th align="left">Mẹo</th>
+</tr>
+<tr><td align="left" valign="top"><p>Có một mẫu thí dụ rất chi tiết về cách sử dụng khuôn khổ này, bao gồm các văn lệnh mẫu, ở <a class="ulink" href="http://hands.com/d-i/" target="_top">địa chi Web của nhà phát triển</a>. Các mẫu ở đó cũng minh họa nhiều hiệu ứng đẹp có thể được làm khi dùng chức năng chèn sẵn một cách sáng tạo. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Biệt hiệu có ích khi chèn sẵn</h3></div></div></div>
+<p>Những bí danh theo đây cũng có thể hữu ích khi chèn sẵn (trong chế độ tự động). Ghi chú rằng đây chỉ là bí danh ngắn mà đại diện tên câu hỏi, và bạn lúc nào cũng cần ghi rõ một giá trị: v.d. <code class="literal">auto=true</code> or <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>tập tin</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>môi trường làm việc</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Examples of boot prompt preseeding</h3></div></div></div>
+<p>Here are some examples of how the boot prompt might look like (you will need to adapt this to your needs<span class="phrase">; also see <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Màn hình khởi động">Phần 5.1.5, “Màn hình khởi động”</a></span>). </p>
+<div class="informalexample"><pre class="screen"># To set French as language and France as country:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# To set English as language and Germany as country, and use a German keyboard layout:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# To install the MATE desktop:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# To install the web-server task:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Dùng máy phục vụ DHCP để xác định tập tin định cấu hình sẵn</h3></div></div></div>
+<p>Cũng có thể sử dụng dịch vụ DHCP để xác định tập tin cấu hình sẵn cần tải xuống mạng. Giao thức DHCP cho phép xác định tên tập tin. Bình thường, nó là một tập tin cần khởi động qua mạng, nhưng nếu nó có vẻ là một địa chỉ URL thì vật chứa cài đặt cũng hỗ trợ chèn sẵn qua mạng sẽ tải tập tin đó xuống địa chỉ URL được cung cấp và dùng nó làm một tập tin cấu hình sẵn. Đây là một mẫu thiết lập nó trong tập tin cấu hình « dhcpd.conf » cho phiên bản 3 của trình phục vụ DHCP ISC (gói Debian « isc-dhcp-server »). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://máy/preseed.cfg";
+}
+</pre></div>
+<p>Ghi chú rằng mẫu bên trên giới hạn tên tập tin này thành ứng dụng khách DHCP tự nhận diện là <span class="quote">“<span class="quote">d-i</span>”</span>, vì vậy nó sẽ không có tác động ứng dụng khách DHCP chuẩn, chỉ trình cài đặt. Bạn cũng có khả năng định dạng đoạn đó là đoạn dòng cho chỉ một máy riêng, để tránh chèn sẵn mọi việc cài đặt trên mạng đó. </p>
+<p>Một phương pháp tốt để dùng chức năng chèn sẵn DHCP là chèn sẵn chỉ những giá trị đặc trưng cho mạng đó, v.d. máy nhân bản Debian cần dùng. Bằng cách này, việc cài đặt trên mạng đó sẽ tự động chọn một máy nhân bản hữu ích, còn phần còn lại của tiến trình cài đặt có thể được thực hiện tương tác. Bạn nên rất cẩn thận khi dùng chức năng chèn sẵn DHCP để tự động hoá hoàn toàn tiến trình cài đặt Debian. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4573" class="footnote"><p><a href="#id4573" class="para"><sup class="para">[19] </sup></a> Cái sở hữu giá trị (hay mẫu) kiểu debconf bình thường là tên của gói chứa mẫu debconf tương ứng. Đối với những biến được dùng trong tiến trình cài đặt chính nó, cái sở hữu là <span class="quote">“<span class="quote">d-i</span>”</span>. Mỗi mẫu và biến vẫn còn có khả năng thuộc về nhiều cái sở hữu, mà giúp đỡ quyết định nếu nó có thể được gỡ bỏ ra cơ sở dữ liệu debconf nếu gói đó bị tẩy. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Giới thiệu </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Tạo tập tin định cấu hình sẵn</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

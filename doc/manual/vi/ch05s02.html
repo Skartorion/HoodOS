@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Khả năng truy cập</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Chương 5. Khởi động Hệ thống Cài đặt">
+<link rel="prev" href="ch05s01.html" title="5.1. Khởi động trình cài đặt trên 64-bit PC">
+<link rel="next" href="ch05s03.html" title="5.3. Tham số khởi động">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Khả năng truy cập</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 5. Khởi động Hệ thống Cài đặt</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Khả năng truy cập</h2></div></div></div>
+<p>Some users may need specific support because of e.g. some visual impairment. <span class="phrase">USB braille displays are detected automatically (not serial displays connected via a serial-to-USB converter), but most other</span>  accessibility features have to be enabled manually. <span class="phrase">On machines that support it, the boot menu emits beeps when it is ready to receive keystrokes. It beeps once on BIOS systems, and beeps twice on UEFI systems.</span> Some boot parameters can <span class="phrase">then</span> be appended to enable accessibility features<span class="phrase"> (see also <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Màn hình khởi động">Phần 5.1.5, “Màn hình khởi động”</a>)</span>. Note that on most architectures the boot loader interprets your keyboard as a QWERTY keyboard. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2408"></a>5.2.1. Installer front-end</h3></div></div></div>
+<p>The Debian installer supports several front-ends for asking questions, with varying convenience for accessibility: notably, <strong class="userinput"><code>text</code></strong> uses plain text while <strong class="userinput"><code>newt</code></strong> uses text-based dialog boxes. The choice can be made at the boot prompt, see the documentation for <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> in <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Tham số trình cài đặt Debian">Phần 5.3.2, “Tham số trình cài đặt Debian”</a>. </p>
+<p>With the <strong class="userinput"><code>newt</code></strong> front-end (used mostly with braille), one mostly just selects answers with arrow keys and presses <span class="keycap"><strong>Enter</strong></span> to validate the choice. Pressing <span class="keycap"><strong>Tab</strong></span> or <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> allows to switch between dialog elements, and notably to access the <strong class="userinput"><code>Go Back</code></strong> button, which brings back again to previous questions. Some dialogs contain check boxes, which can be ticked on and off by pressing <span class="keycap"><strong>Space</strong></span>. </p>
+<p>With the <strong class="userinput"><code>text</code></strong> front-end (used mostly with speech), one mostly selects answers either by typing their number followed by pressing <span class="keycap"><strong>Enter</strong></span>, or by selecting an answer with arrow keys, and pressing <span class="keycap"><strong>Enter</strong></span> to validate the choice. One can also not type anything and just press <span class="keycap"><strong>Enter</strong></span> to simply accept the default value. Typing <strong class="userinput"><code>&lt;</code></strong> and pressing <span class="keycap"><strong>Enter</strong></span> brings back again to previous questions. When a selection of choices has to be made (e.g. during task selection), one can type <strong class="userinput"><code>!</code></strong> to express an empty selection. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2431"></a>5.2.2. Thiết bị chữ nổi USB</h3></div></div></div>
+<p>Thiết bị USB hiển thị chữ hổi nên được tự động phát hiện. Một phiên bản thuộc văn bản của trình cài đặt thì được tự động chọn, và hỗ trợ cho thiết bị hiển thị chữ nổi thì được cài đặt vào hệ thống đích. Vì vậy bạn chỉ cần bấm phím <span class="keycap"><strong>Enter</strong></span> tại trình đơn khởi động. Một khi phần mềm <code class="classname">brltty</code> khởi chạy, bạn có thể chọn một bảng chữ nổi bằng cách vào trình đơn tùy thích. Tài liệu hướng dẫn về tổ hợp phím cho thiết bị chữ nổi cũng sẵn sàng ở trang Web của <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2438"></a>5.2.3. Thiết bị chữ nổi nối tiếp</h3></div></div></div>
+<p>Serial braille displays cannot safely be automatically detected (since that may damage some of them). You thus need to append the <strong class="userinput"><code>brltty=<em class="replaceable"><code>driver</code></em>,<em class="replaceable"><code>port</code></em></code></strong> boot parameter to tell <code class="classname">brltty</code> which driver and port it should use. <em class="replaceable"><code>driver</code></em> should be replaced by the two-letter driver code for your terminal (see the <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY manual</a>). <em class="replaceable"><code>port</code></em> should be replaced by the name of the serial port the display is connected to, <strong class="userinput"><code>ttyS0</code></strong> is the default, <strong class="userinput"><code>ttyUSB0</code></strong> can be typically used when using a serial-to-USB converter. A third parameter can be provided, to choose the name of the braille table to be used (see the <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">BRLTTY manual</a>); the English table is the default. Note that the table can be changed later by entering the preference menu. A fourth parameter can be provided to pass parameters to the braille driver, such as <strong class="userinput"><code>protocol=foo</code></strong> which is needed for some rare models. Documentation on key bindings for braille devices is available on the <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top"><code class="classname">brltty</code> website</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2454"></a>5.2.4. Phần mềm tổng hợp giọng nói</h3></div></div></div>
+<p>Support for software speech synthesis is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. It can be activated by selecting it in the boot menu by typing <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Enter</strong></span>. The textual version of the installer will then be automatically selected, and support for software speech synthesis will be automatically installed on the target system. </p>
+<p>If several sound cards are detected, you will be prompted to press <span class="keycap"><strong>Enter</strong></span> when you hear speech from the desired sound card. </p>
+<p>The first question (language) is spoken in english, and the remainder of installation is spoken in the selected language (if available in <code class="classname">espeak</code>). </p>
+<p>The default speech rate is quite slow. To make it faster, press <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span>. To make it slower, press <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span>. The default volume should be medium. To make it louder, press <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span>. To make it quieter, press <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span>. To get more details on the browsing shortcuts, see the <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">Speakup guide</a>. To just accept the default answer for a question, simply press <span class="keycap"><strong>Enter</strong></span> at the prompt. To provide an empty answer for a question, type <strong class="userinput"><code>!</code></strong> at the prompt. To get back to the previous question, type <strong class="userinput"><code>&lt;</code></strong> at the prompt. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2480"></a>5.2.5. Phần cứng tổng hợp giọng nói</h3></div></div></div>
+<p>Support for hardware speech synthesis devices is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. You thus need to select a <span class="quote">“<span class="quote">Graphical install</span>”</span> entry in the boot menu. </p>
+<p>Không thể tự động phát hiện được thiết bị tổng hợp tiếng nói kiểu phần. Vì thế bạn cần phải phụ thêm tham số khởi động <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>trình_điều_khiển</code></em></code></strong> để báo chương trình <code class="classname">speakup</code> biết có nên sử dụng trình điều khiển nào. Chuỗi <em class="replaceable"><code>trình_điều_khiển</code></em> nên được thay thế bằng mã trình điều khiển cho thiết bị đó (xem/ <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">danh sách các mã trình điều khiển</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2490"></a>5.2.6. Thiết bị bảng</h3></div></div></div>
+<p>Một số thiết bị khả năng truy cập nào đó là bảng thật được cắm vào bên trong máy tính, mà đọc văn bản một cách trực tiếp từ vùng nhớ ảnh động. Để hiệu lực thiết bị kiểu này, bạn cần phải tắt hỗ trợ cho vùng đệm khung bằng cách sử dụng tham số khởi động <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Tuy nhiên, việc này cũng giảm số các ngôn ngữ sẵn sàng. </p>
+<p>Mong muốn thì cũng có thể kích hoạt một phiên bản văn bản của bộ nạp khởi động trước khi thêm tham số khởi động, bằng cách gõ chuỗi « <strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Enter</strong></span> ». </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2498"></a>5.2.7. Sắc thái cao tương phản</h3></div></div></div>
+<p>For users with low vision, the installer can use a high-contrast color theme that makes it more readable. To enable it, you can use the <span class="quote">“<span class="quote">Accessible high contrast</span>”</span> entry from the boot screen with the <strong class="userinput"><code>d</code></strong> shortcut, or append the <strong class="userinput"><code>theme=dark</code></strong> boot parameter. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2504"></a>5.2.8. Zoom</h3></div></div></div>
+<p>For users with low vision, the graphical installer has a very basic zoom support: the <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> and <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> shortcuts increase and decrease the font size. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2513"></a>5.2.9. Expert install, rescue mode, automated install</h3></div></div></div>
+<p>Expert, Rescue, and Automated installation choices are also available with accessibility support. To access them, one has to first enter the <span class="quote">“<span class="quote">Advanced options</span>”</span> submenu from the boot menu by typing <strong class="userinput"><code>a</code></strong>. When using a BIOS system (the boot menu will have beeped only once), this has to be followed by <span class="keycap"><strong>Enter</strong></span> ; for UEFI systems (the boot menu will have beeped twice) that must not be done. Then, to enable speech synthesis, <strong class="userinput"><code>s</code></strong> can optionally be pressed (followed again by <span class="keycap"><strong>Enter</strong></span> on BIOS systems but not on UEFI systems). From there, various shortcuts can be used: <strong class="userinput"><code>x</code></strong> for expert installation, <strong class="userinput"><code>r</code></strong> for rescue mode, or <strong class="userinput"><code>a</code></strong> for automated installation. Again these need to be followed by <span class="keycap"><strong>Enter</strong></span> when using a BIOS system. </p>
+<p>The automated install choice allows to install Debian completely automatically by using preseeding, whose source can be entered after accessibility features get started. Preseeding itself is documented in <a class="xref" href="apb.html" title="Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn">Phụ lục B, <i>Tự động hoá việc cài đặt bằng chèn sẵn</i></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2527"></a>5.2.10. Accessibility of the installed system</h3></div></div></div>
+<p>Documentation on accessibility of the installed system is available on the <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">Debian Accessibility wiki page</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Khởi động trình cài đặt trên <span class="phrase">64-bit PC</span> </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Tham số khởi động</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

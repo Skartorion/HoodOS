@@ -1,0 +1,236 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Beseitigen von Problemen während der Installation</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="ch05.html" title="Kapitel 5. Das Installationssystem booten">
+<link rel="prev" href="ch05s03.html" title="5.3. Boot-Parameter">
+<link rel="next" href="ch06.html" title="Kapitel 6. Den Debian-Installer verwenden">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Beseitigen von Problemen während der Installation</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Kapitel 5. Das Installationssystem booten</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Beseitigen von Problemen während der Installation</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Unzuverlässigkeit von optischen Datenträgern</h3></div></div></div>
+<p>Manchmal schlägt der Start des Installers von einem optischen Datenträer fehl, speziell bei älteren Laufwerken. Auch könnte es möglich sein – sogar wenn erfolgreich von der Disk gebootet wurde – dass der Installer die Disk später nicht mehr erkennt oder Fehler ausgibt, wenn er während der Installation davon liest. </p>
+<p>Es gibt viele verschiedene Gründe, die dies verursachen könnten. Wir können hier nur einige allgemeine Probleme auflisten und generelle Empfehlungen geben, wie Sie damit umgehen sollten. Der Rest liegt bei Ihnen. </p>
+<p>Es gibt zwei einfache Dinge, die Sie zunächst ausprobieren sollten. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Wenn die Disk nicht bootet, überprüfen Sie, ob Sie korrekt eingelegt wurde und nicht verschmutzt ist. </p></li>
+<li class="listitem"><p>Erkennt der Installer die Disk nicht mehr, versuchen Sie, ein zweites Mal den Eintrag <span class="guimenuitem">Installationsmedium erkennen und einbinden</span> aus dem Menü. Es ist uns bekannt, dass einige Probleme bezüglich DMA bei sehr alten CD-ROM-Laufwerken auf diese Weise behoben werden können. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Falls dies nicht funktioniert, probieren Sie die Empfehlungen weiter unten aus. Die meisten dieser Empfehlungen gelten sowohl für CD-ROM- als auch für DVD-Laufwerke. </p>
+<p>Sollten Sie die Installation überhaupt nicht mit einem optischen Datenträger zum Laufen bekommen, versuchen Sie eine der anderen verfügbaren Installationsmethoden. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2250"></a>5.4.1.1. Allgemeine Probleme</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Einige ältere CD-ROM-Laufwerke unterstützen nicht das Lesen von Disks, die mit modernen CD-Brennern in hoher Geschwindigkeit gebrannt wurden. </p></li>
+<li class="listitem"><p>Einige sehr alte CD-ROM-Laufwerke arbeiten nicht korrekt, wenn <span class="quote">„<span class="quote">Direct Memory Access</span>“</span> (DMA) für diese aktiviert ist. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2258"></a>5.4.1.2. Wie Sie Probleme untersuchen und vielleicht auch lösen</h4></div></div></div>
+<p>Falls die Disk nicht bootet, versuchen Sie dies: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Stellen Sie sicher, dass das BIOS/UEFI Ihres Rechners das Booten von optischen Datenträgern unterstützt (dies ist nur bei sehr alten Systemen ein Problem) und dass dies im BIOS/UEFI aktiviert ist. </p></li>
+<li class="listitem">
+<p>Falls Sie ein iso-Image heruntergeladen haben, überprüfen Sie, ob die md5sum-Prüfsumme des Images mit der übereinstimmt, die in der Datei <code class="filename">MD5SUMS</code> für dieses Image aufgelistet ist. Sie sollten diese Datei dort finden, wo Sie auch das Image heruntergeladen haben. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Überprüfen Sie auch, ob die md5sum-Prüfsumme der gebrannten Disk korrekt ist. Dies sollten Sie mit dem folgenden Kommando erledigen können. Es nutzt die Größe des Images, um die korrekte Zahl an Bytes von der Disk zu lesen. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Wenn die Disk nicht mehr erkannt wird, nachdem der Installer erfolgreich davon gestartet hat, kann es funktionieren, es einfach noch einmal zu probieren. Haben Sie mehr als ein optisches Laufwerk, versuchen Sie, die Disk in das andere Laufwerk einzulegen. Funktioniert dies auch nicht oder die Disk wird zwar erkannt, aber es gibt trotzdem Fehler beim Lesen, versuchen Sie die folgenden Empfehlungen. Dazu sind einige grundlegende Linux-Kenntnisse nötig. Um die aufgelisteten Kommandos auszuführen, sollten Sie zunächst auf die zweite virtuelle Konsole (VT2) wechseln und dort die Shell aktivieren. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Wechseln Sie auf VT4 oder lesen Sie den Inhalt der Datei <code class="filename">/var/log/syslog</code> (nutzen Sie <span class="command"><strong>nano</strong></span> als Editor), um zu überprüfen, ob eventuell spezielle Fehlermeldungen vorhanden sind. Überprüfen Sie danach auch die Ausgabe von <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Kontrollieren Sie in der Ausgabe von <span class="command"><strong>dmesg</strong></span>, ob Ihr optisches Laufwerk erkannt wurde. Es sollte etwas ähnliches angezeigt werden wie dies (die Zeilen müssen allerdings nicht zwingend direkt aufeinander folgend angezeigt werden): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Sollten Sie solche Zeilen nicht finden, besteht die Möglichkeit, dass der Controller, an den Ihr Laufwerk angeschlossen ist, nicht erkannt wurde oder von Linux nicht unterstützt wird. Falls Sie wissen, welcher Treiber dafür benötigt wird, können Sie versuchen, ihn mit <span class="command"><strong>modprobe</strong></span> zu laden. </p>
+</li>
+<li class="listitem"><p>Überprüfen Sie, ob eine Gerätedatei (device node) für Ihr optisches Laufwerk in <code class="filename">/dev/</code> existiert. In dem obigen Beispiel wäre dies <code class="filename">/dev/sr0</code>. Auch <code class="filename">/dev/cdrom</code> sollte vorhanden sein. </p></li>
+<li class="listitem">
+<p>Kontrollieren Sie mittels <span class="command"><strong>mount</strong></span>, ob die Disk bereits ins Dateisystem eingebunden ist; falls nicht, erledigen Sie dies manuell: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Achten Sie darauf, ob nach diesem Befehl irgendwelche Fehlermeldungen angezeigt werden. </p>
+</li>
+<li class="listitem">
+<p>Überprüfen Sie, ob DMA im Moment aktiviert ist: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Eine <span class="quote">„<span class="quote">1</span>“</span> an der ersten Stelle hinter <span class="quote">„<span class="quote">using_dma</span>“</span> bedeutet, dass DMA aktiviert ist. Sollte dies so sein, versuchen Sie, es zu deaktivieren: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Stellen Sie sicher, dass Sie sich in dem Verzeichnis befinden, das zu Ihrem optischen Laufwerk gehört. </p>
+</li>
+<li class="listitem"><p>Falls während der Installation irgendwelche Probleme auftreten, überprüfen Sie die Integrität des Installationsmediums mittels der entsprechenden Option im Hauptmenü des Installers (ziemlich weit unten). Sie können dies auch nutzen, um zu testen, ob die Disk zuverlässig gelesen werden kann. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2310"></a>5.4.2. Boot-Konfiguration</h3></div></div></div>
+<p>Wenn Sie Probleme haben und der Kernel bleibt während des Boot-Prozesses hängen oder Ihre Peripherie bzw. Laufwerke werden nicht korrekt erkannt, sollten Sie als erstes die Boot-Parameter überprüfen, die in <a class="xref" href="ch05s03.html" title="5.3. Boot-Parameter">Abschnitt 5.3, „Boot-Parameter“</a> erläutert werden. </p>
+<p>In einigen Fällen können Fehler durch fehlende Geräte-Firmware verursacht werden (siehe <a class="xref" href="ch02s02.html" title="2.2. Hardware, die Firmware erfordert">Abschnitt 2.2, „Hardware, die Firmware erfordert“</a> und <a class="xref" href="ch06s04.html" title="6.4. Fehlende Firmware nachladen">Abschnitt 6.4, „Fehlende Firmware nachladen“</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2317"></a>5.4.3. Software-Sprachausgabe (Software-Sprachsynthesizer)</h3></div></div></div>
+<p>Falls die Software-Sprachausgabe nicht funktioniert, gibt es höchstwahrscheinlich ein Problem mit Ihrer Soundkarte, üblicherweise weil entweder der dafür benötigte Treiber nicht im Installer enthalten ist, oder weil die Karte Mixerregler mit ungewöhnlichen Namen hat, die standardmäßig stumm geschaltet sind. Sie sollten daher einen Fehlerbericht einreichen, der die Ausgabe der folgenden Befehle enthält (ausgeführt auf dem gleichen Rechner und von einem Linux-System, auf dem der Sound bekanntermaßen funktioniert, z.B. einer Live-CD): </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Häufige Installationsprobleme unter <span class="phrase">64-Bit PC</span>
+</h3></div></div></div>
+<p>Es gibt einige bekannte Installationsprobleme, die gelöst oder vermieden werden können, indem man dem Installer entsprechende Boot-Parameter angibt. </p>
+<p>Wenn Ihr Bildschirm ein eigenartiges Bild zeigt, während der Kernel bootet, z.B. komplett weiß, komplett schwarz oder farbiger Pixelmüll, enthält Ihr Rechner möglicherweise eine problematische Grafikkarte, die nicht ordnungsgemäß in den Framebuffer-Modus schaltet. Sie können dann den Boot-Parameter <strong class="userinput"><code>vga=normal nomodeset</code></strong> benutzen, um den Framebuffer auf der Konsole zu deaktivieren. In diesem Fall steht aufgrund von eingeschränkter Konsolenfunktionalität nur eine reduzierte Anzahl an Sprachen zur Verfügung. <a class="xref" href="ch05s03.html" title="5.3. Boot-Parameter">Abschnitt 5.3, „Boot-Parameter“</a> enthält Details zu diesem Thema. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2340"></a>5.4.4.1. Während der PCMCIA-Konfiguration friert das System ein</h4></div></div></div>
+<p>Einige sehr alte Laptop-Modelle von Dell sind bekannt dafür, dass Sie sich aufhängen, wenn die PCMCIA-Geräteerkennung versucht, bestimmte Hardware-Adressen abzufragen. Andere Modelle können ähnliche Symptome zeigen. Wenn Ihnen solche Probleme unterkommen und Sie kein PCMCIA-Gerät während der Installation benötigen, können Sie PCMCIA komplett deaktivieren, indem Sie den Boot-Parameter <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> benutzen. Nachdem die Installation abgeschlossen ist, können Sie PCMCIA so konfigurieren, dass der problematische Adressbereich ausgeschlossen wird. </p>
+<p>Alternativ können Sie den Installer im Experten-Modus booten. Sie werden dann aufgefordert, die Ressourcenbereiche einzugeben, die Ihre Hardware benötigt. Ein Beispiel: wenn Sie einen der oben erwähnten Dell-Laptops besitzen, sollten Sie hier <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> eingeben. Im <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">Kapitel <span class="quote">„<span class="quote">System resource settings</span>“</span> des PCMCIA-HowTos</a> gibt es eine Liste mit einigen allgemeinen Angaben über Ressourcenbereiche. Beachten Sie, dass Sie alle eventuell vorhandenen Kommata weglassen müssen, wenn Sie Angaben von dieser Quelle in den Installer eingeben. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Die Startmeldungen des Kernels deuten</h3></div></div></div>
+<p>Während des Boot-Prozesses können Sie viele Meldungen der Form <code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code> (kann <em class="replaceable"><code>irgendetwas</code></em> nicht finden) oder <code class="computeroutput"><em class="replaceable"><code>something</code></em> not present</code> (<em class="replaceable"><code>irgendetwas</code></em> nicht vorhanden), <code class="computeroutput">can't initialize <em class="replaceable"><code>something</code></em></code>, (kann <em class="replaceable"><code>irgendetwas</code></em> nicht initialisieren) oder sogar <code class="computeroutput">this driver release depends on <em class="replaceable"><code>something</code></em></code> (diese Treiberversion ist abhängig von <em class="replaceable"><code>irgendetwas</code></em>) sehen. Die meisten dieser Meldungen sind harmlos. Sie erscheinen, weil der Kernel des Installationssystems gebaut wurde, um auf vielen Maschinen mit viel verschiedener Hardware zu funktionieren. Wahrscheinlich wird kein Rechner alle möglichen Peripheriegeräte beinhalten, deswegen wird das Betriebssystem wohl immer etwas zu beklagen haben, wenn es Peripherie sucht, die Sie nicht besitzen. Sie werden vielleicht auch feststellen, dass das System für eine Weile pausiert. Dies kommt vor, wenn es auf die Antwort eines Gerätes wartet, das in Ihrem System nicht vorhanden ist. Wenn Sie meinen, dass die Zeit zum Booten des Systems unakzeptabel lang ist, können Sie später einen eigenen, maßgeschneiderten Kernel erstellen<span class="phrase"> (siehe auch <a class="xref" href="ch08s05.html" title="8.5. Einen neuen Kernel kompilieren">Abschnitt 8.5, „Einen neuen Kernel kompilieren“</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Installationsprobleme berichten</h3></div></div></div>
+<p>Wenn Sie zwar die anfängliche Boot-Phase hinter sich bringen, aber die Installation nicht abschließen können, kann die Auswahl des Menüpunkts <span class="quote">„<span class="quote">Installationsprotokolle speichern</span>“</span> hilfreich sein. Dabei können System-Fehlermeldungen und Konfigurationsdaten des Installers auf ein Speichermedium geschrieben oder mittels eines Webbrowsers heruntergeladen werden. Diese Informationen können Hinweise darauf geben, was schief gelaufen ist und wie man dies beheben kann. Wenn Sie einen Fehlerbericht einschicken, sollten Sie diese Informationen dem Bericht beilegen. </p>
+<p>Andere sachdienliche Installationsmeldungen findet man während der Installation in <code class="filename">/var/log/</code> und nachdem das neu installierte System gebootet wurde in <code class="filename">/var/log/installer/</code>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Installationsberichte einschicken</h3></div></div></div>
+<p>Wenn Sie immer noch Probleme haben, senden Sie uns einen Installationsbericht (auf Englisch bitte). Wir bitten ebenfalls darum, uns Berichte schicken, wenn die Installation erfolgreich war, so dass wir so viele Informationen wie möglich über die riesige Zahl von Hardware-Konfigurationen bekommen. </p>
+<p>Bedenken Sie, dass Ihr Installationsbericht in der Debian-Fehlerdatenbank (Debian Bug Tracking System, BTS) veröffentlicht und an eine öffentliche Mailingliste weitergeleitet wird. Verwenden Sie also eine E-Mail-Adresse, bei der Sie nichts dagegen haben, dass sie öffentlich gemacht wird. </p>
+<p>Falls Sie bereits ein funktionierendes Debian-System haben, ist dies der einfachste Weg, um uns einen Installationsbericht zu schicken: installieren Sie die Pakete <code class="classname">installation-report</code> und <code class="classname">reportbug</code> (mit <span class="command"><strong>apt install installation-report reportbug</strong></span>), konfigurieren Sie <code class="classname">reportbug</code> wie in <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. E-Mails nach außerhalb verschicken">Abschnitt 8.4.2, „E-Mails nach außerhalb verschicken“</a> beschrieben und führen Sie dann den Befehl <span class="command"><strong>reportbug installation-reports</strong></span> aus. </p>
+<p>Sie können alternativ diese Vorlage benutzen, um Installationsberichte zu verfassen, und schicken Sie ihn dann als Fehlerbericht gegen das Pseudo-Paket <code class="classname">installation-reports</code> an <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Description of the install, in prose, and any thoughts, comments
+and ideas you had during the initial install.&gt;
+
+Fügen Sie diesem Bericht bitte Logdateien der Installation bei, wenn Sie
+denken, dass diese nützlich sein könnten. (Sie finden diese im Installer-
+System unter /var/log/ oder später im installierten System unter
+/var/log/installer.) Komprimieren Sie große Dateien mittels gzip.
+</pre></div>
+<p> Beschreiben Sie in dem Bericht, was das Problem ist (inklusive der letzten sichtbaren Kernel-Meldungen, falls der Kernel sich aufgehängt hat). Beschreiben Sie die Schritte, die Sie durchgeführt haben und die das System in den problematischen Zustand gebracht haben. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Boot-Parameter </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> Kapitel 6. Den Debian-Installer verwenden</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

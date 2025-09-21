@@ -1,0 +1,234 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Felsök installationsprocessen</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch05.html" title="Kapitel 5. Starta upp installationssystemet">
+<link rel="prev" href="ch05s03.html" title="5.3. Uppstartsparametrar">
+<link rel="next" href="ch06.html" title="Kapitel 6. Användning av Debian Installer">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Felsök installationsprocessen</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 5. Starta upp installationssystemet</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Felsök installationsprocessen</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Tillförlitligheten för optiska medier</h3></div></div></div>
+<p>Ibland, särskilt med äldre enheter, kan installationsprogrammet misslyckas med att starta från en optisk skiva. Installationsprogrammet kan också — även efter framgångsrik uppstart från en sådan skiva — misslyckas med att känna igen skivan eller returnerar fel när du läser från den under installationen. </p>
+<p>Det finns många olika möjliga orsaker till dessa problem. Vi kan endast lista några vanliga problem och tillhandahålla allmänna förslag på hur man hanterar dem. Resten är upp till dig. </p>
+<p>Det finns två mycket enkla saker som du bör prova först. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Om sskivan inte startar upp, kontrollera att den blev inmatad korrekt och att den inte är smutsig. </p></li>
+<li class="listitem"><p>Om installationsprogrammet misslyckas att känna igen en skiva, prova att köra alternativet <span class="guimenuitem">Identifiera och montera installationsmedia</span> en andra gång. Vissa DMA-relaterade problem med väldigt gamla cd-rom-enheter kan lösas på detta sätt. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Om det inte fungerar, prova nedanstående förslag. De flesta, men inte alla, förslag som diskuteras där gäller för cd-rom och dvd. </p>
+<p>Om du inte kan få installationen att fungera från optisk skiva, prova en av de andra installationsmetoderna som finns tillgängliga. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2237"></a>5.4.1.1. Vanliga problem</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Några äldre cd-rom-enheter saknar stöd för att läsa från skivor som blev brända med höga hastigheter med en modern cd-brännare. </p></li>
+<li class="listitem"><p>Några cd-rom-enheter fungerar inte korrekt om <span class="quote">”<span class="quote">direkt minnesåtkomst</span>”</span> (DMA) är aktiverat på dom. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2245"></a>5.4.1.2. Hur man undersöker och kanske även löser problem</h4></div></div></div>
+<p>Prova förslagen som listas här nedan om uppstart med optisk skiva misslyckas. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Kontrollera att din BIOS/UEFI faktiskt stöder uppstart från optisk skiva (endast ett problem för mycket gamla system) och att uppstart från sådana media är aktiverat i BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>Om du hämtat en iso-avbildning, kontrollera att md5-kontrollsumman för avbildningar matchar den som listas för avbildningen i filen <code class="filename">MD5SUMS</code> som bör finnas på samma plats som där du hämtade avbildningen från. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Kontrollera sedan att md5-kontrollsumman för den brända skivan matchar också. Följande kommando bör fungera. Det använder storleken på avbildningen för att läsa det korrekta antalet byte från skivan. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 poster in
+262668+0 poster ut
+134486016 bytes (134 MB) kopierade, 97.474 sekunder, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Om skivan inte upptäcks efter att installationsprogrammet har startats, kan det ibland lösa problemet genom att helt enkelt försöka igen. Om du har mer än en optisk enhet, försök att byta skivan till den andra enheten. Om det inte fungerar eller om skivan känns igen men det finns fel när du läser från den, försök med förslagen nedan. Vissa grundläggande kunskaper om Linux krävs för detta. För att utföra något av kommandona bör du först byta till den andra virtuella konsolen (VT2) och aktivera skalet där. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Växla till VT4 eller visa innehållet i <code class="filename">/var/log/syslog</code> (använd <span class="command"><strong>nano</strong></span> som redigerare) för att leta efter specifika felmeddelenden. Efter det, kontrollera även utskriften för <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Se efter i utdatat från <span class="command"><strong>dmesg</strong></span> om din optiska enhet identifierades. Du bör se någonting som liknar (raderna behöver inte nödvändigtvis vara lika): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Om du inte ser någonting som liknar det här, är chansen att styrkortet som din enhet är ansluten till, inte känns igen eller inte stöds alls. Om du vet vilken drivrutin som behövs för styrkortet, kan du prova att läsa in den manuellt med <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Kontrollera att det finns en enhetsnod för din optiska enhet under <code class="filename">/dev/</code>. I ovanstående exempel skulle detta vara <code class="filename">/dev/sr0</code>. Det bör även finnas en <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Använd kommandot <span class="command"><strong>mount</strong></span> för att kontrollera att din optiska skiva redan är monterad, om inte, försök att montera den manuellt: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Kontrollera om det uppstod felmeddelanden efter körning av kommandot. </p>
+</li>
+<li class="listitem">
+<p>Kontrollera om DMA för närvarande är aktiverat: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> En <span class="quote">”<span class="quote">1</span>”</span> i första kolumnen efter <code class="literal">using_dma</code> betyder att det är aktiverat. Om det är, försök att inaktivera det: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Se till att du är i katalogen för enheten som motsvarar din optiska enhet. </p>
+</li>
+<li class="listitem"><p>Om det uppstår problem under installationen, prova att kontrollera integriteten för installationsmedia med alternativen nära slutet på installationsprogrammets huvudmeny. Det här alternativet kan även användas som ett allmänt test för att se om skivan kan läsas tillförlitligt. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2297"></a>5.4.2. Uppstartskonfiguration</h3></div></div></div>
+<p>Om du har problem med att kärnan hänger sig under uppstartsprocessen, inte känner igen kringutrustning som du faktiskt har, eller inte korrekt detekterar vissa enheter, är uppstartsparametrarna det första att kontrollera, vilket diskuteras i <a class="xref" href="ch05s03.html" title="5.3. Uppstartsparametrar">Avsnitt 5.3, ”Uppstartsparametrar”</a>. </p>
+<p>I vissa fall kan funktionsstörningar orsakas av att enhetens firmware saknas (se <a class="xref" href="ch02s02.html" title="2.2. Enheter som kräver fast programvara">Avsnitt 2.2, ”Enheter som kräver fast programvara”</a> och <a class="xref" href="ch06s04.html" title="6.4. Läsa in saknad fast programvara">Avsnitt 6.4, ”Läsa in saknad fast programvara”</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2304"></a>5.4.3. Talsynteser (mjukvara)</h3></div></div></div>
+<p>Om mjukvarutalsyntes inte fungerar är det troligtvis ett problem med ditt ljudkort, vanligtvis för att antingen drivrutinen för det inte ingår i installationsprogrammet eller för att det har ovanliga mixernivånamn som är inställda på tyst som standard. Du bör därför skicka in en buggrapport som inkluderar utdata av följande kommandon, körs på samma maskin från ett Linux-system som är känt för att fungera (t.ex. en live-CD). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Vanliga <span class="phrase">64-bit PC</span> Installationsproblem</h3></div></div></div>
+<p>Det finns några vanliga installationsproblem som kan lösas eller undvikas genom att skicka med vissa uppstartsparametrar till installationsprogrammet. </p>
+<p>Om din skärm börjar visa en konstig bild vid uppstart av kärnan, exempelvis vitt, svart eller färgat bildpunktsskräp, kan ditt system innehålla ett problematiskt grafikkort som inte kan byta till framebuffer-läget korrekt. Då kan du använda uppstartsparametern <strong class="userinput"><code>vga=normal nomodeset</code></strong> för att inaktivera framebuffer-konsollen. Endast ett fåtal språk kommer då att finnas tillgängliga under installationen på grund av begränsade konsollfunktioner. Se <a class="xref" href="ch05s03.html" title="5.3. Uppstartsparametrar">Avsnitt 5.3, ”Uppstartsparametrar”</a> för detaljer. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2327"></a>5.4.4.1. Systemet fryser under konfigurationsfasen för PCMCIA</h4></div></div></div>
+<p>Vissa väldigt gamla modeller av bärbara datorer producerade av Dell är kända att krascha när identifiering av PCMCIA-enheter försöker komma åt vissa maskinvaruadresser. Andra bärbara kan visa liknande problem. Om du upplever sådana problem och du inte behöver PCMCIA-stöd under installationen kan du inaktivera PCMCIA med uppstartsparametern <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Du kan då konfigurera PCMCIA efter installationen är genomförd och undanta resursintervallet som orsakar problemen. </p>
+<p>Alternativt kan du starta upp installationsprogrammet i expertläget. Du kommer då att bli frågad att ange inställningar för resursintervall som din maskinvara behöver. Till exempel, om du har en av Dells bärbara datorer som nämndes ovan, bör du ange <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong> här. Det finns också en lista på några vanliga resursintervall i <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a>. Observera att du måste ta bort eventuella kommatecken när du anger det här värdet i installationsprogrammet. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Tolkning av kärnans uppstartsmeddelanden</h3></div></div></div>
+<p>Under uppstartssekvensen kanske du se många meddelanden liknande <code class="computeroutput">can't find <em class="replaceable"><code>någonting</code></em> </code>, eller <code class="computeroutput"><em class="replaceable"><code>någonting</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>någonting</code></em></code>, eller till och med <code class="computeroutput">this driver release depends on <em class="replaceable"><code>någonting</code></em></code>. De flesta av de här meddelandena är harmlösa. Du ser dem för att kärnan för installationssystemet är byggd för att köras på många olika datorer och med många olika kringutrustningsenheter. Ingen dator kommer så klart att innehålla alla tänkbara kringutrustningsenheter, så operativsystemet kan klaga en hel del när den letar efter kringutrustning som du inte har. Du kan också se att systemet gör en paus. Det händer när det väntar på att en enhet ska svara, och att den enheten finns inte i ditt system. Om du tycker att tiden det tar att starta upp systemet är på tok för lång, kan du skapa en anpassad kärna senare <span class="phrase">(se <a class="xref" href="ch08s05.html" title="8.5. Bygg en ny kärna">Avsnitt 8.5, ”Bygg en ny kärna”</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Rapportering av installationsproblem</h3></div></div></div>
+<p>Om du kommer igenom den inledande uppstartsfasen men inte kan slutföra installationen kan menyalternativet <span class="guimenuitem">Spara felsökningsloggar</span> vara till hjälp. Det låter dig lagra systemfelloggar och konfigurationsinformation från installationsprogrammet på ett lagringsmedium, eller ladda ner dem med en webbläsare. Denna information kan ge ledtrådar om vad som gick fel och hur man åtgärdar det. Om du skickar in en felrapport kanske du vill bifoga denna information till felrapporten. </p>
+<p>Andra relevanta installationsmeddelanden kan hittas i <code class="filename">/var/log/</code> under installationen, och <code class="filename">/var/log/installer/</code> efter datorn har startats om till det nyligen installerade systemet. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Skicka installationsrapporter</h3></div></div></div>
+<p>Om du fortfarande har problem, skicka in en installationsrapport (på engelska snälla, när det är möjligt). Vi uppmuntrar att installationsrapporter skickas in även om installationen lyckats, så att vi kan få så mycket information som möjligt om många olika maskinvarukonfigurationer. </p>
+<p>Observera att din installationsrapport kommer att publiceras i Debians felhanteringssystem (BTS) och vidarebefordras till en publik sändlista. Se till att du använder en e-postadress som du inte har några problem med att den används publikt. </p>
+<p>Om du har ett fungerande Debian-system är det enklaste sättet att skicka in en installationsrapport att installera paketen <code class="classname">installation-report</code> och <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>), konfigurera <code class="classname">reportbug</code> som det förklaras i <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Skicka e-post utanför systemet">Avsnitt 8.4.2, ”Skicka e-post utanför systemet”</a>, och kör kommandot <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Alternativt kan du använda den här mallen när du fyller i installationsrapporter och arkivera rapporten som en felrapport mot pseudopaketet <code class="classname">installation-reports</code> genom att skicka den via e-post till <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Uppstartsmetod: &lt;Hur startade du upp installationsprogrammet? CD/DVD? USB sticka? Nätverk?&gt;
+Avbildsversion: &lt;Fullständig URL till avbilden du laddade ner är bäst&gt;
+Datum: &lt;Datum och tid för installationen&gt;
+
+Maskin: &lt;Beskrivning av maskin (t.ex. IBM Thinkpad R32)&gt;
+Processor:
+Minne:
+Partitioner: &lt;df -Tl fungerar; den råa partitionstabellen är att föredra&gt;
+
+Utdata från lspci -knn (eller lspci -nn):
+
+Checklista för installation av bassystem:
+[O] = OK, [E] = Fel (vänligen utveckla nedan), [ ] = försökte inte
+
+Första uppstart: [ ]
+Upptäcktes nätverkskortet: [ ]
+Konfigurerades nätverket: [ ]
+Upptäcktes media: [ ]
+Laddades installationsmoduler: [ ]
+Upptäcktes hårddisk/hårddiskarna: [ ]
+Partitionerades hårddiskar/hårddiskarna: [ ]
+Installerades bassystemet: [ ]
+Inställning av klocka/tidszon: [ ]
+Fungerade Användar/lösenordsinställningar: [ ]
+Gick alla Installationsuppgifter igenom: [ ]
+Installerades starthanteraren: [ ]
+Total installation: [ ]
+
+Kommentarer/problem:
+
+&lt;Beskrivning av installationen, i prosa, och eventuella tankar, kommentarer
+       och idéer du hade under den första installationen.&gt;
+
+Se till att alla installationsloggar som du tror skulle
+vara användbara bifogas denna rapport. (Du hittar dem i installationsprogrammet
+i /var/log/ och senare på det installerade systemet under
+/var/log/installer.) Komprimera stora filer med gzip.
+
+</pre></div>
+<p> Beskriv i felrapporten vad problemet är, inklusive de senaste synliga kärnmeddelandena i händelse av att kärnan hänger sig. Beskriv stegen som du gjorde som förde systemet till problemtillstånd. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Uppstartsparametrar </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> Kapitel 6. Användning av Debian Installer</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

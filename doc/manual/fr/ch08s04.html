@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. Configurer le courrier électronique</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch08.html" title="Chapitre 8. Les prochaines étapes">
+<link rel="prev" href="ch08s03.html" title="8.3. Pour aller plus loin">
+<link rel="next" href="ch08s05.html" title="8.5. Compiler un nouveau noyau">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. Configurer le courrier électronique</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 8. Les prochaines étapes</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. Configurer le courrier électronique</h2></div></div></div>
+<p>Le courrier électronique tient aujourd'hui une grande place dans la vie des gens. Comme il est important que le système de courrier, avec ses nombreuses options, soit bien configuré, nous aborderons dans cette section ses principaux éléments. </p>
+<p>Un système de courrier est composé de trois éléments. Il y a d'abord l'<em class="firstterm">agent utilisateur</em>, <span class="emphasis"><em>Mail User Agent, (MUA)</em></span> qui est le programme avec lequel l'utilisateur lit et écrit son courrier. Ensuite il y a l'<em class="firstterm">agent de transport</em>, <span class="emphasis"><em>Mail Transfer Agent, (MTA)</em></span>, programme qui transporte les courriers d'un ordinateur à l'autre. Enfin il y a l'<em class="firstterm">agent de distribution</em>, <span class="emphasis"><em>Mail Delivery Agent (MDA)</em></span>, programme qui distribue le courrier dans les boîtes des utilisateurs. </p>
+<p>Ces trois fonctions peuvent être effectuées par des programmes distincts, ou bien seulement par un ou deux programmes. Il est possible aussi que différents programmes accomplissent ces tâches pour différents types de courrier. </p>
+<p>Sur Linux et les systèmes Unix, <span class="command"><strong>mutt</strong></span> est un lecteur (MUA) très apprécié. Comme les programmes traditionnels de Linux, il est en mode texte. Il est souvent associé à <span class="command"><strong>exim</strong></span> ou <span class="command"><strong>sendmail</strong></span> comme MTA et à <span class="command"><strong>procmail</strong></span> comme MDA. </p>
+<p>Avec la popularité croissante des environnements de bureau graphique, des programmes comme <span class="command"><strong>evolution</strong></span> de GNOME, <span class="command"><strong>kmail</strong></span> de KDE ou <span class="command"><strong>thunderbird</strong></span> de Mozilla deviennent aussi populaires. Ils combinent les trois fonctions, MUA, MTA et MDA, mais ils peuvent — et le sont souvent — être utilisés avec les programmes traditionnels de Debian GNU/Linux. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. Configuration par défaut</h3></div></div></div>
+<p>Même si vous comptez utiliser un programme graphique, il est utile d'installer et de configurer un ensemble traditionnel MTA/MDA. En effet, certains utilitaires du système <a href="#ftn.id3746" class="footnote" name="id3746"><sup class="footnote">[16]</sup></a> peuvent envoyer des messages importants sous forme de courriels à l'administrateur du système. </p>
+<p>Pour cela, les paquets <code class="classname">exim4</code> et <code class="classname">mutt</code> sont installables avec la commande <span class="command"><strong>apt install exim4 mutt</strong></span>. L'agent de transport du courrier <span class="command"><strong>exim4</strong></span>, combinant les fonctions MTA et MDA, est un programme relativement petit mais très pratique. Par défaut, il est configuré pour n'envoyer des courriels que sur le système local. Les courriels adressés à l'administrateur (le compte root) sont envoyés à l'utilisateur créé pendant l'installation<a href="#ftn.id3757" class="footnote" name="id3757"><sup class="footnote">[17]</sup></a>. </p>
+<p>Quand des courriels système sont envoyés, ils sont ajoutés dans le fichier <code class="filename">/var/mail/<em class="replaceable"><code>nom_utilisateur</code></em></code>. Les courriels peuvent être lus avec <span class="command"><strong>mutt</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. Envoyer des courriels vers l'extérieur</h3></div></div></div>
+<p>Comme il a été dit précédemment, le système Debian installé ne gère l'envoi de courriel qu'en local et ne permet pas d'envoyer des messages vers l'extérieur ni d'en recevoir de l'extérieur. </p>
+<p>Si vous désirez que <code class="classname">exim4</code> gère l'envoi de messages vers l'extérieur, lisez la section qui suit, elle vous présentera les options de configuration disponibles. N'oubliez pas de tester si l'envoi et la réception de courrier sont corrects. </p>
+<p>Si vous avez l'intention d'utiliser un programme graphique avec le serveur de courrier de votre fournisseur d'accès à internet ou de votre entreprise, vous n'avez pas vraiment besoin de configurer <code class="classname">exim4</code>. Indiquez juste à votre programme de courrier les bons serveurs à utiliser pour envoyer et recevoir les messages. </p>
+<p>Dans ce cas, vous aurez aussi à configurer certains programmes pour envoyer correctement des courriels. Par exemple, <span class="command"><strong>reportbug</strong></span>, un programme qui permet d'envoyer des rapports de bogues pour les paquets Debian, s'attend à trouver <code class="classname">exim4</code>. </p>
+<p>Pour indiquer à <span class="command"><strong>reportbug</strong></span> d'utiliser un serveur de courrier externe, lancez la commande <span class="command"><strong>reportbug --configure</strong></span> et répondez <span class="quote">« <span class="quote">no</span> »</span> à la question de savoir si un MTA est disponible. On vous demandera le serveur à utiliser pour envoyer les rapports de bogues. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Configuration de Exim4</h3></div></div></div>
+<p>Si vous désirez que votre système gère le courrier vers l'extérieur, vous devez reconfigurer la paquet <code class="classname">exim4</code><a href="#ftn.id3782" class="footnote" name="id3782"><sup class="footnote">[18]</sup></a> : </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>Après avoir saisi cette commande (en tant que superutilisateur), il vous sera demandé si vous voulez diviser la configuration en petits fichiers. En cas de doute, choisissez l'option par défaut. </p>
+<p>Plusieurs scénarios communs vous sont proposés. Choisissez celui qui vous paraît le plus conforme à vos besoins. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">site internet</span></dt>
+<dd><p>Votre système est connecté à un réseau et le courrier est expédié et reçu directement avec SMTP. Dans les écrans suivants, on vous posera quelques questions élémentaires comme le nom de votre machine pour le courrier, les domaines dont vous acceptez ou pour lesquels vous relayez les courriels. </p></dd>
+<dt><span class="term">courrier envoyé par une machine relais (<span class="emphasis"><em>smarthost</em></span>)</span></dt>
+<dd>
+<p>Dans ce scénario, le courrier sortant est envoyé à une autre machine, appelé le <span class="emphasis"><em>smarthost</em></span> qui expédie le courrier à sa destination. Cette machine relais garde les courriels qui vous sont adressés et vous permet de ne pas être constamment connecté. Vous devez donc récupérer vos courriels sur cette machine avec des programmes comme fetchmail. </p>
+<p>Le plus souvent, le « smarthost » est le serveur de votre fournisseur d'accès à internet. C'est l'option adaptée à un système connecté par le réseau téléphonique. Le serveur peut être aussi celui d'une entreprise, ou bien même un autre système sur votre réseau. </p>
+</dd>
+<dt><span class="term">courrier envoyé par une machine relais ; pas de courrier local</span></dt>
+<dd><p>Cette option est presque la même que la précédente sauf que le système ne gère pas le courrier local. Les messages du système, par exemple pour l'administrateur, sont toujours gérés. </p></dd>
+<dt><span class="term">distribution locale seulement</span></dt>
+<dd><p>C'est l'option par défaut. </p></dd>
+<dt><span class="term">pas de configuration pour le moment</span></dt>
+<dd><p>Choisissez cette option si vous êtes absolument certain de savoir ce que vous faites. Le système de courrier ne sera pas configuré. Tant qu'il ne le sera pas, vous ne pourrez ni envoyer ni recevoir des courriels. Les messages importants venant des utilitaires du système ne vous parviendront pas. </p></dd>
+</dl></div>
+<p>Si aucun de ces scénarios ne s'accorde à vos besoins, ou si vous voulez un réglage très fin, vous devrez modifier les fichiers de configuration qui se trouvent dans le répertoire <code class="filename">/etc/exim4</code>. D'autres informations sur le programme <span class="command"><strong>exim4</strong></span> se trouvent dans <code class="filename">/usr/share/doc/exim4</code>. Le fichier <code class="filename">README.Debian.gz</code> contient d'autres informations sur la configuration de <code class="classname">exim4</code>. Il signale aussi d'autres sources d'informations. </p>
+<p>Il faut noter qu'envoyer des messages directement sur internet quand on ne possède pas de nom de domaine officiel peut provoquer le rejet des messages, à cause des mesures antipourriel prises par les serveurs de courrier. Il est préférable d'utiliser le serveur de son fournisseur d'accès à internet. Si vous le voulez malgré tout, vous pouvez utiliser une autre adresse que celle créée par défaut. Avec <code class="classname">exim4</code>, c'est possible en ajoutant une entrée dans <code class="filename">/etc/email-addresses</code>. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3746" class="footnote"><p><a href="#id3746" class="para"><sup class="para">[16] </sup></a> Par exemple, <span class="command"><strong>cron</strong></span>, <span class="command"><strong>quota</strong></span>, <span class="command"><strong>logcheck</strong></span>, <span class="command"><strong>aide</strong></span>, … </p></div>
+<div id="ftn.id3757" class="footnote"><p><a href="#id3757" class="para"><sup class="para">[17] </sup></a> Le renvoi de courriel pour root vers le compte utilisateur est configuré dans le fichier <code class="filename">/etc/aliases</code>. S'il n'existe pas de compte utilisateur, le courriel sera bien sûr envoyé au compte root. </p></div>
+<div id="ftn.id3782" class="footnote"><p><a href="#id3782" class="para"><sup class="para">[18] </sup></a> Vous pouvez bien sûr supprimer <code class="classname">exim4</code> et le remplacer par un autre MTA/MDA. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. Pour aller plus loin </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. Compiler un nouveau noyau</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

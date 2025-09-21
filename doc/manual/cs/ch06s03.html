@@ -1,0 +1,795 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Použití jednotlivých komponent</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux — instalační příručka">
+<link rel="up" href="ch06.html" title="Kapitola 6. Používáme instalační program Debianu">
+<link rel="prev" href="ch06s02.html" title="6.2. Úvod do komponent">
+<link rel="next" href="ch06s04.html" title="6.4. Nahrání chybějícího firmwaru">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Použití jednotlivých komponent</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<th width="60%" align="center">Kapitola 6. Používáme instalační program Debianu</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Použití jednotlivých komponent</h2></div></div></div>
+<p>V této části podrobně popíšeme každou komponentu instalačního programu. Komponenty jsou seskupeny do celků podle kontextu, ve kterém se během instalace vyskytují. Poznamenejme, že při instalaci se nemusí vždy využít všechny komponenty — to závisí na způsobu instalace a na dostupném hardwaru. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Nastavení instalačního programu a rozpoznání hardwaru</h3></div></div></div>
+<p>Předpokládejme, že <code class="classname">debian-installer</code> úspěšně nastartoval a nyní se díváte na jeho první obrazovku. V tento okamžik je <code class="classname">debian-installer</code> ještě poměrně hloupý a nepoužitelný. Neví nic o hardwaru vašeho počítače, nezná váš preferovaný jazyk a dokonce ani netuší, jaký úkol mu byl přidělen. Ale nebojte se. Jako správný průzkumník začne <code class="classname">debian-installer</code> zkoumat své okolí a po nějaké době bude mít slušný přehled o okolním hardwaru. Poté se pokusí nalézt zbytek svých komponent a sám sebe přemění ve schopný, dobře vychovaný program. Bohužel, stále existují věci, se kterými si <code class="classname">debian-installer</code> nedokáže poradit a proto mu musíte trošku pomoci (například vybrat jazyk, ve kterém má instalace probíhat, odsouhlasit rozložení klávesnice a podobně). </p>
+<p>Během této fáze si jistě všimnete, že <code class="classname">debian-installer</code> několikrát <em class="firstterm">rozpoznává hardware</em>. Poprvé je úzce zaměřen na hardware, který by mohl obsahovat další části instalačního programu, tj. CD mechaniky nebo síťové karty. Další rozpoznávání hardwaru probíhá později, když se hledají pevné disky, protože před prvním rozpoznáváním ještě nemusí být k dispozici všechny ovladače. </p>
+<p>Při rozpoznávání hardwaru si <code class="classname">debian-installer</code> kontroluje, zda ovladače pro nalezený hardware vyžadují zavedeni firmwaru. Jestliže požadovaný firmware není dostupný, zobrazí se nabídka na jeho nahrání z výměnného média. Podrobnosti naleznete v části <a class="xref" href="ch06s04.html" title="6.4. Nahrání chybějícího firmwaru">6.4 – „Nahrání chybějícího firmwaru“</a>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Kontrola dostupné paměti / nízkopaměťový režim</h4></div></div></div>
+<p>Jednou z prvních věcí, které <code class="classname">debian-installer</code> zkontroluje, je velikost operační paměti. Pokud má váš systém málo paměti, tak se tato komponenta pokusí provést změny v instalačním procesu tak, aby byla instalace možná i na tomto počítači. </p>
+<p>Prvním krokem ke snížení paměťové náročnosti je vyhození všech překladů, což znamená že instalace bude probíhat pouze v angličtině. Samozřejmě, že po dokončení instalace si můžete systém lokalizovat dle potřeb (viz <a class="ulink" href="http://www.debian.cz/users/localization.php" target="_top">Lokalizace Debianu</a>). </p>
+<p>Pokud to nestačí, instalace přejde na dietu, při které nahraje pouze ty komponenty, které jsou nezbytné pro dokončení základní instalace. Tím se o něco sníží funkčnost systému. Sice budete mít možnost nahrát dodatečné komponenty ručně, ale mějte na paměti, že každá komponenta znamená další paměť a proto se může stát, že instalace selže. </p>
+<p>If the installer runs in low memory mode, it is recommended to create a relatively large swap partition (1–2GB). The swap partition will be used as virtual memory and thus increases the amount of memory available to the system. The installer will activate the swap partition as early as possible in the installation process. Note that heavy use of swap will reduce performance of your system and may lead to high disk activity. </p>
+<p>I přes tato opatření je možné, že instalace zamrzne, nebo že jádro odstřelí některé procesy, protože systému dojde paměť (v syslogu a na 4. konzoli by se to mělo projevit hláškami <code class="computeroutput">Out of memory</code>). </p>
+<p>Například máme zprávu, že při nedostatku paměti a odkládacího prostoru selže vytváření velkého souborového systému typu ext3. Pokud nepomůže zvětšení odkládacího prostoru, můžete zkusit vytvořit souborový systém jako ext2 a později po instalaci oblast převést na ext3. </p>
+<p>Důraznější nízkopaměťový režim lze vynutit i v případech, kdy by podle dostupné paměti měla fungovat jeho mírnější varianta nebo dokonce i běžná instalace. Stačí použít parametr <span class="quote">„<span class="quote">lowmem</span>“</span>, jak popisuje část <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parametry instalačního programu">5.3.2 – „Parametry instalačního programu“</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Výběr místního prostředí</h4></div></div></div>
+<p>In most cases the first questions you will be asked concern the selection of localization options to be used both for the installation and for the installed system. The localization options consist of language, location and locales. </p>
+<p>The language you choose will be used for the rest of the installation process, provided a translation of the different dialogs is available. If no valid translation is available for the selected language, the installer will default to English. </p>
+<p>The selected geographic location (in most cases a country) will be used later in the installation process to select the correct time zone and a Debian mirror appropriate for that country. Language and country together will help determine the default locale for your system and select the correct keyboard layout. </p>
+<p>You will first be asked to select your preferred language. The language names are listed both in English (left side) and in the language itself (right side); the names on the right side are also shown in the proper script for the language. The list is sorted on the English names. At the top of the list is an extra option that allows you to select the <span class="quote">„<span class="quote">C</span>“</span> locale instead of a language. Choosing the <span class="quote">„<span class="quote">C</span>“</span> locale will result in the installation proceeding in English; the installed system will have no localization support as the <code class="classname">locales</code> package will not be installed. </p>
+<p>Next you will be asked to select your geographic location. If you selected a language that is recognized as an official language for more than one country<a href="#ftn.id2637" class="footnote" name="id2637"><sup class="footnote">[4]</sup></a>, you will be shown a list of only those countries. To select a country that is not in that list, choose <span class="guimenuitem">other</span> (the last option). You will then be presented with a list of continents; selecting a continent will lead to a list of relevant countries on that continent. </p>
+<p>If the language has only one country associated with it, a list of countries will be displayed for the continent or region the country belongs to, with that country selected as the default. Use the <span class="guibutton">Jít zpět</span> option to select countries on a different continent. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>It is important to select the country where you live or where you are located as it determines the time zone that will be configured for the installed system. </p></td></tr>
+</table></div>
+<p>If you selected a combination of language and country for which no locale is defined and there exist multiple locales for the language, then the installer will allow you to choose which of those locales you prefer as the default locale for the installed system<a href="#ftn.id2645" class="footnote" name="id2645"><sup class="footnote">[5]</sup></a>. In all other cases a default locale will be selected based on the selected language and country. </p>
+<p>Všechna prostředí automaticky používají jako výchozí kódování <em class="firstterm">UTF-8</em>. </p>
+<p>Instalujete-li s nízkou prioritou otázek, bude vám nabídnuta možnost výběru dodatečných prostředí (nezávislých na předchozí volbě jazyka a umístění) a také možnost instalace zastaralých prostředí<a href="#ftn.id2650" class="footnote" name="id2650"><sup class="footnote">[6]</sup></a>. Jestliže vyberete více prostředí, budete ještě dotázáni, které z nich se má použít jako výchozí. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Výběr klávesnice</h4></div></div></div>
+<p>Klávesnice bývají obvykle přizpůsobeny znakům používaným v daném jazyce. Vyberte klávesnici, která odpovídá vašemu národnímu rozložení, nebo je alespoň velmi podobná. Po skončení instalace si můžete vybrat vhodné klávesové rozložení z mnohem většího spektra (jako uživatel root spusťte příkaz <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>). </p>
+<p>Šipkami přesuňte kurzor na vybrané klávesové rozložení a stiskněte <span class="keycap"><strong>Enter</strong></span>. (Šipky by měly být na všech klávesnicích na stejném místě, takže jsou nezávislé na zvoleném rozložení.) </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Hledání instalačního ISO obrazu</h4></div></div></div>
+<p>Při instalaci metodou <span class="emphasis"><em>hd-media</em></span> nastane okamžik, kdy budete muset instalační program navést k ISO obrazu instalačního systému Debianu, na kterém se nachází zbytek instalačních souborů. Abyste obraz nemuseli hledat ručně, pomůže vám s tímto úkolem komponenta <span class="command"><strong>iso-scan</strong></span>. </p>
+<p><span class="command"><strong>iso-scan</strong></span> nejprve připojí všechna bloková zařízení (např. diskové oblasti), na kterých se nachází známý souborový systém a poté na nich hledá soubory končící příponou <code class="filename">.iso</code> (resp. <code class="filename">.ISO</code>). Po nalezení každého iso obrazu si <span class="command"><strong>iso-scan</strong></span> zkontroluje jeho obsah a zjistí, zda se jedná o planý obraz instalačního CD. Pokud ano, máme vyhráno a instalace může pokračovat. V opačném případě se hledá další obraz.  Pokud toto hledání neuspěje, ještě není vše ztraceno. První pokus totiž kvůli rychlosti prohledává pouze kořenový adresář a první úroveň jeho podadresářů. Tzn. nalezne <code class="filename">/<em class="replaceable"><code>cokoliv</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>cokoliv</code></em>.iso</code>, ale ne <code class="filename">/data/tmp/<em class="replaceable"><code>cokoliv</code></em>.iso</code>. </p>
+<p>Selhalo-li tedy první hledání, <span class="command"><strong>iso-scan</strong></span> se zeptá, zda chcete spustit důkladnější proces. Tento druhý pokus se nedívá pouze do nejvyšších adresářů, ale opravdu prohledá celý disk. </p>
+<p>Pokud <span class="command"><strong>iso-scan</strong></span> neuspěje ani na druhý pokus, vraťte se zpět do původního operačního systému a zkontrolujte, zda má soubor správnou příponu (končící na <code class="filename">.iso</code>), zda je umístěn na souborovém systému, který umí <code class="classname">debian-installer</code> rozpoznat a zda není iso obraz poškozený (zkontrolujte kontrolní součet). Zkušenější unixoví uživatelé mohou vše provést bez restartu počítače na druhé konzoli. </p>
+<p>Note that the partition (or disk) hosting the ISO image can't be reused during the installation process as it will be in use by the installer. To work-around this, and provided that you have enough system memory, the installer can copy the ISO image into RAM before mounting it. This is controlled by the low priority <code class="literal">iso-scan/copy_iso_to_ram</code> debconf question (it is only asked if the memory requirement is met). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Nastavení sítě</h4></div></div></div>
+<p>Pokud na začátku toho kroku instalátor zjistí, že máte více síťových rozhraní, budete si muset vybrat jedno, které použijete jako <span class="emphasis"><em>hlavní</em></span>, tj. to, ze kterého budete instalovat. Zbylá rozhraní zůstanou nenastavena a budete je muset nastavit po skončení instalace ručně — viz manuálová stránka <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatické nastavení sítě</h5></div></div></div>
+<p>Implicitně se <code class="classname">debian-installer</code> snaží nastavit síť automaticky přes DHCP. Pokud DHCP uspěje, vše je nastaveno. Jestliže DHCP skončí s chybou, může být příčina téměř kdekoliv — od vypojeného síťového kabelu až po špatně nastaveného DHCP démona. Také je možné, že na místní síti vůbec DHCP server nemáte. K přesnějšímu určení problému možná pomohou chybové hlášky na čtvrté konzoli. Ať už je chyba kdekoliv, budete dotázáni, zda chcete znovu zkusit DHCP, nebo zda nastavíte síť ručně. DHCP servery jsou někdy docela pomalé, takže pokud jste si jisti, že vše ostatní je v pořádku, klidně to zkuste znovu. Jestliže automatické nastavení selhává opakovaně, zvolte ruční nastavení sítě. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Ruční nastavení sítě</h5></div></div></div>
+<p>Při ručním nastavení sítě vás <span class="command"><strong>netcfg</strong></span> vyzve k zadání údajů z <a class="xref" href="ch03s03.html" title="3.3. Dále budete potřebovat">3.3 – „Dále budete potřebovat“</a> (<code class="computeroutput">IP adresa</code>, <code class="computeroutput">Síťová maska</code>, <code class="computeroutput">Brána</code>, <code class="computeroutput">Adresy jmenných serverů</code> a <code class="computeroutput">Název počítače</code>). Pokud k instalaci používáte bezdrátové připojení, budete dotázáni ještě na <code class="computeroutput">Bezdrátové ESSID</code> (název bezdrátové sítě) a <code class="computeroutput">WEP klíč</code> nebo <code class="computeroutput">přístupovou frázi WPA/WPA2</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Pár technických poznámek: program předpokládá, že adresa vaší sítě je bitovým součinem IP adresy a síťové masky. Výchozí vysílací adresu spočítá jako bitový součet IP adresy systému a bitového doplňku síťové masky. Program se také pokusí odhadnout adresu brány. Pokud některý údaj nebudete znát, ponechte u něj přednastavenou hodnotu. Konfiguraci můžete na nainstalovaném systému upravit v souboru <code class="filename">/etc/network/interfaces</code>. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 a IPv6</h5></div></div></div>
+<p><code class="classname">debian-installer</code> od verze 7.0 (<span class="quote">„<span class="quote">Wheezy</span>“</span>) podporuje kromě <span class="quote">„<span class="quote">tradičního</span>“</span> síťového protokolu IPv4 též protokol IPv6. Podporovány jsou všechny kombinace: samotné IPv4, samotné IPv6, i smíšené nastavení. </p>
+<p>Automatické nastavení sítě se v případě IPv4 děje prostřednictvím DHCP (Dynamic Host Configuration Protocol). Automatické nastavení IPv6 podporuje bezstavové nastavení pomocí NDP (Neighbor Discovery Protocol - včetně přiřazení rekurzivního DNS serveru (RDNSS)), stavové nastavení přes DHCPv6 i smíšené stavové/bezstavové nastavení (přiřazení adresy přes NDP, získání dalších parametrů přes DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Nastavení uživatelů a hesel</h3></div></div></div>
+<p>Těsně před nastavením hodin vám instalační systém umožní nastavit účet <span class="quote">„<span class="quote">root</span>“</span> a/nebo účet pro prvního uživatele. Další uživatelské účty můžete vytvořit po dokončení instalace. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Nastavení rootova hesla</h4></div></div></div>
+<p>Účet <span class="emphasis"><em>root</em></span> je účtem pro <span class="emphasis"><em>superuživatele</em></span>, na kterého se nevztahují bezpečnostní omezení. Měli byste ho používat pouze, když provádíte správu systému, a jen na dobu nezbytně nutnou. </p>
+<p>Uživatelská hesla by měla být sestavena z alespoň 6 písmen, obsahovat malá a velká písmena včetně dalších znaků (jako ; . ,). Speciální pozornost věnujte výběru hesla pro roota, protože je to velmi mocný účet. Vyhněte se slovům ze slovníků, jménům oblíbených postav, jakýmkoliv osobním údajům, prostě čemukoliv, co se dá lehce uhodnout. </p>
+<p>Jestliže vám někdo bude tvrdit, že potřebuje heslo vašeho rootovského účtu, buďte velice ostražití. V žádném případě byste neměli toto heslo prozrazovat! Jedině snad, že daný stroj spravuje více spolu-administrátorů. </p>
+<p>Jestliže heslo pro uživatele root nezadáte, bude tento účet neaktivní. Aby bylo možné nový systém spravovat, později se při instalaci automaticky nainstaluje nástroj <span class="command"><strong>sudo</strong></span>, pomocí kterého bude moci první vytvořený uživatel získat oprávnění uživatele root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Vytvoření uživatelského účtu</h4></div></div></div>
+<p>Systém se zeptá, zda nyní chcete vytvořit uživatelský účet.  (Účet je právo k používání počítače, tvoří ho jméno uživatele a jeho heslo). Tento účet byste měli používat ke každodenní práci. Jak již bylo řečeno, <span class="emphasis"><em>nepoužívejte</em></span> účet superuživatele pro běžné úkoly. </p>
+<p>Proč ne?  Případná chyba by mohla mít katastrofické důsledky a dokonce by si mohla vyžádat novou instalaci systému.  Dalším důvodem je možnost, že vám může být nastrčen program nazývaný <span class="emphasis"><em>trojský kůň</em></span>, který zneužije práv, jež jako root máte, a naruší bezpečnost vašeho systému.  Kvalitní knihy o administraci unixového operačního systému vám jistě podrobněji osvětlí danou problematiku. Jestliže v Unixu začínáte, uvažte četbu na toto téma. </p>
+<p>Postupně budete požádáni o zadání celého jména uživatele, jména uživatelského účtu a hesla.  Jméno uživatelského účtu si můžete vybrat zcela libovolně.  Například, pokud se jmenujete Jan Novák, vytvořte si nový účet <strong class="userinput"><code>jan</code></strong>, <strong class="userinput"><code>jnovak</code></strong> nebo <strong class="userinput"><code>jn</code></strong>. </p>
+<p>Pokud budete chtít vytvořit další účet, můžete to udělat kdykoliv po skončení instalace programem <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Nastavení hodin a časového pásma</h3></div></div></div>
+<p>Instalační systém se nejprve pokusí získat přesný čas z některého časového serveru na Internetu (protokolem <em class="firstterm">NTP</em>).Pokud se to nepovede, bude <code class="classname">debian-installer</code> předpokládat, že čas získaný ze systémových hodin při zavádění instalace je správný. Během instalace není možné nastavit čas ručně. </p>
+<p>Podle země vybrané na začátku instalace se může zobrazit seznam časových pásem dostupných v daném místě. Existuje-li pro zadané místo pouze jediné časové pásmo, otázka se nezobrazí. </p>
+<p>Instalujete-li v expertním režimu, nebo pokud snížíte prioritu otázek na střední, budete moci navíc zvolit časové pásmo UTC (Univerzální koordinovaný čas). </p>
+<p>Pokud z nějakého důvodu chcete pro instalovaný systém použít časové pásmo, které <span class="emphasis"><em>neodpovídá</em></span> zvolenému místu, máte dvě možnosti. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Nejjednodušší možností je počkat s výběrem jiného časové pásma až po dokončení instalace. V nainstalovaném systému pak stačí spustit příkaz: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Alternativně můžete zadat časové pásmo na úplném začátku instalace přidáním zaváděcího parametru <strong class="userinput"><code>time/zone=<em class="replaceable"><code>hodnota</code></em></code></strong>, kde <em class="replaceable"><code>hodnota</code></em> by mělo být platné časové pásmo, například <strong class="userinput"><code>Europe/Prague</code></strong> nebo <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Pro automatizované instalace můžete požadované časové pásmo nastavit také pomocí přednastavení (viz dodatek <a class="xref" href="apb.html" title="Příloha B. Automatizování instalací pomocí přednastavení">B – „<i>Automatizování instalací pomocí přednastavení</i>“</a>, přesněji část <a class="xref" href="apbs04.html#preseed-time" title="B.4.7. Nastavení hodin a časového pásma">B.4.7 – „Nastavení hodin a časového pásma“</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Rozdělení disku a výběr přípojných bodů</h3></div></div></div>
+<p>Nyní, po posledním rozpoznávání hardwaru, by již měl být <code class="classname">debian-installer</code> v plné síle, přizpůsoben podle uživatelských požadavků a připraven na opravdovou práci. Jak praví název této části, bude se několik následujících komponent zabývat rozdělením disků, vytvořením souborových systémů, přiřazením přípojných bodů a volitelně nastavením souvisejících záležitostí, jako jsou LVM, RAID a šifrovaná zařízení. </p>
+<p>Nyní nastal čas rozdělit pevné disky. Pokud se při dělení disků zrovna necítíte silní v kramflecích, nebo pokud chcete o rozdělování disků dozvědět více, podívejte se do dodatku <a class="xref" href="apc.html" title="Příloha C. Poznámky k rozdělování disku">C – „<i>Poznámky k rozdělování disku</i>“</a>. </p>
+<p>Nejprve vám bude nabídnuta možnost automaticky rozdělit buď celý disk, nebo dostupné volné místo na disku. Tato volba se někdy nazývá <span class="quote">„<span class="quote">asistované</span>“</span> rozdělení, protože do dělení můžete sami zasáhnout. Pokud nechcete využít automatické dělení disku, zvolte z nabídky <span class="guimenuitem">Ručně</span>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Podporované možnosti dělení disků</h4></div></div></div>
+<p>Nástroj pro dělení disků v <code class="classname">debian-installer</code>u je poměrně všestranný. Umožňuje vytvářet mnoho různých schémat dělení disků, používat různé tabulky oblastí, souborové systémy a pokročilá bloková zařízení. </p>
+<p>Konkrétní dostupné možnosti závisí převážně na architektuře instalovaného počítače, ale také na dalších faktorech, jako je velikost operační paměti (při nedostatku operační paměti nemusí být některé možnosti k dispozici). Lišit se mohou také výchozí hodnoty. Například typ tabulky rozdělení disku může být různý pro menší a větší disky. Některé možnosti je možno změnit jen při instalaci se střední nebo nízkou prioritou otázek. Při vyšších prioritách se použijí výchozí hodnoty. </p>
+<p>Instalační systém umožňuje použít různé druhy pokročilého dělení disku a zajímavých úložných zařízení, často i kombinovaně. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logical Volume Management (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Softwarový RAID</em></span>
+  </p>
+<p>Podporovány jsou RAID úrovně 0, 1, 4, 5, 6 a 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Šifrování</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimentální) </p>
+<p>Podpora pro multipath je dostupná pouze pokud ji povolíte při zavádění instalačního systému. Více informací naleznete na <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">naší Wiki</a>. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Podporovány jsou následující souborové systémy. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Výchozí souborový systém je ve většině případů ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (není dostupný na všech architekturách) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (není dostupný na všech architekturách) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (volitelný, není dostupný na všech architekturách) </p>
+<p>Podpora pro souborový systém Reiser již není dostupná automaticky, ale můžete ji povolit při spuštění instalace se střední nebo nízkou úrovní otázek tak, že necháte nahrát komponentu <code class="classname">partman-reiserfs</code>. Podporována je pouze verze 3. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Stávající souborové systémy budou rozpoznány a je možné jim přiřadit přípojné body, ale není možné vytvářet nové souborové systémy tohoto typu. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (jen pro čtení) </p>
+<p>U stávajících souborových systémů NTFS je možné změnit jejich velikost a je možné jim přiřadit přípojné body, ale není možné vytvářet nové souborové systémy tohoto typu. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>The partitioner accepts units as power-of-ten (1 MB = 1000 kB = 1000000 B), as well as power-of-two (1 MiB = 1024 kiB = 1048576 B). Unit prefixes are supported until EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Asistované dělení</h4></div></div></div>
+<p>Zvolíte-li automatické rozdělování, měli byste mít na výběr několik možností: vytvořit oblasti přímo na disku (klasický způsob), použít Logical Volume Management (LVM), nebo použít šifrované LVM<a href="#ftn.id2833" class="footnote" name="id2833"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>(Šifrované) LVM nemusí být k dispozici na všech architekturách. </p></td></tr>
+</table></div>
+<p>When using LVM or encrypted LVM, the installer will create most partitions inside one big partition; the advantage of this method is that partitions inside this big partition can be resized relatively easily later. In the case of encrypted LVM the big partition will not be readable without knowing a special key phrase, thus providing extra security of your (personal) data. </p>
+<p>When using encrypted LVM, the installer will also automatically erase the disk by writing random data to it. This further improves security (as it makes it impossible to tell which parts of the disk are in use and also makes sure that any traces of previous installations are erased), but may take some time depending on the size of your disk. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>If you choose guided partitioning using LVM or encrypted LVM, some changes in the partition table will need to be written to the selected disk while LVM is being set up. These changes effectively erase all data that is currently on the selected hard disk and you will not be able to undo them later. However, the installer will ask you to confirm these changes before they are written to disk. </p></td></tr>
+</table></div>
+<p>If you choose guided partitioning<span class="phrase"> (either classic or using (encrypted) LVM)</span> for a whole disk, you will first be asked to select the disk you want to use. Check that all your disks are listed and, if you have several disks, make sure you select the correct one. The order they are listed in may differ from what you are used to. The size of the disks may help to identify them. </p>
+<p>Any data on the disk you select will eventually be lost, but you will always be asked to confirm any changes before they are written to the disk. <span class="phrase"> If you have selected the classic method of partitioning, you will be able to undo any changes right until the end; when using (encrypted) LVM this is not possible. </span> </p>
+<p>Next, you will be able to choose from the schemes listed in the table below. All schemes have their pros and cons, some of which are discussed in <a class="xref" href="apc.html" title="Příloha C. Poznámky k rozdělování disku">C – „<i>Poznámky k rozdělování disku</i>“</a>. If you are unsure, choose the first one. Bear in mind that guided partitioning needs a certain minimal amount of free space to operate with. If you don't give it at least about 3GB of space (depends on chosen scheme), guided partitioning will fail. Also, on small disks you will probably not see all of the schemes mentioned below. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Způsob dělení</th>
+<th>Minimální místo</th>
+<th>Vytvořené oblasti</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Všechny soubory v jedné oblasti</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>Samostatná oblast pro /home</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>Samostatné oblasti pro /home, /var a /tmp</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Separate /srv and /var partitions; swap limited to 1GB (for server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Scheme especially for small disks</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Pokud jste zvolili automatické rozdělení pomocí (šifrovaného) LVM, vytvoří se také malá oblast pro <code class="filename">/boot</code>. Ostatní oblasti, včetně odkládací, budou vytvořeny uvnitř LVM. </p>
+<p>Jestliže jste instalaci na architektuře <span class="phrase">64-bit PC</span> zavedli v režimu EFI, pak se při automatickém rozdělení disku vytvoří malá zaváděcí oblast pro zavaděč <span class="command"><strong>EFI</strong></span>, formátovaná souborovým systémem FAT32. Tato oblast je známá jako <span class="quote">„<span class="quote">EFI System Partition (ESP)</span>“</span>. Při ručním dělení disku přibude ve formátovacím menu položka <span class="guimenuitem">Použít oblast jako: systémová oblast EFI</span>. </p>
+<p>Na další obrazovce se zobrazí tabulka rozdělení disku(ů) společně s informacemi o souborových systémech a přípojných bodech. </p>
+<p>Seznam oblastí může vypadat třeba takto: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primární   16.4 MB  B f ext2       /boot
+        #2 primární  551.0 MB      swap       swap
+        #3 primární    5.8 GB      ntfs
+           pri/log     8.2 MB      VOLNÉ MÍSTO
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primární   15.9 MB      ext3
+        #2 primární  996.0 MB      fat16
+        #3 primární    3.9 GB      xfs        /home
+        #5 logická     6.0 GB    f ext4       /
+        #6 logická     1.0 GB    f ext3       /var
+        #7 logická   498.8 MB      ext3
+</pre></div>
+<p> Jak je vidět, v počítači jsou dva pevné disky rozdělené na několik oblastí. Každý řádek popisující oblast zobrazuje její pořadí, typ, velikost, volitelné příznaky, souborový systém a (pokud existuje) přípojný bod. Na prvním disku je ještě kousek volného místa. </p>
+<p>Tímto je automatické rozdělení disků u konce. Pokud jste s navrženým rozdělením spokojeni, stačí z nabídky vybrat <span class="guimenuitem">Ukončit rozdělování</span>. V opačném případě můžete zvolit možnost <span class="guimenuitem">Vrátit zpět změny provedené na oblastech</span> a znovu spustit automatické rozdělování, případně podle návodu níže ručně doladit změny v navrhovaném rozdělení disku. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Ruční dělení</h4></div></div></div>
+<p>Zvolíte-li ruční rozdělení disků, objeví se podobná obrazovka jako o dva odstavce výše, ale zatím nebude mít přiřazeny přípojné body. Pokud chcete v tabulce něco změnit, vyberte ze seznamu objekt, který chcete upravit a stiskněte <span class="keycap"><strong>Enter</strong></span>. Objektem je míněn disk, oblast nebo volné místo. S každým objektem můžete provádět různé akce. </p>
+<p>Jestliže vyberete dosud nedotčený disk, na kterém nejsou ani oblasti ani volné místo, bude vám nabídnuta možnost vytvoření nové tabulky oblastí (to je nutné k tomu, abyste mohli vytvářet oblasti). Po této akci se pod vybraným diskem zobrazí řádka nadepsaná <span class="quote">„<span class="quote">VOLNÉ MÍSTO</span>“</span>. </p>
+<p>Vyberete-li volné místo, <span class="command"><strong>partman</strong></span> vám nabídne vytvoření nové oblasti. Nejprve musíte odpovědět několik základních otázek jako velikost nové oblasti, typ (primární nebo logická) a umístění (na začátku nebo na konci volného místa). Poté se zobrazí detailní pohled na novou oblast. Naleznete zde položky jako přípojný bod, volby připojení, zaváděcí příznak nebo způsob použití. Pokud vám nevyhovují přednastavené hodnoty, můžete je upravit dle libosti. Nejdůležitější volbou <span class="guimenuitem">Použít jako:</span> můžete změnit souborový systém dané oblasti včetně možnosti použít oblast jako odkládací prostor, <span class="phrase">softwarový RAID, LVM</span> nebo ji nepoužít vůbec. Až budete s oblastí spokojeni, vyberte položku <span class="guimenuitem">Skončit s nastavováním oblasti</span>, což vás vrátí zpět do hlavní obrazovky rozdělování disků. </p>
+<p>Pokud se rozhodnete, že chcete něco změnit na stávající oblasti, jednoduše ji vyberte a stiskněte <span class="keycap"><strong>Enter</strong></span>. Ocitnete se ve stejné obrazovce jako při vytváření nové oblasti a tedy máte i stejné možnosti nastavení. Jedna věc, která nemusí být na první pohled zcela zřejmá je fakt, že u většiny oblastí můžete změnit jejich velikost - stačí vybrat položku, která zobrazuje velikost oblasti. Změna velikosti by měla fungovat minimálně se souborovými systémy fat16, fat32, ext2, ext3 a swap. Pokud se vám oblast nelíbí, můžete ji z tohoto menu i smazat. </p>
+<p>Be sure to create at least two partitions: one for the <span class="emphasis"><em>root</em></span> filesystem (which must be mounted as <code class="filename">/</code>) and one for <span class="emphasis"><em>swap</em></span>. If you forget to mount the root filesystem, <span class="command"><strong>partman</strong></span> won't let you continue until you correct this issue. </p>
+<p>Pokud zavedete instalaci v režimu EFI, ale zapomenete vytvořit a nastavit systémovou oblast EFI, <span class="command"><strong>partman</strong></span> to zjistí a dokud vše nespravíte, nenechá vás pokračovat. </p>
+<p><span class="command"><strong>partman</strong></span> samotný je poměrně malý a hloupý program, avšak jeho schopnosti mohou být rozšiřovány moduly instalačního programu. Pokud tedy nevidíte všechny slibované vlastnosti, přesvědčte se, že máte nahrány příslušné moduly (např. <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> nebo <code class="filename">partman-lvm</code>) a že jsou tyto podporovány vaší architekturou. </p>
+<p>Až budete s rozdělením disků hotovi, vyberte z nabídky <span class="guimenuitem">Ukončit rozdělování a zapsat změny na disk</span>. Zobrazí se seznam provedených změn a budete požádáni o potvrzení, zda opravdu chcete vytvořit nové souborové systémy. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Nastavení vícediskových zařízení (Softwarový RAID)</h4></div></div></div>
+<p>If you have more than one harddrive<a href="#ftn.id2931" class="footnote" name="id2931"><sup class="footnote">[8]</sup></a> in your computer, you can use <span class="command"><strong>partman-md</strong></span> to set up your drives for increased performance and/or better reliability of your data. The result is called <em class="firstterm">Multidisk Device</em> (or after its most famous variant <em class="firstterm">software RAID</em>). </p>
+<p>Jednoduše řečeno je MD množina oblastí umístěných na různých discích. Tyto oblasti se v <span class="command"><strong>mdcfg</strong></span> spojí dohromady a vytvoří <span class="emphasis"><em>logické</em></span> zařízení. Toto zařízení pak můžete používat jako běžnou oblast (například v <span class="command"><strong>partman</strong></span>u ji můžete zformátovat, přiřadit jí přípojný bod atd.). </p>
+<p>Co vám tato operace přinese, závisí na typu vícediskového zařízení, které vytváříte. Momentálně jsou podporovány: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Je hlavně zaměřen na rychlost. RAID0 rozdělí všechna příchozí data na <em class="firstterm">proužky</em> (stripes) a ty pak rovnoměrně rozmístí na každý disk v poli. To může zvýšit rychlost čtení a zápisu, ovšem pokud jeden z disků odejde do věčných lovišť, odejdou s ním <span class="emphasis"><em>všechna data</em></span> (část informace je stále na zdravém disku (discích), zbývající část <span class="emphasis"><em>byla</em></span> na vadném disku). </p>
+<p> Typicky se RAID0 používá pro oblast na stříhání videa. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Je vhodný systémy, kde je spolehlivost na prvním místě. Skládá se z několika (obvykle dvou) stejně velkých oblastí, kde každá oblast obsahuje naprosto shodná data. Prakticky to znamená tři věci. Za prvé, pokud jeden z disků selže, stále máte data zrcadlena na zbývajících discích. Za druhé, k dispozici máte pouze část celkové kapacity (přesněji to je velikost nejmenší oblasti v poli). Za třetí, pokud se vyskytne větší počet požadavků na čtení, mohou se tyto rovnoměrně rozdělit mezi jednotlivé disky, což může přinést zajímavé zrychlení u serverů, kde převažují čtecí operace na zápisovými. </p>
+<p> Volitelně můžete mít v poli rezervní disk, který se normálně nevyužívá a v případě výpadku jednoho z disků okamžitě nahradí jeho místo. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> Je rozumným kompromisem mezi rychlostí, spolehlivostí a redundancí dat. RAID5, podobně jako RAID0, rozdělí všechna příchozí data na proužky a poté je rovnoměrně rozmístí na disky v poli. Oproti RAID0 je zde však podstatný rozdíl v tom, že se samotná data zapisují pouze na <em class="replaceable"><code>n</code></em> - 1 disků. Zbývající <em class="replaceable"><code>n</code></em>. disk nezahálí, ale zapíše se na něj paritní informace. Paritní disk není statický (to by se pak jednalo o RAID4), ale pravidelně se posouvá tak, aby byly paritní informace rozmístěny rovnoměrně na všech discích v poli. V případě výpadku jednoho z disků se může chybějící informace dopočítat ze zbývajících dat a jejich parity. RAID5 se musí skládat z alespoň <span class="emphasis"><em>tří</em></span> aktivních zařízení. Volitelně můžete mít v poli rezervní disk, který se normálně nevyužívá a v případě výpadku jednoho z disků okamžitě nahradí jeho místo. </p>
+<p> Jak je vidět, RAID5 nabízí podobný stupeň spolehlivosti jako RAID1, ovšem dosahuje menší míry redundance dat. Čtecí operace budou stejně rychlé jako na RAID0, ovšem zápis bude mírně pomalejší kvůli počítání paritních informací. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd><p> Je podobný jako RAID5, ale používá pro paritní informace dva disky, což vede k tomu, že přežije výpadek dvou disků. </p></dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 kombinuje proužky (RAID0) se zrcadlením (RAID1). Vytvoří <em class="replaceable"><code>n</code></em> kopií příchozích dat a rozmístí je po discích tak, že se žádná z kopií nenachází na stejném zařízení. Výchozí hodnota <em class="replaceable"><code>n</code></em> je 2, ale v expertním režimu můžete zvolit jinou hodnotu. Počet použitých oblastí musí být nejméně <em class="replaceable"><code>n</code></em>. RAID10 má pro rozmísťování kopií bloků několik algoritmů. Výchozí jsou <span class="quote">„<span class="quote">blízké kopie</span>“</span>, které ukládají kopie bloku na různá zařízení na stejnou pozici. Další možností jsou <span class="quote">„<span class="quote">vzdálené kopie</span>“</span>, které ukládají kopie bloků na různá zařízení na zcela jinou pozici. Poslední <span class="quote">„<span class="quote">offsetové kopie</span>“</span> nekopírují jednotlivé kopie, ale celé proužky. </p>
+<p> RAID10 se dá použít pro dosažení spolehlivosti a redundance bez nutnosti počítat paritu. </p>
+</dd>
+</dl></div>
+<p> Kdybychom měli shrnout podstatné vlastnosti: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Typ</th>
+<th>Minimálně zařízení</th>
+<th>Rezervní zařízení</th>
+<th>Přežije výpadek disku?</th>
+<th>Dostupné místo</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>ne</td>
+<td>ne</td>
+<td>velikost nejmenšího zařízení krát počet aktivních zařízení v in RAIDu</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>volitelně</td>
+<td>ano</td>
+<td>velikost nejmenšího zařízení v RAIDu</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>volitelně</td>
+<td>ano</td>
+<td>velikost nejmenšího zařízení krát (počet akt. zařízení v RAIDu - 1) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>volitelně</td>
+<td>ano</td>
+<td>velikost nejmenšího zařízení krát (počet akt. zařízení v RAIDu - 2) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>volitelně</td>
+<td>ano</td>
+<td>součet všech oblastí děleno počet kopií (standardně dvě) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Chcete-li se o Softwarovém RAIDu dozvědět více, rozhodně se podívejte na <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>Pro vytvoření vícediskového zařízení musí být oblasti, ze kterých se má zařízení skládat, označeny pro použití v RAIDu.  (To se provádí v <span class="command"><strong>partman</strong></span>u v menu <span class="guimenu">Nastavení oblasti</span>, kde byste měli nastavit položku <span class="guimenu">Použít jako:</span> na hodnotu <span class="guimenuitem">fyzický svazek pro RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Make sure that the system can be booted with the partitioning scheme you are planning. In general it will be necessary to create a separate file system for <code class="filename">/boot</code> when using RAID for the root (<code class="filename">/</code>) file system. Most boot loaders <span class="phrase">(including grub)</span> do support mirrored (not striped!) RAID1, so using for example RAID5 for <code class="filename">/</code> and RAID1 for <code class="filename">/boot</code> can be an option. </p></td></tr>
+</table></div>
+<p>Next, you should choose <span class="guimenuitem">Configure software RAID</span> from the main <span class="command"><strong>partman</strong></span> menu. (The menu will only appear after you mark at least one partition for use as <span class="guimenuitem">physical volume for RAID</span>.) On the first screen of <span class="command"><strong>partman-md</strong></span> simply select <span class="guimenuitem">Create MD device</span>. You will be presented with a list of supported types of MD devices, from which you should choose one (e.g. RAID1). What follows depends on the type of MD you selected. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 je velmi jednoduchý — vaším jediným úkolem je vybrat z nabídnutého seznamu RAIDových oblastí ty, které budou tvořit pole. </p></li>
+<li class="listitem"><p>RAID1 je trošku složitější. Nejprve musíte zadat počet aktivních a počet rezervních zařízení (oblastí), které budou tvořit RAID. Dále musíte ze seznamu dostupných RAIDových oblastí vybrat ty, které mají být aktivní a poté ty, které mají být rezervní. Počty vybraných oblastí se musí rovnat číslům, která jste zadali před chvílí. Pokud uděláte chybu a vyberete jiný počet oblastí, nic se neděje — <code class="classname">debian-installer</code> vás nenechá pokračovat, dokud vše nespravíte. </p></li>
+<li class="listitem"><p>RAID5 se nastavuje stejně jako RAID1 s drobnou výjimkou — musíte použít nejméně <span class="emphasis"><em>tři</em></span> aktivní zařízení. </p></li>
+<li class="listitem"><p>RAID6 se nastavuje stejně jako RAID1 s drobnou výjimkou — musíte použít nejméně <span class="emphasis"><em>čtyři</em></span> aktivní zařízení. </p></li>
+<li class="listitem"><p>Základní nastavení RAID10 je stejné jako u RAID1. V expertním režimu <code class="classname">debian-installer</code>u budete navíc dotázáni na na rozložení pole. Rozložení se skládá ze dvou částí. První část určuje typ rozložení, druhá pak počet kopií každého bloku dat. Typ rozložení může být <code class="literal">n</code> (pro blízké kopie), <code class="literal">f</code> (pro vzdálené kopie) nebo <code class="literal">o</code> (pro offsetové kopie). Počet kopií musí být menší nebo roven počtu zařízení, aby bylo zaručeno, že se každá kopie zapíše na jiné zařízení. </p></li>
+</ul></div>
+<p>Poznamenejme, že můžete používat více typů vícediskových zařízení najednou. Například pokud máte pro MD vyhrazeny tři 200 GB pevné disky a na každém máte dvě 100 GB oblasti, můžete z prvních oblastí všech disků sestavit pole RAID0 (rychlá 300 GB oblast pro střih videa) a ze zbývajících tří oblastí (2 aktivní a 1 rezervní) sestavit RAID1 (rozumně spolehlivá 100 GB oblast pro domovské adresáře uživatelů). </p>
+<p>Až nastavíte vícedisková zařízení podle chuti, můžete ukončit <span class="command"><strong>partman-md</strong></span> a vrátit se tak do <span class="command"><strong>partman</strong></span>u, kde těmto zařízením přiřadíte obvyklé atributy jako souborové systémy a přípojné body. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Nastavení manažera logických svazků (LVM)</h4></div></div></div>
+<p>Pracujete-li s počítači na pozici správce systému nebo pokročilého uživatele, jistě jste zažili situaci, kdy na jedné (zpravidla velmi důležité) oblasti docházelo volné místo, zatímco jiná oblast jej měla nadbytek. Zpravidla pak nastoupilo mazání, přesouvání a propojování adresářů přes symbolické odkazy. </p>
+<p>Abyste do budoucna předešli popsané situaci, můžete použít manažer logických svazků (Logical Volume Manager). Co takový manažer dělá? Jednoduše řečeno, spojí diskové oblasti (v žargonu LVM se nazývají <em class="firstterm">fyzické svazky</em>) do virtuálního disku (tzv. <em class="firstterm">skupina svazků</em>), který pak můžete rozdělit na virtuální oblasti (<em class="firstterm">logické svazky</em>). Jak se tyto virtuální oblasti liší od těch fyzických, na kterých jsou vybudovány? Pointa je v tom, že logické svazky (a samozřejmě pod nimi ležící skupiny svazků) se mohou rozprostírat přes několik fyzických disků. </p>
+<p>Například nyní, když si všimnete, že potřebujete více místa na starší 160 gigabajtové oblasti s domovskými adresáři, můžete jednoduše dokoupit nový 300GB disk, připojit jej ke stávající skupině svazků a rozšířit logický svazek, který slouží jako oblast pro <code class="filename">/home</code>. Výsledkem bude jedna velká, 460 gigabajtová oblast, která uživatelům zase chvíli vystačí. Popsaný příklad je samozřejmě hodně zjednodušený, ale pěkně nastiňuje využití LVM v praxi. Pokud jste jej ještě nečetli, měli byste si projít <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>. </p>
+<p>Nastavení LVM v instalačním programu Debianu je poměrně jednoduché a plně integrované do <span class="command"><strong>partman</strong></span>u.  Nejprve musíte označit fyzické oblasti, které mají být spravovány přes LVM. To se provádí v menu <span class="guimenu">Nastavení oblasti</span>, kde byste měli nastavit položku <span class="guimenu">Použít jako:</span> na hodnotu <span class="guimenuitem">fyzický svazek pro LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Be aware: the new LVM setup will destroy all data on all partitions marked with an LVM type code. So, if you already have an LVM on some of your disks, and want to install Debian additionally to that machine, the old (already existing) LVM will be wiped out! The same counts for partitions, which are (for any reason) misleadingly marked with an LVM type code, but contain something different (like an encrypted volume). You need to remove such disks from the system, before performing a new LVM setup! </p></td></tr>
+</table></div>
+<p>Po návratu na hlavní obrazovku <span class="command"><strong>partman</strong></span>u uvidíte nové menu <span class="guimenuitem">Nastavit manažer logických svazků (LVM)</span>. Po jeho výběru budete nejprve dotázáni, abyste potvrdili všechny dosud neprovedené změny v tabulce oblastí (pokud takové existují) a vzápětí se objeví konfigurační menu LVM, nad kterým je zobrazen krátký přehled současného nastavení. Menu samotné je kontextově závislé a zobrazuje pouze akce použitelné v daný okamžik. Mezi dostupné akce patří: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Zobrazit podrobné nastavení</span>, což zobrazí strukturu LVM zařízení včetně jmen a velikostí fyzických svazků, logických svazků a samozřejmě skupin svazků. </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Vytvořit skupinu svazků</span> z dosud nevyužitých fyzických svazků.</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Zrušit skupinu svazků</span> a uvolnit tak fyzické svazky, ze kterých se skupina skládá.</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Rozšířit skupinu svazků</span> o nevyužité fyzické svazky.</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Zmenšit skupinu svazků</span> o některé fyzické svazky a tudíž je dát k dispozici jiným skupinám, nebo z nich v <span class="command"><strong>partman</strong></span>u udělat <span class="quote">„<span class="quote">běžné</span>“</span> oblasti.</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Vytvořit logický svazek</span> z volného místa ve skupině svazků.</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem"><span class="guimenuitem">Zrušit logický svazek</span> ve skupině svazků.</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Skončit</span>, čímž se vrátíte zpět do hlavního rozdělovacího menu. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Use the options in that menu to first create a volume group and then create your logical volumes inside it. </p>
+<p>After you return to the main <span class="command"><strong>partman</strong></span> screen, any created logical volumes will be displayed in the same way as ordinary partitions (and you should treat them as such). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Nastavení šifrovaných svazků</h4></div></div></div>
+<p><code class="classname">debian-installer</code> umožňuje nastavit šifrované oblasti. Každý soubor, který na takovou oblast zapíšete, je na disk zapsán v šifrované podobě. Přístup k šifrovaným datům je povolen pouze po zadání <em class="firstterm">přístupové fráze</em>, kterou si zvolíte při vytváření šifrované oblasti. Takto můžete chránit citlivá data v případě, že někdo ukradne váš přenosný počítač nebo pevný disk. Zloděj sice získá fyzický přístup k pevnému disku, ale bez znalosti přístupové fráze budou šifrovaná data na disku vypadat jako změť náhodných znaků. </p>
+<p>The two most important partitions to encrypt are: the home partition, where your private data resides, and the swap partition, where sensitive data might be stored temporarily during operation. Of course, nothing prevents you from encrypting any other partitions that might be of interest. For example <code class="filename">/var</code> where database servers, mail servers or print servers store their data, or <code class="filename">/tmp</code> which is used by various programs to store potentially interesting temporary files. Some people may even want to encrypt their whole system. Generally the only exception here is the <code class="filename">/boot</code> partition which must remain unencrypted, because historically there was no way to load the kernel from an encrypted partition. (GRUB is now able to do that, but <code class="classname">debian-installer</code> currently lacks native support for encrypted <code class="filename">/boot</code>. The setup is therefore covered in a <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">separate document</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Rychlost čtení/zápisu ze šifrovaných oblastí bude o něco nižší než rychlost na nešifrovaných oblastech, protože se data musí odšifrovat/zašifrovat při každém čtení a zápisu. Konkrétní vliv na rychlost závisí na výkonu procesoru, zvolené šifře a délce klíče. </p></td></tr>
+</table></div>
+<p>Abyste mohli využívat šifrování, musíte vybrat stávající oblast, což může být běžná oblast, logický svazek LVM nebo svazek RAID. (Pokud ještě oblast neexistuje, musíte ji nejprve vytvořit z dostupného volného místa.) V menu pro nastavení oblasti nastavte možnost <span class="guimenu">Použít jako:</span> na hodnotu <span class="guimenuitem">fyzický svazek pro šifrování</span>. Zbytek menu se poté změní a bude obsahovat několik kryptografických nastavení pro danou oblast. </p>
+<p><code class="classname">debian-installer</code> podporuje šifrování pomocí <em class="firstterm">dm-crypt</em> (součástí novějších linuxových jader, schopný hostit fyzické svazky pro LVM). </p>
+<p>Podívejme na možnosti, které jsou k dispozici, pro šifrování přes <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Pokud jste na pochybách, ponechejte výchozí hodnoty, protože byly zvoleny s ohledem na bezpečnost. Neuvážená kombinace voleb může způsobit nízkou kvalitu šifrování, které tak vytváří pouze falešný pocit bezpečí. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Šifrování: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Touto volbou můžete vybrat šifrovací algoritmus (<em class="firstterm">šifru</em>), jež se použije pro šifrování dat na dané oblasti. <code class="classname">debian-installer</code> nyní podporuje tyto šifry: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> a <em class="firstterm">twofish</em>. Kvalita jednotlivých šifer přesahuje záběr této příručky, nicméně vám v rozhodování může pomoci informace, že v roce 2000 byla šifra <span class="emphasis"><em>AES</em></span> zvolena americkým úřadem pro standardizaci jako standardní šifrovací algoritmus pro ochranu citlivých dat v 21. století. </p></dd>
+<dt><span class="term">Velikost klíče: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Zde můžete zadat délku šifrovacího klíče. Obvykle platí, že čím delší klíč, tím větší odolnost šifry proti útokům. Na druhou stranu také delší klíč většinou znamená menší výkon (výjimkou jsou třeba šifry blowfish a twofish). Dostupné velikosti klíče se liší v závislosti na konkrétní šifře. </p></dd>
+<dt><span class="term">Algoritmus IV: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p><em class="firstterm">Inicializační vektor</em> nebo též algoritmus <em class="firstterm">IV</em> se používá v kryptografii pro zajištění, že aplikováním šifry na stejný <em class="firstterm">nezašifrovaný text</em> za použití stejného klíče vždy dostaneme jiný <em class="firstterm">šifrovaný text</em>. Cílem je zabránit útočníkovi v odvození informací na základě opakujících se vzorků v šifrovaných datech. </p>
+<p>Z nabízených alternativ je <strong class="userinput"><code>xts-plain64</code></strong> momentálně nejméně zranitelný vzhledem ke známým útokům. Ostatní možnosti používejte pouze v případě, kdy potřebujete zaručit zpětnou kompatibilitu s dříve instalovaným systémem, který neumí používat novější algoritmy. </p>
+</dd>
+<dt><span class="term">Šifrovací klíč: <strong class="userinput"><code>Přístupová fráze</code></strong></span></dt>
+<dd>
+<p>Zde si můžete zvolit typ šifrovacího klíče pro tuto oblast. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Přístupová fráze</span></dt>
+<dd><p>Šifrovací klíč bude vypočítán<a href="#ftn.id3178" class="footnote" name="id3178"><sup class="footnote">[9]</sup></a> na základě textové fráze, kterou zadáte později. </p></dd>
+<dt><span class="term">Náhodný klíč</span></dt>
+<dd>
+<p>Nový šifrovací klíč bude vytvořen z náhodných dat pokaždé, když se pokusíte tuto šifrovanou oblast použít poprvé od startu systému. Jinými slovy po každém vypnutí/restartu systému bude obsah oblasti ztracen, protože se klíč z oblasti smaže. (Samozřejmě že se můžete pokusit uhádnout klíč hrubou silou, ale pokud v šifrovacím algoritmu není nějaká neznámá slabina, během našeho života se to nepodaří.) </p>
+<p>Náhodné klíče se hodí pro odkládací oblasti, protože se pak nemusíte trápit s pamatováním další přístupové fráze, nebo s ručním mazáním dat z odkládací oblasti před každým vypnutím počítače. Na druhou stranu to také znamená, že <span class="emphasis"><em>nebudete</em></span> moci využít vlastnost <span class="quote">„<span class="quote">uspání na disk</span>“</span>, která je součástí novějších linuxových jader, protože při následujícím startu nebude možno obnovit obsah operační paměti, který byl odložen fo odkládací oblasti. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Smazat data: <strong class="userinput"><code>ano</code></strong></span></dt>
+<dd><p>Určuje, zda se má před samotným zašifrováním oblasti přepsat její obsah náhodnými znaky. Je doporučeno tuto možnost povolit, protože jinak by mohl útočník rozpoznat, které části oblasti se používají a které ne. Kromě toho tím ztížíte vydolování dat, která mohla v oblasti zůstat po předchozí instalaci<a href="#ftn.id3193" class="footnote" name="id3193"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Po výběru požadovaných parametrů vaší šifrované oblasti se vraťte zpět do hlavního rozdělovacího menu, kde by měla nově přibýt položka nazvaná <span class="guimenu">Nastavit šifrované svazky</span>. Po jejím výběru budete požádáni o povolení smazat data na oblastech, které jste dříve označili pro smazání. U větších oblastí může mazání dat trvat poměrně dlouho. </p>
+<p>Dále budete dotázáni na zadání přístupové fráze (pokud ji používáte). Dobrá fráze by měla být delší než 8 znaků, měla by se skládat z písmen, číslic a dalších znaků a neměla by obsahovat běžná slova ze slovníku nebo informace, které se s vámi dají lehce spojit (jako narozeniny, záliby, jména mazlíčků, jména členů rodiny nebo příbuzných, apod.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Než budete zadávat samotnou frázi, měli byste se ujistit, že je klávesnice nastavená správně a že generuje očekávané znaky. Může se totiž stát, že se během instalace přepnete do jiného klávesového rozložení, než budete mít k dispozici v nově nainstalovaném systému. Doporučujeme si již dříve vyzkoušet různé klávesy v nějakém textovém poli, případně se přepnout na druhou virtuální konzoli a napsat něco do příkazového řádku. </p></td></tr>
+</table></div>
+<p>Pokud jste zvolili vytvoření šifrovacího klíče z náhodných dat, bude nyní vytvořen. Protože během této časné fáze instalace ještě nemusí mít jádro nasbíráno dostatek entropie, bude proces trvat hodně dlouho. Proces můžete urychlit vytvořením nějaké entropie, například mačkáním náhodných kláves, nebo přepnutím do shellu na druhé virtuální konzoli a vytvořením síťového či diskového provozu (stahováním nějakých souborů, kopírování velkých dat do <code class="filename">/dev/null</code>, apod.). </p>
+<p>To bude zopakováno pro každou oblast označenou pro šifrování. Po návratu do hlavního rozdělovacího menu uvidíte všechny šifrované svazky jako další oblasti, které můžete nastavit úplně stejně jako běžné oblasti. Následující příklad ukazuje svazek zašifrovaný pomocí dm-crypt. </p>
+<div class="informalexample"><pre class="screen">
+Šifrovaný svazek (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Nyní je čas přiřadit svazkům přípojné body a případně změnit ostatní parametry, pokud vám nevyhovují (souborový systém, rezervované bloky, atd.). </p>
+<p>Jedna věc, kterou byste si zde měli poznačit do budoucna, jsou kombinace identifikátorů v závorkách (v tomto příkladu <em class="replaceable"><code>sda2_crypt</code></em>) a přípojných bodů, které jsou ke každému šifrovanému svazku připojeny. Tato informace se vám bude hodit později, až budete zavádět svůj nový systém. Rozdíly mezi běžným zaváděním systému a zaváděním se šifrovanými svazky bude včas popsáno v kapitole <a class="xref" href="ch07s02.html" title="7.2. Připojení zašifrovaných svazků">7.2 – „Připojení zašifrovaných svazků“</a>. </p>
+<p>Až budete s rozdělením disku spokojeni, můžete pokračovat v instalaci. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Instalace základního systému</h3></div></div></div>
+<p>Přestože je tato část nejméně problematická, zabere dosti času, protože musí stáhnout, ověřit a rozbalit celý základní systém. Pokud máte pomalý počítač a/nebo síťové připojení, může to chvíli trvat. </p>
+<p>Během instalace základního systému jsou hlášky o rozbalování a nastavování balíků přesměrovány na třetí virtuální konzoli <strong class="userinput"><code>tty4</code></strong>. Můžete se na ni přepnout klávesami <span class="keycap"><strong>Levý Alt</strong></span>+<span class="keycap"><strong>F4</strong></span>, zpět se dostanete kombinací <span class="keycap"><strong>Levý Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Tyto jsou hlášky jsou také uloženy do souboru <code class="filename">/var/log/syslog</code>, což se může hodit v případě, že instalujete systém přes sériovou konzoli. </p>
+<p>Během instalace se nainstaluje i jádro Linux. Při standardní prioritě vám <code class="classname">debian-installer</code> vybere jádro, které nejvíce odpovídá vašemu hardwaru. Při nižších prioritách si budete moci sami vybrat ze seznamu dostupných jader. </p>
+<p>Při instalaci balíků se automaticky nainstalují také balíky, které jsou instalovanými balíku doporučovány. Doporučené balíky nejsou pro funčnost zvoleného software striktně vyžadovány, nicméně nějakým způsobem rozšiřují jeho funkcionalitu a v očích správců balíků by se měly instalovat společně. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Z technických důvodů se balíky instalované jako součást základního systému instalují <span class="emphasis"><em>bez</em></span> doporučených balíků. Pravidlo popsané výše tedy začíná platit až po instalaci základního systému. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Instalace dodatečného softwaru</h3></div></div></div>
+<p>V tento okamžik máte sice použitelný, nicméně poněkud omezený systém. Většina uživatelů si bude chtít do systému doinstalovat další software a upravit tak systém svým potřebám, s čímž vám instalátor ochotně pomůže. Jestliže máte pomalejší počítač nebo síťové připojení, může tento krok trvat ještě déle než instalace základního systému. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Nastavení apt</h4></div></div></div>
+<p>One of the tools used to install packages on a Debian GNU/Linux system is the program <span class="command"><strong>apt</strong></span>, from the <code class="classname">apt</code> package<a href="#ftn.id3237" class="footnote" name="id3237"><sup class="footnote">[11]</sup></a>. Other front-ends for package management, like <span class="command"><strong>aptitude</strong></span> and <span class="command"><strong>synaptic</strong></span>, are also in use. These front-ends are recommended for new users, since they integrate some additional features (package searching and status checks) in a nice user interface. </p>
+<p><span class="command"><strong>apt</strong></span> must be configured so that it knows from where to retrieve packages. The results of this configuration are written to the file <code class="filename">/etc/apt/sources.list</code>. You can examine and edit this file to your liking after the installation is complete. </p>
+<p>Instalujete-li s výchozí prioritou otázek, instalátor nastaví většinu věcí automaticky na základě typu instalace (síťová, CD/DVD) a dříve zodpovězených otázek. Jestliže jste například zavedli instalaci ze sítě, zvolili jako výchozí jazyk češtinu a neměnili nastavení zrcadla, použije se pravděpodobně síťový zdroj <a class="ulink" href="http://ftp.cz.debian.org" target="_top">ftp.cz.debian.org</a>. Ve většině případů se automaticky přidá zrcadlo s bezpečnostními aktualizacemi a v případě stabilní verze distribuce také archiv služby <span class="quote">„<span class="quote">stable-updates</span>“</span>, která poskytuje novější verze rychle se měnících balíků, jako jsou vzory a pravidla pro antivirové a antispamové programy. </p>
+<p>If you are installing at a lower priority (e.g. in expert mode), you will be able to make more decisions yourself. You can choose whether or not to use the security and/or stable-updates services, and you can choose to add packages from the <span class="quote">„<span class="quote">contrib</span>“</span>, <span class="quote">„<span class="quote">non-free</span>“</span>, and <span class="quote">„<span class="quote">non-free-firmware</span>“</span> sections of the archive. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Installing from more than one DVD image</h5></div></div></div>
+<p>If you are installing from a DVD image that is part of a larger set, the installer will ask if you want to scan additional installation media. If you have such additional media available, you probably want to do this so the installer can use the packages included on them. </p>
+<p>If you do not have any additional media, that is no problem: using them is not required. If you also do not use a network mirror (as explained in the next section), it can mean that not all packages belonging to the tasks you select in the next step of the installation can be installed. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Packages are included on DVD images in the order of their popularity. This means that for most uses only the first image of a set is needed and that only very few people actually use any of the packages included on the last images of a set. </p>
+<p>It also means that buying or downloading and burning a full DVD set is just a waste of money as you'll never use most of them. In most cases you are better off getting only the first 1 to 2 DVDs and installing any additional packages you may need from the Internet by using a mirror. </p>
+</td></tr>
+</table></div>
+<p>If you do scan multiple installation media, the installer will prompt you to exchange them when it needs packages from one that isn't currently in the drive. Note that only discs that belong to the same set should be scanned. The order in which they are scanned does not really matter, but scanning them in ascending order will reduce the chance of mistakes. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Používání síťového zrcadla</h5></div></div></div>
+<p>Jednou z otázek, která se zobrazí téměř ve všech případech, je použití síťového zrcadla. Většinou stačí použít výchozí možnost, ale existuje několik výjimek. </p>
+<p>If you are <span class="emphasis"><em>not</em></span> installing from a DVD image, you really should use a network mirror as otherwise you will end up with only a very minimal system. However, if you have a limited Internet connection it is best <span class="emphasis"><em>not</em></span> to select the <code class="literal">desktop</code> task in the next step of the installation. </p>
+<p>If you are installing from DVD, any packages needed during the installation should be present on the first DVD image. Use of a network mirror is optional. </p>
+<p>One advantage of adding a network mirror is that updates, that have occurred since the DVD images were created and have been included in a point release, will become available for installation, thus extending the life of your DVD set without compromising the security or stability of the installed system. </p>
+<p>In summary: selecting a network mirror is generally a good idea, except if you do not have a good Internet connection. If the current version of a package is available from installation media, the installer will always use that. The amount of data that will be downloaded if you do select a mirror thus depends on </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>the tasks you select in the next step of the installation, </p></li>
+<li class="listitem"><p>which packages are needed for those tasks, </p></li>
+<li class="listitem"><p>which of those packages are present on the installation media you have scanned, and </p></li>
+<li class="listitem"><p>whether any updated versions of packages included on the installation media are available from a mirror (either a regular package mirror, or a mirror for security or stable-updates). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Poslední bod znamená, že i když použití zrcadla zakážete, je možné, že se z Internetu stáhnou balíky, ve kterých byla nalezena bezpečnostní chyba, nebo pro které existuje novější verze na službě <span class="quote">„<span class="quote">stable-updates</span>“</span> (za předpokladu, že jste použití těchto služeb také nezakázali). </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Výběr síťového zrcadla</h5></div></div></div>
+<p>Unless you chose not to use a network mirror, you will be presented with a list of network mirrors based upon your country selection earlier in the installation process. Choosing the offered default is usually fine. </p>
+<p>The offered default is deb.debian.org, which is not a mirror itself but will redirect to a mirror that should be up-to-date and fast. These mirrors support TLS (https protocol) and IPv6. This service is maintained by the Debian System Administration (DSA) team. </p>
+<p>A mirror can also be specified by hand by choosing <span class="quote">„<span class="quote">enter information manually</span>“</span> . You can then specify a mirror host name and an optional port number. This actually has to be a URL base, i.e. when specifying an IPv6 address, one has to add square brackets around it, for instance <span class="quote">„<span class="quote">[2001:db8::1]</span>“</span>. </p>
+<p>If your computer is on an IPv6-only network (which is probably not the case for the vast majority of users), using the default mirror for your country might not work. All the mirrors in the list are reachable via IPv4, but only some of them can be used via IPv6. As connectivity of individual mirrors can change over time, this information is not available in the installer. If there is no IPv6 connectivity for the default mirror for your country, you can either try some of the other mirrors offered to you or choose the <span class="quote">„<span class="quote">enter information manually</span>“</span> option. You can then specify <span class="quote">„<span class="quote">ftp.ipv6.debian.org</span>“</span> as the mirror name, which is an alias for a mirror available via IPv6, although it will probably not be the fastest possible one. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Výběr a instalace softwaru</h4></div></div></div>
+<p>Během instalace vám bude nabídnuta možnost nainstalovat si další software. V této fázi sice máte k dispozici <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    dostupných balíků, ale protože jen jejich projití zabere hodně (tím myslíme opravdu hodně) času, nabízí <code class="classname">debian-installer</code> instalaci připravených softwarových úloh, které umožní rychlé přizpůsobení počítače pro danou úlohu. </p>
+<p>These tasks loosely represent a number of different jobs or things you want to do with your computer, such as <span class="quote">„<span class="quote">Desktop environment</span>“</span>, <span class="quote">„<span class="quote">Web server</span>“</span>, or <span class="quote">„<span class="quote">SSH server</span>“</span><a href="#ftn.id3302" class="footnote" name="id3302"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Místo potřebné pro úlohy">D.2 – „Místo potřebné pro úlohy“</a> lists the space requirements for the available tasks. </p>
+<p>Podle odhadnutého typu počítače mohou být některé úlohy předvybrány. (Např. pokud si <code class="classname">debian-installer</code> myslí, že instalujete notebook, předvybere úlohu <span class="quote">„<span class="quote">Notebook</span>“</span>.) Nesouhlasíte-li s výběrem, můžete nechtěné úlohy zase odebrat. Dokonce nemusíte instalovat žádnou úlohu. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ve výchozím prostředí instalačního systému se úlohy (od)vybírají klávesou <span class="keycap"><strong>mezera</strong></span>. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>The <span class="quote">„<span class="quote">Desktop environment</span>“</span> task will install a graphical desktop environment. </p>
+<p>Úloha <span class="quote">„<span class="quote">Desktopové prostředí</span>“</span> nainstaluje výchozí grafické desktopové prostředí <span class="phrase">Gnome</span>.Preferujete-li jiné prostředí, můžete je zvolit jako alternativní úlohu přímo během instalace. Dokonce je možné vybrat několik prostředí najednou, ale u některých kombinací není zaručeno, že se instalace podaří. </p>
+<p>Note that this will only work if the packages needed for the desired desktop environment are actually available. Installing any of the available desktop environments this way should work fine if you are using a DVD image or any other installation method with a network mirror. </p>
+</td></tr>
+</table></div>
+<p>The various server tasks will install software roughly as follows. Web server: <code class="classname">apache2</code>; SSH server: <code class="classname">openssh</code>. </p>
+<p>The <span class="quote">„<span class="quote">Standard system utilities</span>“</span> task will install any package that has a priority <span class="quote">„<span class="quote">standard</span>“</span>. This includes a lot of common utilities that are normally available on any Linux or Unix system. You should leave this task selected unless you know what you are doing and want a really minimal system. </p>
+<p>Jestliže jste při výběru jazyka zvolili jakoukoliv jinou možnost než <span class="quote">„<span class="quote">C</span>“</span>, <span class="command"><strong>tasksel</strong></span> nyní zkontroluje, zda pro zvolený jazyk/místní prostředí neexistuje lokalizační úloha a automaticky se ji pokusí nainstalovat. Lokalizační úlohy typicky obsahují balíky se slovníky a fonty vhodnými pro daný jazyk. Pokud jste zvolili i úlohu <span class="quote">„<span class="quote">Desktopové prostředí</span>“</span>, mohou se doinstalovat další lokalizační balíky (pokud jsou dostupné). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Starting with Debian Trixie, <code class="classname">debian-installer</code> allows to install Debian Pure Blends directly. There is an entry <span class="quote">„<span class="quote">Choose a Debian Blend for installation</span>“</span> at the bottom of the tasks list, which enables an additional choices dialog to appear, after <span class="command"><strong>tasksel</strong></span> has finished. </p>
+<p>In that dialog (<span class="command"><strong>blendsel</strong></span>), you can choose which blend to install, similar to this tasks selection. </p>
+<p>See <a class="ulink" href="https://www.debian.org/blends" target="_top">the Debian website</a> for more information about Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>Once you've selected your tasks, select <span class="guibutton">Pokračovat</span>. At this point, <span class="command"><strong>apt</strong></span> will install the packages that are part of the selected tasks. If a particular program needs more information from the user, it will prompt you during this process. </p>
+<p>You should be aware that especially the Desktop task is very large. Especially when installing from a netinst CD image in combination with a mirror for packages not on the netinst, the installer may want to retrieve a lot of packages over the network. If you have a relatively slow Internet connection, this can take a long time. There is no option to cancel the installation of packages once it has started. </p>
+<p>Even when packages are included on the installation image, the installer may still retrieve them from the mirror if the version available on the mirror is more recent than the one included on the image. If you are installing the stable distribution, this can happen after a point release (an update of the original stable release); if you are installing the testing distribution this will happen if you are using an older image. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Nastavení zavádění systému</h3></div></div></div>
+<p>If you are installing a diskless workstation, obviously, booting off the local disk isn't a meaningful option, and this step will be skipped. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Nalezení ostatních operačních systémů</h4></div></div></div>
+<p>Před instalací zavaděče se <code class="classname">debian-installer</code> pokusí vyhledat jiné operační systémy instalované na počítači. Pokud nějaké najde, budete o tom informováni během instalace zavaděče a počítač bude nastaven tak, aby kromě Debianu zaváděl i nalezené operační systémy. </p>
+<p>Zavádění více operačních systémů na jednom počítači je stále něco jako černá magie. Kvalita automatického rozpoznávání operačních systémů a následné nastavení zavaděče se liší na jednotlivých architekturách a dokonce i na jejich podarchitekturách. Pokud něco nebude fungovat, měli byste si dobře prostudovat dokumentaci použitého zavaděče. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3355"></a>6.3.7.2. Install the <span class="command"><strong>Grub</strong></span> Boot Loader on the drive</h4></div></div></div>
+<p>The amd64 boot loader is called <span class="quote">„<span class="quote">grub</span>“</span>. Grub is a flexible and robust boot loader and a good default choice for new users and old hands alike. </p>
+<p>By default, grub will be installed on the UEFI partition/the Boot Record of the primary drive, where it will take over complete control of the boot process. If you prefer, you can install it elsewhere. See the grub manual for complete information. </p>
+<p>Nechcete-li grub instalovat, použijte tlačítko <span class="guibutton">Jít zpět</span>, což vás vrátí do hlavního menu. Zde si můžete vybrat, který zavaděč chcete použít. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Pokračovat bez zavaděče</h4></div></div></div>
+<p>Pomocí této komponenty můžete získat zaveditelný systém, i když se nenainstaluje žádný zavaděč — ať už proto, že na této architektuře žádný neexistuje, nebo proto, že jej nechcete nainstalovat (třeba chcete použít stávající zavaděč). </p>
+<p>V tomto okamžiku je vhodné prozkoumat obsah adresáře <code class="filename">/target/boot</code> a poznačit si název jádra a případného ramdisku (<em class="firstterm">initrd</em>), protože je budete muset sdělit svému zavaděči spolu s dalšími důležitými informacemi, jako je oblast s kořenovým souborovým systémem a oblast pro <code class="filename">/boot</code> (pokud máte <code class="filename">/boot</code> na samostatné oblasti). </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Dokončení instalace</h3></div></div></div>
+<p>Toto jsou poslední drobnosti, které je třeba vykonat před zavedením nového systému. Většina práce spočívá v uklizení po <code class="classname">debian-installer</code>u. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Nastavení systémových hodin</h4></div></div></div>
+<p><code class="classname">debian-installer</code> se může zeptat, zda jsou hardwarové hodiny počítače nastaveny na univerzální časové pásmo (UTC). Systém se snaží odpověď odhadnout například podle nalezených operačních systémů. </p>
+<p>In expert mode you will always be able to choose whether or not the clock is set to UTC.  <span class="phrase">Systems that (also) run Windows are normally set to local time. If you want to dual-boot, select local time instead of UTC.</span> </p>
+<p>V tento okamžik se <code class="classname">debian-installer</code> pokusí uložit aktuální čas do hardwarových hodin počítače. V závislosti na předchozí odpovědi bude čas uložen buď v UTC nebo v místním čase. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Dokončení instalace a restart do nového systému</h4></div></div></div>
+<p>You will be prompted to remove the boot media (CD, USB stick, etc) that you used to boot the installer. After that the system will be rebooted into your new Debian system. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Řešení problémů</h3></div></div></div>
+<p>Následující komponenty se obvykle do instalačního procesu nezapojují, ale tiše čekají v pozadí, aby vám pomohly v případě, že se něco pokazí. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Uložení záznamů o instalaci</h4></div></div></div>
+<p>Pokud byla instalace úspěšná, budou záznamy vytvořené během instalace uloženy v novém systému v adresáři <code class="filename">/var/log/installer/</code>. </p>
+<p>Choosing <span class="guimenuitem">Save debug logs</span> from the main menu allows you to save the log files to a USB stick, network, hard disk, or other media. This can be useful if you encounter fatal problems during the installation and wish to study the logs on another system or attach them to an installation report. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Používání shellu a prohlížení logů</h4></div></div></div>
+<p>Shell můžete během instalace získat několika způsoby. Pokud zrovna neinstalujete přes sériovou konzoli, je nejjednodušší se přepnout na druhou <span class="emphasis"><em>virtuální konzoli</em></span> klávesami <span class="keycap"><strong>Levý Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> (na macintoshí klávesnici <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>), kde běží samostatný klon Bourne shellu nazvaný <span class="command"><strong>ash</strong></span>. Zpět do instalátoru se dostanete klávesovou zkratkou <span class="keycap"><strong>Levý Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Používáte-li grafický instalátor, podívejte se též na kapitolu <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Používání grafického instalátoru">6.1.1 – „Používání grafického instalátoru“</a>. </p>
+<p>Pokud se nemůžete přepínat mezi virtuálními konzolami, můžete shell spustit z hlavního menu příkazem <span class="guimenuitem">Spustit shell</span>. Po vykonání potřebných příkazů se zpět do menu vrátíte příkazem <strong class="userinput"><code>exit</code></strong>. </p>
+<p>V tomto okamžiku běží systém z RAMdisku a nabízí několik základních unixových nástrojů. Seznam dostupných programů můžete zjistit příkazy <strong class="userinput"><code>ls /bin /sbin /usr/bin /usr/sbin</code></strong> a <strong class="userinput"><code>help</code></strong>. Shell má některé příjemné vlastnosti svých větších bratříčků, jako je historie a automatické doplňování příkazů. </p>
+<p>To edit and view files, use the text editor <span class="command"><strong>nano</strong></span>. Log files for the installation system can be found in the <code class="filename">/var/log</code> directory. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Although you can do basically anything in a shell that the available commands allow you to do, the option to use a shell is really only there in case something goes wrong and for debugging. </p>
+<p>Doing things manually from the shell may interfere with the installation process and result in errors or an incomplete installation. In particular, you should always use let the installer activate your swap partition and not do this yourself from a shell. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installation over network-console</h3></div></div></div>
+<p>Jednou ze zajímavějších komponent je <em class="firstterm">network-console</em>, která vám umožní provádět větší část instalace vzdáleně přes SSH. Použití sítě naznačuje, že budete muset provést několik prvních kroků instalace (minimálně po nastavení sítě) lokálně a teprve pak pokračovat vzdáleně. Lokální část však můžete automatizovat použitím <a class="xref" href="ch04s06.html" title="4.6. Automatická Instalace">4.6 – „Automatická Instalace“</a>.) </p>
+<p>This component is not loaded into the main installation menu by default, so you have to explicitly ask for it. If you are installing from optical media, you need to boot with medium priority or otherwise invoke the main installation menu and choose <span class="guimenuitem">Load installer components from installation media</span> and from the list of additional components select <span class="guimenuitem">network-console: Continue installation remotely using SSH</span>. Successful load is indicated by a new menu entry called <span class="guimenuitem">Continue installation remotely using SSH</span>. </p>
+<p><span class="phrase">Po výběru této nové položky</span>  budete požádáni o zadání nového hesla, které se použije pro připojení do instalovaného systému. Následuje rutinní potvrzení hesla, zda bylo zadáno správně. Toť vše. Nyní uvidíte obrazovku s nápovědou, která říká, že se máte vzdáleně připojit k systému jako uživatel <span class="emphasis"><em>installer</em></span> s heslem, které jste právě zadali. Další důležitá věc na obrazovce je kryptografický otisk tohoto systému. Tento otisk musíte zabezpečeně předat osobě, která bude v instalaci pokračovat vzdáleně. </p>
+<p>Pokud byste se náhodou rozhodli pokračovat v instalaci lokálně, můžete vždycky stisknout <span class="keycap"><strong>Enter</strong></span>, což vás vrátí zpět do hlavního menu, kde můžete vybrat další krok. </p>
+<p>Nyní se přepojme na druhý konec drátu. Nejprve byste se měli ujistit, že máte terminál přepnutý do kódování UTF-8, protože jej používá instalační systém. Pokud tak neučiníte, vzdálenou instalaci by to nemělo nijak ovlivnit, ale je pravděpodobné, že uvidíte na displeji různé artefakty jako porušené rámečky dialogových oken a rozsypaný čaj z písmen, které nespadají do sedmibitového ASCII. Pro navázání spojení stačí napsat: </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>instalovany_pocitac</code></em></code></strong> </pre></div>
+<p> kde <em class="replaceable"><code>instalovany_pocitac</code></em> je buď jméno nebo IP adresa instalovaného počítače. Před samotným přihlášením se zobrazí kryptografický otisk vzdáleného systému, který budete muset potvrdit, zda je správný. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top">
+<p><span class="command"><strong>ssh</strong></span> server v instalačním systému používá výchozí nastavení, které neposílá pakety pro udržování spojení. Teoreticky to ničemu nevadí, ale prakticky se může stát, že se po určité době neaktivity spojení rozpadne. Typickým příkladem může být překlad adres (NAT) někde po cestě mezi klientem a instalovaným systémem. Opětovné připojení a pokračování v instalace se může, ale nemusí podařit — závisí na kroku instalace, ve kterém se spojení přerušilo. </p>
+<p>Rozpadávání spojení můžete předejít tak, že při spuštění <span class="command"><strong>ssh</strong></span> klienta použijete parametr <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>hodnota</code></em></code></strong>, případně že tento parametr zadáte do konfiguračního souboru <span class="command"><strong>ssh</strong></span>. Mějte však na paměti, že v některých případech může právě tento parametr <span class="emphasis"><em>způsobit</em></span> rozpadávání spojení (například pokud se udržovací paket odešle během krátkodobého výpadku sítě, který by jinak <span class="command"><strong>ssh</strong></span> ustálo). </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Poznámka]" src="images/note.png"></td>
+<th align="left">Poznámka</th>
+</tr>
+<tr><td align="left" valign="top"><p>Instalujete-li postupně několik počítačů, které mají stejnou IP adresu nebo jméno, <span class="command"><strong>ssh</strong></span> se odmítne k takovému počítači připojit. Důvodem je odlišný kryptografický otisk, což obvykle indikuje útok, kdy se záškodník vydává za cílový počítač. Pokud jste si jisti, že to není tento případ, budete muset ze souboru <code class="filename">~/.ssh/known_hosts</code> smazat příslušný řádek<a href="#ftn.id3458" class="footnote" name="id3458"><sup class="footnote">[13]</sup></a> a připojení zopakovat. </p></td></tr>
+</table></div>
+<p>Po přihlášení vám bude nabídnuta úvodní obrazovka, kde můžete volit mezi možností <span class="guimenuitem">Spustit menu</span> a <span class="guimenuitem">Spustit shell</span>. První možnost vás přenese do hlavního instalačního menu, kde můžete pokračovat v instalaci obvyklým způsobem. Druhá možnost spustí shell, ve kterém můžete zkoumat a případně opravit vzdálený systém. Přestože počet SSH spojení do instalovaného systému není omezen, měli byste mít pouze jedno spojení, kterým ovládáte instalaci (na rozdíl od shellů, kterých si můžete spustit dle libosti). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Varování]" src="images/warning.png"></td>
+<th align="left">Varování</th>
+</tr>
+<tr><td align="left" valign="top"><p>Po zahájení vzdálené instalace byste se již neměli vracet zpět k lokální instalaci, protože by to mohlo porušit databázi, ve které je uloženo nastavení nového systému, což by následně vedlo k nefunkční instalaci nebo k problémům v novém systému. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2637" class="footnote"><p><a href="#id2637" class="para"><sup class="para">[4] </sup></a> In technical terms: where multiple locales exist for that language with differing country codes. </p></div>
+<div id="ftn.id2645" class="footnote"><p><a href="#id2645" class="para"><sup class="para">[5] </sup></a> At medium and low priority you can always select your preferred locale from those available for the selected language (if there's more than one). </p></div>
+<div id="ftn.id2650" class="footnote"><p><a href="#id2650" class="para"><sup class="para">[6] </sup></a> Zastaralá prostředí jsou taková, která nepoužívají UTF-8, ale starší standardy kódování, jako ISO 8859-2 (používaný ve střední Evropě) nebo EUC-JP (používaný v Japonsku). </p></div>
+<div id="ftn.id2833" class="footnote"><p><a href="#id2833" class="para"><sup class="para">[7] </sup></a> Instalátor zašifruje skupinu svazků pomocí 256 bitového klíče AES a využije pro to <span class="quote">„<span class="quote">dm-crypt</span>“</span>, který je součástí linuxového jádra. </p></div>
+<div id="ftn.id2931" class="footnote"><p><a href="#id2931" class="para"><sup class="para">[8] </sup></a> To be honest, you can construct an MD device even from partitions residing on single physical drive, but that won't give any benefits. </p></div>
+<div id="ftn.id3178" class="footnote"><p><a href="#id3178" class="para"><sup class="para">[9] </sup></a> Použití přístupové fráze jako klíče momentálně znamená, že oblast bude používat <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3193" class="footnote"><p><a href="#id3193" class="para"><sup class="para">[10] </sup></a> Obecně se ví, že agenti z třípísmenných agentur umí obnovit data z magnetooptických médií i po několika přepsáních. </p></div>
+<div id="ftn.id3237" class="footnote"><p><a href="#id3237" class="para"><sup class="para">[11] </sup></a> Note that the program which actually installs the packages is called <span class="command"><strong>dpkg</strong></span>. However, this program is more of a low-level tool. <span class="command"><strong>apt</strong></span> is a higher-level tool, which will invoke <span class="command"><strong>dpkg</strong></span> as appropriate. It knows how to retrieve packages from your installation media, the network, or wherever. It is also able to automatically install other packages which are required to make the package you're trying to install work correctly. </p></div>
+<div id="ftn.id3302" class="footnote"><p><a href="#id3302" class="para"><sup class="para">[12] </sup></a> You should know that to present this list, the installer is merely invoking the <span class="command"><strong>tasksel</strong></span> program. It can be run at any time after installation to install more packages (or remove them), or you can use a more fine-grained tool such as <span class="command"><strong>aptitude</strong></span>. If you are looking for a specific single package, after installation is complete, simply run <strong class="userinput"><code>aptitude install <em class="replaceable"><code>package</code></em></code></strong>, where <em class="replaceable"><code>package</code></em> is the name of the package you are looking for. </p></div>
+<div id="ftn.id3458" class="footnote"><p><a href="#id3458" class="para"><sup class="para">[13] </sup></a> Například příkazem <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>počítač</code></em>&gt;</strong></span> nebo <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>IP adr.</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Předcházející"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Nahoru"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Další"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Úvod do komponent </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Domů"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Nahrání chybějícího firmwaru</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Встановлення Debian GNU/Linux із системи Unix/Linux</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Додаток D. Різні поради">
+<link rel="prev" href="apds02.html" title="D.2. Дисковий простір, необхідний для завдань">
+<link rel="next" href="apds04.html" title="D.4. Встановлення Debian GNU/Linux через паралельну лінію IP (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Встановлення Debian GNU/Linux із системи Unix/Linux</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток D. Різні поради</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Встановлення Debian GNU/Linux із системи Unix/Linux</h2></div></div></div>
+<p>У цьому розділі описано, як встановити Debian GNU/Linux з наявної системи Unix або Linux, не використовуючи програму встановлення за допомогою меню, як описано у решті частини посібника. Це <span class="quote">«<span class="quote">посібник з перехресного встановлення</span>»</span> було запитано користувачами, які переходять на Debian GNU/Linux з Red Hat, Mandriva та SUSE. У цьому розділі передбачається, що ви маєте певні навички введення команд *nix та навігації по файловій системі. У цьому розділі, <code class="prompt">$</code> символізує команду, яку потрібно ввести у поточній системі користувача, а <code class="prompt">#</code> - команду, яку потрібно ввести у Debian chroot. </p>
+<p>Після того, як ви налаштували нову систему відповідно до ваших уподобань, ви можете перенести до неї наявні дані користувачів (якщо такі є) і продовжити роботу. Отже, це <span class="quote">«<span class="quote">нульовий час простою</span>»</span> Debian GNU/Linux встановлення. Це також розумний спосіб роботи з обладнанням, яке інакше не дружить з різними завантажувальними або інсталяційними носіями. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Оскільки це переважно ручна процедура, вам слід пам'ятати, що вам доведеться самостійно виконати багато базових налаштувань системи, що також вимагатиме більше знань про Debian і про Linux загалом, ніж при виконанні звичайного встановлення. Не варто очікувати, що в результаті цієї процедури ви отримаєте систему, яка буде ідентичною системі, встановленій за допомогою звичайної інсталяції. Ви також повинні пам'ятати, що ця процедура описує лише основні кроки з налаштування системи. Можуть знадобитися додаткові кроки з інсталяції та/або налаштування. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4925"></a>D.3.1. Початок роботи</h3></div></div></div>
+<p>За допомогою ваших поточних інструментів для роботи з розділами *nix, перерозподіліть жорсткий диск за потреби, створивши принаймні одну файлову систему плюс область підкачки. Вам потрібно близько 647МБ вільного місця для встановлення лише консолі, або близько 2635МБ, якщо ви плануєте встановити X (більше, якщо ви маєте намір встановити середовища робочого столу, такі як GNOME або KDE Plasma). </p>
+<p>Далі створіть файлові системи на розділах. Наприклад, створити файлову систему ext3 на розділі <code class="filename">/dev/sda6</code> (це наш приклад кореневого розділу): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Щоб створити файлову систему ext2, пропустіть <strong class="userinput"><code>-j</code></strong>. </p>
+<p>Ініціалізуйте та активуйте підкачку (підставте номер розділу для передбачуваного розділу Debian підкачки): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Змонтуйте один розділ як <code class="filename">/mnt/debinst</code> (точка встановлення, яка буде кореневою (<code class="filename">/</code>) файловою системою у вашій новій системі). Ім'я точки монтування суто довільне, посилання на нього буде вказано нижче. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Якщо ви хочете змонтувати частину файлової системи (наприклад, /usr) на окремих розділах, вам потрібно буде створити і змонтувати ці каталоги вручну, перш ніж переходити до наступного етапу. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4946"></a>D.3.2. Встановити <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p>Утиліта, яка використовується програмою встановлення Debian і визнана офіційним способом встановлення базової системи Debian, є <span class="command"><strong>debootstrap</strong></span>. Вона використовує <span class="command"><strong>wget</strong></span> і <span class="command"><strong>ar</strong></span>, але в іншому залежить лише від <code class="classname">/bin/sh</code> і основних інструментів Unix/Linux<a href="#ftn.id4954" class="footnote" name="id4954"><sup class="footnote">[21]</sup></a>. Встановіть <span class="command"><strong>wget</strong></span> і <span class="command"><strong>ar</strong></span>, якщо їх ще немає у вашій системі, потім завантажте і встановіть <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Або, ви можете скористатися наступною процедурою, щоб встановити його вручну. Створіть робочу папку для розпакування .deb: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir work
+# cd work
+</pre></div>
+<p> Двійковий файл <span class="command"><strong>debootstrap</strong></span> знаходиться в архіві Debian (переконайтеся, що вибрано правильний файл для вашої архітектури). Завантажте <span class="command"><strong>debootstrap</strong></span> .deb з <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top">пулу</a>, скопіюйте пакунок до робочої теки і витягніть з нього файли. Для встановлення файлів вам знадобляться привілеї root. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /full-path-to-work/work/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4971"></a>D.3.3. Запуск <span class="command"><strong>debootstrap</strong></span>
+</h3></div></div></div>
+<p><span class="command"><strong>debootstrap</strong></span> може завантажувати потрібні файли безпосередньо з архіву під час його запуску. Ви можете замінити будь-яке дзеркало архіву Debian на <strong class="userinput"><code>http.us.debian.org/debian</code></strong> у наведеному нижче прикладі команди, бажано, щоб воно було близьким до вас у мережі. Дзеркала перераховані за посиланням <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Якщо у вас є інсталяційний образ trixie Debian GNU/Linux, змонтований за адресою <code class="filename">/cdrom</code>, ви можете підставити URL-адресу файлу замість http URL: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Замість <em class="replaceable"><code>ARCH</code></em> у команді <span class="command"><strong>debootstrap</strong></span> підставте один з наступних параметрів: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> Якщо цільова архітектура відрізняється від хоста, слід додати параметр <strong class="userinput"><code>--foreign</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4993"></a>D.3.4. Конфігурація базової системи</h3></div></div></div>
+<p>Тепер у вас на диску є справжня система Debian, хоча і досить схудла. <span class="command"><strong>chroot</strong></span> в неї: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Якщо цільова архітектура відрізняється від хоста, вам слід спочатку скопіювати qemu-user-static на новий хост: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> Після вкорінення вам може знадобитися встановити визначення терміналу, наприклад, щоб воно було сумісним з базовою системою Debian, наприклад: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Залежно від значення TERM, можливо, вам доведеться встановити пакунок <code class="classname">ncurses-term</code>, щоб отримати його підтримку. </p>
+<p>Якщо цільова архітектура відрізняється від хоста, вам потрібно завершити багатоетапне завантаження: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5008"></a>D.3.4.1. Створити файли пристрою</h4></div></div></div>
+<p>Наразі <code class="filename">/dev/</code> містить лише найпростіші файли пристрою. Для наступних кроків інсталяції можуть знадобитися додаткові файли пристрою. Існує декілька способів зробити це, і те, який з них ви оберете, залежить від хост-системи, яку ви використовуєте для встановлення, від того, чи збираєтеся ви використовувати модульне ядро, і від того, чи збираєтеся ви використовувати динамічні (наприклад, за допомогою <code class="classname">udev</code>) або статичні файли пристроїв у новій системі. </p>
+<p>Ось кілька доступних варіантів: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>встановіть пакунок makedev і створіть набір статичних файлів пристроїв за замовчуванням за допомогою (після chrooting) </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>вручну створити лише певні файли пристрою за допомогою <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>прив'язати монтування /dev з хост-системи до каталогу /dev у цільовій системі; зауважте, що скрипти постінсталяції деяких пакунків можуть спробувати створити файли пристроїв, тому цей параметр слід використовувати з обережністю </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5024"></a>D.3.4.2. Монтувати розділи</h4></div></div></div>
+<p>Вам потрібно створити <code class="filename">/etc/fstab</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Ось зразок, який ви можете модифікувати під себе: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: статична інформація про файлову систему.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Використовуйте <strong class="userinput"><code>mount -a</code></strong> для монтування усіх файлових систем, які ви вказали у <code class="filename">/etc/fstab</code>, або, щоб змонтувати кожну файлову систему окремо, використовуйте </p>
+<div class="informalexample"><pre class="screen">
+# mount /path   # e.g.: mount /usr
+</pre></div>
+<p> Поточні системи Debian мають точки монтування для знімних носіїв у <code class="filename">/media</code>, але зберігають посилання на сумісність у <code class="filename">/</code>. Створюйте їх за потреби, наприклад: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> Файлову систему proc можна змонтувати декілька разів і у довільне місце, хоча загальноприйнятим є <code class="filename">/proc</code>. Якщо ви не використовували <strong class="userinput"><code>mount -a</code></strong>, обов'язково змонтуйте proc перед продовженням: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Команда <strong class="userinput"><code>ls /proc</code></strong> тепер має показувати непорожній каталог. Якщо це не вдасться, ви можете змонтувати proc ззовні кореня: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5048"></a>D.3.4.3. Налаштування часового поясу</h4></div></div></div>
+<p>Встановлення у третьому рядку файлу <code class="filename">/etc/adjtime</code> значення <span class="quote">«<span class="quote">UTC</span>»</span> або <span class="quote">«<span class="quote">LOCAL</span>»</span> визначає, чи буде система інтерпретувати апаратний годинник як такий, що встановлений у відповідному місцевому часі UTC. Наступна команда дозволяє вам це налаштувати. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Ось зразок: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Наступна команда дозволяє вибрати часовий пояс. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5060"></a>D.3.4.4. Налаштування мережевих підключень</h4></div></div></div>
+<p>Щоб налаштувати мережу, відредагуйте <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> та <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Ось кілька простих прикладів з <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- конфігураційний файл для ifup(8), ifdown(8)
+# Дивіться сторінку інтерфейсів(5) для отримання інформації про те, які опції
+# доступні.
+######################################################################
+
+# Інтерфейс зворотного зв'язку більше не потрібен, але його можна використати,
+# якщо потрібно.
+#
+# auto lo
+# iface lo inet loopback
+
+# Для використання dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Приклад статичного налаштування IP-адреси: (мережа, трансляція та шлюз необов'язкові)
+#
+# auto eth0
+# iface eth0 inet static
+#     адреса 192.168.0.42
+#     мережа 192.168.0.0
+#     мережева маска 255.255.255.0
+#     трансляція 192.168.0.255
+#     шлюз 192.168.0.1
+</pre></div>
+<p> Введіть ваш(і) сервер(и) імен та директиви пошуку в <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Простий приклад <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Введіть ім'я хоста вашої системи (від 2 до 63 символів): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> І базовий <code class="filename">/etc/hosts</code> з підтримкою IPv6: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# Для хостів з підтримкою IPv6 бажано вказати наступні рядки
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Якщо у вас декілька мережевих карт, вам слід впорядкувати назви модулів драйверів у файлі <code class="filename">/etc/modules</code> у потрібному порядку. Тоді під час завантаження, кожна карта буде пов'язана з іменем інтерфейсу (eth0, eth1 і т.д.), яке ви очікуєте. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5084"></a>D.3.4.5. Конфігурація Apt</h4></div></div></div>
+<p>Debootstrap створить базовий файл <code class="filename">/etc/apt/sources.list</code>, який дозволить встановити додаткові пакунки. Однак, можливо, ви захочете додати деякі додаткові джерела, наприклад, для пакунків з вихідними текстами та оновлень безпеки: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Не забудьте виконати <strong class="userinput"><code>apt update</code></strong> після внесення змін до списку джерел. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5091"></a>D.3.4.6. Налаштування локалей і клавіатури</h4></div></div></div>
+<p>Щоб налаштувати параметри локалі для використання мови, відмінної від англійської, встановіть пакет підтримки <code class="classname">locales</code> і налаштуйте його. Наразі рекомендується використовувати локалі UTF-8. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Налаштувати клавіатуру (якщо потрібно): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Зверніть увагу, що клавіатуру не можна налаштувати у chroot, але її буде налаштовано під час наступного перезавантаження. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5100"></a>D.3.5. Встановлення ядра</h3></div></div></div>
+<p>Якщо ви маєте намір завантажувати цю систему, вам, ймовірно, знадобиться ядро Linux та завантажувач. Визначте доступні попередньо запаковані ядра за допомогою: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Потім встановіть обраний вами пакунок ядра, скориставшись назвою пакунка. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5109"></a>D.3.6. Налаштування завантажувача</h3></div></div></div>
+<p>Щоб зробити вашу Debian GNU/Linux систему завантажуваною, налаштуйте ваш завантажувач так, щоб він завантажував встановлене ядро з вашого нового кореневого розділу. Зауважте, що <span class="command"><strong>debootstrap</strong></span> не встановлює завантажувач, але ви можете використати <span class="command"><strong>apt</strong></span> у вашому Debian chroot для цього. </p>
+<p>Перевірте <strong class="userinput"><code>info grub</code></strong> для отримання інструкцій щодо налаштування завантажувача. Якщо ви зберігаєте систему, яку використовували для встановлення Debian, просто додайте запис для встановлення Debian до існуючого grub2 <code class="filename">grub.cfg</code>. </p>
+<p>Встановлення та налаштування <code class="classname">grub2</code> дуже просте: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> Друга команда встановить <span class="command"><strong>grub2</strong></span> (у цьому випадку у MBR диска <code class="literal">sda</code>). Остання команда створить нормальний і робочий <code class="filename">/boot/grub/grub.cfg</code>. </p>
+<p>Зауважте, що це передбачає, що файл пристрою <code class="filename">/dev/sda</code> було створено. Існують альтернативні методи встановлення <span class="command"><strong>grub2</strong></span>, але вони виходять за рамки цього додатка. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5128"></a>D.3.7. Віддалений доступ: Встановлення SSH та налаштування доступу</h3></div></div></div>
+<p>Якщо ви можете увійти в систему через консоль, ви можете пропустити цей розділ. Якщо згодом система буде доступна через мережу, вам потрібно встановити SSH і налаштувати доступ. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> За замовчуванням root-логін з паролем вимкнено, тому налаштувати доступ можна, встановивши пароль і повторно увімкнувши root-логін з паролем: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> Цю опцію слід увімкнути: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> Доступ також можна налаштувати, додавши ключ ssh до облікового запису root: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Нарешті, доступ можна налаштувати, додавши не root-користувача і встановивши пароль: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5141"></a>D.3.8. Останні штрихи</h3></div></div></div>
+<p>Як згадувалося раніше, встановлена система буде дуже простою. Якщо ви хочете зробити систему більш зрілою, існує простий спосіб встановити усі пакунки з пріоритетом <span class="quote">«<span class="quote">стандартний</span>»</span>: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Звісно, ви також можете скористатися командою <span class="command"><strong>apt</strong></span> для встановлення пакунків окремо. </p>
+<p>Після встановлення у папці <code class="filename">/var/cache/apt/archives/</code> буде багато завантажених пакунків. Ви можете звільнити трохи місця на диску під час бігу: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4954" class="footnote"><p><a href="#id4954" class="para"><sup class="para">[21] </sup></a> До них належать основні утиліти GNU і такі команди як <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> та <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Дисковий простір, необхідний для завдань </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Встановлення Debian GNU/Linux через паралельну лінію IP (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

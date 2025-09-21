@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.3. 부팅 파라미터</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch05.html" title="5장. 설치 시스템 부팅하기">
+<link rel="prev" href="ch05s02.html" title="5.2. 접근성">
+<link rel="next" href="ch05s04.html" title="5.4. 설치 과정의 문제 해결">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.3. 부팅 파라미터</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">5장. 설치 시스템 부팅하기</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-parms"></a>5.3. 부팅 파라미터</h2></div></div></div>
+<p>부팅 파라미터는 리눅스 커널 파라미터로 보통 주변 장치를 제대로 동작하도록 제어하는 데 이용합니다. 대부분 커널에서 주변 장치에 관한 정보를 자동으로 찾아 냅니다. 하지만 몇몇 경우에는 파라미터로 커널을 조금 도와줘야 합니다. </p>
+<p>시스템을 첫번째로 부팅하는 경우라면, 기본 부팅 파라미터를 시도해 보시고(즉 파라미터를 사용하지 않는 것) 제대로 동작하는지 보십시오. 보통은 제대로 동작합니다. 제대로 동작하지 않는 경우에 다시 부팅해서 하드웨어에 필요한 특별한 파라미터가 있는지 찾아 보십시오. </p>
+<p>부팅 파라미터에 관한 정보는 <a class="ulink" href="http://www.tldp.org/HOWTO/BootPrompt-HOWTO.html" target="_top">Linux BootPrompt HOWTO</a>에(여러가지 보기드문 하드웨어에 대한 정보 포함) 있습니다. 여기서는 몇 가지 많이 이용하는 파라미터에 대한 대략만 다룹니다. 많이 발생하는 문제점 몇 개는 <a class="xref" href="ch05s04.html" title="5.4. 설치 과정의 문제 해결">5.4절. “설치 과정의 문제 해결”</a>에 들어 있습니다. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-console"></a>5.3.1. 부팅 시리얼 콘솔</h3></div></div></div>
+<p>시리얼 콘솔로 부팅하는 경우, 보통 자동으로 찾아냅니다. 시리얼 콘솔로 부팅하려는 컴퓨터에 비디오 카드와(프레임버퍼) 키보드가 붙어 있다면, <strong class="userinput"><code>console=<em class="replaceable"><code>장치</code></em></code></strong> 파라미터를 커널에 넘겨야 할 수 있습니다. 여기서 <em class="replaceable"><code>장치</code></em>는 해당 시리얼 장치이고, <code class="filename">ttyS0</code>과 같이 씁니다. </p>
+<p>속도와 패리티 등의 시리얼 포트 파라미터를 지정해야 합니다. 예를 들어 <strong class="userinput"><code>console=ttyS0,9600n8</code></strong>와 같이 합니다. 57600이나 115200도 많이 사용하는 속도입니다. <span class="quote">“<span class="quote">---</span>”</span> 다음에 이 옵션을 지정하십시오. 그래야 (부트로더 설치 모듈에서 지원하는 경우) 설치한 시스템의 부트로더 설정으로 들어갑니다. </p>
+<p>설치 프로그램이 사용하는 터미널 종류가 사용하고 있는 터미널 에뮬레이터에 맞도록 하려면, <strong class="userinput"><code>TERM=<em class="replaceable"><code>종류</code></em></code></strong> 파라미터를 추가할 수 있습니다. 단 설치 프로그램은 다음 터미널 종류만 지원합니다: <code class="literal">linux</code>, <code class="literal">bterm</code>, <code class="literal">ansi</code>, <code class="literal">vt102</code>, <code class="literal">dumb</code>. <code class="classname">debian-installer</code>의 시리얼 콘솔의 기본값은 <strong class="userinput"><code>vt102</code></strong>입니다. IMPI 콘솔이나 기타 이러한 터미널 종류를 지원하지 않는 가상화 도구를 사용하고 있다면(예를 들어 QEMU/KVM), <span class="command"><strong>screen</strong></span> 세션 안에서 그 툴을 시작하면 됩니다. 그러면 <code class="literal">screen</code> 터미널 타입으로 동작하는데 <code class="literal">vt102</code> 터미널과 매우 가깝습니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="installer-args"></a>5.3.2. 데비안 설치프로그램 파라미터</h3></div></div></div>
+<p>설치 시스템에서는 유용하게 쓸 수도 있는 부팅 파라미터 몇 개를 더 인식합니다<a href="#ftn.id2551" class="footnote" name="id2551"><sup class="footnote">[3]</sup></a>. </p>
+<p>여러가지 파라미터는 <span class="quote">“<span class="quote">짧은 형식</span>”</span>이 있어서 커널 명령행의 길이 제한을 피하면서 쉽게 입력할 수 있습니다. 어떤 파라미터에 짧은 형식이 있는 경우에는, (일반적인) 긴 형식 뒤에 괄호 안에 써 놓았습니다. 이 안내서에 들어 있는 예제에서도 짧은 형식을 사용합니다. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">debconf/priority (priority)</span></dt>
+<dd>
+<p>이 파라미터는 표시할 메시지의 가장 낮은 우선순위를 설정합니다. </p>
+<p>기본 설치에서는 <strong class="userinput"><code>priority=high</code></strong>를 사용합니다. 즉, 높음 우선 순위와 필수 우선순위의 메시지를 표시하지만, 보통과 낮음 우선 순위 메시지는 넘어갑니다. 문제가 발생할 경우에는 설치 프로그램에서 우선순위를 필요에 따라 조정합니다. </p>
+<p><strong class="userinput"><code>priority=medium</code></strong>을 부팅 파라미터로 쓴 경우, 설치 메뉴에서 설치 메뉴에서 더 많은 조정을 할 수 있습니다. <strong class="userinput"><code>priority=low</code></strong>라고 쓴 경우, 모든 메시지를 볼 수 있습니다. (<span class="emphasis"><em>expert</em></span> 부팅 방법과 동일합니다.) <strong class="userinput"><code>priority=critical</code></strong>의 경우, 필수 메시지만 표시하고 질문에 신경 쓰지 않고 설치를 진행합니다. </p>
+</dd>
+<dt><span class="term">DEBIAN_FRONTEND</span></dt>
+<dd>
+<p>이 부팅 파라미터는 설치 프로그램에서 사용할 사용자 인터페이스 종류를 설정합니다. 현재 가능한 파라미터 값은: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=noninteractive</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>DEBIAN_FRONTEND=gtk</code></strong></p></li>
+</ul></div>
+<p> 기본 프론트엔드는 <strong class="userinput"><code>DEBIAN_FRONTEND=newt</code></strong>입니다. 시리얼 콘솔 설치의 경우 <strong class="userinput"><code>DEBIAN_FRONTEND=text</code></strong>가 더 좋을 수도 있습니다. 일부 특이한 설치 미디어에서는 제한된 개수의 프론트엔드만 들어 있지만, <strong class="userinput"><code>newt</code></strong> 및 <strong class="userinput"><code>text</code></strong> 프론트엔드는 대부부느이 설치 미디어에서 사용할 수 있습니다. 그래픽을 지원하는 아키텍처에서는, 그래픽 설치 프로그램은 <strong class="userinput"><code>gtk</code></strong> 프론트엔드를 사용합니다. </p>
+</dd>
+<dt><span class="term">BOOT_DEBUG</span></dt>
+<dd>
+<p>이 부트 파라미터를 2로 설정하면 설치프로그램의 부팅 절차를 자세하게 기록합니다. 이 값을 3으로 지정하면 부트 프로세스의 전략적인 부분에서 디버깅 쉘을 동작합니다. (부팅을 계속하려면 이 쉘을 끝내십시오.) </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=0</code></strong></span></dt>
+<dd><p>기본값입니다.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=1</code></strong></span></dt>
+<dd><p>보통때보다 많은 디버깅 정보.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=2</code></strong></span></dt>
+<dd><p>디버깅 정보 아주 많이.</p></dd>
+<dt><span class="term"><strong class="userinput"><code>BOOT_DEBUG=3</code></strong></span></dt>
+<dd><p>부팅 과정의 곳곳에서 쉘을 실행해서 자세히 디버깅을 할 수 있습니다. 부팅을 계속하려면 쉘을 나가면 됩니다. </p></dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt>
+<span class="term">log_host, </span><span class="term">log_port</span>
+</dt>
+<dd><p>설치 프로그램의 로그 메시지를 로컬 파일에도 저장하면서 지정한 호스트와 포트에서 실행 중인 원격 syslog에 보냅니다. 포트를 지정하지 않으면 표준 syslog 포트인 514번을 기본값으로 사용합니다. </p></dd>
+<dt><span class="term">lowmem</span></dt>
+<dd><p>사용 가능한 메모리에 따라 저용량 메모리를 판단하는 기준을 설치 프로그램의 기본값보다 높게 만드는 데 사용합니다. 쓸 수 있는 값은 1과 2입니다. <a class="xref" href="ch06s03.html#lowmem" title="6.3.1.1. 사용 가능 메모리 검사 / 저용량 메모리 모드">6.3.1.1절. “사용 가능 메모리 검사 / 저용량 메모리 모드”</a> 부분도 참고하십시오. </p></dd>
+<dt><span class="term">noshell</span></dt>
+<dd><p>설치 프로그램에서 tty2 및 tty3에 쉘을 실행하지 않습니다. 물리적인 보안이 확보되지 않은 상태에서 설치하는 경우에 좋습니다. </p></dd>
+<dt><span class="term">debian-installer/framebuffer (fb)</span></dt>
+<dd><p>어떤 아키텍처에서는 많은 언어로 설치를 하려면 커널 프레임 버퍼를 사용합니다. 프레임 버퍼가 문제가 있는 경우 <strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong> 매개 변수로 이 기능을 비활성화할 수 있습니다. bterm이나 bogl 관련된 오류 메시지, 검은 화면 또는 설치를 시작하고 몇 분 후에 멈추는 것은 문제의 증상입니다. </p></dd>
+<dt><span class="term">debian-installer/theme (theme)</span></dt>
+<dd><p>테마는 설치 프로그램의 사용자 환경(색, 아이콘 등)을 어떻게 보여줄 것인가를 결정합니다. 프론트엔드에 따라 사용할 수 있는 테마가 달라집니다. 현재 newt와 gtk 프론트엔드에서는 (기본 외에) <span class="quote">“<span class="quote">다크(dark)</span>”</span>테마만 있습니다. 이 다크 테마는 시각 장애 사용자를 위해 디자인되엇습니다. 이 테마를 사용하려면 부팅할 때 <strong class="userinput"><code>theme=<em class="replaceable"><code>dark</code></em></code></strong>를 파라미터로 넘기면 됩니다. (부팅 메뉴에서 단축키 <strong class="userinput"><code>d</code></strong>를 누를 수도 있습니다.) </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd>
+<p>기본값으로 <code class="classname">debian-installer</code>는 IPv6 자동 설정 및 DHCP를 통해 네트워크 설정을 검색합니다. 검색이 성공하면 그 설정을 검사하거나 바꿀 기회는 없습니다. 자동 설정이 실패할 경우에만 수동 네트워크 셋업을 할 수 있습니다. </p>
+<p>로컬 네트워크에 IPv6 라우터나 DHCP 서버가 있으면서 이용하고 싶지는 않을 경우(예를 들어 잘못된 응답을 한다든지 때문에), <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong> 파라미터를 사용하면 네트워크의(v4와 v6 모두) 자동 설정을 막고 수동으로 정보를 입력할 수 있습니다. </p>
+</dd>
+<dt><span class="term">hw-detect/start_pcmcia</span></dt>
+<dd><p>PCMCIA에 문제가 있을 때 <strong class="userinput"><code>false</code></strong>로 하면 PCMCIA 서비스를 시작하지 않습니다. 일부 노트북 컴퓨터에서 이와 관련해 문제가 발생합니다. </p></dd>
+<dt><span class="term">preseed/url (url)</span></dt>
+<dd><p>미리 설정해 놓은 파일을 다운로드할 URL을 지정합니다. 이 파일을 이용해 설치를 자동화합니다. <a class="xref" href="ch04s06.html" title="4.6. 자동 설치">4.6절. “자동 설치”</a> 참고. </p></dd>
+<dt><span class="term">preseed/file (file)</span></dt>
+<dd><p>미리 설정해 놓은 파일을 읽어들일 URL을 지정합니다. 이 파일을 이용해 자동 설치를 합니다. <a class="xref" href="ch04s06.html" title="4.6. 자동 설치">4.6절. “자동 설치”</a> 참고. </p></dd>
+<dt><span class="term">preseed/interactive</span></dt>
+<dd><p>미리 설정을 했더라도 질문을 표시하려면 <strong class="userinput"><code>true</code></strong>로 설정하십시오. 미리 설정 파일을 테스트하거나 디버깅하는 데 좋습니다. 이 설정은 부팅 파라미터로 넘긴 파라미터에 대해서는 효과가 없으니 주의하십시오. 부팅 파라미터에 대해서는 특별한 문법을 따로 사용합니다. 자세한 정보는 <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. 미리 설정을 이용해 기본값 바꾸기">B.5.2절. “미리 설정을 이용해 기본값 바꾸기”</a> 부분을 보십시오. </p></dd>
+<dt><span class="term">auto-install/enable (auto)</span></dt>
+<dd><p>미리 설정이 가능하기 전에 물어보는 질문을 네트워크 설정 다음으로 미룹니다. 이 자동 설치 사용법에 대한 자세한 정보는 <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. 자동 모드">B.2.3절. “자동 모드”</a> 부분을 보십시오. </p></dd>
+<dt><span class="term">finish-install/keep-consoles</span></dt>
+<dd><p>시리얼 콘솔이나 관리 콘솔에서 설치하면, 일반 가상 콘솔은(VT1-VT6) /etc/inittab에서 막습니다. 이 파라미터를 <strong class="userinput"><code>true</code></strong>로 하면 가상 콘솔을 막지 않습니다. </p></dd>
+<dt><span class="term">cdrom-detect/eject</span></dt>
+<dd>
+<p>기본값으로 <code class="classname">debian-installer</code>에서는 다시 시작하기 전에 설치할 때 사용했던 광학 미디어를 자동으로 뺍니다. 시스템이 그러한 미디어에서 자동으로 부팅하는 경우가 아니라면 이럴 필요가 없을 수도 있습니다. 어떤 경우에는 이렇게 하지 않는 게 좋을 때도 있습니다. 예를 들어 해당 광학 드라이브가 미디어를 다시 집어넣지 못하는 경우나, 사용자가 그 자리에 없기 때문에 수동으로 미디어를 집어넣지 못하는 경우입니다. 보통 슬롯 방식 드라이브는 미디어를 자동으로 다시 집어넣지 못합니다. </p>
+<p>자동으로 미디어를 꺼내지 않으려면 <strong class="userinput"><code>false</code></strong>로 설정합니다. 단 설치한 후에 시스템이 광학 드라이브에서 자동으로 부팅하지 않도록 하십시오. </p>
+</dd>
+<dt><span class="term">base-installer/install-recommends (recommends)</span></dt>
+<dd>
+<p><strong class="userinput"><code>잘못</code></strong> 옵션을 설정하면 패키지 관리 시스템이 자동으로 설치하는 동안에 시스템에 대한 <span class="quote">“<span class="quote">Recommends</span>”</span>을 설치 하지 않도록 됩니다.  <a class="xref" href="ch06s03.html#di-install-base" title="6.3.5. 베이스 시스템 설치하기">6.3.5절. “베이스 시스템 설치하기”</a>도 참조하십시오. </p>
+<p>이 옵션을 사용하면 매우 간결한 시스템이 됩니다. 반면에 일반적으로는 있는 기능이 이 시스템에서는 없을 가능성이 높습니다. 원하는 기능을 사용하려면 추천 패키지의 일부를 수동으로 설치해야 할 수도 있습니다. 그러므로 이 옵션은 숙련된 사용자만 사용해야 합니다. </p>
+</dd>
+<dt><span class="term">debian-installer/allow_unauthenticated</span></dt>
+<dd><p>기본 설정으로 설치 프로그램에서 사용하는 저장소는 알려진 GPG 키를 이용해 인증할 수 있어야 합니다. 이 인증을 하지 않으려면 <strong class="userinput"><code>true</code></strong>로 설정하십시오. <span class="bold"><strong>경고: 보안상 문제가 될 수 있으므로, 권장하지 않습니다.</strong></span> </p></dd>
+<dt><span class="term">rescue/enable</span></dt>
+<dd><p>일반적인 설치를 하지 않고 복구 모드로 변경하려면 <strong class="userinput"><code>true</code></strong>로 설정하십시오. <a class="xref" href="ch08s06.html" title="8.6. 손상된 시스템 복구하기">8.6절. “손상된 시스템 복구하기”</a> 부분을 참고하십시오. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-args"></a>5.3.3. 부팅 파라미터로 질문에 답하기</h3></div></div></div>
+<p>일부 예외를 제외하고, 설치 과정에서 물어보는 모든 질문을 부팅 프롬프트에서 설정할 수 있습니다. 하지만 이 기능은 특수한 상황에서만 쓸모가 있습니다. 이 기능을 사용하는 방법은 <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. 부팅 파라미터로 미리 설정하기">B.2.2절. “부팅 파라미터로 미리 설정하기”</a> 부분을 참고하십시오. 몇 가지 예제가 아래에 있습니다. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt>
+<span class="term">debian-installer/language (language), </span><span class="term">debian-installer/country (country), </span><span class="term">debian-installer/locale (locale)</span>
+</dt>
+<dd>
+<p>설치 중이나 설치 후에 사용하는 언어 국가와 로캘을 지정하는 방법은 두가지가 있습니다. </p>
+<p>첫 번째, 쉽게 매개 변수를 <code class="literal">locale</code>로 전달하는 것입니다. 언어 및 국가는 그 가치로부터 파생됩니다. 예를 들면 언어는 독일어와 국가는 스위스로 선택하는 방법은 <strong class="userinput"><code>locale=de_CH.UTF-8</code></strong> 사용한다(<code class="literal">de_CH.UTF-8</code>는 설치한 시스템의 기본 locale로 선정됩니다). 제한 언어는 국가 및 locale의 모든 가능한 조합 방법을 얻을 수 있습니다. </p>
+<p>두 번째, 별도로 좀 더 쉬운 옵션은 <code class="literal">언어</code>와 <code class="literal">국가</code>를 지정하는 것입니다. 이 경우에는 <code class="literal">장소</code>를 선택하여 설치한 시스템에 대한 구체적인 기본 <code class="literal">locale</code>를 지정 추가할 수 있습니다. 예: <strong class="userinput"><code>언어=en 국가=DE locale=en_GB.UTF-8</code></strong>. </p>
+</dd>
+<dt><span class="term">anna/choose_modules (modules)</span></dt>
+<dd><p>기본값으로는 읽어들이지 않는 설치 프로그램 컴포넌트를 자동으로 읽어들이는 데 사용합니다. 유용한 추가 컴포넌트는 <code class="classname">openssh-client-udeb</code> (설치 도중에 <span class="command"><strong>scp</strong></span>를 사용할 수 있습니다)<span class="phrase"> 및 <code class="classname">ppp-udeb</code>(<a class="xref" href="apds05.html" title="D.5. PPP 오버 이더넷을(PPPoE) 이용해 데비안 GNU/리눅스 설치하기">D.5절. “PPP 오버 이더넷을(PPPoE) 이용해 데비안 GNU/리눅스 설치하기”</a> 참고)</span>이 있습니다. </p></dd>
+<dt><span class="term">netcfg/disable_autoconfig</span></dt>
+<dd><p>IPv6 자동 설정 및 DHCP를 끄고 강제로 고정 네트워크 설정을 하려면 <strong class="userinput"><code>true</code></strong>로 설정하십시오. </p></dd>
+<dt><span class="term">mirror/protocol (protocol)</span></dt>
+<dd><p>기본적으로 설치 프로그램은 데비안 미러에서 파일을 다운로드하는 http 프로토콜을 사용하여 일반적인 우선순위에서는 설치 중에 ftp로 변경할 수 없습니다. 이 매개 변수를 <strong class="userinput"><code>ftp</code></strong>로 설정하면 설치 프로그램에 ftp를 사용하도록 강제할 수 있습니다. 목록에서 ftp 미러를 선택할 수는 없으므로, 호스트 이름을 입력해야한다는 것에주의하십시오. </p></dd>
+<dt><span class="term">tasksel:tasksel/first (tasks)</span></dt>
+<dd><p><code class="literal">kde-desktop</code> 태스크처럼 태스크 목록에 나타나지 않는 태스크를 선택할 때 사용합니다. 자세한 정보는 <a class="xref" href="ch06s03.html#pkgsel" title="6.3.6.2. 소프트웨어 선택 및 설치">6.3.6.2절. “소프트웨어 선택 및 설치”</a> 참고. </p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-parms"></a>5.3.4. 커널 모듈에 파라미터 넘기기</h3></div></div></div>
+<p>드라이버를 커널 안에 컴파일해 넣었다면, 커널 문서에 쓰여 있는 대로 파라미터를 넘길 수 있습니다. 하지만 드라이버를 모듈로 컴파일했다면 설치한 시스템에서는 부팅할 때 커널 모듈을 약간 다르게 읽어들이기 때문에, 일반적으로 하는 것처럼 모듈에 파라미터를 넘길 수 없게 됩니다. 그 대신에 설치 프로그램이 지원하는 특정 문법을 사용해 해당 파라미터를 올바른 설정 파일에 저장해 모듈을 읽어들일 때 사용하도록 만들 수 있습니다. 이 파라미터는 설치한 시스템의 설정에도 자동으로 적용됩니다. </p>
+<p>한편 모듈에 파라미터를 넘겨야 하는 경우는 매우 드뭅니다. 보통 커널에서 시스템에 있는 하드웨어를 자동으로 찾아내서 쓸만한 기본값을 적용해 놓습니다. 하지만 일부 경우에는 파라미터를 수동으로 지정해야 할 수도 있습니다. </p>
+<p>모듈의 파라미터를 설정하는 문법은 다음과 같습니다: </p>
+<div class="informalexample"><pre class="screen">
+<em class="replaceable"><code>모듈_이름</code></em>.<em class="replaceable"><code>파라미터_이름</code></em>=<em class="replaceable"><code>값</code></em>
+</pre></div>
+<p> 같은 모듈 혹은 여러 모듈에 여러 개의 파라미터를 넘기려면, 이 문법을 반복해서 쓰면 됩니다. 예를 들어 오래된 3Com 네트워크 인터페이스 카드에서 BNC (동축) 커넥터와 IRQ 10을 지정하려면, 다음과 같이 합니다: </p>
+<div class="informalexample"><pre class="screen">3c509.xcvr=3 3c509.irq=10
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="module-blacklist"></a>5.3.5. 커널 모듈 블랙리스트</h3></div></div></div>
+<p>경우에 따라서는 모듈을 블랙리스트에 올려서 커널이나 udev가 자동으로 읽어들이지 않게 만들어야 합니다. 이렇게 하는 이유의 한 가지는 특정 모듈이 해당 하드웨어에서 문제를 일으키는 경우입니다. 또 같은 장치에 대해서 두 개의 다른 드라이버가 있기도 합니다. 드라이버가 충돌하거나 잘못된 드라이버를 먼저 읽어들이면 해당 장치가 제대로 동작하지 않을 수 있습니다. </p>
+<p>다음 문법으로 모듈을 블랙리스트에 올릴 수 있습니다: <strong class="userinput"><code><em class="replaceable"><code>모듈_이름</code></em>.blacklist=yes</code></strong>. 이렇게 하면 해당 모듈을 <code class="filename">/etc/modprobe.d/blacklist.local</code>의 블랙리스트에 넣어서 설치 프로그램이나 설치한 시스템에 적용합니다. </p>
+<p>설치 시스템이 모듈을 직접 읽어들이기도 합니다. 전문가 모드로 설치 프로그램을 시작해서 하드웨어 검색 단계에 나오는 모듈 목록에서 해당 모듈을 제외하면 모듈을 읽어들이지 않게 만들 수 있습니다. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2551" class="footnote"><p><a href="#id2551" class="para"><sup class="para">[3] </sup></a> 현재 커널에서는 (2.6.9 이후) 32개의 명령행 옵션과 32개의 환경변수를 사용할 수 있습니다. 이 개수를 넘어가면 커널은 멎어 버립니다. 또 전체 명령행 길이는 255자까지만 쓸 수 있고, 넘어가면 아무런 안내 없이 잘립니다. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s02.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s04.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.2. 접근성 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 5.4. 설치 과정의 문제 해결</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

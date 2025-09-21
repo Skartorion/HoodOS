@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Utilizarea preconfigurării</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apb.html" title="Anexa B. Automatizarea instalării folosind preconfigurarea">
+<link rel="prev" href="apbs01.html" title="B.1. Introducere">
+<link rel="next" href="apbs03.html" title="B.3. Crearea unui fișier de preconfigurare">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Utilizarea preconfigurării</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa B. Automatizarea instalării folosind preconfigurarea</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Utilizarea preconfigurării</h2></div></div></div>
+<p>Mai întâi va trebui să creați un fișier de preconfigurare și să-l plasați în locația de unde doriți să-l utilizați. Crearea fișierului de preconfigurare este tratată mai târziu în această anexă. Plasarea acestuia în locația corectă este destul de simplă pentru preconfigurarea „network” sau dacă doriți să citiți fișierul de pe un stick USB. Dacă doriți să includeți fișierul într-o imagine ISO de instalare, va trebui să remasterizați imaginea. Cum să obțineți fișierul de preconfigurare inclus în initrd este în afara domeniului de aplicare al acestui document; pentru aceasta, consultați documentația dezvoltatorilor pentru <code class="classname">debian-installer</code>. </p>
+<p>Un exemplu de fișier de preconfigurare pe care îl puteți folosi ca bază pentru propriul fișier de preconfigurare este disponibil la <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Acest fișier se bazează pe fragmentele de configurare incluse în această anexă. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Încărcarea fișierului de preconfigurare</h3></div></div></div>
+<p>Dacă utilizați preconfigurarea „initrd”, trebuie doar să vă asigurați că un fișier numit <code class="filename">preseed.cfg</code> este inclus în directorul rădăcină al initrd. Programul de instalare va verifica automat dacă acest fișier este prezent și îl va încărca. </p>
+<p>Pentru celelalte metode de preconfigurare, trebuie să-i indicați programului de instalare ce fișier să folosească atunci când îl porniți. Acest lucru se face în mod normal prin pasarea nucleului a unui parametru de pornire, fie manual în momentul pornirii, fie prin editarea fișierului de configurare a încărcătorului de pornire <span class="phrase">(de exemplu, <code class="filename">syslinux.cfg</code>) și adăugând parametrul la sfârșitul liniei(lor) „append” pentru nucleu.</span> </p>
+<p>Dacă specificați fișierul de preconfigurare în configurația încărcătorului de pornire, este posibil să modificați configurația, astfel încât să nu fie nevoie să apăsați tasta «Enter» pentru a porni programul de instalare. <span class="phrase">Pentru syslinux, aceasta înseamnă stabilirea timpului de expirare la <code class="literal">1</code> în <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Pentru a vă asigura că programul de instalare preia fișierul de preconfigurare corect, puteți specifica opțional o sumă de verificare pentru fișier. În prezent, aceasta trebuie să fie o sumă md5 și, dacă este specificată, trebuie să se potrivească cu fișierul de preconfigurare sau programul de instalare va refuza să-l folosească. </p>
+<div class="informalexample"><pre class="screen">Parametrii de pornire de specificat:
+- dacă porniți din rețea:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- sau
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- dacă porniți o imagine de instalare remasterizată:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- dacă instalați de pe un suport USB (puneți fișierul de preconfigurare
+  în directorul de nivel superior al stick-ului USB):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Rețineți că <code class="filename">preseed/url</code> poate fi scurtat la <code class="filename">url</code>, <code class="filename">preseed/file</code> la <code class="filename">file</code> și <code class="filename">preseed/file/checksum</code> la <code class="filename">preseed-md5</code> atunci când acestea sunt pasate ca parametri de pornire. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Utilizarea parametrilor de pornire pentru a preconfigura întrebări</h3></div></div></div>
+<p>Dacă un fișier de preconfigurare nu poate fi utilizat pentru a preconfigura unii pași, instalarea poate fi în continuare complet automatizată, deoarece puteți trece valorile prestabilite în linia de comandă atunci când porniți programul de instalare. </p>
+<p>Parametrii de pornire pot fi utilizați și dacă nu doriți cu adevărat să utilizați preconfigurarea, ci doriți doar să oferiți un răspuns la o anumită întrebare. Unele exemple în care acest lucru poate fi util sunt documentate în altă parte a acestui manual. </p>
+<p>Pentru a definii o valoare care să fie utilizată în interiorul <code class="classname">debian-installer</code>, trebuie doar să indicați <strong class="userinput"><code><em class="replaceable"><code>ruta/la/variabilă</code></em>=<em class="replaceable"><code>valoare</code></em></code></strong> pentru oricare dintre variabilele prestabilite enumerate. Dacă urmează să fie utilizată o valoare pentru configurarea pachetelor pentru sistemul țintă, va trebui să adăugați înainte <em class="firstterm">proprietarul</em><a href="#ftn.id4578" class="footnote" name="id4578"><sup class="footnote">[19]</sup></a> variabilei ca în <strong class="userinput"><code><em class="replaceable"><code>proprietar</code></em>:<em class="replaceable"><code>ruta/la/variabilă</code></em>=<em class="replaceable"><code>valoare</code></em></code></strong>. Dacă nu specificați proprietarul, valoarea variabilei nu va fi copiată în baza de date debconf din sistemul țintă și astfel rămâne neutilizată în timpul configurării pachetului relevant. </p>
+<p>În mod normal, preconfigurarea unei întrebări în acest mod va însemna că întrebarea nu va fi adresată. Pentru a definii o anumită valoare implicită pentru o întrebare, dar să aveți în continuare întrebarea, utilizați <span class="quote">„<span class="quote">?=</span>”</span> în loc de <span class="quote">„<span class="quote">=</span>”</span> ca operator. A se vedea, de asemenea, <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Utilizarea preconfigurării pentru a modifica valorile implicite">Secțiune B.5.2, „Utilizarea preconfigurării pentru a modifica valorile implicite”</a>. </p>
+<p>Rețineți că unele variabile care sunt definite frecvent în promptul de pornire au un alias mai scurt. Dacă este disponibil un alias, acesta este folosit în exemplele din această anexă în loc de variabila completă. Variabila <code class="literal">preseed/url</code>, de exemplu, are ca alias <code class="literal">url</code>. Un alt exemplu este variabila-alias <code class="literal">tasks</code>, ce reprezintă <code class="literal">tasksel:tasksel/first</code>. </p>
+<p>Un <span class="quote">„<span class="quote">---</span>”</span> în opțiunile de pornire are o semnificație specială. Parametrii nucleului care apar după ultimul <span class="quote">„<span class="quote">---</span>”</span> pot fi copiați în configurația încărcătorului de pornire pentru sistemul instalat (dacă sunt acceptați de instalatorul pentru încărcătorul de pornire). Programul de instalare va filtra automat orice opțiuni (cum ar fi opțiunile de preconfigurare) pe care le recunoaște. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nucleele Linux actuale (2.6.9 și ulterioare) acceptă maximum 32 de opțiuni de linie de comandă și 32 de opțiuni de mediu, inclusiv orice opțiuni adăugate implicit pentru programul de instalare. Dacă aceste numere sunt depășite, nucleul va intra în panică (se va bloca); (pentru nucleele anterioare, aceste numere erau mai mici). </p></td></tr>
+</table></div>
+<p>Pentru majoritatea instalărilor, unele dintre opțiunile implicite din fișierul de configurare a încărcătorului de pornire, cum ar fi <code class="literal">vga=normal</code>, pot fi eliminate în siguranță, ceea ce vă poate permite să adăugați mai multe opțiuni pentru preconfigurare. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notă]" src="images/note.png"></td>
+<th align="left">Notă</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nu întotdeauna va fi posibil să specificați valori cu spații pentru parametrii de pornire, chiar dacă le delimitați cu ghilimele. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Modul auto</h3></div></div></div>
+<p>Există mai multe caracteristici ale programului de instalare Debian care se combină pentru a permite liniilor de comandă destul de simple din promptul de pornire să aibă ca rezultat instalări automate personalizate arbitrar și complexe. </p>
+<p>Acest lucru este activat prin utilizarea opțiunii de pornire <code class="literal">Instalare automată</code>, numită și <code class="literal">auto</code> pentru unele arhitecturi sau metode de pornire. În această secțiune, <code class="literal">auto</code> nu este așadar un parametru, înseamnă selectarea acelei opțiuni de pornire și adăugarea următorilor parametri de pornire la promptul de pornire. <span class="phrase">Consultați <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Ecranul de pornire">Secțiune 5.1.5, „Ecranul de pornire”</a> pentru informații despre cum să adăugați un parametru de pornire.</span> </p>
+<p>Pentru a ilustra acest lucru, iată câteva exemple care pot fi folosite în promptul de pornire: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Acest lucru se bazează pe existența unui server DHCP care va duce mașina la punctul în care <code class="literal">autoserver</code> poate fi rezolvat prin DNS, poate după adăugarea domeniului local dacă acesta a fost furnizat de DHCP. Dacă acest lucru s-a făcut pe un sit în care domeniul este <code class="literal">exemplu.com</code> și acesta are o configurare DHCP rezonabilă, ar avea ca rezultat preluarea fișierului de preconfigurare de la <code class="literal">http://autoserver. exemplu.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Ultima parte a acestei adrese URL (<code class="literal">d-i/trixie/./preseed.cfg</code>) este preluată de la <code class="literal">auto-install/defaultroot</code>. În mod implicit, acesta include directorul <code class="literal">trixie</code> pentru a permite versiunilor viitoare să-și specifice propriul nume de cod și să permită oamenilor să migreze la următoarea versiune într-o manieră controlată. Elementul <code class="literal">/./</code> este folosit pentru a indica o rădăcină, în raport cu care rutele ulterioare pot fi ancorate (pentru a fi utilizate în preseed/include și preseed/run). Acest lucru permite fișierelor să fie specificate fie ca URL-uri complete, rute care încep cu / care sunt astfel ancorate, fie chiar rute legate de locația în care a fost găsit ultimul fișier de preconfigurare. Acest lucru poate fi folosit pentru a construi mai multe scripturi portabile în care o întreagă ierarhie de scripturi poate fi mutată într-o nouă locație fără a o rupe, de exemplu, copierea fișierelor pe un stick USB când înainte erau pe un server web. În acest exemplu, dacă fișierul de preconfigurare definește <code class="literal">preseed/run</code> la <code class="literal">/scripts/late_command.sh</code>, atunci fișierul va fi preluat de la <code class="literal">http://autoserver.exemplu .com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Dacă nu există o infrastructură locală DHCP sau DNS sau dacă nu doriți să utilizați ruta implicită către <code class="filename">preseed.cfg</code>, puteți utiliza totuși o adresă URL explicită, iar dacă nu utilizați elementul <code class="literal">/./</code>, va fi ancorat la începutul rutei (adică al treilea <code class="literal">/</code> din adresa URL). Iată un exemplu care necesită suport minim din partea infrastructurii rețelei locale: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/ruta/la/fișierul_meu.preconfigurat</code></em>
+</pre></div>
+<p> Modul în care funcționează acesta este următorul: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>dacă adresa URL nu indică un protocol, se presupune că este http, </p></li>
+<li class="listitem"><p>dacă secțiunea de nume de gazdă nu conține puncte, domeniul derivat din DHCP, va fi atașat acesteia și </p></li>
+<li class="listitem"><p>dacă nu există <code class="literal">/</code> după numele gazdei, atunci se adaugă ruta implicită. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Pe lângă specificarea adresei url, puteți specifica, de asemenea, configurări care nu afectează direct comportamentul <code class="classname">debian-installer</code> în sine, dar pot fi transmise către scripturile specificate folosind <code class="literal">preseed/run</code> în fișierul de preconfigurare încărcat. În prezent, singurul exemplu în acest sens este <code class="literal">auto-install/classes</code>, care are un alias <code class="literal">classes</code>. Acesta poate fi folosit astfel: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>exemplu.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Clasele ar putea indica, de exemplu, tipul de sistem care urmează să fie instalat sau localizarea care trebuie utilizată. </p>
+<p>Desigur, este posibil să extindeți acest concept și, dacă o faceți, este rezonabil să utilizați spațiul de nume de instalare automată pentru aceasta. Deci s-ar putea să aibă ceva de genul <code class="literal">auto-install/style</code> care este apoi folosit în scripturile dumneavoastră. Dacă simțiți nevoia să faceți acest lucru, menționați-l pe lista de corespondență <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, astfel încât să putem evita conflictele în spațiul de nume și, probabil, să adăugați un alias pentru parametru. . </p>
+<p>Alegerea de pornire <code class="literal">auto</code> nu este încă definită pe toate arhitecturile. Același efect poate fi obținut prin simpla adăugare a celor doi parametri <code class="literal">auto=true priority=critical</code> la linia de comandă a nucleului. Parametrul nucleului <code class="literal">auto</code> este un alias pentru <code class="literal">auto-install/enable</code> și fixarea acestuia la <code class="literal">true</code> întârzie întrebările de localizare și de tastatură astfel încât acestea să poată fi preconfigurate, în timp ce <code class="literal">priority</code> este un alias pentru <code class="literal">debconf/priority</code> și fixarea acestuia la <code class="literal">critic</code> oprește întrebările cu o prioritate mai scăzută. </p>
+<p>Atunci când este selectată o instalare automată fără a specifica și o configurație de pre-configurare, utilizatorului i se va solicita să furnizeze o locație de preconfigurare. În mod alternativ, dacă a fost specificată o configurație de preconfigurare, atunci această solicitare este în mod normal suprimată pentru a permite o instalare complet non-interactivă. Cu toate acestea, dacă intenția este de a modifica valorile implicite prin utilizarea unui <code class="literal">preseed.cfg</code> într-un initrd, atunci rezultatul ar trebui să se comporte într-adevăr ca și cum nu a fost încă specificată preconfigurarea, chiar dacă a fost specificată. În acest caz, variabila debconf <code class="literal">auto-install/cloak_initrd_preseed</code> poate fi definită la <code class="literal">true</code> (de exemplu, în <code class="literal">preseed.cfg</code> din initrd). pentru a obține comportamentul necesar. </p>
+<p>Opțiuni suplimentare care pot fi de interes atunci când încercați să automatizați o instalare în timp ce utilizați DHCP sunt: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code>, ceea ce face ca mașina să aleagă primul NIC viabil și să aibă mai multă răbdare în a obține un răspuns la interogarea sa DHCP. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Indicație]" src="images/tip.png"></td>
+<th align="left">Indicație</th>
+</tr>
+<tr><td align="left" valign="top"><p>Un exemplu extins de utilizare a acestui cadru, inclusiv exemple de scripturi și clase, poate fi găsit la <a class="ulink" href="http://hands.com/d-i/" target="_top">situl web al dezvoltatorului său</a>. Exemplele disponibile acolo arată, de asemenea, multe alte efecte drăguțe care pot fi obținute prin utilizarea creativă a preconfigurării. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Alias utile cu preconfigurarea</h3></div></div></div>
+<p>Următoarele alias pot fi utile atunci când utilizați preconfigurarea (modul automat). Rețineți că acestea sunt pur și simplu pseudonime scurte pentru numele întrebărilor și trebuie întotdeauna să specificați și o valoare: de exemplu, <code class="literal">auto=true</code> sau <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Exemple de preconfigurare a promptului de pornire</h3></div></div></div>
+<p>Iată câteva exemple despre cum ar putea arăta promptul de pornire (va trebui să o adaptați nevoilor dvs.<span class="phrase">; consultați și <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Ecranul de pornire">Secțiune 5.1.5, „Ecranul de pornire”</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Pentru a stabilii româna ca limbă și România ca țară:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=ro country=RO --- quiet
+# Pentru a stabilii engleza ca limbă, Germania ca țară și să utilizați un aranjament al tastaturii germane:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Pentru a instala biroul MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Pentru a instala sarcina de server Web:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Utilizarea unui server DHCP pentru a specifica fișierele de preconfigurare</h3></div></div></div>
+<p>De asemenea, este posibil să utilizați DHCP pentru a specifica un fișier de preconfigurare de descărcat din rețea. DHCP permite specificarea unui nume de fișier. În mod normal, acesta este un fișier pentru pornirea din rețea (netboot), dar dacă pare a fi o adresă URL, mediile de instalare care acceptă preconfigurarea rețelei vor descărca fișierul de la adresa URL și îl vor folosi ca fișier de preconfigurare. Iată un exemplu despre cum să-l definiți în fișierul „dhcpd.conf” pentru versiunea 3 a serverului ISC DHCP (pachetul isc-dhcp-server Debian). </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Rețineți că exemplul de mai sus limitează acest nume de fișier la clienții DHCP care se identifică ca <span class="quote">„<span class="quote">d-i</span>”</span>, astfel încât nu va afecta clienții DHCP obișnuiți, ci doar programul de instalare. De asemenea, puteți pune textul într-un bloc de instrucțiuni doar pentru o anumită gazdă, pentru a evita preconfigurarea tuturor instalărilor din rețea. </p>
+<p>O modalitate bună de a utiliza preconfigurarea DHCP este să prestabiliți numai valorile specifice rețelei dvs., cum ar fi oglinda Debian de utilizat. În acest fel, instalările în rețeaua dvs. vor obține automat o oglindă bună selectată, dar restul instalării poate fi efectuată interactiv. Utilizarea preconfigurării DHCP pentru a automatiza complet instalările Debian ar trebui făcută numai cu multă grijă. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4578" class="footnote"><p><a href="#id4578" class="para"><sup class="para">[19] </sup></a> Proprietarul unei variabile debconf (sau șablon) este în mod normal numele pachetului care conține șablonul debconf corespunzător. Pentru variabilele utilizate în programul de instalare propriu-zis, proprietarul este <span class="quote">„<span class="quote">d-i</span>”</span>. Șabloanele și variabilele pot avea mai mult de un proprietar, ceea ce ajută să se determine dacă pot fi eliminate din baza de date debconf dacă pachetul este curățat. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Introducere </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Crearea unui fișier de preconfigurare</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

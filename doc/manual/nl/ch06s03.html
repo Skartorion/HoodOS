@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Individuele componenten gebruiken</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch06.html" title="Hoofdstuk 6. Het Debian installatiesysteem gebruiken">
+<link rel="prev" href="ch06s02.html" title="6.2. Voorstelling van de componenten">
+<link rel="next" href="ch06s04.html" title="6.4. Ontbrekende firmware laden">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Individuele componenten gebruiken</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 6. Het Debian installatiesysteem gebruiken</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Individuele componenten gebruiken</h2></div></div></div>
+<p>In dit onderdeel beschrijven we elke component van het installatiesysteem in detail. De componenten zijn gegroepeerd in stadia die herkenbaar zouden moeten zijn voor gebruikers. Ze worden voorgesteld in de volgorde waarin ze tijdens de installatie aan bod komen. Merk op dat niet alle modules voor elke installatie gebruikt zullen worden; welke modules daadwerkelijk worden gebruikt is afhankelijk van de door u gebruikte installatiemethode en van uw apparatuur. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Het instellen van het installatiesysteem van Debian en het configureren van de hardware</h3></div></div></div>
+<p>Laten we er vanuit gaan dat het Debian installatiesysteem is opgestart en dat u het eerste scherm ervan voor u heeft. Op dat moment is de functionaliteit van <code class="classname">debian-installer</code> nog vrij beperkt. Het weet nog niet veel over uw apparatuur, over welke taal u verkiest en zelfs niet over de taken die het moet uitvoeren. Maak u geen zorgen. Want <code class="classname">debian-installer</code> is behoorlijk slim. Het kan proberen uw apparatuur automatisch te detecteren, het kan de rest van zijn componenten lokaliseren en zichzelf opwaarderen tot een volwaardig installatiesysteem. U zult echter <code class="classname">debian-installer</code> nog altijd moeten helpen met enige informatie die het niet automatisch kan bepalen (zoals de selectie van de taal en de toetsenbordindeling die u verkiest of van de gewenste spiegelserver). </p>
+<p>U zult merken dat <code class="classname">debian-installer</code> tijdens dit stadium verschillende keren een <em class="firstterm">hardwareherkenning</em> uitvoert. De eerste keer is dit specifiek gericht op de apparatuur (bijvoorbeeld uw CD-station of netwerkkaart) die nodig is voor het laden van componenten van het installatiesysteem. Omdat bij deze eerste keer mogelijk nog niet alle stuurprogramma's beschikbaar zijn, moet de hardwareherkenning later in het proces worden herhaald. </p>
+<p>Tijdens de hardwareherkenning zal <code class="classname">debian-installer</code> nagaan of er stuurprogramma's voor uw hardware zijn waarvoor eventueel firmware geladen moet worden. Als er firmware nodig is die niet beschikbaar is, zal een dialoogvenster getoond worden dat de mogelijkheid biedt om de ontbrekende firmware vanaf een verwisselbaar medium te laden. Zie <a class="xref" href="ch06s04.html" title="6.4. Ontbrekende firmware laden">Paragraaf 6.4, “Ontbrekende firmware laden”</a> voor nadere details. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Controle van het beschikbaar geheugen / modus voor weinig geheugen</h4></div></div></div>
+<p>Een van de eerste dingen die <code class="classname">debian-installer</code> doet, is het controleren van het beschikbaar geheugen. Als de hoeveelheid beschikbaar geheugen beperkt is, zal deze component een aantal wijzigingen aanbrengen in het installatieproces waardoor u hopelijk in staat zult zijn om Debian GNU/Linux op uw systeem te installeren. </p>
+<p>De eerste maatregel die genomen wordt om het geheugengebruik door het installatiesysteem te beperken, is het uitschakelen van de vertaling. Dit betekent dat de installatie enkel nog in het Engels kan verlopen. Natuurlijk kunt u na de installatie nog steeds de lokalisatie voor het geïnstalleerde systeem instellen. </p>
+<p>Als dit nog steeds onvoldoende is, zal het installatiesysteem het geheugengebruik nog verder trachten te verminderen door enkel die componenten te laden die nodig zijn om een basale installatie uit te voeren. Dit beperkt de functionaliteit van het installatiesysteem. U zult de gelegenheid krijgen om bijkomende componenten handmatig te laden, maar u moet er zich rekenschap van geven dat elke geselecteerde component ook extra geheugen zal gebruiken en dat dit de installatie kan laten mislukken. </p>
+<p>Indien het installatiesysteem in de modus voor weinig geheugen opereert, wordt aangeraden om een relatief grote partitie voor wisselgeheugen (swap) aan te maken (1–2GB). De wisselgeheugenpartitie zal als virtueel geheugen gebruikt worden en dus de hoeveelheid geheugen die voor het systeem beschikbaar is, verhogen. Het installatiesysteem zal zo vroeg mogelijk in het installatieproces de wisselgeheugenpartitie activeren. Merk op dat intens gebruik van het wisselgeheugen de performantie van uw systeem zal verminderen en veel hardeschijfactiviteit zal genereren. </p>
+<p>Het is mogelijk dat uw systeem ondanks deze maatregelen toch nog vastloopt, dat er zich onverwachte fouten voordoen of dat bepaalde processen door de kernel vernietigd worden omdat het systeem geen vrij geheugen meer heeft (op VT4 en in het syslog-bestand zal dit resulteren in meldingen over <span class="quote">“<span class="quote">Out of memory</span>”</span> (te weinig geheugen)). </p>
+<p>Er werd bijvoorbeeld gerapporteerd dat in de modus voor weinig geheugen bij onvoldoende wisselgeheugen het aanmaken van een groot ext3-bestandssysteem mislukt. Indien een grotere wisselgeheugenpartitie geen soelaas biest, moet u proberen om het bestandssysteem als een ext2-bestandssysteem (wat een essentiële component van het installatiesysteem is) aan te maken. Na de installatie kunt u een ext2-partitie naar ext3 omzetten. </p>
+<p>Het is mogelijk om het installatiesysteem te dwingen om een strengere norm voor weinig geheugen te hanteren dan het standaard geneigd is om te doen op basis van het beschikbaar geheugen. Daarvoor gebruikt u de opstartparameter <span class="quote">“<span class="quote">lowmem</span>”</span> zoals in <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parameters voor het installatiesysteem van Debian">Paragraaf 5.3.2, “Parameters voor het installatiesysteem van Debian”</a> beschreven wordt. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Lokalisatiekeuzes maken</h4></div></div></div>
+<p>Over het algemeen zullen de eerste vragen die u gesteld worden, betrekking hebben op de lokalisatie voor zowel de installatie als het geïnstalleerde systeem. De lokalisatie-keuzes betreffen taal, land en taalgebied (locale). </p>
+<p>De taal die u kiest zal worden gebruikt tijdens het vervolg van de installatie, tenminste als een vertaling van de verschillende dialogen beschikbaar is. Als voor de geselecteerde taal geen geldige vertaling beschikbaar is, zal het installatiesysteem terugvallen op Engels. </p>
+<p>De geselecteerde geografische locatie (een land in de meeste gevallen) zal later in het installatieproces worden gebruikt om de correcte tijdzone te selecteren en een voor dat land geschikte Debian spiegelserver. Taal en land samen zullen helpen bij het bepalen wat het standaard taalgebied (locale) voor uw systeem is en bij de selectie van de correcte toetsenbordindeling. </p>
+<p>Allereerst zal worden gevraagd welke taal uw voorkeur heeft. De naam van de taal wordt zowel in het Engels (links) als in de taal zelf (rechts) weergegeven; de naam van de rechterkant wordt ook gebruikt in het gepaste script voor die taal. De lijst wordt gesorteerd op de Engelse namen. Bovenaan de lijst vindt u een extra optie waarmee u, in plaats van een taal, de <span class="quote">“<span class="quote">C</span>”</span>-locale kunt selecteren. Het kiezen van de<span class="quote">“<span class="quote">C</span>”</span>-locale heeft tot gevolg dat de installatie in het Engels zal plaatsvinden; daarnaast zal het geïnstalleerde systeem geen ondersteuning voor lokalisatie hebben, aangezien het pakket <code class="classname">locales</code>niet zal worden geïnstalleerd. </p>
+<p>Nadien zal u gevraagd worden uw geografische locatie te selecteren. Als u een taal heeft geselecteerd die als officiële taal wordt erkend in meer dan één land<a href="#ftn.id2586" class="footnote" name="id2586"><sup class="footnote">[4]</sup></a>, zal een keuzelijst worden getoond met daarin alleen die landen. Om een land te kiezen dat niet in de lijst voorkomt, kiest u de optie <span class="guimenuitem">ander</span> (de laatste keuzemogelijkheid). U krijgt dan een keuzelijst met continenten; na de selectie van een continent volgt een keuzelijst met landen die behoren tot dat continent. </p>
+<p>Als met de taal slechts één land geassocieerd wordt, zult u een keuzelijst krijgen met de landen van het continent of de regio waar dat land deel van uitmaakt, waarbij dat specifieke land reeds als standaard geselecteerd is. Gebruik de optie <span class="guibutton">Terug</span> om een land uit een ander continent te selecteren. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Het is belangrijk om het land waar u woont of waar u verblijft te selecteren, omdat op basis daarvan de tijdzone voor het geïnstalleerde systeem geconfigureerd wordt. </p></td></tr>
+</table></div>
+<p>Indien u een combinatie van land en taal selecteerde waarvoor geen taalgebied gedefinieerd is en er verschillende taalgebieden zijn met die taal, dan zal het installatiesysteem u laten kiezen welke van die taalgebieden u verkiest als standaard voor het geïnstalleerde systeem<a href="#ftn.id2594" class="footnote" name="id2594"><sup class="footnote">[5]</sup></a>. In alle andere gevallen zal op basis van de geselecteerde taal en het geselecteerde land een standaardtaalgebied geselecteerd worden. </p>
+<p>Elk taalgebied dat als standaard geselecteerd wordt op de in de vorige paragraaf beschreven manier, zal <em class="firstterm">UTF-8</em> als tekencodering gebruiken. </p>
+<p>Indien u instelde dat tijdens de installatie ook vragen met een lage prioriteit moeten gesteld worden, zult u de mogelijkheid hebben om bijkomende taalgebieden te selecteren en ze voor het geïnstalleerde systeem te laten aanmaken, met inbegrip van zogenaamde <span class="quote">“<span class="quote">oudere</span>”</span> taalgebieden<a href="#ftn.id2600" class="footnote" name="id2600"><sup class="footnote">[6]</sup></a>. Indien u dit doet, zal u gevraagd worden welk van de geselecteerde taalgebieden op het geïnstalleerde systeem als standaard beschouwd moet worden. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Een toetsenbord selecteren</h4></div></div></div>
+<p>De indeling van toetsenborden is vaak aangepast aan de tekens die in een taal worden gebruikt. Selecteer een indeling die overeenkomt met het toetsenbord dat u gebruikt. Als uw toetsenbordindeling niet in de lijst voorkomt, kies dan de indeling die het best in de buurt komt. U kunt, nadat de installatie is voltooid, een toetsenbordindeling kiezen uit een meer uitgebreide selectie (geef hiervoor, nadat u de installatie heeft afgerond, als systeembeheerder het commando <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>). </p>
+<p>Verplaats de selectie naar het toetsenbord dat u wilt selecteren en druk op <span class="keycap"><strong>Enter</strong></span>. Gebruik de pijltjestoetsen om de selectie te verplaatsen — zij zitten op alle toetsenbordindelingen op dezelfde plaats en zijn dus onafhankelijk van de toetsenbordconfiguratie. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Het ISO-image met het Debian installatiesysteem opzoeken</h4></div></div></div>
+<p>Als u de <span class="emphasis"><em>hd-media</em></span>-installatiemethode gebruikt, komt er een moment waarop u het ISO-image met het Debian installatiesysteem zult moeten lokaliseren en aankoppelen om het restant van de installatiebestanden te laden. Dit is de taak van de component <span class="command"><strong>iso-scan</strong></span>. </p>
+<p>Allereerst zal <span class="command"><strong>iso-scan</strong></span> automatisch alle blok-apparaten (d.w.z. partities en logische volumes) met daarop een bekend bestandssysteem, aankoppelen en deze achtereenvolgens doorzoeken op bestanden met een extensie <code class="filename">.iso</code> (en trouwens ook <code class="filename">.ISO</code>). Merk op dat tijdens de eerste poging alleen de hoogste twee niveau's van de mapstructuur zullen worden doorzocht (d.w.z. dat bijvoorbeeld <code class="filename">/<em class="replaceable"><code>willekeurig</code></em>.iso</code> en <code class="filename">/data/<em class="replaceable"><code>willekeurig</code></em>.iso</code> gevonden zullen worden, maar bijvoorbeeld niet <code class="filename">/data/tmp/<em class="replaceable"><code>willekeurig</code></em>.iso</code>). Nadat een ISO-image gevonden werd, controleert <span class="command"><strong>iso-scan</strong></span> de inhoud ervan om na te gaan of het image een geldig Debian ISO-image is of niet. In het eerste geval zijn we klaar, in het tweede geval zoekt <span class="command"><strong>iso-scan</strong></span> verder naar een image. </p>
+<p>Als de eerste poging om een ISO-installatie-image te vinden faalt, zal <span class="command"><strong>iso-scan</strong></span> u vragen of u een meer uitgebreide zoektocht wilt laten uitvoeren. Tijdens deze poging zal niet alleen in de hoogste mappen worden gezocht, maar wordt echt het volledige bestandssysteem doorlopen. </p>
+<p>Als <span class="command"><strong>iso-scan</strong></span> uw ISO-installatie-image niet kan vinden, start de computer dan opnieuw op met uw oorspronkelijk besturingssysteem en controleer of het image een correcte naam heeft (dus eindigend op<code class="filename">.iso</code>), of het staat op een bestandssysteem dat door <code class="classname">debian-installer</code> wordt herkend en of het niet beschadigd is (verifieer de checksum). Ervaren gebruikers van Unix kunnen deze handelingen eventueel uitvoeren op de tweede console zonder het systeem opnieuw op te starten. </p>
+<p>Merk op dat de partitie (of schijf) waarop het ISO-image staat tijdens het installatieproces niet hergebruikt kan worden, aangezien deze gebruik wordt door het installatieprogramma. Om hieraan een mouw te passen en in de veronderstelling dat u over voldoende systeemgeheugen beschikt, kan het installatieprogramma het ISO-image naar het RAM-geheugen kopiëren voordat het aangekoppeld wordt. Dit wordt geregeld door de debconf-vraag met lage prioriteit <code class="literal">iso-scan/copy_iso_to_ram</code> (deze wordt enkel gesteld als aan de geheugenvereisten voldaan wordt). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Het netwerk configureren</h4></div></div></div>
+<p>Als u met deze fase begint en het systeem detecteert dat u meer dan één netwerkkaart heeft, zal u worden gevraagd welke van de apparaten u wilt gebruiken voor uw <span class="emphasis"><em>primaire</em></span> netwerkinterface, dat wil zeggen, die welke u wilt gebruiken voor de installatie. De overige interfaces zullen op dit punt niet geconfigureerd worden. U kunt bijkomende interfaces configureren nadat de installatie is voltooid; zie hiervoor de man-pagina <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Automatische netwerkconfiguratie</h5></div></div></div>
+<p>Standaard zal <code class="classname">debian-installer</code> proberen uw netwerkinterface in de mate van het mogelijke automatisch in te stellen. Er zijn verschillende redenen waarom dit kan mislukken, variërend van het niet aangesloten zijn van de netwerkkabel tot het ontbreken van de nodige infrastructuur om een automatische configuratie mogelijk te maken. Als het fout loopt, kunt u voor nadere diagnose de foutmeldingen op de vierde console raadplegen. In elk geval zal u worden gevraagd of u een nieuwe poging wilt wagen of dat u het netwerk handmatig wilt configureren. Soms kunnen de netwerkdiensten die instaan voor de automatische configuratie traag reageren, en als u zeker weet dat alles aanwezig is, kunt u dus gewoon de nieuwe poging tot automatisch configureren starten. Indien het automatisch configureren blijft mislukken, kun u ter vervanging opteren voor de handmatige configuratie. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Handmatige netwerkconfiguratie</h5></div></div></div>
+<p>Bij een handmatige configuratie van de netwerkinterface, zal u een aantal vragen worden gesteld over uw netwerk, te weten: <code class="computeroutput">IP-adres</code>, <code class="computeroutput">Netwerkmasker</code>, <code class="computeroutput">Gateway</code>, <code class="computeroutput">Adressen van naamservers</code>, en een <code class="computeroutput">Computernaam</code> (host-naam). Als u beschikt over een draadloos netwerkapparaat, zal u worden gevraagd naar het <code class="computeroutput">draadloos ESSID</code> (<span class="quote">“<span class="quote">de naam van het draadloos netwerk</span>”</span>) en een <code class="computeroutput">WEP-sleutel</code> of een <code class="computeroutput">WPA/WPA2 wachtwoordzin</code>. Voer de antwoorden uit <a class="xref" href="ch03s03.html" title="3.3. Benodigde informatie">Paragraaf 3.3, “Benodigde informatie”</a> in. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>De volgende technische details kunnen mogelijk van pas komen (of niet). Het programma gaat ervan uit dat het IP-adres van het netwerk het resultaat is van een bitsgewijze AND-operatie van het IP-adres van uw systeem met het netwerkmasker. Het standaard broadcast-adres wordt berekend als het resultaat van een bitsgewijze OR-operatie van het IP-adres van uw systeem met de bitsgewijze NOT van het netwerkmasker. Ook zal het een veronderstelling maken voor uw gateway. Gebruik de voorgestelde standaardwaarden als u de juiste waarden voor de antwoorden niet kunt vinden — u kunt ze, indien nodig, altijd nog wijzigen nadat de installatie is afgerond door het bestand <code class="filename">/etc/network/interfaces</code> te wijzigen. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 en IPv6</h5></div></div></div>
+<p>Sinds Debian GNU/Linux 7.0 (<span class="quote">“<span class="quote">Wheezy</span>”</span>) ondersteunt <code class="classname">debian-installer</code> zowel IPv6 als het <span class="quote">“<span class="quote">klassieke</span>”</span> IPv4. Alle combinaties van IPv4 en IPv6 (uitsluitend IPv4, uitsluitend IPv6 en zogenaamde dual-stack configuraties met de beide types adressen) worden ondersteund. </p>
+<p>Autoconfiguratie voor IPv4 gebeurt via DHCP (Dynamic Host Configuration Protocol), een protocol voor de dynamische netwerkconfiguratie van de computer. De autoconfiguratie voor IPv6 ondersteunt statusloze autoconfiguratie met NDP (Neighbor Discovery Protocol, met inbegrip van recursieve toewijzing van een DNS server (RDNSS)), statusloze autoconfiguratie via DHCPv6 en gemengde statusloze/statusgeoriënteerde autoconfiguratie (adresconfiguratie via NDP, bijkomende parameters via DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Gebruikers en wachtwoorden instellen</h3></div></div></div>
+<p>Juist voor de klok ingesteld wordt, zal het installatiesysteem u in staat stellen om het <span class="quote">“<span class="quote">root</span>”</span>-account (het systeembeheerdersaccount) en/of een account voor de eerste gebruiker in te stellen. Accounts voor andere gebruikers kunnen worden aangemaakt nadat de installatie is afgerond. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Het wachtwoord voor root instellen</h4></div></div></div>
+<p>Het <span class="emphasis"><em>root</em></span>-account wordt ook wel de <span class="emphasis"><em>super-user</em></span> genoemd; het is een login die alle beveiligingen op uw systeem omzeilt. Het root-account dient alleen te worden gebruikt voor systeembeheer en altijd gedurende de kortst mogelijke tijd. </p>
+<p>Elk wachtwoord dat u aanmaakt zou uit tenminste 6 tekens moeten bestaan en zou zowel hoofd- als kleine letters en ook leestekens moeten bevatten. Wees extra zorgvuldig als u het wachtwoord voor root instelt, aangezien dit account zo krachtig is. Vermijd woorden die voorkomen in woordenboeken of het gebruik van persoonlijke gegevens die eenvoudig kunnen worden geraden. </p>
+<p>Wees erg op uw hoede als iemand u ooit vertelt dat hij het wachtwoord van uw root-account nodig heeft. Normaal gesproken zou u het wachtwoord voor uw root-account nooit mogen onthullen, tenzij u een machine beheert die meer dan één systeembeheerder heeft. </p>
+<p>Indien u hier geen wachtwoord opgeeft voor de gebruiker <span class="quote">“<span class="quote">root</span>”</span>, zal dit account uitgeschakeld worden, maar zal later het pakket <span class="command"><strong>sudo</strong></span> geïnstalleerd worden om het uitvoeren van beheerstaken op het nieuwe systeem mogelijk te maken. Standaard zal de eerste gebruiker die aangemaakt wordt op het systeem, de toelating krijgen om het commando <span class="command"><strong>sudo</strong></span> te gebruiken om gebruiker root te worden. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Een gewone gebruiker aanmaken</h4></div></div></div>
+<p>Het systeem zal u op dit punt ook vragen of u een gewoon gebruikersaccount wilt aanmaken. Dit account dient om u op het systeem aan te melden. Het is <span class="emphasis"><em>niet</em></span> de bedoeling dat u het root-account gebruikt voor dagelijks gebruik of als uw persoonlijke login. </p>
+<p>Waarom niet? Wel, één reden om het gebruik van de privileges van root te vermijden, is dat het zeer eenvoudig is om als root onherstelbare schade aan te richten. Een andere reden is dat u erin geluisd zou kunnen worden om een programma uit te voeren met daarin verborgen een <span class="emphasis"><em>Trojaans paard</em></span> — een Trojaans paard is een programma dat misbruik maakt van uw rechten als super-user om achter uw rug de beveiliging van uw systeem te ontwrichten. In elk degelijk boek over systeembeheer voor Unix wordt meer uitgebreid ingegaan op dit onderwerp — overweeg om er één te lezen als dit nieuw voor u is. </p>
+<p>U zult eerst worden gevraagd om de volledige naam van de gebruiker in te voeren. Vervolgens wordt u gevraagd naar een naam voor het gebruikersaccount; in het algemeen is uw voornaam (de standaardwaarde) of iets dergelijks afdoende. Tot slot zal een wachtwoord voor dit account worden gevraagd. </p>
+<p>Als u op enig moment na de installatie nog een ander gebruikersaccount wilt aanmaken, kunt u het commando <span class="command"><strong>adduser</strong></span> gebruiken. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. De klok en de tijdzone instellen</h3></div></div></div>
+<p>Het installatiesysteem zal allereerst proberen om verbinding te maken met een tijdserver op het Internet (gebruikmakend van het <em class="firstterm">NTP</em>-protocol) om op basis daarvan de systeemtijd juist in te stellen. Als dit mislukt, zal het installatiesysteem ervan uitgaan dat de datum en tijd die het tijdens het opstarten van de interne systeemklok kreeg, juist zijn. Het is niet mogelijk om tijdens de installatie de systeemtijd handmatig in te stellen. </p>
+<p>Afhankelijk van de eerder in het installatieproces geselecteerde locatie, kan een keuzelijst getoond worden met tijdzones die relevant zijn voor die locatie. Als er voor uw locatie slechts één tijdzone bestaat en u een standaardinstallatie uitvoert, zal u niets worden gevraagd en zal het systeem ervan uitgaan dat dit de correcte tijdzone is. </p>
+<p>In expertmodus of bij een installatie waarbij ook vragen gesteld worden die een prioriteit medium hebben, zult u de extra mogelijkheid hebben om <span class="quote">“<span class="quote">Coordinated Universal Time</span>”</span> (UTC - de gecoördineerde wereldtijd) als tijdzone te selecteren. </p>
+<p>Als u, om wat voor reden dan ook, voor het geïnstalleerde systeem een tijdzone wilt instellen die <span class="emphasis"><em>niet</em></span> past bij de geselecteerde locatie, dan zijn er twee opties. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>De meest eenvoudige optie is om gewoon een andere tijdzone in te stellen nadat de installatie is afgerond en u uw nieuwe systeem heeft opgestart. Het commando hiervoor is: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Een alternatieve mogelijkheid is om de tijdzone helemaal aan het begin van de installatie op te geven door de parameter <strong class="userinput"><code>time/zone=<em class="replaceable"><code>waarde</code></em></code></strong> mee te geven bij het opstarten van het installatiesysteem. De waarde dient uiteraard een geldige tijdzone te zijn, zoals <strong class="userinput"><code>Europe/Amsterdam</code></strong> of <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Voor geautomatiseerde installaties kan de tijdzone op om het even welke gewenste waarde worden ingesteld door gebruik te maken van voorconfiguratie (preseeding). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Schijfindeling en selectie van aankoppelpunten</h3></div></div></div>
+<p>Op dit punt, nadat voor de laatste keer hardwareherkenning heeft plaatsgevonden, heeft <code class="classname">debian-installer</code> zijn volledige sterkte bereikt: aangepast aan de behoeften van de gebruiker en klaar voor het echte werk. Zoals de titel van dit onderdeel aangeeft, is de voornaamste taak van de volgende componenten het indelen van uw harde schijven, het creëren van bestandssystemen en het toewijzen van aankoppelpunten. Facultatief kunnen nauw gerelateerde zaken als RAID, LVM of versleutelde partities worden geconfigureerd. </p>
+<p>Als u weinig ervaring heeft met het indelen van schijven of gewoon meer gedetailleerde informatie wenst, kunt u <a class="xref" href="apc.html" title="Bijlage C. Schijven indelen voor Debian">Bijlage C, <i>Schijven indelen voor Debian</i></a> raadplegen. </p>
+<p>Allereerst zal u de gelegenheid worden geboden om ofwel een gehele harde schijf of de beschikbare vrije ruimte op een schijf automatisch in te delen. Dit wordt ook <span class="quote">“<span class="quote">begeleide</span>”</span> schijfindeling genoemd. Als u de schijf niet automatisch wenst in te delen, kies dan de optie <span class="guimenuitem">Schijfindeling handmatig uitvoeren</span> uit het menu. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Ondersteunde schijfindelingsopties</h4></div></div></div>
+<p>Het schijfindelingsprogramma dat in <code class="classname">debian-installer</code> gebruikt wordt, is behoorlijk veelzijdig. Het laat toe om uiteenlopende schijfindelingsschema's, verschillende partitietabellen en bestandssystemen en gespecialiseerde blokapparaten te gebruiken. </p>
+<p>Welke opties precies beschikbaar zijn, hangt hoofdzakelijk af van de architectuur, maar ook nog van andere factoren. Op systemen met een beperkt intern geheugen bijvoorbeeld, kunnen bepaalde opties niet beschikbaar zijn. Wat als standaard geldt, kan ook verschillend zijn. Het type partitietabel dat standaard gebruikt wordt, kan bijvoorbeeld anders zijn voor harde schijven met een grote opslagcapaciteit dan voor kleinere harde schijven. Sommige opties kunnen enkel aangepast worden als men een installatie uitvoert met een gemiddelde (medium) of lage (low) debconf-prioriteit (waarbij dus ook de vragen die een gemiddelde of lage prioriteit hebben, gesteld worden) . Bij een hogere prioriteit zullen redelijke standaardwaarden gehanteerd worden. </p>
+<p>Het installatiesysteem ondersteunt verschillende gespecialiseerde vormen van schijfindeling en gebruik van opslagapparatuur, die in veel gevallen met elkaar gecombineerd kunnen worden. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logical Volume Management (LVM) - logisch volumebeheer</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>Software RAID</em></span>
+  </p>
+<p>Ondersteunde RAID-niveaus zijn 0, 1, 4, 5, 6 en 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Encryptie</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (experimenteel) </p>
+<p>Raadpleeg <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">onze Wiki</a> voor informatie. De ondersteuning voor multipath (een techniek die meerdere paden tussen CPU en opslagapparaat gebruikt) is momenteel enkel beschikbaar als deze geactiveerd werd bij het opstarten van het installatiesysteem. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>De volgende bestandssystemen worden ondersteund. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Meestal is ext4 geselecteerd als standaard bestandssysteem. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (niet op alle architecturen beschikbaar) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (niet op alle architecturen beschikbaar) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (facultatief; niet op alle architecturen beschikbaar) </p>
+<p>Ondersteuning voor het Reiser bestandssysteem is niet langer standaard beschikbaar. Als het installatiesysteem uitgevoerd wordt met een gemiddelde (medium) of lage (low) debconf-prioriteit (waardoor het installatiesysteem ook vragen met een gemiddelde of lage prioriteit stelt), kan die ondersteuning geactiveerd worden door de component <code class="classname">partman-reiserfs</code> te selecteren. Enkel versie 3 van het bestandssysteem wordt ondersteund. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Bestaande partities zullen herkend worden en het is mogelijk om er aankoppelpunten aan toe te kennen. Het is niet mogelijke om nieuwe qnx4-partities aan te maken. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (alleen-lezen) </p>
+<p>Van bestaande NTFS-partities kan de grootte aangepast worden en het is mogelijk om er aankoppelpunten aan toe te kennen. Het is niet mogelijk om nieuwe NTFS-partities aan te maken. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Het schijfindelingsprogramma accepteert eenheden als machten van tien (1 MB = 1000 kB = 1000000 B), evenals als machten van twee (1 MiB = 1024 kiB = 1048576 B). Eenheidsvoorvoegsels worden ondersteund tot EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Begeleide schijfindeling</h4></div></div></div>
+<p>Als u kiest voor begeleide schijfindeling, heeft u drie mogelijke opties: de partities direct op de harde schijf aanmaken (de klassieke methode), of ze aanmaken met behulp van logisch volumebeheer (LVM), of ze aanmaken met behulp van geëncrypteerd LVM<a href="#ftn.id2780" class="footnote" name="id2780"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>De optie om gebruik te maken van (geëncrypteerd) LVM is mogelijk niet op alle architecturen beschikbaar. </p></td></tr>
+</table></div>
+<p>Als u LVM of geëncrypteerd LVM gebruikt, zal het installatiesysteem de meeste partities aanmaken binnenin één grote partitie; het voordeel van deze methode is dat de grootte van de partities binnen die overkoepelende partitie later relatief eenvoudig kan worden gewijzigd. Als het een geëncrypteerd LVM betreft, zal de grote partitie niet leesbaar zijn zonder dat men de unieke sleutel kent. Op die manier worden uw (persoonlijke) gegevens extra beveiligd. </p>
+<p>Als u geëncrypteerd LVM gebruikt, zal het installatiesysteem de schijf ook automatisch wissen door er willekeurige data op te schrijven. Dit verhoogt de beveiliging nog meer (omdat het daardoor niet mogelijk is uit te maken welke delen van de schijf in gebruik zijn en het ook garandeert dat elk spoor van een eerdere installatie gewist wordt), maar afhankelijk van de grootte van uw schijf kan dit wat tijd in beslag nemen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Indien u kiest voor begeleide schijfindeling met LVM of geëncrypteerd LVM, moeten bepaalde wijzigingen aan de partitietabel naar de gekozen schijf geschreven worden tijdens het opzetten van LVM. Deze wijzigingen wissen effectief alle gegevens die momenteel op de geselecteerde harde schijf staan en ze later herstellen zal niet mogelijk zijn. Het installatiesysteem zal u evenwel om bevestiging vragen vooraleer die wijzigingen naar schijf geschreven worden. </p></td></tr>
+</table></div>
+<p>Indien u kiest voor de begeleide schijfindeling<span class="phrase"> (ofwel een klassieke schijfindeling ofwel een schijfindeling met (geëncrypteerd) LVM)</span> van een volledige schijf, zal u eerst gevraagd worden de schijf te selecteren die u wenst te gebruiken. Ga na of al uw schijven vermeld worden en als u verschillende schijven heeft, moet u er op letten de juiste te selecteren. De volgorde waarin ze opgesomd staan kan anders zijn dan u gewoon bent. De grootte van de schijven kan u helpen om ze te herkennen. </p>
+<p>Alle gegevens op de geselecteerde schijf zullen uiteindelijk verloren gaan, maar er zal u altijd om bevestiging gevraagd worden bij het maken van veranderingen vooraleer ze op de schijf toegepast worden. <span class="phrase"> Indien u de klassieke schijfindelingsmethode selecteerde, zult u tot op het einde de kans hebben om alle wijzigingen ongedaan te maken. Indien u (geëncrypteerd) LVM gebruikt is dit niet mogelijk. </span> </p>
+<p>Vervolgens zult u kunnen kiezen uit de schema's die in de onderstaande tabel weergegeven worden. Elk van deze schema's heeft zijn voor- en nadelen, waarvan een aantal wordt besproken in <a class="xref" href="apc.html" title="Bijlage C. Schijven indelen voor Debian">Bijlage C, <i>Schijven indelen voor Debian</i></a>. Als u twijfelt, kies dan de eerste optie. Merk op dat begeleide schijfindeling een zekere minimale vrije schijfruimte nodig heeft om te kunnen werken. Als u niet tenminste ongeveer 3GB ruimte (afhankelijk van het gekozen schema) ter beschikking kunt stellen, zal de begeleide schijfindeling mislukken. Bovendien zult u op kleine schijven waarschijnlijk niet alle hieronder genoemde schema's zien. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Schijfindelingsschema</th>
+<th>Minimale ruimte</th>
+<th>Aangemaakte partities</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Alle bestanden op één partitie</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>Afzonderlijke partitie /home</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>Afzonderlijke partities /home, /var en /tmp</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Aparte partities /srv en /var; swap beperkt tot 1GB (voor server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Schema speciaal voor kleine schijven</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Als u kiest voor begeleide schijfindeling met gebruik van (geëncrypteerd) LVM, dan zal het installatiesysteem ook een afzonderlijke <code class="filename">/boot</code> partitie aanmaken. Alle andere partities, met inbegrip van de partitie voor wisselgeheugen (swap), zullen worden aangemaakt binnenin de LVM-partitie. </p>
+<p>Indien u opstartte in EFI-modus dan zal er bij de begeleide schijfindeling een extra partitie, geformatteerd als een opstartbaar FAT32-bestandssysteem, aangemaakt worden voor de EFI-bootloader. Deze partitie wordt een EFI System Partition (ESP) genoemd. Het formatteringsmenu bevat ook een extra item voor het manueel instellen van een partitie als een ESP. </p>
+<p>Nadat u een schema heeft geselecteerd, zal op het volgende scherm de nieuwe partitietabel worden getoond met daarbij indicaties of en hoe deze geformatteerd zullen worden en op welke aankoppelpunten ze aangekoppeld zullen worden. </p>
+<p>De lijst met partities zou er zo uit kunnen zien: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      VRIJE RUIMTE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p> Dit voorbeeld toont twee harde schijven die zijn opgedeeld in verschillende partities; de eerste schijf heeft nog vrije ruimte. Elke partitieregel bestaat uit partitienummer, type, grootte, facultatieve opties, bestandssysteem en het aankoppelpunt (eventueel). Merk op dat de hier weergegeven indeling niet kan worden gerealiseerd met behulp van de begeleide schijfindeling. Zij toont echter wel de flexibiliteit die kan worden bereikt met handmatige schijfindeling. </p>
+<p>Hiermee is de begeleide schijfindeling voltooid. Als u tevreden bent met de gegenereerde partitietabel, kunt u de menuoptie <span class="guimenuitem">Schijfindeling afronden en veranderingen naar schijf schrijven</span> kiezen om de nieuwe partitietabel te implementeren (zoals beschreven wordt aan het einde van dit onderdeel). Als u nog niet tevreden bent, kunt u kiezen voor <span class="guimenuitem">Veranderingen aan partities ongedaan maken</span> en de begeleide schijfindeling nogmaals uitvoeren of de voorgestelde indeling wijzigen zoals hieronder beschreven wordt voor de handmatige schijfindeling. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Handmatige schijfindeling</h4></div></div></div>
+<p>Als u kiest voor handmatige schijfindeling, zal een vergelijkbaar scherm worden getoond als hiervoor weergegeven, maar dan met uw bestaande partitietabel en nog zonder aankoppelpunten. Hoe u handmatig de partitietabel kunt opstellen en het gebruik van partities door uw nieuwe Debian systeem worden in de rest van dit onderdeel behandeld. </p>
+<p>Als u een nog maagdelijke schijf zonder partities of vrije ruimte selecteert, zal u gevraagd worden of een nieuwe partitietabel aangemaakt moet worden (deze is nodig om partities te kunnen aanmaken). Daarna zou in de tabel onder de geselecteerde schijf een nieuwe regel met als titel <span class="quote">“<span class="quote">VRIJE RUIMTE</span>”</span> (FREE SPACE) moeten verschijnen. </p>
+<p>Als u vrije ruimte selecteert, krijgt u de gelegenheid om een nieuwe partitie te creëren. U zult een korte serie vragen over grootte, type (primair of logisch) en positie (aan het begin of het einde van de vrije ruimte) moeten beantwoorden. Daarna krijgt u een gedetailleerd overzicht van de nieuwe partitie. Het belangrijkste element is <span class="guimenuitem">Gebruiken als:</span> (Use as:), waarin vastgelegd wordt of er op de partitie een bestandssysteem geplaatst wordt, of ze gebruikt zal worden als wisselgeheugen,<span class="phrase"> voor software RAID, voor LVM, als een geëncrypteerd bestandssysteem</span> of helemaal niet gebruikt zal worden. Andere instellingen betreffen aankoppelpunt, aankoppelopties en de indicatie of de partitie opstartbaar moet zijn. Welke instellingen getoond worden, is afhankelijk van waarvoor de partitie gebruikt zal worden. Als de standaardwaarden u niet bevallen, kunt u ze naar behoefte wijzigen. Door bijvoorbeeld de optie <span class="guimenuitem">Gebruiken als:</span> te selecteren, kunt u een ander bestandssysteem voor de partitie selecteren, inclusief de mogelijkheid om de partitie te gebruiken voor wisselgeheugen (swap),<span class="phrase"> software RAID, LVM</span> of om de partitie helemaal niet te gebruiken. Als u tevreden bent met de nieuwe partitie kiest u <span class="guimenuitem">Klaar met het instellen van de partitie</span> waarna u terugkeert naar het hoofdscherm van <span class="command"><strong>partman</strong></span>. </p>
+<p>Als u een instelling van een partitie wilt wijzigen, selecteert u gewoon die partitie waarna u in het configuratiemenu voor de partitie komt. Dit is hetzelfde scherm als datgene voor het aanmaken van een nieuwe partitie en u kunt dus dezelfde instellingen wijzigen. Iets wat mogelijk niet meteen duidelijk is, is dat u de grootte van een partitie kunt wijzigen door het item dat de grootte van de partitie aangeeft, te selecteren. Bestandssystemen waarvan bekend is dat ze werken, zijn in ieder geval fat16, fat32, ext2, ext3 en swap. Dit menu stelt u ook in staat om een partitie te verwijderen. </p>
+<p>Zorg ervoor dat u tenminste twee partities aanmaakt: één voor het<span class="emphasis"><em>root</em></span>-bestandssysteem, het basisbestandssysteem, (dat aangekoppeld moet worden aan het aankoppelpunt <code class="filename">/</code>) en één voor <span class="emphasis"><em>swap</em></span>, het wisselgeheugen. Als u vergeet om het basisbestandssysteem aan te koppelen, zal <span class="command"><strong>partman</strong></span> u niet voort laten doen tot dit probleem is verholpen. </p>
+<p>Als u opstartte in EFI-modus maar vergeet om een EFI Systeem Partitie te selecteren en te formatteren, zal<span class="command"><strong>partman</strong></span> dit vaststellen en u beletten voort te gaan tot u er een heeft toegewezen. </p>
+<p>De functionaliteit van <span class="command"><strong>partman</strong></span> kan worden vergroot met behulp van modules voor het installatiesysteem, maar die functionaliteit is afhankelijk van de architectuur van uw systeem. Als u dus niet alle beschreven mogelijkheden terugvindt, controleer dan of alle vereiste modules (zoals <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code> of <code class="filename">partman-lvm</code>) zijn geladen. </p>
+<p>Als u tevreden bent met het eindresultaat van de schijfindeling, kiest u in het schijfindelingsmenu de optie <span class="guimenuitem">Schijfindeling afronden en veranderingen naar schijf schrijven</span>. Daarna zal een overzicht worden getoond van de aan de schijven aangebrachte wijzigingen en zal u worden gevraagd om te bevestigen dat de gewenste bestandssystemen wel degelijk moeten aangemaakt worden. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Meervoudige schijfapparaten configureren (Software RAID)</h4></div></div></div>
+<p>Als u in uw computer meer dan één harde schijf<a href="#ftn.id2874" class="footnote" name="id2874"><sup class="footnote">[8]</sup></a> heeft, kunt u <span class="command"><strong>partman-md</strong></span> gebruiken om uw schijfeenheden te configureren met betere prestaties en/of grotere gegevensbetrouwbaarheid als doel. Het resultaat wordt een <em class="firstterm">Multidisk Device</em> (MD) genoemd, een meervoudig schijfapparaat, of naar zijn meest bekende variant, een <em class="firstterm">Software RAID</em>). </p>
+<p>MD is in feite niets meer dan een verzameling partities op verschillende harde schijven die worden gecombineerd om gezamenlijk één <span class="emphasis"><em>logisch</em></span> apparaat te vormen. Dit apparaat kan vervolgens worden gebruikt als een gewone partitie (dat wil zeggen dat u het in <span class="command"><strong>partman</strong></span> kunt formatteren, er een aankoppelpunt kunt aan toewijzen, enz.). </p>
+<p>Het voordeel dat u behaalt, is afhankelijk van het soort MD-apparaat dat u creëert. Op dit moment worden ondersteund: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Is hoofdzakelijk gericht op prestatieverbetering. RAID0 splitst alle binnenkomende gegevens op in <em class="firstterm">blokken</em> (ook wel stripes genoemd) en verdeelt deze gelijkmatig over elke schijf in de reeks. Dit kan de snelheid van lees- en schrijfoperaties verhogen, maar als één van de schijven defect raakt, verliest u <span class="emphasis"><em>alles</em></span> (een deel van de informatie staat nog wel op de 'gezonde' schijf/schijven, maar een ander deel <span class="emphasis"><em>stond</em></span> op de defecte schijf). </p>
+<p> RAID0 wordt bijvoorbeeld veel toegepast voor video-bewerking. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Is geschikt voor situaties waar betrouwbaarheid de belangrijkste overweging is. Het bestaat uit verschillende (gewoonlijk twee) partities van gelijke grootte, waarbij beide partities exact dezelfde gegevens bevatten. In essentie betekent dit drie dingen. Ten eerste heeft u, als één van de schijven defect raakt, nog altijd de gegevens op de overige schijven staan. Ten tweede kunt u effectief slechts een deel van de beschikbare capaciteit gebruiken (meer exact: ter grootte van de kleinste partitie in de RAID). Ten derde wordt de belasting bij het lezen van gegevens verdeeld over de schijven. Dit kan de prestaties verbeteren wanneer op een server doorgaans meer lees- dan schrijfacties plaatsvinden, zoals bij een bestandsserver het geval is. </p>
+<p> Desgewenst kunt u een reserve harde schijf in de reeks opnemen die bij een storing de plaats zal innemen van de defecte schijf. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> Is een goed compromis tussen snelheid, betrouwbaarheid en gegevensredundantie. Bij RAID5 worden binnenkomende gegevens gesplitst in blokken en gelijkmatig verdeeld over alle harde schijven op één na (vergelijkbaar met RAID0). In afwijking van RAID0, wordt bij RAID5 ook<em class="firstterm">pariteits</em>informatie berekend die op de overgebleven schijf wordt weggeschreven. De harde schijf met de pariteitsinformatie is niet statisch (dat zou RAID4 zijn), maar wordt periodiek gewijzigd zodat de pariteitsinformatie gelijkelijk wordt verdeeld over alle schijven. Als één van de schijven defect raakt, kan het ontbrekende deel van de informatie worden berekend op basis van de resterende gegevens en hun pariteit. RAID5 dient te zijn opgebouwd uit tenminste drie actieve partities. Desgewenst kunt u een reservehardeschijf in de reeks opnemen die bij een storing de plaats zal innemen van de defecte schijf. </p>
+<p> Zoals u kunt zien, heeft RAID5 een vergelijkbare mate van betrouwbaarheid als RAID1 terwijl de opslag minder redundant is. Aan de andere kant is het, in verband met de berekening van de partiteitsinformatie, mogelijk iets trager bij schrijfoperaties dan RAID0. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Is vergelijkbaar met RAID5 behalve dat het twee pariteitsapparaten gebruikt in plaats van één. </p>
+<p> Een reeks schijven van het type RAID6 kan zich herstellen van wel twee defecte harde schijven. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 combineert het werken met blokken (zoals in RAID0) en met spiegeling (zoals in RAID1). Het maakt <em class="replaceable"><code>n</code></em> kopieën van inkomende gegevens en verdeelt ze over de partities, zodanig dat zich nooit meer dan één kopie van dezelfde gegevens op hetzelfde apparaat bevindt. De standaardwaarde voor <em class="replaceable"><code>n</code></em> is 2, maar in de expertmodus kan het op een andere waarde ingesteld worden. Het aantal gebruikte partities moet minstens <em class="replaceable"><code>n</code></em> zijn. RAID10 hanteert verschillende modellen om de kopieën te verdelen. Het standaardmodel werkt met nabije-kopieën (near copies). Daarbij bevindt de kopie zich op elk van de schijven op ongeveer dezelfde offset. Bij verre-kopieën (far copies) bevinden de kopieën zich op de schijven op verschillende offsets. Bij offset-kopieën wordt het blok gekopieerd, niet de individuele kopie. </p>
+<p> RAID10 kan gebruikt worden om betrouwbaarheid en redundantie te bekomen zonder het nadeel van de pariteitsberekening. </p>
+</dd>
+</dl></div>
+<p> Samenvattend: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Type</th>
+<th>Minimum aantal apparaten</th>
+<th>Reserveschijf</th>
+<th>Overleeft een schijfstoring?</th>
+<th>Beschikbare ruimte</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>nee</td>
+<td>nee</td>
+<td>Grootte van de kleinste partitie vermenigvuldigd met het aantal apparaten in de RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>facultatief</td>
+<td>ja</td>
+<td>Grootte van de kleinste partitie in de RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>facultatief</td>
+<td>ja</td>
+<td>Grootte van de kleinste partitie vermenigvuldigd met (het aantal apparaten in de RAID minus één) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>facultatief</td>
+<td>ja</td>
+<td>Grootte van de kleinste partitie vermenigvuldigd met (het aantal apparaten in de RAID minus twee) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>facultatief</td>
+<td>ja</td>
+<td>Het totaal aantal partities gedeeld door het aantal keer dat elk fragment gekopieerd wordt (standaard twee maal) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Als u meer wilt weten over software RAID, raadpleeg dan de <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>Om een MD-apparaat aan te maken, moet u de partities waarvan u wilt dat ze er deel van uitmaken, markeren om gebruikt te worden in een RAID. (U doet dit in <span class="command"><strong>partman</strong></span> in het menu met <span class="guimenu">Partitie-instellingen</span>. Daar selecteert u <span class="guimenu">Gebruiken als:</span> → <span class="guimenuitem">Fysiek volume voor RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Zorg ervoor dat het systeem opgestart zal kunnen worden met het schijfindelingsschema dat u in gedachten heeft. Over het algemeen zal het nodig zijn om een apart bestandssysteem aan te maken voor <code class="filename">/boot</code> als u voor het basisbestandssysteem (<code class="filename">/</code>) RAID wilt gebruiken. De meeste bootloaders <span class="phrase">(waaronder grub)</span> ondersteunen de spiegelende vorm (niet de met blokken werkende of striped vorm!) van RAID1, en dus is bijvoorbeeld RAID5 gebruiken voor <code class="filename">/</code> en RAID1 voor <code class="filename">/boot</code> een mogelijkheid. </p></td></tr>
+</table></div>
+<p>Vervolgens dient u in het hoofdmenu van <span class="command"><strong>partman</strong></span> te kiezen voor <span class="guimenuitem">Software-RAID instellen</span>. (Dit menu verschijnt pas nadat u tenminste één partitie heeft gemarkeerd om gebruik te worden als <span class="guimenuitem">Fysiek volume voor RAID</span>.) Kies dan op het eerste scherm van <span class="command"><strong>partman-md</strong></span> voor <span class="guimenuitem">MD-apparaat aanmaken</span>. Er zal een lijst met ondersteunde types MD-apparaten worden getoond, waaruit u er één kunt kiezen (bijvoorbeeld RAID1). Het vervolg is afhankelijk van het geselecteerde type MD. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 is eenvoudig — er zal een overzicht met beschikbare RAID-partities worden getoond en uw enige taak is het selecteren van de partities die u voor het MD-apparaat wilt gebruiken. </p></li>
+<li class="listitem"><p>RAID1 is iets lastiger. Allereerst zal u worden gevraagd om het aantal actieve en het aantal reserve-eenheden voor het MD-apparaat in te geven. Vervolgens dient u uit de lijst met beschikbare RAID-partities eerst de partities te kiezen die actief moeten zijn en vervolgens de reserve-partities. Het aantal partities dat u selecteert moet gelijk zijn aan het aantal dat u eerder heeft opgegeven. Maak u geen zorgen. Als u een fout maakt en een afwijkend aantal partities selecteert, zal <code class="classname">debian-installer</code> u beletten voort te gaan totdat dit gecorrigeerd is. </p></li>
+<li class="listitem"><p>De configuratieprocedure voor RAID5 is vergelijkbaar met die voor RAID1. Het enige verschil is dat u tenminste <span class="emphasis"><em>drie</em></span> actieve partities dient te gebruiken. </p></li>
+<li class="listitem"><p>Ook de configuratieprocedure voor RAID6 is vergelijkbaar met die voor RAID1 behalve dat minstens <span class="emphasis"><em>vier</em></span> actieve partities nodig zijn. </p></li>
+<li class="listitem"><p>Ook voor RAID10 is de configuratieprocedure te vergelijken met die voor RAID1, behalve in de expertmodus. In de expertmodus zal <code class="classname">debian-installer</code> u naar de opmaak vragen. De opmaak bestaat uit twee delen. Het eerste deel is het type. Dat is ofwel <code class="literal">n</code> (voor het type 'near copies'), <code class="literal">f</code> (voor het type 'far copies') of <code class="literal">o</code> (voor het type 'offset copies'). Het tweede deel is het aantal te maken kopieën van de data. Er moeten minstens evenveel actieve apparaten zijn, zodanig dat elke kopie naar een andere schijf gestuurd kan worden. </p></li>
+</ul></div>
+<p>Het is zonder meer mogelijk om verschillende types MD-apparaten naast elkaar te hebben. Als u bijvoorbeeld drie 200 GB harde schijven heeft ten behoeve van MD, elk met twee partities van 100 GB, kunt u de eerste partities op alle drie de schijven samenvoegen tot één RAID0 (snelle partitie van 300 GB voor videobewerking) en de andere drie partities (2 actieve en 1 reserve) gebruiken voor RAID1 (als zeer betrouwbare partitie van 100 GB voor <code class="filename">/home</code>). </p>
+<p>Nadat u de MD-apparaten naar uw tevredenheid heeft ingesteld, kunt u <span class="command"><strong>partman-md</strong></span> <span class="guimenuitem">Voltooien</span> om terug te keren naar <span class="command"><strong>partman</strong></span> om op uw nieuwe MD-apparaten bestandssystemen aan te maken en daaraan de gebruikelijke kenmerken, zoals aankoppelpunten, toe te kennen. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Logisch volumebeheer (LVM) instellen</h4></div></div></div>
+<p>Als u met computers werkt op het niveau van systeembeheerder of dat van <span class="quote">“<span class="quote">gevorderde</span>”</span> gebruiker, heeft u vast de situatie meegemaakt waarbij op een schijfpartitie (meestal de belangrijkste) onvoldoende ruimte beschikbaar was, terwijl het gebruik van een andere partitie sterk ondermaats was. Als oplossing heeft u mogelijk bestanden moeten verplaatsen en moeten werken met symbolische koppelingen vanaf de oude locatie naar de nieuwe locatie, enz. </p>
+<p>Om deze situatie te voorkomen, kunt u gebruik maken van Logisch volumebeheer(Logical Volume Management — LVM). Eenvoudig gesteld, kunt u met LVM uw partities (in de terminologie van LVM <em class="firstterm">fysieke volumes</em>) combineren tot een virtuele harde schijf (een zogenaamde <em class="firstterm">volumegroep</em>). Deze kan op zijn beurt worden opgedeeld in virtuele partities (<em class="firstterm">logische volumes</em>). Waar het om gaat is dat logische volumes (en natuurlijk ook de onderliggende volumegroepen) verschillende fysieke harde schijven kunnen omvatten. </p>
+<p>Als u bijvoorbeeld vervolgens ontdekt dat u meer ruimte nodig heeft op uw oude 160GB <code class="filename">/home</code>-partitie, kunt u eenvoudig een extra 300GB harde schijf in de computer plaatsen, deze toevoegen aan uw bestaande volumegroep en vervolgens het logische volume vergroten waarop uw <code class="filename">/home</code>-bestandssysteem zich bevindt. En klaar is Kees — uw gebruikers kunnen beschikken over de extra ruimte op een vernieuwde partitie van 460GB. Dit voorbeeld is uiteraard enigszins gesimplificeerd. Wij raden u aan om, voor zover u dat nog niet heeft gedaan, de<a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a> te raadplegen. </p>
+<p>Het instellen van LVM in <code class="classname">debian-installer</code> is relatief eenvoudig en volledig ondersteund in <span class="command"><strong>partman</strong></span>. Allereerst dient u de partitie(s) die u wilt gebruiken als fysieke volumes voor LVM, te markeren. Hiervoor selecteert u in <span class="command"><strong>partman</strong></span> vanuit het menu <span class="guimenu">Partitie-instellingen</span> de optie <span class="guimenu">Gebruiken als:</span> → <span class="guimenuitem">Fysiek volume voor LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>Waarschuwing: de nieuwe LVM-installatie zal alle gegevens vernietigen op alle partities die gemarkeerd zijn met een code van het type LVM. Dus, indien u op sommige van uw harde schijven reeds een LVM heeft en op die machine ook nog Debian wilt installeren, zal de oude (bestaande) LVM gewist worden! Hetzelfde geldt voor partities die (om welke reden ook) ten onrechte gemarkeerd zijn met een code van het type LVM, maar iets anders bevatten (zoals een versleuteld opslagmedium). U dient dergelijke schijven te verwijderen uit het systeem vooraleer u een nieuwe installatie van LVM uitvoert! </p></td></tr>
+</table></div>
+<p>Als u terugkeert op het hoofdscherm van <span class="command"><strong>partman</strong></span>, zult u een nieuwe optie <span class="guimenuitem">Logisch volumebeheer (LVM) instellen</span> zien. Als u deze selecteert, zal u eerst worden gevraagd om nog niet vastgelegde wijzigingen in de partitietabel te bevestigen (als die er zijn) en vervolgens zal het configuratiemenu voor LVM worden getoond. Boven het menu wordt een samenvatting van de LVM-configuratie getoond. Het menu zelf is contextgevoelig en toont alleen toegestane acties. De mogelijke acties zijn: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Toon configuratiedetails</span>: toont onder andere de structuur van LVM-apparaten en de namen en groottes van logische volumes </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volumegroep aanmaken</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logisch volume aanmaken</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volumegroep verwijderen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Logisch volume verwijderen</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volumegroep uitbreiden</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Volumegroep verkleinen</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Voltooien</span>: keer terug naar het hoofdscherm van <span class="command"><strong>partman</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Gebruik de opties in dit menu om eerst een volumegroep en vervolgens daaronder de gewenste logische volumes aan te maken. </p>
+<p>Nadat u teruggekeerd bent naar het hoofdscherm van <span class="command"><strong>partman</strong></span>, zult u de aangemaakte logische volumes als ware het gewone partities terugvinden in het menu (en u kunt ze verder ook als zodanig behandelen). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Geëncrypteerde volumes instellen</h4></div></div></div>
+<p>U hebt de mogelijkheid om met <code class="classname">debian-installer</code> geëncrypteerde partities in te stellen. Elk bestand dat u naar een dergelijke partitie wegschrijft wordt op het apparaat onmiddellijk in geëncrypteerde vorm opgeslagen. Toegang tot de geëncrypteerde gegevens krijgt men pas na het invoeren van de <em class="firstterm">wachtwoordzin</em> die gebruikt werd toen de geëncrypteerde partitie aangemaakt werd. Deze functionaliteit is nuttig voor het beschermen van gevoelige informatie wanneer uw harde schijf of uw laptop gestolen worden. De dief kan er in slagen fysieke toegang te krijgen tot de harde schijf, maar zonder de correcte wachtwoordzin te kennen zullen de gegevens op de harde schijf eruit zien als willekeurige tekens. </p>
+<p>De twee belangrijkste partities vanuit het oogpunt van encryptie zijn: de partitie met de persoonlijke mappen (home) waarop zich uw persoonlijke gegevens bevinden en de swap-partitie, het wisselgeheugen, waarop al werkend tijdelijk gevoelige gegevens opgeslagen kunnen worden. Niets belet u evenwel om eventueel nog andere partities die voor u ook belangrijk zijn, te encrypteren. Bijvoorbeeld <code class="filename">/var</code> waar databaseservers, mailservers en printservers hun gegevens opslaan, of <code class="filename">/tmp</code> dat door verschillende programma's gebruikt wordt voor de tijdelijke opslag van potentieel belangrijke bestanden. Het kan zelfs zijn dat sommige mensen hun hele systeem wensen te encrypteren. Over het algemeen vormt de <code class="filename">/boot</code>-partitie hier de enige uitzondering. Deze mag niet geëncrypteerd worden, omdat er oorspronkelijk geen manier bestond om de kernel te laden vanaf een geëncrypteerde partitie. (GRUB kan dit nu wel, maar het ontbreekt <code class="classname">debian-installer</code> momenteel aan een eigen ondersteuning voor een geëncrypteerde <code class="filename">/boot</code>. Het opzet wordt daarom in een <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">apart document</a> behandeld.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Merk op dat de prestaties van geëncrypteerde partities zwakker zijn dan die van niet-geëncrypteerde, omdat bij elke lees- of schrijfbewerking de gegevens gedecrypteerd of geëncrypteerd moeten worden. Hoe groot de impact op de prestaties is, is afhankelijk van de snelheid van de CPU, de gekozen  coderingsmethode en de lengte van de encryptiesleutel. </p></td></tr>
+</table></div>
+<p>Om encryptie te kunnen gebruiken, moet u een nieuwe partitie maken door in het hoofdmenu van het schijfindelingprogramma vrije schijfruimte te selecteren. Een andere mogelijkheid is een bestaande partitie te kiezen (bijv. een gewone partitie, een LVM logisch volume of een RAID volume). In het menu <span class="guimenu">Partitie-instellingen</span> moet u dan bij de optie <span class="guimenu">Gebruiken als:</span> kiezen voor <span class="guimenuitem">Fysiek volume voor encryptie</span>. Het menu zal zich dan aanpassen en verschillende cryptografische opties voor de partitie tonen. </p>
+<p>De door <code class="classname">debian-installer</code> ondersteunde encryptiemethode is <em class="firstterm">dm-crypt</em> (ingebouwd in recente Linux-kernels en met de mogelijkheid om het te gebruiken met fysieke LVM-volumes). </p>
+<p>Laten we eens bekijken welke mogelijkheden er zijn als u encryptie selecteert via <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Zoals altijd geldt dat u bij twijfel best de standaardinstellingen gebruikt, omdat ze met zorg geselecteerd werden met het oog op veiligheid. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Encryptie: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Deze keuzemogelijkheid dient voor het selecteren van het encryptiealgoritme (<em class="firstterm">coderingsmethode</em>) dat gebruikt zal worden voor de encryptie van de gegevens op de partitie. Momenteel ondersteunt <code class="classname">debian-installer</code> de volgende blokcoderingsmethodes: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em> en <em class="firstterm">twofish</em>. Een bespreking van de kwaliteiten van deze verschillende algoritmes valt buiten het bestek van dit document. Maar misschien kan het u helpen bij het maken van een keuze als u weet dat <span class="emphasis"><em>AES</em></span> in 2000 gekozen werd door het Amerikaans National Institute of Standards and Technology als het standaard encryptiealgoritme voor het beveiligen van gevoelige informatie in de 21ste eeuw. </p></dd>
+<dt><span class="term">Grootte van de sleutel: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Hier kunt u de lengte van de encryptiesleutel opgeven. Over het algemeen betekent een langere sleutel een betere encryptie. Daartegenover staat dat het vergroten van de sleutellengte een negatieve impact op de prestaties heeft. Welke sleutelgroottes beschikbaar zijn hangt af van de coderingsmethode. </p></dd>
+<dt><span class="term">IV algoritme: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>Het algoritme <em class="firstterm">Initialization Vector</em> of <em class="firstterm">IV</em> wordt gebruikt in de cryptografie om ervoor te zorgen dat het toepassen van de coderingsmethode op dezelfde gegevens in <em class="firstterm">niet-gecodeerde tekst</em> met eenzelfde sleutel steeds weer een unieke <em class="firstterm">gecodeerde tekst</em> oplevert. Het achterliggende idee is om te beletten dat een aanvaller informatie zou kunnen afleiden uit terugkerende patronen in de geëncrypteerde gegevens. </p>
+<p>Van de geboden alternatieven is de standaard <strong class="userinput"><code>xts-plain64</code></strong> momenteel het minst kwetsbaar voor de bekende aanvallen. Gebruik een van de andere alternatieven enkel als u moet zorgen voor compatibiliteit met een vroeger geïnstalleerd systeem dat niet in staat is recentere algoritmes te gebruiken. </p>
+</dd>
+<dt><span class="term">Encryptiesleutel: <strong class="userinput"><code>Wachtwoordzin</code></strong></span></dt>
+<dd>
+<p>Hier kunt u voor deze partitie het type encryptiesleutel kiezen. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Wachtwoordzin</span></dt>
+<dd><p>De encryptiesleutel zal berekend worden<a href="#ftn.id3118" class="footnote" name="id3118"><sup class="footnote">[9]</sup></a> op basis van een wachtwoordzin die u later in het proces zult kunnen invoeren. </p></dd>
+<dt><span class="term">Willekeurige sleutel</span></dt>
+<dd>
+<p>Telkens u probeert de geëncrypteerde partitie actief te maken, zal er een nieuwe encryptiesleutel gegenereerd worden uit willekeurige gegevens. Met andere woorden: iedere maal de computer afgesloten wordt, zal de inhoud van de partitie verloren gaan, vermits de sleutel die zich in het geheugen bevindt, vernietigd wordt. (U zou natuurlijk kunnen proberen om de sleutel te raden via een aanval met brute kracht, maar tenzij er een onbekende zwakte zou zitten in het coderingsalgoritme, is een mensenleven daarvoor te kort.) </p>
+<p>Willekeurige sleutels zijn geschikt voor partities met wisselgeheugen aangezien u zich niet dient te bekommeren om het onthouden van de wachtwoordzin of om het wissen van gevoelige informatie op de wisselgeheugenpartitie vooraleer de computer afgesloten wordt. Dit betekent evenwel ook dat u <span class="emphasis"><em>geen</em></span> gebruik zult kunnen maken van de functionaliteit <span class="quote">“<span class="quote">slaapstand-naar-schijf</span>”</span> die door recentere Linux kernels geboden wordt, omdat het (bij de volgende opstart) niet mogelijk zal zijn om de naar de wisselgeheugenpartitie weggeschreven slapende data te herstellen. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Gegevens wissen: <strong class="userinput"><code>ja</code></strong></span></dt>
+<dd><p>Bepaalt of de inhoud van deze partitie met willekeurige gegevens overschreven moet worden alvorens de encryptie op te zetten. Dit wordt aanbevolen omdat het anders voor een aanvaller mogelijk kan zijn om uit te maken welke delen van de partitie in gebruik zijn en welke niet. Daarenboven zal dit het moeilijker maken om eventuele achtergebleven gegevens van eerdere installaties<a href="#ftn.id3133" class="footnote" name="id3133"><sup class="footnote">[10]</sup></a> te herstellen. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Nadat u voor uw geëncrypteerde partities de gewenste parameters geselecteerd heeft, moet u terugkeren naar het hoofdmenu van het schijfindelingsprogramma. Daar zou nu in het menu een nieuw item <span class="guimenu">Geëncrypteerde volumes configureren</span> moeten staan. Als u het selecteert, wordt u gevraagd om te bevestigen dat de gegevens op de partities die u als te wissen gemarkeerd heeft, wel degelijk vernietigd mogen worden. En mogelijk wordt u ook gevraagd om nog andere acties te bevestigen, zoals het neerschrijven van een nieuwe partitietabel. Bij grote partities kan dit enige tijd in beslag nemen. </p>
+<p>Vervolgens zal u gevraagd worden om een wachtwoordzin in te voeren voor de partities die als zodanig geconfigureerd werden. Goede wachtwoordzinnen moeten langer dan 8 tekens zijn, en zouden een combinatie moeten zijn van letters, cijfers en andere tekens. Zij zouden geen gebruikelijke woorden uit het woordenboek mogen bevatten of informatie die gemakkelijk met u geassocieerd kan worden (zoals geboortedata, hobby's, namen van huisdieren, namen van familieleden of verwanten, enz.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vooraleer u begint met het invoeren van een wachtwoordzinnen, moet u er zich van vergewissen dat het toetsenbord correct geconfigureerd is en de verwachte tekens genereert. Indien u twijfelt, kunt u naar de tweede virtuele console overschakelen en aan de prompt wat tekst intypen. Op die manier kunt u de zekerheid hebben dat u later niet voor verrassingen zult komen te staan, bijvoorbeeld door te proberen een wachtwoordzin in te voeren met een qwertyklavier terwijl u tijdens de installatie een azertyklavier gebruikte. Een dergelijke situatie kan aan verschillende oorzaken te wijten zijn. Misschien schakelde u tijdens de installatie over op een andere toetsenbordindeling of was de geselecteerde toetsenbordindeling nog niet geconfigureerd toen u de wachtwoordzin voor het basisbestandssysteem invoerde. </p></td></tr>
+</table></div>
+<p>Indien u andere methodes dan een wachtwoordzin koos voor het creëren van encryptiesleutels, zullen die laatste nu gegenereerd worden. Omdat het mogelijk is dat in dit vroege stadium van de installatie de kernel nog niet voldoende entropie kon verzamelen, kan dit proces veel tijd in beslag nemen. U kunt het proces helpen versnellen door entropie te genereren: bijv. door willekeurige toetsen aan te slaan, of door over te schakelen naar de shell op de tweede virtuele console en netwerktrafiek en schijftrafiek te genereren (enkele bestanden downloaden, omvangrijke bestanden voederen aan <code class="filename">/dev/null</code> enz.). Dit wordt herhaald voor elke partitie die geëncrypteerd moet worden. </p>
+<p>Nadat u teruggekeerd bent naar het hoofdmenu van het schijfindelingsprogramma, zult u nu alle geëncrypteerde volumes als extra partities terugvinden die op dezelfde manier als gewone partities geconfigureerd kunnen worden. Het volgende voorbeeld toont een met dm-crypt geëncrypteerd volume. </p>
+<div class="informalexample"><pre class="screen">
+Geëncrypteerd volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Nu is het tijd om aankoppelpunten toe te kennen aan de volumes en om eventueel het type bestandssysteem te wijzigen als de standaardinstelling voor u niet geschikt is. </p>
+<p>Let op de naam tussen haakjes (<em class="replaceable"><code>sda2_crypt</code></em> in dit geval) en op de aankoppelpunten die u aan elk geëncrypteerd volume toegekend heeft. U zult die informatie later bij het opstarten van het nieuwe systeem nodig hebben. Het verschil tussen een gewoon opstartproces en een opstartproces waar encryptie mee gemoeid is, wordt later behandeld in <a class="xref" href="ch07s02.html" title="7.2. Geëncrypteerde volumes aankoppelen">Paragraaf 7.2, “Geëncrypteerde volumes aankoppelen”</a>. </p>
+<p>Eens u tevreden bent met het schijfindelingsschema, kunt u voortgaan met de installatie. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Installatie van het Basissysteem</h3></div></div></div>
+<p>Hoewel dit stadium het minst problematische is, beslaat het wel een significant deel van de duur van de installatie omdat hier het volledige basissysteem wordt opgehaald, geverifieerd en uitgepakt. Als u een langzame computer of netwerkverbinding heeft, kan dit enige tijd in beslag nemen. </p>
+<p>Tijdens de installatie van het basissysteem worden meldingen met betrekking tot het uitpakken en configureren van pakketten doorgestuurd naar <strong class="userinput"><code>tty4</code></strong>. U kunt naar deze terminal overschakelen door op <span class="keycap"><strong>Linker Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> te drukken. U schakelt terug naar het hoofdscherm van de installatie met behulp van <span class="keycap"><strong>Linker Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>De meldingen over uitpakken en configureren die tijdens deze fase worden gegenereerd worden ook opgeslagen in <code class="filename">/var/log/syslog</code>. Als de installatie wordt uitgevoerd vanaf een seriële console, kunt u ze daar raadplegen. </p>
+<p>Als onderdeel van de installatie zal een Linux kernel worden geïnstalleerd. Tijdens een installatie met een standaard prioriteit voor vragen zal het installatiesysteem een kernel voor u kiezen die het beste past bij uw apparatuur. Bij installaties met een lagere prioriteit zal een lijst worden getoond met beschikbare kernels waaruit u een keuze kunt maken. </p>
+<p>Als pakketten worden geïnstalleerd met behulp van het systeem voor pakketbeheer, zullen standaard ook de pakketten die door die pakketten aanbevolen worden, geïnstalleerd worden. Aanbevolen pakketten zijn voor de kernfuncties van de geselecteerde software niet strikt noodzakelijk, maar ze breiden de mogelijkheden van die software uit en zouden volgens de opvattingen van de pakketonderhouders normaal gezien samen met die software geïnstalleerd moeten worden. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Wegens redenen van technische aard worden tijdens de installatie van het basissysteem pakketten zonder hun <span class="quote">“<span class="quote">Recommends</span>”</span> geïnstalleerd, zonder de door hen aanbevolen pakketten. De hierboven beschreven regel treedt pas in werking na dit punt in het installatieproces. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Aanvullende software installeren</h3></div></div></div>
+<p>Op dit punt beschikt u over een bruikbaar systeem, maar met beperkte functionaliteit. De meeste gebruikers zullen aanvullende programmatuur op het systeem willen installeren om het af te stellen op hun behoeften. Het installatiesysteem maakt dit mogelijk. Deze stap kan, zeker indien u een langzame computer of netwerkverbinding heeft, nog meer tijd in beslag nemen dan de installatie van het basissysteem. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. De configuratie van apt</h4></div></div></div>
+<p>Een gereedschap dat gebruikt wordt om pakketten op een Debian GNU/Linux systeem te installeren, is het programma <span class="command"><strong>apt</strong></span> uit het pakket <code class="classname">apt</code><a href="#ftn.id3176" class="footnote" name="id3176"><sup class="footnote">[11]</sup></a>. Ook andere hulpprogramma's voor pakketbeheer, zoals <span class="command"><strong>aptitude</strong></span> en <span class="command"><strong>synaptic</strong></span> worden gebruikt. Nieuwe gebruikers wordt aangeraden gebruik te maken van deze hulpprogramma's omdat zij aanvullende functionaliteit (het zoeken van pakketten en statuscontroles) integreren in een vriendelijke gebruikersinterface. </p>
+<p><span class="command"><strong>apt</strong></span> moet worden geconfigureerd zodat het weet waar pakketten opgehaald moeten worden. Het resultaat van deze configuratie wordt weggeschreven naar het bestand <code class="filename">/etc/apt/sources.list</code>. U kunt dit bestand na afronding van de installatie bekijken en naar behoefte aanpassen. </p>
+<p>Indien u de installatie uitvoert op de standaardprioriteit, zal het installatiesysteem in grote mate zelf automatisch de configuratie voor zijn rekening nemen. Het baseert zich daarbij op de installatiemethode die u gebruikt en mogelijk op keuzes die u eerder in het installatieproces maakte. In de meeste gevallen zal het installatiesysteem automatisch een spiegelserver toevoegen voor veiligheidsupdates en, indien u de stabiele distributie installeert, een spiegelserver voor de dienst <span class="quote">“<span class="quote">stable-updates</span>”</span> voor updates van pakketten uit de stabiele distributie. </p>
+<p>Indien u de installatie uitvoert op een lagere prioriteit (bijv. in expertmodus), zult u de kans hebben om zelf meer keuzes te maken. U kunt dan zelf kiezen of u de diensten voor beveiligingsupdates en updates van de distributie 'stable' wilt gebruiken en u kunt er eventueel ook voor kiezen om de pakketten toe te voegen uit de secties <span class="quote">“<span class="quote">contrib</span>”</span>, <span class="quote">“<span class="quote">non-free</span>”</span> en <span class="quote">“<span class="quote">non-free-firmware</span>”</span> van het archief. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. De installatie uitvoeren met meer dan één DVD-image</h5></div></div></div>
+<p>Indien u een installatie uitvoert met een DVD-image dat deel uitmaakt van een ruimere set, zal het installatiesysteem vragen of u bijkomende installatiemedia wilt laten scannen. Indien u zulke bijkomende installatiemedia heeft, wilt u dit wellicht laten doen, zodat het installatiesysteem de pakketten die zij bevatten, kan gebruiken. </p>
+<p>Indien u geen andere media heeft, is dat geen probleem: het is niet verplicht ze te gebruiken. Indien u ook geen netwerkspiegelserver gebruikt (zoals in het volgende onderdeel uitgelegd wordt), kan dit betekenen dat niet alle pakketten die horen bij de taken die u in de volgende stap selecteert, geïnstalleerd zullen kunnen worden. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>De volgorde van de pakketten op DVD-images wordt door hun populariteit bepaald. Dit betekent dat in de meeste gevallen enkel het eerste image van een set nodig is en dat slechts heel weinig mensen daadwerkelijk pakketten gebruiken die op de laatste images van een set staan. </p>
+<p>Dit betekent ook dat een volledige DVD-set kopen of downloaden en branden gewoon geldverspilling is, aangezien u de meeste ervan nooit zult gebruiken. In de meeste gevallen bent u beter af als u enkel de eerste of de eerste 2 DVD's ophaalt en eventuele extra pakketten die u nog nodig heeft, via een spiegelserver op het internet installeert. </p>
+</td></tr>
+</table></div>
+<p>Indien u meerdere installatiemedia laat scannen, zal het installatiesysteem u vragen ze te verwisselen wanneer het pakketten nodig heeft van een ander image dan dat welke op dat moment in het station zit. Merk op dat enkel schijven die tot dezelfde set behoren, gescand zouden mogen worden. De volgorde waarin ze gescand worden doet er niet echt toe, maar hen in aflopende volgorde laten scannen kan de kans op fouten verminderen. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Een netwerkspiegelserver gebruiken</h5></div></div></div>
+<p>Een vraag die tijdens de meeste installaties aan bod komt, is of er een netwerkspiegelserver gebruikt moet worden als pakketbron. In de meeste gevallen zou het standaardantwoord geschikt moeten zijn, maar er zijn enkele uitzonderingen. </p>
+<p>Indien u de installatie <span class="emphasis"><em>niet</em></span> uitvoert met een DVD-image, moet u echt een netwerkspiegelserver gebruiken, aangezien u anders op het einde enkel een erg minimaal systeem zult hebben. Als u evenwel slechts over een beperkte internetverbinding beschikt, is het best om in de volgende stap van de installatie <span class="emphasis"><em>niet</em></span> de taak <code class="literal">desktopomgeving</code> te selecteren. </p>
+<p>Indien u de installatie uitvoert met een DVD zou elk pakket dat nodig is tijdens de installatie, op het eerste DVD-image moeten staan. Het gebruik van een netwerkspiegelserver is facultatief. </p>
+<p>Een voordeel van het gebruik van een netwerkspiegelserver is dat updates die plaats vonden na het moment waarop de DVD-images gecreëerd werden en opgenomen werden in een tussenrelease (een point release), geïnstalleerd kunnen worden. Op die manier wordt de levensduur van uw DVD-set verlengd, zonder dat u de veiligheid of de stabiliteit van het geïnstalleerde systeem in het gedrang brengt. </p>
+<p>Samenvattend: een netwerkspiegelserver selecteren is meestal een goede keuze, behalve als u niet over een goede internetverbinding beschikt. Indien de nieuwste versie van een pakket op installatiemedia staat, zal het installatiesysteem altijd dat medium gebruiken. De hoeveelheid data die gedownload zal worden als u een spiegelserver selecteert, hangt dus af van </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>de taken die u in de volgende stap van de installatie selecteert, </p></li>
+<li class="listitem"><p>welke pakketten voor die taken nodig zijn, </p></li>
+<li class="listitem"><p>welke van die pakketten op de installatiemedia staan die u liet scannen en </p></li>
+<li class="listitem"><p>of er op een spiegelserver (ofwel een gewone pakketspiegelserver, ofwel een spiegelserver voor veiligheidsupdates of updates van de stabiele release) bijgewerkte versies beschikbaar zijn van pakketten die op de installatiemedia staan. </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Merk op dat dit laatste punt betekent dat zelfs als u ervoor kiest om geen netwerkspiegelserver te gebruiken, sommige pakketten nog altijd van het internet kunnen gedownload worden wanneer er van dat pakket een veiligheidsupdate of een update voor de stabiele release beschikbaar is en deze diensten ingesteld werden. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Een netwerkspiegelserver kiezen</h5></div></div></div>
+<p>Tenzij u ervoor koos om geen netwerkspiegelserver te gebruiken, zult u een lijst met netwerkspiegelservers te zien krijgen op basis van het land dat u eerder in het installatieproces selecteerde. Het standaardaanbod selecteren is meestal goed. </p>
+<p>Het standaardaanbod is deb.debian.org, wat zelf geen spiegelserver is, maar dat zal doorverwijzen naar een spiegelserver die up-to-date en snel zou moeten zijn. Dergelijke spiegelservers ondersteunen TLS (https protocol) en IPv6. Deze dienst wordt onderhouden door het team van Debian systeembeheerders (Debian System Administration - DSA). </p>
+<p>U kunt ook handmatig een spiegelserver opgeven door <span class="quote">“<span class="quote">de informatie handmatig invoeren</span>”</span> te kiezen. U kunt dan de computernaam van de spiegelserver opgeven en facultatief een poortnummer. Dit moet feitelijk een URL-basis zijn, d.w.z. dat als u een IPv6-adres opgeeft, u er rechte haakjes rond moet plaatsen, bijvoorbeeld <span class="quote">“<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Indien uw computer zich op een exclusief IPv6-netwerk bevindt (wat voor de overgrote meerderheid van de gebruikers wellicht niet het geval is), werkt de standaardspiegelserver voor uw land mogelijk niet. Alle spiegelservers uit de lijst zijn bereikbaar via IPv4, maar slechts enkele ervan kunnen via IPv6 gebruikt worden. Vermits de connectiviteit van individuele spiegelservers in de loop van de tijd kan veranderen, beschikt het installatiesysteem niet over deze informatie. Indien de standaardspiegelserver van uw land geen IPv6-connectiviteit heeft, kunt u ofwel enkele van de andere voorgestelde spiegelservers proberen, ofwel kiezen voor de optie <span class="quote">“<span class="quote">de informatie handmatig invoeren</span>”</span>. U kunt dan <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span> opgeven als de naam van de spiegelserver, hetgeen een alias is voor een spiegelserver die via IPv6 beschikbaar is, hoewel het wellicht niet de snelst mogelijke is. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Software selecteren en installeren</h4></div></div></div>
+<p>Tijdens de installatie wordt de mogelijkheid geboden om aanvullende programmatuur te installeren. In plaats van individuele softwarepakketten te selecteren uit de <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    beschikbare pakketten, ligt de nadruk tijdens deze fase van de installatie op het selecteren en installeren van vooraf gedefinieerde verzamelingen van programmatuur waarmee uw computer snel kan worden ingericht voor het uitvoeren van diverse taken. </p>
+<p>Deze taken vertegenwoordigen min of meer een aantal verschillende doeleinden waarvoor u uw computer zou kunnen gebruiken, zoals <span class="quote">“<span class="quote">Desktopomgeving</span>”</span>, <span class="quote">“<span class="quote">Webserver</span>”</span> of <span class="quote">“<span class="quote">SSH-server</span>”</span><a href="#ftn.id3238" class="footnote" name="id3238"><sup class="footnote">[12]</sup></a>. In <a class="xref" href="apds02.html" title="D.2. De hoeveelheid schijfruimte die nodig is voor taken">Paragraaf D.2, “De hoeveelheid schijfruimte die nodig is voor taken”</a> is een overzicht opgenomen van de voor de beschikbare taken benodigde ruimte. </p>
+<p>Sommige taken kunnen reeds automatisch geselecteerd zijn afhankelijk van de eigenschappen van de computer waarop de installatie wordt uitgevoerd. Als u het met deze selectie niet eens bent, kunt u deze ongedaan maken. U kunt er op dit punt zelfs voor kiezen om geen enkele taak te installeren. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>Bij de standaard gebruikersinterface van het installatiesysteem kunt u de spatiebalk gebruiken om een taak te (de)selecteren. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>De taak <span class="quote">“<span class="quote">Desktopomgeving</span>”</span> zal een grafische desktopomgeving installeren. </p>
+<p>Standaard installeert <code class="classname">debian-installer</code> de desktopomgeving <span class="phrase">Gnome</span> . Het is mogelijk om interactief een andere desktopomgeving te selecteren tijdens de installatie. Het is ook mogelijk om verschillende desktopomgevingen te installeren, maar het kan zijn dat sommige combinaties ervan niet samen geïnstalleerd kunnen worden. </p>
+<p>Merk op dat dit enkel zal werken als de pakketten die voor de gewenste desktopomgeving nodig zijn, ook effectief beschikbaar zijn. Die installatiewerkwijze gebruiken zou voor elk van de beschikbare desktopomgevingen correct moeten werken als u een DVD-image of een andere installatiemethode gebruikt samen met een netwerkspiegelserver. </p>
+</td></tr>
+</table></div>
+<p>Via de diverse server-taken wordt in grote lijnen volgende software geïnstalleerd. Web-server: <code class="classname">apache2</code>; SSH-server: <code class="classname">openssh</code>. </p>
+<p>Via de taak <span class="quote">“<span class="quote">Standaard systeemhulpprogramma's</span>”</span> (Standard system utilities) wordt elk pakket geïnstalleerd dat als prioriteit <span class="quote">“<span class="quote">standaard</span>”</span> heeft. Dit omvat een heleboel gebruikelijke hulpprogramma's die gewoonlijk op elk Linux- of Unix-systeem aanwezig zijn. U zou deze taak geselecteerd moeten laten tenzij u weet wat u doet en echt een heel minimaal systeem wilt. </p>
+<p>Indien tijdens het selecteren van de taal een ander standaard taalgebied geselecteerd werd dan <span class="quote">“<span class="quote">C</span>”</span>, zal <span class="command"><strong>tasksel</strong></span> nagaan of voor dat taalgebied een lokalisatietaak gedefinieerd is en zal automatisch de relevante lokalisatiegerelateerde pakketten trachten te installeren. Daartoe horen bijvoorbeeld pakketten met woordenlijsten of speciale lettertekens voor uw taal. Indien een desktopomgeving geselecteerd werd, zullen ook daarvoor de passende lokalisatiepakketten geïnstalleerd worden (als die beschikbaar zijn). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Vanaf Debian Trixie maakt <code class="classname">debian-installer</code> het mogelijk om Debian Pure Blends (specifieke uitgaven van Debian) direct te installeren. Er is een item <span class="quote">“<span class="quote">Een specifieke uitgaven van Debian (een Debian Blend) kiezen voor installatie</span>”</span> onderaan de takenlijst, waarmee een extra keuzedialoog verschijnt nadat <span class="command"><strong>tasksel</strong></span> is voltooid. </p>
+<p>In deze keuzedialoog (<span class="command"><strong>blendsel</strong></span>) kunt u kiezen welke specifieke uitgave (blend) u wilt installeren, vergelijkbaar met het selecteren van taken. </p>
+<p>Raadpleeg <a class="ulink" href="https://www.debian.org/blends" target="_top">de website van Debian</a> voor meer informatie over Debian Pure Blends, de specifieke uitgaven van Debian. </p>
+</td></tr>
+</table></div>
+<p>Nadat u klaar bent met het selecteren van taken, moet u <span class="guibutton">Volgende</span> selecteren. Dan zal <span class="command"><strong>apt</strong></span> de pakketten installeren die tot die geselecteerde taken behoren. Indien een bepaald programma meer informatie nodig heeft van de gebruiker, zal het gedurende dit proces daarom vragen. </p>
+<p>U moet er zich van bewust zijn dat vooral de taak Desktopomgeving (of Grafische werkomgeving) erg uitgebreid is. Vooral als u installeert vanaf een netinst-CD-image in combinatie met een spiegelserver voor pakketten die niet op de netinst-CD staan, kan het installatiesysteem heel wat pakketten via het netwerk ophalen. Indien u over een relatief trage internetverbinding beschikt, kan dit veel tijd in beslag nemen. Eens de installatie van de pakketten gestart is, heeft u niet meer mogelijkheid om die installatie te annuleren. </p>
+<p>Zelfs als de pakketten op het installatie-image staan, kan het nog gebeuren dat het installatiesysteem ze ophaalt van de spiegelserver in het geval de versie op de spiegelserver recenter is dan die op het image. Indien u de distributie 'stable' installeert, kan dit het geval zijn na een tussenrelease (een 'point release' - een update van de originele stabiele release). Indien u de testdistributie 'testing' installeert zal dit het geval zijn als u een ouder image gebruikt. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Zorgen dat uw systeem kan worden opgestart</h3></div></div></div>
+<p>Als u een werkstation zonder schijfeenheden installeert, is opstarten vanaf een lokale schijfeenheid uiteraard geen optie en zal deze stap worden overgeslagen. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Andere besturingssystemen detecteren</h4></div></div></div>
+<p>Voordat een bootloader wordt geïnstalleerd, zal het installatiesysteem eerst proberen om te ontdekken of er op de machine andere besturingssystemen geïnstalleerd zijn. Als het een besturingssysteem heeft gevonden dat wordt ondersteund, zult u hierover worden geïnformeerd tijdens de installatie van de bootloader en zal de computer geconfigureerd worden om naast Debian ook dit andere besturingssysteem te kunnen opstarten. </p>
+<p>Merk op dat het opstarten van meerdere besturingssystemen op één machine nog altijd iets wegheeft van zwarte magie. De ondersteuning voor de detectie van andere besturingssystemen en voor het instellen van bootloaders om deze te laden, varieert per architectuur en kan zelfs per subarchitectuur variëren. Als het niet lukt dient u de documentatie van uw bootloader te raadplegen voor nadere informatie. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3286"></a>6.3.7.2. De bootloader <span class="command"><strong>Grub</strong></span> installeren op de schijf</h4></div></div></div>
+<p>De bootloader voor amd64 heet <span class="quote">“<span class="quote">grub</span>”</span>. Grub is een flexibele en robuuste bootloader en standaard een goede keuze voor zowel nieuwe als ervaren gebruikers. </p>
+<p>Standaard wordt grub geïnstalleerd op de UEFI-partitie/het Boot Record van de eerste schijf, waar het de volledige controle over het opstartproces overneemt. Indien u dit wenst kunt u grub elders installeren. Raadpleeg de handleiding bij grub voor de volledige informatie. </p>
+<p>Indien u grub niet wenst te installeren, gebruik dan de knop <span class="guibutton">Terug</span> om naar het hoofdmenu terug te keren. Selecteer van daaruit dan de bootloader die u wenst te gebruiken. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Verder gaan zonder bootloader</h4></div></div></div>
+<p>Deze optie kan gebruikt worden om de installatie te voltooien, zelfs als er geen bootloader wordt geïnstalleerd, ofwel omdat er geen bootloader beschikbaar is voor die (sub)architectuur, ofwel omdat u er geen wilt installeren (b.v. als u de bestaande bootloader wilt gebruiken). </p>
+<p>Indien u zinnens bent om de bootloader handmatig te configureren, moet u nagaan wat de naam is van de geïnstalleerde kernel in <code class="filename">/target/boot</code>. U moet ook nagaan of in die map een bestand <em class="firstterm">initrd</em> aanwezig is. Is dit het geval, dan zult u wellicht uw bootloader de instructie moeten geven om het te gebruiken. Informatie die u ook nodig zult hebben is de schijf en de partitie die u selecteerde voor het <code class="filename">/</code>-bestandssysteem en voor het bestandssysteem van <code class="filename">/boot</code> als u ervoor geopteerd heeft om uw <code class="filename">/boot</code>-bestandssysteem op een aparte partitie te plaatsen. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. De installatie afronden</h3></div></div></div>
+<p>Dit is de laatste stap van het installatieproces voor Debian waarbij het installatiesysteem nog enkele afrondende taken uitvoert. Het komt er voornamelijk op neer dat de losse eindjes die <code class="classname">debian-installer</code> achter liet, nog aan elkaar geknoopt worden. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. De systeemklok instellen</h4></div></div></div>
+<p>Het installatiesysteem kan u vragen of de interne klok van uw computer ingesteld staat op UTC. Normaal wordt deze vraag vermeden als dat kan. Het installatiesysteem zal dan op basis van informatie zoals welke andere besturingssystemen nog geïnstalleerd zijn, zelf proberen te bepalen of de interne klok al dan niet is ingesteld op UTC. </p>
+<p>Bij een installatie in expert-modus zal u altijd kunnen kiezen of de klok wordt ingesteld op UTC of niet.  <span class="phrase">Systemen waarop (ook) Windows gebruikt wordt, staan gewoonlijk ingesteld op de lokale tijd. Selecteer lokale tijd in plaats van UTC als u meerdere besturingssystemen op uw computer wilt gebruiken.</span> </p>
+<p>Op dit punt zal <code class="classname">debian-installer</code> ook proberen om de huidige tijd vast te leggen in de interne systeemklok. Dit zal ofwel in UTC ofwel in de lokale tijd zijn, afhankelijk van de zojuist gemaakte selectie. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Het systeem opnieuw opstarten</h4></div></div></div>
+<p>Men zal u vragen om het opstartmedium (CD, USB-stick, enz.) dat u heeft gebruikt om het installatiesysteem op te starten, te verwijderen. Vervolgens zal uw systeem opnieuw opstarten met uw nieuw Debian systeem. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Probleemoplossing</h3></div></div></div>
+<p>De componenten die in dit onderdeel vermeld worden, komen normaal gezien niet aan bod in het installatieproces, maar staan op de achtergrond ter beschikking om de gebruiker te helpen als er iets mis gaat. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. De logbestanden van de installatie bewaren</h4></div></div></div>
+<p>Als de installatie succesvol is, worden de logbestanden die tijdens het installatieproces zijn aangemaakt, automatisch opgeslagen in de map <code class="filename">/var/log/installer/</code> op uw nieuwe Debian systeem. </p>
+<p>De optie <span class="guimenuitem">Debug-logbestanden opslaan</span> uit het hoofdmenu biedt u de mogelijkheid om de logbestanden op een USB-stick, op een plaats in het netwerk, op een harde schijf of op een ander medium te bewaren. Dit kan nuttig zijn als u onoverkomelijke problemen tegenkomt tijdens de installatie en u de logbestanden op een ander systeem wilt bestuderen of ze wilt meesturen met een installatierapport. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Een shell gebruiken en de logs bekijken</h4></div></div></div>
+<p>Bij het uitvoeren van een installatie staan u verschillende methodes ter beschikking om een shell te krijgen. Op de meeste systemen, en als u de installatie niet via een seriële console uitvoert, is de gemakkelijkste methode om naar de tweede <span class="emphasis"><em>virtuele console</em></span> te gaan door te drukken op <span class="keycap"><strong>Linker Alt</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3333" class="footnote" name="id3333"><sup class="footnote">[13]</sup></a> (op een Mac-toetsenbord, <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Gebruik <span class="keycap"><strong>Linker Alt</strong></span>+<span class="keycap"><strong>F1</strong></span> om terug te keren naar het installatiesysteem zelf. </p>
+<p>Raadpleeg bij een grafische installatie ook <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Het grafische installatiesysteem gebruiken">Paragraaf 6.1.1, “Het grafische installatiesysteem gebruiken”</a>. </p>
+<p>Indien u niet kunt wisselen tussen consoles, is er ook nog het item <span class="guimenuitem">Een shell uitvoeren</span> in het hoofdmenu dat gebruikt kan worden om een shell te starten. Vanuit de meeste dialoogvensters kunt naar het hoofdmenu gaan door een of meer keren de knop <span class="guibutton">Terug</span> te gebruiken. Typ <strong class="userinput"><code>exit</code></strong> om de shell af te sluiten en naar het installatiesysteem terug te keren. </p>
+<p>Op dit punt is uw systeem opgestart vanaf een RAM-schijf en staan u een beperkt aantal Unix-hulpprogramma's ter beschikking. U kunt zien welke programma's beschikbaar zijn door het commando <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> te gebruiken of door <span class="command"><strong>help</strong></span> te typen. De shell is <span class="command"><strong>ash</strong></span>, een kloon van de Bourne-shell. De shell heeft een aantal aardige functies zoals het automatisch voltooien van commando's en bestandsnamen en een opdrachthistorie. </p>
+<p>Gebruik de teksteditor <span class="command"><strong>nano</strong></span> om bestanden te bewerken en te bekijken. Logbestanden van het installatiesysteem zijn te vinden in de map <code class="filename">/var/log</code>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Hoewel u in principe in een shell alles kunt doen wat men met de beschikbare commando's kan doen, is de mogelijkheid om een shell te gebruiken enkel bedoeld voor het geval er iets mis gaat en om te debuggen. </p>
+<p>Bepaalde taken handmatig uitvoeren vanuit de shell kan interfereren met het installatieproces en kan resulteren in fouten of een onvolledige installatie. In het bijzonder zou u zeker aan het installatiesysteem moeten overlaten om de partitie met het wisselgeheugen, de swap-partitie, te activeren. Dit zou u niet zelf vanuit een shell mogen doen. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Installatie over netwerk-console</h3></div></div></div>
+<p>Een van de meer interessante componenten is <em class="firstterm">network-console</em>. Deze component maakt het mogelijk om een groot deel van de installatie via SSH over het netwerk uit te voeren. Het gebruik van het netwerk impliceert dat u de eerste stappen van de installatie vanaf de console zult moeten uitvoeren: in ieder geval tot en met de configuratie van het netwerk. (Het is echter mogelijk om dat deel van de installatie te automatiseren met <a class="xref" href="ch04s06.html" title="4.6. Automatische installatie">Paragraaf 4.6, “Automatische installatie”</a>.) </p>
+<p>Deze component wordt niet automatisch getoond in het installatiemenu en dus moet u er expliciet naar vragen. Als u installeert vanaf optische media, moet u de installatie starten met prioriteit <span class="quote">“<span class="quote">medium</span>”</span> of op een andere manier het hoofdmenu van de installatie oproepen en daar de optie <span class="guimenuitem">Installatiecomponenten van installatiemedia laden</span> selecteren. Vervolgens selecteert u uit de lijst met aanvullende componenten <span class="guimenuitem">netwerk-console: de installatie met SSH vanaf een andere computer verder zetten</span>. De component is succesvol geladen als in het menu een nieuwe optie <span class="guimenuitem">De installatie verder van op afstand doorlopen via SSH</span> verschijnt. </p>
+<p><span class="phrase">Nadat u deze nieuwe optie heeft geselecteerd, zal u</span>  worden gevraagd naar een wachtwoord waarmee de verbinding met het installatiesysteem zal worden gerealiseerd en een bevestiging daarvan. Dat is alles. Vervolgens zal een melding worden getoond met instructies om vanaf een ander systeem in te loggen als gebruiker <span class="emphasis"><em>installer</em></span> met het wachtwoord dat u daarnet heeft ingevoerd. Een ander belangrijk detail op dit scherm is de vingerafdruk van dit systeem. U dient deze op een veilige manier beschikbaar te stellen aan degene die de installatie op afstand zal vervolgen. </p>
+<p>Indien u besluit de installatie lokaal te vervolgen, kunt u altijd met behulp van de <span class="keycap"><strong>Enter</strong></span> terugkeren naar het hoofdmenu, waar u een andere component kunt selecteren. </p>
+<p>Laten we ons nu verplaatsen naar het andere einde van de netwerkkabel. Voordat u de verbinding kunt opzetten, dient u uw terminal te configureren voor UTF-8, aangezien dat door het installatiesysteem gebruikt wordt. Als u dit niet doet, is installatie vanop afstand nog wel mogelijk, maar kunt u vreemde effecten op uw scherm zien, zoals kapotte randen van dialoogvensters of onleesbare niet-ASCII karakters. U brengt de verbinding met het installatiesysteem eenvoudig tot stand door het volgende te typen: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>nieuw_systeem</code></em></code></strong>
+</pre></div>
+<p> Daarbij is <em class="replaceable"><code>nieuw_systeem</code></em> ofwel de naam ofwel het IP-adres van de computer waarop het systeem wordt geïnstalleerd. Voordat daadwerkelijk wordt ingelogd zal de vingerafdruk van dat systeem worden getoond en zult u moeten bevestigen dat die correct is. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>De <span class="command"><strong>ssh</strong></span>-server in het installatiesysteem gebruikt een standaardconfiguratie waarbij geen pakketten verzonden worden om de verbinding in leven te houden. In principe zou een verbinding met de computer waarop de installatie gebeurt, onbeperkt open moeten blijven. Nochtans kan het in sommige omstandigheden — afhankelijk van de instellingen van uw lokaal netwerk — gebeuren dat de verbinding na een bepaalde periode van inactiviteit verloren gaat. Een veel voorkomende situatie waarin dit kan gebeuren is wanneer er ergens tussen de cliënt en het systeem waarop de installatie plaats heeft, een vorm van Network Address Translation (NAT) plaats vindt. Afhankelijk van het punt in de installatie waarop de verbinding verloren ging, kan het zijn dat u wel of niet in staat bent om de installatie voort te zetten nadat u een nieuwe verbinding tot stand bracht. </p>
+<p>U kunt mogelijk vermijden dat de verbinding wegvalt door bij het starten van de ssh-verbinding de optie <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>waarde</code></em></code></strong> toe te voegen of die optie in uw configuratiebestand van <span class="command"><strong>ssh</strong></span> op te nemen. Merk evenwel op dat deze optie gebruiken in sommige gevallen ook <span class="emphasis"><em>de oorzaak voor</em></span> het wegvallen van de verbinding kan zijn (bijvoorbeeld als blijf-in-leven-pakketten verzonden worden tijdens een korte onderbreking in de netwerkverbinding waarvan <span class="command"><strong>ssh</strong></span> zich anders hersteld zou hebben). Gebruik dit dus enkel als het nodig is. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Als u meerdere computers na elkaar installeert en deze hetzelfde IP-adres of dezelfde computernaam krijgen, zal <span class="command"><strong>ssh</strong></span> weigeren om de verbinding te maken met een dergelijke computer. De reden is dat opeenvolgende systemen een andere vingerafdruk zullen hebben, wat meestal een indicatie is van een <span class="quote">“<span class="quote">spoofing</span>”</span>-aanval. Als u er zeker van bent dat dit niet het geval is, dient u de betreffende regel te verwijderen uit <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3396" class="footnote" name="id3396"><sup class="footnote">[14]</sup></a>, waarna u een nieuwe poging kunt doen. </p></td></tr>
+</table></div>
+<p>Nadat u bent ingelogd zal een aanvangsscherm worden getoond met twee opties die als naam hebben: <span class="guimenuitem">Menu starten</span> en <span class="guimenuitem">Shell starten</span>. De eerste optie geeft toegang tot het hoofdmenu van het installatiesysteem vanwaar u de installatie zoals gebruikelijk kunt vervolgen. De laatste optie start een shell op het nieuwe systeem die u kunt gebruiken om het systeem te onderzoeken en eventueel te repareren. U zou maximaal één SSH-sessie mogen starten met het installatiemenu, maar u kunt desgewenst meerdere sessies starten met een shell. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nadat u via SSH de installatie vanop afstand heeft gestart, zou u niet meer mogen terugkeren naar de installatiesessie op de lokale console. Als u dat toch doet, kunt u de databank met de configuratie van het nieuwe systeem beschadigen. Dit kan op zijn beurt tot gevolg hebben dat de installatie mislukt of na de installatie resulteren in problemen met het nieuwe systeem. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id2586" class="footnote"><p><a href="#id2586" class="para"><sup class="para">[4] </sup></a> In technische termen: indien voor die taal meerdere  taalgebieden (locales) bestaan met verschillende landcodes. </p></div>
+<div id="ftn.id2594" class="footnote"><p><a href="#id2594" class="para"><sup class="para">[5] </sup></a> Als u instelde dat ook vragen van gemiddelde of lage prioriteit gesteld moeten worden, kunt u steeds uw voorkeurstaalgebied kiezen uit die welke voor de geselecteerde taal bestaan (als er meer dan één bestaat). </p></div>
+<div id="ftn.id2600" class="footnote"><p><a href="#id2600" class="para"><sup class="para">[6] </sup></a> Een oud (of verouderd) taalgebied is een taalgebied dat geen UTF-8 gebruikt, maar een van de oudere standaarden voor tekencodering, zoals ISO 8859-1 (gebruikt door West-Europese talen) of EUC-JP (gebruikt door het Japans). </p></div>
+<div id="ftn.id2780" class="footnote"><p><a href="#id2780" class="para"><sup class="para">[7] </sup></a> Het installatiesysteem zal de LVM volumegroep encrypteren met behulp van een 256 bits AES-sleutel en maakt gebruik van de ondersteuning voor <span class="quote">“<span class="quote">dm-crypt</span>”</span> in de kernel. </p></div>
+<div id="ftn.id2874" class="footnote"><p><a href="#id2874" class="para"><sup class="para">[8] </sup></a>Om eerlijk te zijn, kunt u zelfs een meervoudig schijfapparaat maken met partities die op één fysieke harde schijf staan, maar dit biedt geen enkel voordeel. </p></div>
+<div id="ftn.id3118" class="footnote"><p><a href="#id3118" class="para"><sup class="para">[9] </sup></a> Een wachtwoordzin gebruiken als sleutel betekent momenteel dat de partitie ingesteld zal worden met behulp van <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3133" class="footnote"><p><a href="#id3133" class="para"><sup class="para">[10] </sup></a> Er wordt nochtans verondersteld dat de gozers van het bureau met de naam die uit drie letters bestaat, gegevens van magnetisch-optische media kunnen terughalen, zelfs als die meerdere keren overschreven werden. </p></div>
+<div id="ftn.id3176" class="footnote"><p><a href="#id3176" class="para"><sup class="para">[11] </sup></a> Merk op dat het programma dat de feitelijke installatie van pakketten uitvoert, <span class="command"><strong>dpkg</strong></span> is. Dit programma is echter meer een soort onderliggend gereedschap. <span class="command"><strong>apt</strong></span> is een hoger gereedschap dat, waar nodig <span class="command"><strong>dpkg</strong></span> inroept. Het is in staat om pakketten op te halen vanaf installatiemedia, het netwerk en andere bronnen. Het is ook in staat om automatisch andere pakketten te installeren die nodig zijn om het pakket dat u probeert te installeren, correct te laten functioneren. </p></div>
+<div id="ftn.id3238" class="footnote"><p><a href="#id3238" class="para"><sup class="para">[12] </sup></a> U moet weten dat om deze lijst te tonen het installatiesysteem eigenlijk het programma <span class="command"><strong>tasksel</strong></span> gebruikt. Het kan na de installatie op elk gewenst moment uitgevoerd worden om extra pakketten te installeren (of ze te verwijderen), of u kunt daarvoor een eerder fijnmazig instrument zoals <span class="command"><strong>aptitude</strong></span> gebruiken. Als u, nadat de installatie voltooid is, op zoek bent naar een specifiek pakket, kunt u eenvoudig <strong class="userinput"><code>aptitude install <em class="replaceable"><code>pakket</code></em></code></strong> uitvoeren, waarbij <em class="replaceable"><code>pakket</code></em> de naam is van het pakket waarnaar u op zoek bent. </p></div>
+<div id="ftn.id3333" class="footnote"><p><a href="#id3333" class="para"><sup class="para">[13] </sup></a> Dat is: op de <span class="keycap"><strong>Alt</strong></span>-toets links van de <span class="keycap"><strong>spatiebalk</strong></span> drukken en tezelfdertijd op de functietoets <span class="keycap"><strong>F2</strong></span>. </p></div>
+<div id="ftn.id3396" class="footnote"><p><a href="#id3396" class="para"><sup class="para">[14] </sup></a> Met het volgende commando verwijdert u de regel met betrekking tot een bepaalde computer: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>computernaam</code></em>|<em class="replaceable"><code>IP—adres</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Voorstelling van de componenten </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Ontbrekende firmware laden</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

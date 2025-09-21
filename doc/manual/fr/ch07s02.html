@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>7.2. Le montage des volumes chiffrés</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Manuel d'installation pour la distribution Debian GNU/Linux">
+<link rel="up" href="ch07.html" title="Chapitre 7. Démarrer votre nouveau système Debian">
+<link rel="prev" href="ch07s01.html" title="7.1. Le moment de vérité">
+<link rel="next" href="ch07s03.html" title="7.3. Se connecter">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">7.2. Le montage des volumes chiffrés</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<th width="60%" align="center">Chapitre 7. Démarrer votre nouveau système Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mount-encrypted-volumes"></a>7.2. Le montage des volumes chiffrés</h2></div></div></div>
+<p>Si vous avez créé des volumes chiffrés et leurs points de montage pendant l'installation, vous devrez fournir pendant le démarrage la phrase secrète pour chaque volume. </p>
+<p>Pour les partitions chiffrées avec dm-crypt, l'invite pendant l'amorçage sera : </p>
+<div class="informalexample"><pre class="screen">
+Starting early crypto disks... <em class="replaceable"><code>part</code></em>_crypt(starting)
+Enter LUKS passphrase:
+</pre></div>
+<p> Le mot <em class="replaceable"><code>part</code></em> sur la première ligne de l'invite est le nom de la partition, par exemple, sda2 ou md0. Vous vous demandez probablement <span class="emphasis"><em>pour quel volume</em></span> vous saisissez la phrase secrète. Est-ce pour <code class="filename">/home</code>, pour <code class="filename">/var</code> ? Bien sûr, si vous n'avez chiffré qu'un seul volume, c'est facile et vous n'avez qu'à saisir la phrase utilisée. Si vous avez chiffré plusieurs volumes, les notes que vous avez prises pendant l'installation (étape <a class="xref" href="ch06s03.html#partman-crypto" title="6.3.4.6. Configuration des volumes chiffrés">Section 6.3.4.6, « Configuration des volumes chiffrés »</a>) vous seront utiles. Si vous n'avez pas noté la correspondance entre <code class="filename"><em class="replaceable"><code>part</code></em>_crypt</code> et les points de montage, vous pouvez les trouver dans les fichiers <code class="filename">/etc/crypttab</code> et <code class="filename">/etc/fstab</code> de votre nouveau système. </p>
+<p>L'invite peut être légèrement différente quand un système de fichiers racine chiffré est monté. Cela dépend du type d'<span class="quote">« <span class="quote">initramfs</span> »</span> qui a servi à créer l'<span class="quote">« <span class="quote">initrd</span> »</span> utilisé pour amorcer le système. Voici par exemple l'invite pour un initrd créé avec <code class="classname">initramfs-tools</code> : </p>
+<div class="informalexample"><pre class="screen">Begin: Mounting <span class="emphasis"><em>root file system</em></span>... ...
+Begin: Running /scripts/local-top ...
+Enter LUKS passphrase:
+</pre></div>
+<p>
+
+</p>
+<p>Quand vous saisissez la phrase, aucun caractère (même pas l'astérisque) n'est montré. Si vous faites une erreur, vous aurez deux possibilités de correction. Après la troisième tentative, le processus de démarrage sautera ce volume et continuera avec les autres volumes. Veuillez consulter la <a class="xref" href="ch07s02.html#crypto-troubleshooting" title="7.2.1. En cas de problèmes">Section 7.2.1, « En cas de problèmes »</a> pour d'autres informations. </p>
+<p>Une fois toutes les phrases saisies, le processus de démarrage se poursuit normalement. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="crypto-troubleshooting"></a>7.2.1. En cas de problèmes</h3></div></div></div>
+<p>Quand vous n'avez pas pu monter certains volumes chiffrés à cause d'une mauvaise phrase secrète, vous devez les monter après le démarrage. Il y a plusieurs cas. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Le premier cas concerne la partition racine. Si elle n'est pas montée correctement, le processus de démarrage s'arrête et vous devez réamorcer la machine. </p></li>
+<li class="listitem">
+<p>Le cas est simple pour les volumes chiffrés qui contiennent des données comme <code class="filename">/home</code> ou <code class="filename">/srv</code>. Vous pouvez simplement les monter manuellement après le démarrage. </p>
+<p>En revanche, avec dm-crypt, c'est un peu plus compliqué. Vous devez d'abord enregistrer les volumes avec l'application <span class="application">device mapper</span> de cette façon : </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>/etc/init.d/cryptdisks start</code></strong>
+</pre></div>
+<p> Tous les volumes listés dans <code class="filename">/etc/crypttab</code> seront examinés et les périphériques seront créés dans le répertoire <code class="filename">/dev</code> après avoir saisi les bonnes phrases secrètes. Les volumes déjà enregistrés sont ignorés et vous pouvez répéter cette commande sans souci. Quand l'enregistrement des volumes sera terminé, vous pouvez simplement les monter de la façon habituelle : </p>
+<div class="informalexample"><pre class="screen"><code class="prompt">#</code> <strong class="userinput"><code>mount <em class="replaceable"><code>/mount_point</code></em></code></strong>
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Quand des volumes contenant des systèmes de fichiers non critiques (<code class="filename">/usr</code> ou <code class="filename">/var</code>) n'ont pas été montés, le système doit s'amorcer malgré tout et vous pouvez monter ces volumes comme dans le cas précédent. Mais vous aurez besoin de (re)lancer les services qui fonctionnent habituellement car il est probable qu'ils n'auront pas été lancés. Le plus simple est de réamorcer l'ordinateur. </p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch07s01.html"><img src="images/prev.png" alt="Précédent"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch07.html"><img src="images/up.png" alt="Niveau supérieur"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch07s03.html"><img src="images/next.png" alt="Suivant"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">7.1. Le moment de vérité </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Sommaire"></a></td>
+<td width="40%" align="right" valign="top"> 7.3. Se connecter</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

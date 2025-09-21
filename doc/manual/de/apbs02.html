@@ -1,0 +1,276 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Voreinstellung nutzen</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apb.html" title="Anhang B. Automatisieren der Installation mittels Voreinstellung">
+<link rel="prev" href="apbs01.html" title="B.1. Einführung">
+<link rel="next" href="apbs03.html" title="B.3. Eine Voreinstellungsdatei erstellen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Voreinstellung nutzen</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang B. Automatisieren der Installation mittels Voreinstellung</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Voreinstellung nutzen</h2></div></div></div>
+<p>Zunächst müssen Sie natürlich eine Voreinstellungsdatei erstellen und dort ablegen, wo Sie sie benutzen wollen. Die Erstellung der Datei wird später in diesem Kapitel behandelt. Sie am richtigen Ort zu platzieren, ist recht unkompliziert, wenn Sie die Voreinstellung per Netzwerk oder USB-Stick nutzen möchten. Falls Sie aber die Datei in einem Installations-Image integrieren möchten, müssen Sie das ISO-Image remastern (neu erstellen). Und schließlich: wie Sie die Voreinstellungsdatei in die initrd integrieren können, ist nicht Thema dieses Dokuments; konsultieren Sie die Entwicklerdokumentation des <code class="classname">debian-installer</code>. </p>
+<p>Eine Beispiel-Voreinstellungsdatei, die Sie als Basis für Ihre Datei verwenden können, ist unter <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span> verfügbar. Sie basiert auf den Konfigurationsfragmenten, die in diesem Kapitel enthalten sind. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Die Voreinstellungsdatei laden</h3></div></div></div>
+<p>Falls Sie Voreinstellung per initrd benutzen, müssen Sie lediglich sicherstellen, dass die Datei als <code class="filename">preseed.cfg</code> im Root-Verzeichnis der initrd existiert. Der Installer wird automatisch überprüfen, ob solch eine Datei existiert und sie laden. </p>
+<p>Für alle anderen Voreinstellungsmethoden müssen Sie dem Installer beim Start mitteilen, welche Datei er nutzen soll. Dies wird normalerweise mit einem Boot-Parameter gemacht, den Sie dem Kernel beim Start angeben, entweder manuell zum Boot-Zeitpunkt oder indem Sie die Konfigurationsdatei des Bootloaders editieren <span class="phrase">(fügen Sie z.B. in <code class="filename">syslinux.cfg</code> den Parameter an das Ende der <span class="quote">„<span class="quote">append</span>“</span>-Zeile für den Kernel an).</span> </p>
+<p>Wenn Sie die Voreinstellungsdatei in der Bootloader-Konfiguration festlegen, möchten Sie vielleicht diese Konfiguration so verändern, dass Sie nicht mehr die Enter-Taste drücken müssen, um den Installer zu booten. <span class="phrase">In <code class="filename">syslinux.cfg</code> müssen Sie dazu den Timeout auf <code class="literal">1</code> setzen.</span> </p>
+<p>Um sicherzustellen, dass der Installer die richtige Voreinstellungsdatei bekommt, können Sie optional eine Prüfsumme für die Datei angeben. Dies muss derzeit eine md5sum-Prüfsumme sein, und wenn sie angegeben ist, muss sie auch passen, ansonsten wird der Installer sich weigern, die Datei zu benutzen. </p>
+<div class="informalexample"><pre class="screen">Boot-Parameter, die Sie angeben müssen
+- wenn Sie per Netzwerk booten (netboot):
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- oder
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- wenn Sie von einem angepassten (remastered) Installations-Image
+  booten:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- wenn Sie von einem USB-Medium installieren (legen Sie die
+  Voreinstellungsdatei im Toplevel-(Haupt)-Verzeichnis des USB-Sticks ab):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Beachten Sie, dass <code class="filename">preseed/url</code> auch einfach mit <code class="filename">url</code> abgekürzt werden kann, <code class="filename">preseed/file</code> mit <code class="filename">file</code> und <code class="filename">preseed/file/checksum</code> mit <code class="filename">preseed-md5</code>, wenn diese Argumente als Boot-Parameter an den Kernel übergeben werden. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Boot-Parameter nutzen, um Fragen automatisiert zu beantworten</h3></div></div></div>
+<p>Falls eine Voreinstellungsdatei für einige Schritte nicht verwendet werden kann, kann die Installation trotzdem voll automatisiert werden, da Sie auch Voreinstellungswerte per Kommandozeile an den Kernel übergeben können. </p>
+<p>Boot-Parameter können auch verwendet werden, wenn zwar Voreinstellung generell nicht verwendet, aber eine Antwort für eine spezielle Frage vorgegeben werden soll. Einige Beispiele, wofür das sinnvoll sein kann, sind an anderer Stelle in diesem Handbuch dokumentiert. </p>
+<p>Um einen Wert festzulegen, der innerhalb des <code class="classname">debian-installer</code>s verwendet werden soll, geben Sie einfach <strong class="userinput"><code><em class="replaceable"><code>Pfad/zur/Variable</code></em>=<em class="replaceable"><code>Wert</code></em></code></strong> für jede Voreinstellungsvariable, die in den Beispielen dieses Kapitels aufgelistet ist, am Boot-Prompt an. Falls ein Wert verwendet werden soll, um Pakete für das Zielsystem zu konfigurieren, müssen Sie den <em class="firstterm">Eigentümer</em> (owner<a href="#ftn.id4023" class="footnote" name="id4023"><sup class="footnote">[19]</sup></a>) der Variable voranstellen wie hier: <strong class="userinput"><code><em class="replaceable"><code>Eigentümer</code></em>:<em class="replaceable"><code>Pfad/zur/Variable</code></em>=<em class="replaceable"><code>Wert</code></em></code></strong>. Geben Sie den Eigentümer nicht an, wird der Wert der Variable nicht in die debconf-Datenbank des Zielsystems kopiert und bleibt deshalb bei der Konfiguration des entsprechenden Pakets ungenutzt. </p>
+<p>Eine Frage auf diese Art voreinzustellen führt normalerweise dazu, dass die Frage überhaupt nicht gestellt wird. Um lediglich eine andere Vorauswahl (Standardantwort) einzustellen, aber die Frage trotzdem stellen zu lassen, verwenden Sie als Operator <span class="quote">„<span class="quote">?=</span>“</span> statt <span class="quote">„<span class="quote">=</span>“</span>. Siehe auch <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Voreinstellung nutzen, um Standardantworten auf Fragen zu ändern">Abschnitt B.5.2, „Voreinstellung nutzen, um Standardantworten auf Fragen zu ändern“</a>. </p>
+<p>Hinweis: einige Variablen, die oft am Boot-Prompt verwendet werden, haben einen kurzen Alias (Abkürzung). Wenn ein Alias vorhanden ist, wird er in den Beispielen in diesem Kapitel auch verwendet (statt der langen Fassung). Die <code class="literal">preseed/url</code>-Variable zum Beispiel hat den Alias <code class="literal">url</code>. Ein anderes Beispiel ist der Alias <code class="literal">tasks</code>, der in <code class="literal">tasksel:tasksel/first</code> übersetzt wird. </p>
+<p>Ein <span class="quote">„<span class="quote">---</span>“</span> in den Boot-Optionen hat eine spezielle Bedeutung. Alle Kernelparameter, die hinter dem letzten <span class="quote">„<span class="quote">---</span>“</span> stehen, werden in die Bootloader-Konfiguration des installierten Systems kopiert (wenn der Installer des Bootloaders dies unterstützt). Der Installer wird automatisch alle Optionen (z.B. Voreinstellungsoptionen) ausfiltern, die er erkennt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Aktuelle Linux-Kernel (2.6.9 oder später) akzeptieren ein Maximum von 32 Kommandozeilenoptionen und 32 Umgebungsoptionen, inklusive einiger Optionen, die standardmäßig für den Installer hinzugefügt werden. Wird diese Zahl überschritten, wird der Kernel eine Panic melden (abstürzen). (Bei älteren Kernels lagen diese Zahlen niedriger.) </p></td></tr>
+</table></div>
+<p>Einige der Standardoptionen, wie <code class="literal">vga=normal</code>, können bei den meisten Installationen getrost entfernt werden, was es erlaubt, mehr Optionen für Voreinstellungen zu verwenden. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Anmerkung]" src="images/note.png"></td>
+<th align="left">Anmerkung</th>
+</tr>
+<tr><td align="left" valign="top"><p>Es könnte teilweise unmöglich sein, Boot-Parameter mit Werten zu verwenden, die Leerzeichen enthalten, sogar wenn Sie sie mit Anführungszeichen einfassen. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Auto-Modus</h3></div></div></div>
+<p>Es gibt etliche Features des Debian Installers, die es erlauben, mit ziemlich einfachen Kommandozeilen am Boot-Prompt zu komplexen angepassten automatisierten Installationen zu kommen. </p>
+<p>Dies wird über die Auswahl <code class="literal">Automated install</code> im Boot-Menü aktiviert, für einige Architekturen oder Boot-Methoden auch <code class="literal">auto</code> genannt. In diesem Kapitel ist <code class="literal">auto</code> daher kein Parameter, sondern bedeutet die Auswahl des genannten Boot-Menü-Eintrags und das Hinzufügen der folgenden Boot-Parameter am Boot-Prompt. <span class="phrase">In <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Der Start-Bildschirm (Boot-Screen)">Abschnitt 5.1.5, „Der Start-Bildschirm (Boot-Screen)“</a> finden Sie Informationen darüber, wie Sie einen Boot-Parameter hinzufügen.</span> </p>
+<p>Um dies zu demonstrieren, hier einige Beispiele, die Sie am Boot-Prompt verwenden können: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Bedingung hierfür ist, dass ein DHCP-Server existiert, der den Rechner an den Punkt bringt, wo <code class="literal">autoserver</code> per DNS aufgelöst werden kann, eventuell indem die lokale Domäne hinzugefügt wird, falls sie per DHCP mitgeliefert wird. Wenn das auf einer Site passiert, auf der die Domäne <code class="literal">example.com</code> lautet und es existiert ein gesundes DHCP-Setup, führt das dazu, dass die Voreinstellungsdatei von <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code> empfangen wird. </p>
+<p>Der letzte Teil der URL (<code class="literal">d-i/trixie/./preseed.cfg</code>) stammt von <code class="literal">auto-install/defaultroot</code>. Standardmässig ist dabei das Verzeichnis <code class="literal">trixie</code> enthalten, damit zukünftige Versionen einen eigenen Codenamen festlegen können, um den Leuten eine kontrollierte Migration zu ermöglichen. Der Teil <code class="literal">/./</code> des Pfades wird genutzt, um das Root-Verzeichnis relativ zu den späteren Pfaden, die verankert werden können, zu bezeichnen. Hierdurch können Dateien durch eine komplette URL angegeben werden (mit Pfaden, die mit / beginnen und entsprechend verankert sind oder sogar mit Pfaden relativ zu dem Verzeichnis, in dem die letzte Voreinstellungsdatei gefunden wurde). Dies kann genutzt werden, um Skripte zu entwerfen, die in höherem Maße portierbar sind, so dass eine komplette Hierachie von Skripten an einen neuen Ort verschoben werden kann, ohne sie total zu zerstören (z.B. Skripte auf einen USB-Stick verschieben, während sie auf einem Webserver entwickelt wurden). Ein Beispiel: die Voreinstellungsdatei setzt <code class="literal">preseed/run</code> auf <code class="literal">/scripts/late_command.sh</code>, dann wird die Datei von <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code> heruntergeladen. </p>
+<p>Falls keine lokale DHCP- oder DNS-Infrastruktur existiert oder falls Sie nicht den Standardpfad zu der Datei <code class="filename">preseed.cfg</code> nutzen möchten, können Sie trotzdem eine explizite URL angeben, und wenn Sie dabei nicht das Element <code class="literal">/./</code> im Pfad benutzen, wird sie passend am Anfang des Pfades verankert (z.B. das dritte <code class="literal">/</code> in der URL). Hier ein Beispiel, das nur minimale Unterstützung von der lokalen Netzwerkinfrastruktur erfordert: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> Das funktioniert so: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>falls in der URL das Protokoll fehlt, wird http angenommen, </p></li>
+<li class="listitem"><p>falls der Teil des Rechnernamens keinen Punkt enthält, wird die Domäne, die vom DHCP abgeleitet wird, angehängt und </p></li>
+<li class="listitem"><p>falls nach dem Rechnernamen kein <code class="literal">/</code> folgt, wird der Standardpfad hinzugefügt. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Zusätzlich zur Angabe der URL können Sie auch Einstellungen angeben, die nicht direkt das Verhalten des <code class="classname">debian-installer</code> selbst beeinflussen, sondern an Skripte weitergeleitet werden, die mit <code class="literal">preseed/run</code> in der geladenen Voreinstellungsdatei festgelegt sind. Derzeit ist das einzige solche Beispiel <code class="literal">auto-install/classes</code>, was den Alias <code class="literal">classes</code> hat. Dies kann entsprechend so genutzt werden: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Die Klassen können zum Beispiel den Systemtyp, der installiert werden soll, festlegen oder die Lokalisierung, die Sie nutzen möchten. </p>
+<p>Natürlich ist es möglich, dieses Konzept zu erweitern und dabei ist es sinnig, den auto-install-Namensraum dafür zu nutzen. Sie könnten z.B. etwas wie <code class="literal">auto-install/style</code> verwenden, was dann in Ihren Skripten genutzt wird. Falls Sie meinen, dass so etwas benötigt wird, erwähnen Sie es doch auf der Mailingliste <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, so dass wir Namenskonflikte vermeiden und vielleicht einen Alias dafür hinzufügen können. </p>
+<p>Die Auswahl <code class="literal">auto</code> im Boot-Menü ist noch nicht auf allen Architekturen definiert. Der gleiche Effekt kann jedoch auch erreicht werden, indem die beiden Parameter <code class="literal">auto=true priority=critical</code> zur Kernel-Kommandozeile hinzugefügt werden. Der Kernel-Parameter <code class="literal">auto</code> ist ein Alias für <code class="literal">auto-install/enable</code> und wenn er auf <code class="literal">true</code> gesetzt ist, werden die Fragen über Gebietsschema und Tastatur so weit zurückgestellt, bis eine Chance besteht, sie per Voreinstellung zu setzen. <code class="literal">priority</code> ist ein Alias für <code class="literal">debconf/priority</code>, und wenn er auf <code class="literal">critical</code> gesetzt wird, unterdrückt das alle Fragen mit einer niedrigeren Priorität. </p>
+<p>Wenn eine Installation im Auto-Modus ausgewählt wird, ohne eine Voreinstellungskonfiguration anzugeben, wird der Benutzer aufgefordert, den Speicherort einer Voreinstellungsdatei anzugeben. Wenn solch ein Speicherort bereits angegeben wurde, wird die Anzeige dieses Dialogs normalerweise unterdrückt, um eine vollautomatische Installation zu ermöglichen. Falls jedoch eine Voreinstellungskonfiguration in einer initrd genutzt werden soll, um lediglich Standardeinstellungen des Installers zu verändern, sollte das Ergebnis so sein, als ob keine Voreinstellung vorgegeben wurde (obwohl es so ist). In diesem Fall kann die debconf-Variable <code class="literal">auto-install/cloak_initrd_preseed</code>auf <code class="literal">true</code> gesetzt werden (z.B. in der <code class="literal">preseed.cfg</code>-Datei in der initrd), um das gewünschte Ergebnis zu erreichen. </p>
+<p>Zusätzliche Optionen, die eventuell interessant sein könnten für eine automatisierte Installation mittels DHCP: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code>. Das sorgt dafür, dass die erste funktionsfähige Netzwerkkarte genutzt wird und dass etwas mehr Zeit für die Antwort auf eine DHCP-Anfrage gegeben wird. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tipp]" src="images/tip.png"></td>
+<th align="left">Tipp</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ein ausführliches Beispiel, wie Sie dieses Framework nutzen können, inklusive Beispielskripte und -klassen finden Sie auf der <a class="ulink" href="http://hands.com/d-i/" target="_top">Webseite </a> des Entwicklers. Die dort verfügbaren Beispiele zeigen auch viele andere tolle Effekte, die durch kreative Nutzung von Voreinstellung erreicht werden können. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Für Voreinstellung nützliche Aliase</h3></div></div></div>
+<p>Die folgenden Aliase könnten nützlich sein, wenn Sie Voreinstellung (im Auto-Modus) benutzen. Beachten Sie, dass dies einfach nur kurze Alias für Fragen-Namen sind und dass Sie immer auch einen Wert angeben müssen, zum Beispiel <code class="literal">auto=true</code> oder <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Beispiele für Voreinstellung via Boot-Prompt-Zeile</h3></div></div></div>
+<p>Hier einige Beispiele, wie Zeilen am Boot-Prompt aussehen könnten (Sie müssen sie natürlich an Ihre Bedürfnisse anpassen<span class="phrase">; schauen Sie sich auch <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Der Start-Bildschirm (Boot-Screen)">Abschnitt 5.1.5, „Der Start-Bildschirm (Boot-Screen)“</a> an</span>). </p>
+<div class="informalexample"><pre class="screen"># Um Französisch als Sprache zu setzen und Frankreich als Land:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Um Englisch als Sprache zu setzen und Deutschland als Land, sowie ein
+# deutsches Tastaturlayout zu verwenden:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Um die MATE-Desktop-Umgebung zu installieren:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Um die Programmgruppe web-server zu installieren:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Voreinstellungsdateien mittels eines DHCP-Servers festlegen</h3></div></div></div>
+<p>Es ist auch möglich, DHCP zu benutzen, um eine Voreinstellungsdatei anzugeben, die vom Netzwerk heruntergeladen werden soll. DHCP erlaubt es, einen Dateinamen anzugeben. Normalerweise ist dies eine Datei für das Booten per Netzwerk; wenn sie jedoch als URL angegeben wird, wird das Installationsmedium (dies muss Voreinstellung per Netzwerk unterstützen) die Datei von der URL herunterladen und als Voreinstellungsdatei benutzen. Hier ein Beispiel, wie Sie die dhcpd.conf für den ISC-DHCP-Server Version 3 (aus dem Debian-Paket isc-dhcp-server) einstellen müssen: </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Beachten Sie, dass das obige Beispiel die Angabe des Dateinamens auf DHCP-Clients beschränkt, die sich selbst als <span class="quote">„<span class="quote">d-i</span>“</span> identifizieren; es wird also keine regulären DHCP-Clients beeinflussen, sondern nur Rechner, auf denen der Installer läuft. Sie können den Text auch in einen Absatz der Datei einfügen, der nur für einen bestimmten Rechner gilt, um zu vermeiden, dass ALLE Installationen im Netzwerk voreingestellt werden. </p>
+<p>Eine gute Sache für die Voreinstellung per DHCP ist es, nur Werte vorzugeben, die netzwerkspezifisch sind, wie der zu nutzende Debian-Spiegel-Server. Auf diese Weise wird bei allen Installationen im Netzwerk automatisch ein passender Spiegel-Server gewählt, aber der Rest der Installation kann interaktiv vonstatten gehen. Eine voll automatisierte Debian-Installation per DHCP-Voreinstellung sollte nur mit Vorsicht durchgeführt werden. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4023" class="footnote"><p><a href="#id4023" class="para"><sup class="para">[19] </sup></a> Der Eigentümer (owner) einer debconf-Variable (oder eines Templates) ist normalerweise der Name des Pakets, das die entsprechende debconf-Vorlage enthält. Bei Variablen, die im Installer selbst verwendet werden, ist der Eigentümer <span class="quote">„<span class="quote">d-i</span>“</span>. Vorlagen und Variablen können auch mehr als einen Eigentümer haben, was dabei hilfreich sein kann, herauszufinden, ob sie aus der debconf-Datenbank entfernt werden können, wenn das Paket komplett vom System entfernt wird. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Einführung </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Eine Voreinstellungsdatei erstellen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

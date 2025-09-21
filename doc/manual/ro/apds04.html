@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Instalarea Debian GNU/Linux utilizând protocolul «IP pe portul paralel» („ Parallel Line Internet Protocol”: PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apd.html" title="Anexa D. Informații diverse">
+<link rel="prev" href="apds03.html" title="D.3. Instalarea Debian GNU/Linux dintr-un sistem Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Instalarea Debian GNU/Linux folosind PPP peste Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Instalarea Debian GNU/Linux utilizând protocolul «IP pe portul paralel» („ Parallel Line Internet Protocol”: PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa D. Informații diverse</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Instalarea Debian GNU/Linux utilizând protocolul «IP pe portul paralel» („ Parallel Line Internet Protocol”: PLIP)</h2></div></div></div>
+<p>Această secțiune explică cum se instalează Debian GNU/Linux pe un calculator fără placă Ethernet, dar care este conectat cu un calculator la distanță ce joacă rol de pasarelă, printr-un cablu Null-Modem (numit și cablu Null-Printer). Calculatorul pasarelă ar trebui să fie conectat la o rețea care are o oglindă Debian în cadrul ei (de exemplu, la Internet). </p>
+<p>În exemplul din această anexă vom configura o conexiune PLIP utilizând o pasarelă conectată la Internet printr-o conexiune dial-up (ppp0). Vom folosi adresele IP 192.168.0.1 și 192.168.0.2 pentru interfețele PLIP de pe sistemul țintă și, respectiv, pe sistemul sursă (aceste adrese ar trebui să fie neutilizate în spațiul de adrese de rețea). </p>
+<p>Conexiunea PLIP configurată în timpul instalării va fi disponibilă și după repornirea sistemului instalat (a se vedea <a class="xref" href="ch07.html" title="Cap. 7. Pornirea în noul dumneavoastră sistem Debian">Cap. 7, <i>Pornirea în noul dumneavoastră sistem Debian</i></a>). </p>
+<p>Înainte de a începe, va trebui să verificați configurația BIOS (adresa de bază IO și IRQ) pentru porturile paralele atât ale sistemului sursă, cât și ale sistemului țintă. Cele mai comune valori sunt <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5703"></a>D.4.1. Cerințe</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Un calculator țintă, numit <span class="emphasis"><em>target</em></span>, unde va fi instalat Debian. </p></li>
+<li class="listitem"><p>Medii de instalare a sistemului; a se vedea <a class="xref" href="ch02s04.html" title="2.4. Medii de instalare">Secțiune 2.4, „Medii de instalare”</a>. </p></li>
+<li class="listitem"><p>Un alt calculator conectat la Internet, numit <span class="emphasis"><em>sursă</em></span>, care va funcționa ca pasarelă. </p></li>
+<li class="listitem"><p>Un cablu DB-25 Null-Modem. Consultați <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> pentru mai multe informații despre acest cablu și instrucțiuni despre cum să vă creați propriul cablu. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5718"></a>D.4.2. Configurarea sistemului „sursă”</h3></div></div></div>
+<p>Următorul script shell este un exemplu simplu despre cum să configurați calculatorul „sursă” ca o pasarelă către Internet folosind ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Îndepărtăm modulele care rulează din nucleu pentru a evita conflictele și
+# pentru a le reconfigura manual.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configurați interfața plip (plip0 pentru mine, consultați dmesg | grep plip)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configurați pasarela
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5728"></a>D.4.3. Instalarea sistemului țintă „target”</h3></div></div></div>
+<p>Porniți mediul de instalare. Instalarea trebuie să fie rulată în modul expert; introduceți <strong class="userinput"><code>expert</code></strong> în promptul de pornire. Dacă trebuie să definiți parametri pentru modulele nucleului, trebuie să faceți acest lucru și în promptul de pornire. De exemplu, pentru a porni programul de instalare și pentru a definii valori pentru opțiunile <span class="quote">„<span class="quote">io</span>”</span> și <span class="quote">„<span class="quote">irq</span>”</span> pentru modulul „parport_pc”, introduceți următoarele în promptul de pornire: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Mai jos sunt răspunsurile care ar trebui date în diferite etape ale instalării. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Încărcați componentele programului de instalare de pe mediul de instalare</span>
+
+</p>
+<p>Selectați opțiunea <strong class="userinput"><code>plip-modules</code></strong> din listă; aceasta va face controlorii PLIP disponibili pentru sistemul de instalare. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Detectarea dispozitivelor de rețea</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Dacă sistemul „target” <span class="emphasis"><em>are</em></span> o placă de rețea, va fi afișată o listă de module de controlor pentru plăcile detectate. Dacă doriți să forțați <code class="classname">debian-installer</code> pentru a utiliza plip în schimb, trebuie să deselectați toate modulele de controlor listate. Evident, dacă sistemul „target” nu are o placă de rețea, programul de instalare nu va afișa această listă. </p></li>
+<li class="listitem"><p>Deoarece nicio placă de rețea nu a fost detectată/selectată mai devreme, programul de instalare vă va cere să selectați un modul de controlor de rețea dintr-o listă. Selectați modulul <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Configurarea rețelei</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Configurați automat rețeaua cu DHCP: Nu </p></li>
+<li class="listitem"><p>Adresa IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Adresa punct-la-punct (point-to-point): <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Adresele serverului de nume: puteți introduce aceleași adrese utilizate pe sistemul „sursă” (consultați <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Instalarea Debian GNU/Linux dintr-un sistem Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Instalarea Debian GNU/Linux folosind PPP peste Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

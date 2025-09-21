@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Tạo tập tin định cấu hình sẵn</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn">
+<link rel="prev" href="apbs02.html" title="B.2. Dùng khả năng chèn sẵn">
+<link rel="next" href="apbs04.html" title="B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Tạo tập tin định cấu hình sẵn</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục B. Tự động hoá việc cài đặt bằng chèn sẵn</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Tạo tập tin định cấu hình sẵn</h2></div></div></div>
+<p>Tập tin cấu hình sẵn có dạng thức được dùng bởi lệnh <span class="command"><strong>debconf-set-selections</strong></span>. Dạng thức chung của dòng nào nằm trong tập tin cấu hình sẵn là: </p>
+<div class="informalexample"><pre class="screen">&lt;sở hữu&gt; &lt;tên câu hỏi&gt; &lt;kiểu câu hỏi&gt; &lt;giá trị&gt;
+</pre></div>
+<p>
+
+</p>
+<p>The file should start with <code class="literal">#_preseed_V1</code> </p>
+<p>Ghi nhớ vài quy tắc khi tạo tập tin cấu hình sẵn. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Chèn chỉ một dấu cách riêng lẻ giữa « kiểu » và « giá trị »: dấu cách thêm nào sẽ được xử lý là phần của giá trị đó. </p></li>
+<li class="listitem"><p>Mỗi dòng có thể được chia ra nhiều dòng bằng cách phụ thêm xuyệc ngược (<span class="quote">“<span class="quote"><code class="literal">\</code></span>”</span>) là ký tự tiếp tục dòng. Nơi thích hợp để chia dòng ra là nơi nằm sau « tên câu hỏi »; còn nơi không thích hợp là nơi giữa « kiểu câu hỏi » và « giá trị ». Các dòng bị chia tách sẽ được nối lại thành một dòng riêng lẻ có tất cả các khoảng trắng theo sau được co lại thành một dấu cách riêng lẻ. </p></li>
+<li class="listitem"><p>Đối với biến cấu hình debconf (mẫu) nào chỉ được dùng trong trình cài đặt chính nó, nên đặt chủ sở hữu thành <span class="quote">“<span class="quote">d-i</span>”</span>; để chèn sẵn các biến được dùng trong hệ thống được cài đặt, nên dùng tên của gói chứa mẫu debconf tương ứng. Chỉ những biến có chủ sở hữu khác với <span class="quote">“<span class="quote">d-i</span>”</span> sẽ được chép đến cơ sở dữ liệu debconf cho hệ thống được cài đặt. </p></li>
+<li class="listitem"><p>Phần lớn câu hỏi cần phải được chèn sẵn bằng giá trị tiếng Anh, không phải giá trị đã dịch. Tuy nhiên, có một số câu hỏi riêng (v.d. trong <code class="classname">partman</code>) trong đó cần phải dùng giá trị đã dịch. </p></li>
+<li class="listitem"><p>Một số câu hỏi riêng chấp nhận mã là giá trị, thay cho đoạn tiếng Anh được hiển thị trong khi cài đặt. </p></li>
+<li class="listitem"><p>Start with <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>A comment consists of a line which <span class="emphasis"><em>starts</em></span> with a hash character (<span class="quote">“<span class="quote"><code class="literal">#</code></span>”</span>) and extends up to the length of that line. </p></li>
+</ul></div>
+<p>Phương pháp dễ nhất để tạo tập tin cấu hình sẵn là dùng tập tin mẫu được liên kết trong <a class="xref" href="apbs04.html" title="B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)">Phần B.4, “Nội dung của tập tin định cấu hình sẵn (cho trixie)”</a> như là cơ bản, rồi thêm từ từ vào nó. </p>
+<p>Một phương pháp xen kẽ là tự chạy tiến trình cài đặt, rồi, sau khi khởi động lại, dùng chức năng <span class="command"><strong>debconf-get-selections</strong></span> của gói các tiện ích <code class="classname">debconf-utils</code> để đổ cả cơ sở dữ liệu debconf lẫn cơ sở dữ liệu cdebconf của trình cài đặt đều vào cùng một tập tin: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Tuy nhiên, tập tin được tạo ra bằng cách này sẽ chứa một số mục riêng không nên được chèn sẵn; tập tin mẫu cũng là nơi bắt đầu thích hợp hơn với trường hợp của phần lớn người dùng. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Phương pháp này nhờ trường hợp rằng, tại kết thúc của tiến trình cài đặt, cơ sở dữ liệu cdebconf của trình cài đặt được lưu vào hệ thống mới cài đặt trong thư mục <code class="filename">/var/log/installer/cdebconf</code>. Tuy nhiên, vì cơ sở dữ liệu đó có thể chứa thông tin nhạy cảm, theo mặc định các tập tin đó chỉ cho phép người chủ đọc thôi. </p>
+<p>Thư mục <code class="filename">/var/log/installer</code>, cũng là mọi tập tin nằm trong nó sẽ bị xoá bỏ ra hệ thống của bạn nếu bạn tẩy gói thông báo cài đặt <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Để kiểm tra giá trị có thể cho câu hỏi, bạn có khả năng sử dụng trình hiệu chỉnh văn bản <span class="command"><strong>nano</strong></span> để xem lại các tập tin nằm trong thư mục <code class="filename">/var/lib/cdebconf</code> trong khi cài đặt. Xem tập tin <code class="filename">templates.dat</code> để tìm biểu mẫu thô, còn tập tin <code class="filename">questions.dat</code> để tìm những giá trị hiện thời và các giá trị được gán cho biến. </p>
+<p>Trước khi cài đặt, để kiểm tra nếu tập tin cấu hình sẵn có dạng thức hợp lệ chưa, bạn có thể chạy lệnh <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Dùng khả năng chèn sẵn </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Nội dung của tập tin định cấu hình sẵn (cho trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

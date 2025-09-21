@@ -1,0 +1,168 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.1. Linux-Geräte</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux – Installationsanleitung">
+<link rel="up" href="apd.html" title="Anhang D. Verschiedenes">
+<link rel="prev" href="apd.html" title="Anhang D. Verschiedenes">
+<link rel="next" href="apds02.html" title="D.2. Festplattenplatz, der für die Programmgruppen benötigt wird">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.1. Linux-Geräte</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<th width="60%" align="center">Anhang D. Verschiedenes</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linuxdevices"></a>D.1. Linux-Geräte</h2></div></div></div>
+<p>Unter Linux finden Sie im Verzeichnis <code class="filename">/dev</code> verschiedene spezielle Dateien. Diese heißen Gerätedateien und verhalten sich anders wie gewöhnliche Dateien. Die bekanntesten Typen von Gerätedateien sind die für blockorientierte und für zeichenorientierte Geräte. Diese Dateien stellen eine Schnittstelle zu dem jeweiligen Treiber (ein Teil des Linux-Kernels) dar, der dann wiederum auf die Hardware zugreift. Eine weitere wichtige, aber weniger bekannte Gerätedatei heißt <em class="firstterm">pipe</em>. Die wichtigsten Gerätedateien sind in der untenstehenden Tabelle aufgelistet. </p>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sda</code></td>
+<td>Die erste Festplatte</td>
+</tr>
+<tr>
+<td><code class="filename">sdb</code></td>
+<td>Die zweite Festplatte</td>
+</tr>
+<tr>
+<td><code class="filename">sda1</code></td>
+<td>Die erste Partition auf der ersten Festplatte</td>
+</tr>
+<tr>
+<td><code class="filename">sdb7</code></td>
+<td>Die siebte Partition auf der zweiten Festplatte</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">sr0</code></td>
+<td>Das erste CD-ROM-Laufwerk</td>
+</tr>
+<tr>
+<td><code class="filename">sr1</code></td>
+<td>Das zweite CD-ROM-Laufwerk</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">ttyS0</code></td>
+<td>Serieller Port 0, auch bekannt als COM1</td>
+</tr>
+<tr>
+<td><code class="filename">ttyS1</code></td>
+<td>Serieller Port 1, auch bekannt als COM2</td>
+</tr>
+<tr>
+<td><code class="filename">psaux</code></td>
+<td>PS/2-Maus</td>
+</tr>
+<tr>
+<td><code class="filename">gpmdata</code></td>
+<td>Pseudo-Gerät, das Daten vom GPM-(Maus-)Daemon überträgt</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">cdrom</code></td>
+<td>Symbolischer Link zum CD-ROM-Laufwerk</td>
+</tr>
+<tr>
+<td><code class="filename">mouse</code></td>
+<td>Symbolischer Link zur Gerätedatei der Maus</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><code class="filename">null</code></td>
+<td>Alles, was an dieses Gerät geschickt wird, verschwindet</td>
+</tr>
+<tr>
+<td><code class="filename">zero</code></td>
+<td>Man kann endlos Nullen von diesem Gerät lesen</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="device-mouse"></a>D.1.1. Einrichten der Maus</h3></div></div></div>
+<p>Die Maus kann sowohl auf der Linux-Konsole (mit GPM) als auch in der X-Window-Umgebung verwendet werden. Normalerweise ist es dazu lediglich erforderlich, <code class="filename">gpm</code> sowie den X-Server selbst zu installieren. Beide sollten so konfiguriert werden, dass sie <code class="filename">/dev/input/mice</code> als Maus-Gerät verwenden. Das korrekte Mausprotokoll in gpm heißt <strong class="userinput"><code>exps2</code></strong>, in X <strong class="userinput"><code>ExplorerPS/2</code></strong>. Die entsprechenden Konfigurationsdateien sind <code class="filename">/etc/gpm.conf</code> beziehungsweise <code class="filename">/etc/X11/xorg.conf</code>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apd.html"><img src="images/prev.png" alt="Zurück"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Nach oben"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds02.html"><img src="images/next.png" alt="Weiter"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Anhang D. Verschiedenes </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Zum Anfang"></a></td>
+<td width="40%" align="right" valign="top"> D.2. Festplattenplatz, der für die Programmgruppen benötigt wird</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

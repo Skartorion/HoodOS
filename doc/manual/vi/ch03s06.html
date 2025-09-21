@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Phần cứng cài đặt sẵn và thiết lập hệ điều hành</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch03.html" title="Chương 3. Trước khi cài đặt Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Phân vùng sẵn cho hệ thống đa khởi động">
+<link rel="next" href="ch04.html" title="Chương 4. Lấy vật chứa cài đặt hệ thống">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Phần cứng cài đặt sẵn và thiết lập hệ điều hành</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 3. Trước khi cài đặt Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Phần cứng cài đặt sẵn và thiết lập hệ điều hành</h2></div></div></div>
+<p>This section will walk you through pre-installation hardware setup, if any, that you will need to do prior to installing Debian. Generally, this involves checking and possibly changing BIOS/UEFI/system firmware settings for your system. The <span class="quote">“<span class="quote">BIOS/UEFI</span>”</span> or <span class="quote">“<span class="quote">system firmware</span>”</span> is the core software used by the hardware; it is most critically invoked during the bootstrap process (after power-up). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Invoking the BIOS/UEFI Set-Up Menu</h3></div></div></div>
+<p>The BIOS/UEFI provides the basic functions needed to boot your machine and to allow your operating system to access your hardware. Your system provides a BIOS/UEFI setup menu, which is used to configure the BIOS/UEFI. To enter the BIOS/UEFI setup menu you have to press a key or key combination after turning on the computer. Often it is the <span class="keycap"><strong>Delete</strong></span> or the <span class="keycap"><strong>F2</strong></span> key, but some manufacturers use other keys. Usually upon starting the computer there will be a message stating which key to press to enter the setup screen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Chọn thiết bị khởi động</h3></div></div></div>
+<p>Within the BIOS/UEFI setup menu, you can select which devices shall be checked in which sequence for a bootable operating system. Possible choices usually include the internal harddisks, the CD/DVD-ROM drive and USB mass storage devices such as USB sticks or external USB harddisks. On modern systems there is also often a possibility to enable network booting via PXE. </p>
+<p>Depending on the installation media (CD/DVD ROM, USB stick, network boot) you have chosen you should enable the appropriate boot devices if they are not already enabled. </p>
+<p>Most BIOS/UEFI versions allow you to call up a boot menu on system startup in which you select from which device the computer should start for the current session. If this option is available, the BIOS/UEFI usually displays a short message like <span class="quote">“<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>”</span> on system startup. The actual key used to select this menu varies from system to system; commonly used keys are <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> and <span class="keycap"><strong>F8</strong></span>. Choosing a device from this menu does not change the default boot order of the BIOS/UEFI, i.e. you can start once from a USB stick while having configured the internal harddisk as the normal primary boot device. </p>
+<p>If your BIOS/UEFI does not provide you with a boot menu to do ad-hoc choices of the current boot device, you will have to change your BIOS/UEFI setup to make the device from which the <code class="classname">debian-installer</code> shall be booted the primary boot device. </p>
+<p>Unfortunately some computers may contain buggy BIOS/UEFI versions. Booting <code class="classname">debian-installer</code> from a USB stick might not work even if there is an appropriate option in the BIOS/UEFI setup menu and the stick is selected as the primary boot device. On some of these systems using a USB stick as boot medium is impossible; others can be tricked into booting from the stick by changing the device type in the BIOS/UEFI setup from the default <span class="quote">“<span class="quote">USB harddisk</span>”</span> or <span class="quote">“<span class="quote">USB stick</span>”</span> to <span class="quote">“<span class="quote">USB ZIP</span>”</span> or <span class="quote">“<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> In particular if you use an isohybrid installation image on a USB stick (see <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Preparing a USB stick using a hybrid CD/DVD image">Phần 4.3.1, “Preparing a USB stick using a hybrid CD/DVD image”</a>), changing the device type to <span class="quote">“<span class="quote">USB CDROM</span>”</span> helps on some BIOSes which will not boot from a USB stick in USB harddisk mode.</span> You may need to configure your BIOS/UEFI to enable <span class="quote">“<span class="quote">USB legacy support</span>”</span>. </p>
+<p>If you cannot manipulate the BIOS/UEFI to boot directly from a USB stick you still have the option of using an ISO copied to the stick. Boot <code class="classname">debian-installer</code> using <a class="xref" href="ch04s04.html" title="4.4. Chuẩn bị tập tin để khởi động đĩa cứng">Phần 4.4, “Chuẩn bị tập tin để khởi động đĩa cứng”</a> and, after scanning the hard drives for an installer ISO image, select the USB device and choose an installation image. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Systems with UEFI firmware</h3></div></div></div>
+<p>UEFI (<span class="quote">“<span class="quote">Unified Extensible Firmware Interface</span>”</span>) is a new kind of system firmware that is used on many modern systems and is - among other uses - intended to replace the classic PC BIOS. </p>
+<p>Currently most PC systems that use UEFI also have a so-called <span class="quote">“<span class="quote">Compatibility Support Module</span>”</span> (CSM) in the firmware, which provides exactly the same interfaces to an operating system as a classic PC BIOS, so that software written for the classic PC BIOS can be used unchanged. Nonetheless UEFI is intended to one day completely replace the old PC BIOS without being fully backwards-compatible and there are already a lot of systems with UEFI but without CSM. </p>
+<p>On systems with UEFI there are a few things to take into consideration when installing an operating system. The way the firmware loads an operating system is fundamentally different between the classic BIOS (or UEFI in CSM mode) and native UEFI. One major difference is the way the harddisk partitions are recorded on the harddisk. While the classic BIOS and UEFI in CSM mode use a DOS partition table, native UEFI uses a different partitioning scheme called <span class="quote">“<span class="quote">GUID Partition Table</span>”</span> (GPT). On a single disk, for all practical purposes only one of the two can be used and in case of a multi-boot setup with different operating systems on one disk, all of them must therefore use the same type of partition table. Booting from a disk with GPT is only possible in native UEFI mode, but using GPT becomes more and more common as hard disk sizes grow, because the classic DOS partition table cannot address disks larger than about 2 Terabytes while GPT allows for far larger disks. The other major difference between BIOS (or UEFI in CSM mode) and native UEFI is the location where boot code is stored and in which format it has to be. This means that different bootloaders are needed for each system. </p>
+<p>The latter becomes important when booting <code class="classname">debian-installer</code> on a UEFI system with CSM because <code class="classname">debian-installer</code> checks whether it was started on a BIOS- or on a native UEFI system and installs the corresponding bootloader. Normally this simply works but there can be a problem in multi-boot environments. On some UEFI systems with CSM the default boot mode for removable devices can be different from what is actually used when booting from hard disk, so when booting the installer from a USB stick in a different mode from what is used when booting another already installed operating system from the hard disk, the wrong bootloader might be installed and the system might be unbootable after finishing the installation. When choosing the boot device from a firmware boot menu, some systems offer two separate choices for each device, so that the user can select whether booting shall happen in CSM or in native UEFI mode. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Secure boot</h3></div></div></div>
+<p>Another UEFI-related topic is the so-called <span class="quote">“<span class="quote">secure boot</span>”</span> mechanism. Secure boot means a function of UEFI implementations that allows the firmware to only load and execute code that is cryptographically signed with certain keys and thereby blocking any (potentially malicious) boot code that is unsigned or signed with unknown keys. In practice the only key accepted by default on most UEFI systems with secure boot is a key from Microsoft used for signing the Windows bootloader. Debian includes a <span class="quote">“<span class="quote">shim</span>”</span> bootloader signed by Microsoft, so should work correctly on systems with secure boot enabled. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Disabling the Windows <span class="quote">“<span class="quote">fast boot</span>”</span>/<span class="quote">“<span class="quote">fast startup</span>”</span> feature</h3></div></div></div>
+<p>Windows offers a feature (called <span class="quote">“<span class="quote">fast boot</span>”</span> in Windows 8, <span class="quote">“<span class="quote">fast startup</span>”</span> in Windows 10) to cut down system startup time. Technically, when this feature is enabled, Windows does not do a real shutdown and a real cold boot afterwards when ordered to shut down, but instead does something resembling a partial suspend to disk to reduce the <span class="quote">“<span class="quote">boot</span>”</span> time. As long as Windows is the only operating system on the machine, this is unproblematic, but it can result in problems and data loss, when you have a dual boot setup, in which another operating system accesses the same filesystems as Windows does. In that case the real state of the filesystem can be different from what Windows believes it to be after the <span class="quote">“<span class="quote">boot</span>”</span> and this could cause filesystem corruption upon further write accesses to the filesystem. Therefore in a dual boot setup, to avoid filesystem corruption the <span class="quote">“<span class="quote">fast boot</span>”</span>/<span class="quote">“<span class="quote">fast startup</span>”</span> feature has to be disabled within Windows. </p>
+<p>Furthermore, the Windows Update mechanism has (sometimes) been known to automatically re-enable this feature, after it has been previously disabled by the user. It is suggested to re-check this setting periodically. </p>
+<p>It may also be necessary to disable <span class="quote">“<span class="quote">fast boot</span>”</span> to even allow access to UEFI setup to choose to boot another operating system or <code class="classname">debian-installer</code>. On some UEFI systems, the firmware will reduce <span class="quote">“<span class="quote">boot</span>”</span> time by not initialising the keyboard controller or USB hardware; in these cases, it is necessary to boot into Windows and disable this feature to allow for a change of boot order. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Vấn đề phần cứng cần theo dõi</h3></div></div></div>
+<p><b>Hỗ trợ BIOS và bàn phím kiểu USB. </b>If you have no PS/2-style keyboard, but only a USB model, on some very old PCs you may need to enable legacy keyboard emulation in your BIOS setup to be able to use your keyboard in the bootloader menu, but this is not an issue for modern systems. If your keyboard does not work in the bootloader menu, consult your mainboard manual and look in the BIOS for <span class="quote">“<span class="quote">Legacy keyboard emulation</span>”</span> or <span class="quote">“<span class="quote">USB keyboard support</span>”</span> options. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Phân vùng sẵn cho hệ thống đa khởi động </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> Chương 4. Lấy vật chứa cài đặt hệ thống</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. Introducción</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="apb.html" title="Apéndice B. Instalar automáticamente utilizando preconfiguración">
+<link rel="prev" href="apb.html" title="Apéndice B. Instalar automáticamente utilizando preconfiguración">
+<link rel="next" href="apbs02.html" title="B.2. Utilizar la preconfiguración">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. Introducción</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apéndice B. Instalar automáticamente utilizando preconfiguración</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. Introducción</h2></div></div></div>
+<p>La preconfiguración ofrece un mecanismo para responder a preguntas realizadas durante la instalación sin tener que introducir manualmente las respuestas mientras ésta se ejecuta. Esto hace posible que se automaticen la mayoría de las instalaciones e incluso ofrece funcionalidades que no están disponibles durante una instalación normal. </p>
+<p>La preconfiguración no es indispensable. Si usa un fichero vacío de preconfiguración, el instalador se comportará como una instalación manual usual. Cada pregunta que haya preconfigurado modificará (¡si lo ha hecho bien!) la instalación de alguna forma con tal información. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. Métodos de preconfiguración</h3></div></div></div>
+<p>Se pueden utilizar tres métodos de preconfiguración: <em class="firstterm">initrd</em> (imagen de arranque), <em class="firstterm">file</em> (fichero, n. del t.) y <em class="firstterm">network</em> (red, n. del t.). La preconfiguración a través de initrd funciona en cualquier método de instalación y permite preconfigurar más cosas, pero es la que más preparación requiere. Los métodos de preconfiguración con fichero o vía red se pueden utilizar en distintos métodos de instalación. </p>
+<p>La siguiente tabla muestra los métodos de preconfiguración que se pueden utilizar con los distintos métodos de instalación. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Método de instalación</th>
+<th>initrd</th>
+<th>file</th>
+<th>network</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>sí</td>
+<td>sí</td>
+<td>sí<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>netboot</td>
+<td>sí</td>
+<td>no</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>hd-media <span class="phrase">(incluyendo memorias usb)</span>
+</td>
+<td>sí</td>
+<td>sí</td>
+<td>sí<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>pero sólo si tienes acceso a la red y configuras <code class="literal">preseed/url</code> correctamente </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>Una diferencia importante entre los métodos de preconfiguración es el punto en el que se carga y procesa el fichero de preconfiguración. Para la preconfiguración a través de la imagen de arranque «initrd» esto se produce justo al comienzo de la instalación, antes de hacer siquiera la primera pregunta. La preconfiguración en la línea de órdenes del núcleo se produce justo después. Por ello es posible reemplazar el conjunto de configuración en initrd editando la línea de órdenes del núcleo (bien en la configuración del cargador de arranque o manualmente en el momento del arranque en aquellos cargadores que lo permiten). Para la preconfiguración con fichero esto se hace después de que la imagen de instalación se haya cargado. Para la preconfiguración de red esto se hace sólo después de que se haya configurado la red. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Importante]" src="images/important.png"></td>
+<th align="left">Importante</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Obviamente, cualquier pregunta que se haya procesado antes de cargar el fichero de preconfiguración no puede preconfigurarse (esto incluye las preguntas que sólo se muestran a prioridad media o baja, como el primer intento de detección automática del hardware). Puede encontrar una forma para evitar que se omitan estas preguntas si se preconfiguran a través de los parámetros de arranque, como se describe en <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Usar parámetros de arranque para preconfigurar preguntas">Sección B.2.2, “Usar parámetros de arranque para preconfigurar preguntas”</a>. </p>
+<p>Puede arrancar el instalador en modo <span class="quote">“<span class="quote">auto</span>”</span> para evitar las preguntas que generalmente aparecen antes de que se realice la preconfiguración. Esto hace que las preguntas que se harían antes de poderse preconfigurar (p. ej. idioma, país y selección del teclado) se hagan después de la configuración de la red, lo que permite que se preconfiguren. Esto también hace que la instalación se ejecute en prioridad crítica, lo que hace que se omitan muchas preguntas poco importantes. Para más información consulte <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modo «auto»">Sección B.2.3, “Modo «auto»”</a>. </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. Limitaciones</h3></div></div></div>
+<p>Aunque la mayoría de las preguntas que utiliza <code class="classname">debian-installer</code> se pueden preconfigurar con este mecanismo hay algunas excepciones importantes. Tiene que (re)particionar el disco completo o utilizar el espacio en disco libre disponible, no puede usar particiones existentes. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Apéndice B. Instalar automáticamente utilizando preconfiguración </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> B.2. Utilizar la preconfiguración</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

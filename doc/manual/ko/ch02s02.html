@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>2.2. 펌웨어가 필요한 장치</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch02.html" title="2장. 시스템 요구 사항">
+<link rel="prev" href="ch02s01.html" title="2.1. 지원하는 하드웨어">
+<link rel="next" href="ch02s03.html" title="2.3. GNU/Linux에 적합한 하드웨어 구입">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">2.2. 펌웨어가 필요한 장치</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch02s01.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">2장. 시스템 요구 사항</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch02s03.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="hardware-firmware"></a>2.2. 펌웨어가 필요한 장치</h2></div></div></div>
+<p>디바이스 드라이버가 있냐 없냐와는 별도로, <em class="firstterm">펌웨어</em> 혹은 <em class="firstterm">마이크로코드</em>라고 하는 걸 읽어들여야 동작하는 하드웨어가 있습니다. 네트워크 인터페이스 카드의 경우(특히 무선 네트워크 장치의 경우) 이런 하드웨어가 많습니다. 또 일부 USB 장치와 하드 디스크 컨트롤러까지도 펌웨어가 필요하기도 합니다. </p>
+<p>대다수의 그래픽 카드에서는 추가 펌웨어가 없어도 기본적인 기능을 사용할 수 있습니다. 하지만 고급 기능을 사용하려면 올바른 펌웨어 파일을 설치해야 합니다. </p>
+<p>오래 전 장치에서는 동작하는데 펌웨어가 필요한 경우 제조사가 장치 내부의 EEPROM/플래시 칩 안에 펌웨어를 저장해 놓습니다. 최근의 장치에서는 이제 이런 방식으로 펌웨어를 저장하지 않고, 시스템이 부팅할 때마다 호스트 운영체제에 들어 있는 펌웨어 파일을 해당 장치로 업로드합니다. </p>
+<p>대부분 이 펌웨어는 데비안 GNU/리눅스 프로젝트의 기준에 따르면 독점 펌웨어이기 때문에 메인 배포판에 들어 있지 않습니다. 장치 드라이버가 배포판에 들어 있고 펌웨어를 데비안 GNU/리눅스에서 합법적으로 배포할 수 있는 경우, 아카이브의 non-free-firmware 섹션에 (데비안 GNU/리눅스 12.0보다 전 버전에는 non-free 섹션에) 별도 패키지로 들어 있기도 합니다. </p>
+<p>하지만 그렇다고 해서 이러한 하드웨어를 설치할 때 사용할 수 없는 건 아닙니다. "데비안 GNU/리눅스 12.0부터 <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022년 독점 펌웨어에 대한 투표</a>에 따라, 공식 설치 이미지에 독점 펌웨어 패키지가 들어갈 수 있습니다. 기본값으로, <code class="classname">debian-installer</code>는 필요한 펌웨어를 검색하고 (커널 로그 및 modalias 정보에 따라), 설치 미디어에 (예를 들어 netinst에) 관련 패키지가 있으면 설치합니다. 이러한 패키지가 보안 업데이트를 받을 수 있도록 패키지 관리자도 자동으로 설정됩니다. 즉 main에 추가로 non-free-firmware 구성 요소를 사용합니다. </p>
+<p>펌웨어 찾아보기를 완전히 끄고 싶으면, <strong class="userinput"><code>firmware=never</code></strong> 부팅 파라미터를 사용하면 됩니다. 이는 더 긴 형태의 <strong class="userinput"><code>hw-detect/firmware-lookup=never</code></strong> 파라미터와 동일합니다. </p>
+<p>펌웨어 찾아보기를 완전히 사용하지 않는 경우가 아니라면, <code class="classname">debian-installer</code>는 USB 메모리같은 이동식 장치에서 펌웨어 파일이나 펌웨어가 들어 있는 패키지를 읽어들일 수 있습니다. 설치할 때 펌웨어 파일이나 패키지를 읽어들이는 방법은 <a class="xref" href="ch06s04.html" title="6.4. 없는 펌웨어 읽어들이기">6.4절. “없는 펌웨어 읽어들이기”</a> 부분을 참고하십시오. 단 이제 독점 펌웨어 파일이 설치 이미지에 포함될 수 있기 때문에, <code class="classname">debian-installer</code>에서 펌웨어 파일을 거의 요청하지 않을 것입니다. </p>
+<p><code class="classname">debian-installer</code>에서 펌웨어 파일 프롬프트를 표시했을 때 이 펌웨어 파일이 없거나 이 자유롭지 않은 펌웨어 파일을 설치하고 싶지 않은 경우, 펌웨어를 읽어들이지 않고도 계속 진행을 시도할 수 있습니다. 드라이버가 추가 펌웨어를 필요한 경우에도, 일부 특정 상황에서만 필요하고(예를 들어 tg3 드라이버는 특정 네트워크 카드 기종에서만 펌웨어가 필요합니다) 펌웨어 없이도 대부분 시스템에서 동작하는 경우도 있습니다. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch02s01.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch02s03.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">2.1. 지원하는 하드웨어 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 2.3. GNU/Linux에 적합한 하드웨어 구입</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

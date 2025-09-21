@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. 電子メールを使用するためのシステム設定</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch08.html" title="第8章 次のステップとそれから">
+<link rel="prev" href="ch08s03.html" title="8.3. さらなる文書や情報">
+<link rel="next" href="ch08s05.html" title="8.5. 新しいカーネルのコンパイル">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. 電子メールを使用するためのシステム設定</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第8章 次のステップとそれから</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. 電子メールを使用するためのシステム設定</h2></div></div></div>
+<p>今日では、電子メールは多くの人々にとって生活の重要な一部になっています。電子メールを使えるように設定するまでには、たくさんの選択肢があり、さらに電子メールが正確に設定されていることが重要になる Debian ユーティリティ があります。本節では、基本的なことのみ説明します。 </p>
+<p>電子メールシステムは、三つの主要な機能で構築されています。最初に、ユーザがメールを読み書きするために実際に使用するプログラムである <em class="firstterm">Mail User Agent</em> (MUA) があります。次に、あるコンピュータから別のコンピュータまでメッセージの転送処理をする <em class="firstterm">Mail Transfer Agent</em> (MTA) があります。そして最後に、ユーザの受信箱に受信メールの配送処理をする <em class="firstterm">Mail Delivery Agent</em> (MDA) があります。 </p>
+<p>これら三つの機能は個別のプログラムによって実行されますが、一つあるいは二つのプログラムに組み込むこともできます。また、異なるタイプのメールのために、これらの機能を処理する異なるプログラムを使用することもできます。 </p>
+<p>Linux や Unix システムにおいては、<span class="command"><strong>mutt</strong></span> が歴史的にとてもよく知られている MUA です。従来のほとんどの Linux プログラムがそうであるようにテキストベースのプログラムで、MTA として <span class="command"><strong>exim</strong></span> または <span class="command"><strong>sendmail</strong></span>、そして MDA として <span class="command"><strong>procmail</strong></span> と組み合わせてよく使用されます。 </p>
+<p>グラフィカルデスクトップシステムの人気の高まりとともに、GNOME の <span class="command"><strong>evolution</strong></span>、KDE の <span class="command"><strong>kmail</strong></span>、あるいは Mozilla の <span class="command"><strong>thunderbird</strong></span> として利用可能) のようなグラフィカルな電子メールプログラムの使用がより一般的になっています。これらのプログラムは、MUA、MTA および MDA の機能が組み合わされていますが、従来の Linux ツールと組み合わせることもでき — そして多くの場合は組み合わせて — 使用されます。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. デフォルトの電子メール設定</h3></div></div></div>
+<p>グラフィカルなメールプログラムを使用するつもりでいても、Debian GNU/Linux システムに従来の MTA/MDA をインストールし、正確に設定するのは有用かもしれません。システムで起動している様々なユーティリティ<a href="#ftn.id3672" class="footnote" name="id3672"><sup class="footnote">[16]</sup></a> が、システム管理者に (潜在的な) 問題や変更を通知するために、電子メールで重要な通知を送ることができるからです。 </p>
+<p>そのために、<code class="classname">exim4</code> と <code class="classname">mutt</code> を <span class="command"><strong>apt install exim4 mutt</strong></span> でインストールできます。<code class="classname">exim4</code> は、比較的小さなプログラムですが、とても柔軟性のある MTA/MDA の組み合わせです。デフォルトでは、システム内のローカルな電子メールの処理のみのために設定され、システム管理者 (root アカウント) 宛ての電子メールは、インストールの際に作成した標準のユーザアカウントに配送されます<a href="#ftn.id3683" class="footnote" name="id3683"><sup class="footnote">[17]</sup></a>。 </p>
+<p>システムから配送された電子メールは <code class="filename">/var/mail/<em class="replaceable"><code>account_name</code></em></code> 中のファイルに加えられます。メールは <span class="command"><strong>mutt</strong></span> を使って読むことができます。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. システムの外に電子メールを送る</h3></div></div></div>
+<p>先に述べたように、インストールした Debian システムは、システム内のローカルな 電子メールを処理するようにだけ設定され、他人にメールを送ったり、他人からメールを受け取ったりするようには設定されません。 </p>
+<p><code class="classname">exim4</code> に外部の電子メールを処理させたい場合は、利用できる基本設定オプションに関して、次節を参照してください。メールが正しく送受信できることは、テストして確かめるようにしてください。 </p>
+<p>もしグラフィカルなメールプログラムを使って、インターネットサービスプロバイダ (ISP) あるいは会社のメールサーバを使用するつもりならば、外部の電子メールを処理するために <code class="classname">exim4</code> を設定する必要は実際にはありません。電子メールを送受信するために、好みのグラフィカルなメールプログラムが正しいサーバを使用するようにただ設定するだけです (設定方法は本マニュアルでは扱いません)。 </p>
+<p>しかしその場合には、電子メールを正しく送れるように個々のユーティリティを設定する必要があるかもしれません。そのようなユーティリティの一つに、Debian パッケージに対するバグ報告の提出を容易にするプログラムである <span class="command"><strong>reportbug</strong></span> があります。デフォルトでは、バグ報告を提出するために <code class="classname">exim4</code> が使用可能であることが期待されます。 </p>
+<p>外部のメールサーバを使用するように <span class="command"><strong>reportbug</strong></span> を正しく設定するため、<span class="command"><strong>reportbug --configure</strong></span> コマンドを実行し、MTA が利用可能かどうかという質問に <span class="quote">「<span class="quote">no</span>」</span>と答えてください。その後、バグ報告の提出に使用する SMTP サーバを尋ねられるでしょう。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. Exim4 Mail Transport Agent の設定</h3></div></div></div>
+<p>システムで外部の電子メールを処理するようにしたい場合、<code class="classname">exim4</code> パッケージを再設定する必要があります<a href="#ftn.id3708" class="footnote" name="id3708"><sup class="footnote">[18]</sup></a>: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>(root で) 上記のコマンドを入力した後に、設定ファイルを小さなファイルに分割するかどうか質問されます。よく分からない場合は、デフォルトオプションを選択してください。 </p>
+<p>次に、一般的な複数のメールシナリオが提示されます。あなたが必要としていることに最も近いものを一つ選択してください。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">インターネットサイト</span></dt>
+<dd><p>システムはネットワークに接続され、SMTP を使用して直接メールを送受信します。次の画面で、マシンのメール名や受信あるいは中継するメールのドメインリストなどのような、いくつかの基本的な質問をされるでしょう。 </p></dd>
+<dt><span class="term">スマートホストでメール送信</span></dt>
+<dd>
+<p>このシナリオでは、あなたの送信メールは、宛て先へのメッセージ送信処理をする <span class="quote">「<span class="quote">スマートホスト</span>」</span> と呼ばれる他のマシンに転送されます。通常、スマートホストは、あなたのコンピュータ宛てに送信された受信メールを保管するので、ずっとオンラインである必要はありません。つまりそれは、fetchmail のようなプログラムによって、スマートホストのメールをダウンロードしなければならないことを意味します。 </p>
+<p>多くの場合、スマートホストはあなたの ISP のメールサーバで、このオプションはダイヤルアップユーザにとても適しています。またそれは、会社のメールサーバやあなた自身のネットワーク上の別のシステムとすることもできます。 </p>
+</dd>
+<dt><span class="term">スマートホストでメール送信; ローカルメールなし</span></dt>
+<dd><p>このオプションは、システムがローカルの電子メールドメインを処理するようには設定されないという点を除いては、基本的に前のものと同じです。システム自体 (例えば、システム管理者のため) のメールは処理されます。 </p></dd>
+<dt><span class="term">ローカル配信のみ</span></dt>
+<dd><p>システムがデフォルトで設定されるオプションです。 </p></dd>
+<dt><span class="term">今は設定しない</span></dt>
+<dd><p>内容を理解できていると絶対に確信している場合のみ選択してください。このシナリオは、メールシステムを未設定のままにします — メールシステムが設定されるまで、メールの送受信は一切できず、システムユーティリティからの重要なメッセージも逃してしまうかもしれません。 </p></dd>
+</dl></div>
+<p>以上のどのシナリオもあなたの必要とするものに合っていない場合や、より精細な設定が必要な場合は、インストール完了後に <code class="filename">/etc/exim4</code> ディレクトリの設定ファイルを編集する必要があります。<code class="classname">exim4</code> に関するより多くの情報は、<code class="filename">/usr/share/doc/exim4</code> ディレクトリにあります — <code class="filename">README.Debian.gz</code> ファイルには、<code class="classname">exim4</code> の設定に関するその他の情報や、補足文書がどこで見つかるかなどの説明があります。 </p>
+<p>公式なドメインネームがない場合、インターネットに直接送信されたメールが受信サーバのスパム対策のために拒絶され、結果として不着メールとなる可能性があることに注意してください。ISP のメールサーバの使用が望まれます。それでもメールを直接送信したい場合には、デフォルトで生成されるものとは異なる電子メールアドレスを使用した方が良いでしょう。MTA として <code class="classname">exim4</code> を使用するなら、<code class="filename">/etc/email-addresses</code> にエントリを追加することで可能です。 </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3672" class="footnote"><p><a href="#id3672" class="para"><sup class="para">[16] </sup></a> 例えば: <span class="command"><strong>cron</strong></span>、<span class="command"><strong>quota</strong></span>、<span class="command"><strong>logcheck</strong></span>、<span class="command"><strong>aide</strong></span>、… </p></div>
+<div id="ftn.id3683" class="footnote"><p><a href="#id3683" class="para"><sup class="para">[17] </sup></a> 標準のユーザアカウントへの root 宛てのメールの転送は、<code class="filename">/etc/aliases</code> で設定します。標準のユーザアカウントを作成しなかった場合、もちろんメールは root アカウント自身に配送されます。</p></div>
+<div id="ftn.id3708" class="footnote"><p><a href="#id3708" class="para"><sup class="para">[18] </sup></a> もちろん、<code class="classname">exim4</code> を削除し、他の MTA/MDA を使用することもできます。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. さらなる文書や情報 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. 新しいカーネルのコンパイル</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

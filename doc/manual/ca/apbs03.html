@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Preparar un fitxer de configuració prèvia</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia">
+<link rel="prev" href="apbs02.html" title="B.2. Utilització de la configuració prèvia">
+<link rel="next" href="apbs04.html" title="B.4. Continguts del fitxer de configuració prèvia (per a trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Preparar un fitxer de configuració prèvia</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix B. Automatització de la instal·lació fent servir una configuració prèvia</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Preparar un fitxer de configuració prèvia</h2></div></div></div>
+<p>El fitxer de configuració prèvia és en el format emprat per l'ordre <span class="command"><strong>debconf-set-selections</strong></span>. El format general d'una línia a un fitxer de configuració prèvia és: </p>
+<div class="informalexample"><pre class="screen">&lt;propietari&gt; &lt;nom de la pregunta&gt; &lt;tipus de pregunta&gt; &lt;valor&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Cal que el fitxer comenci amb <code class="literal">#_preseed_V1</code> </p>
+<p>Hi ha algunes regles que s'han de tenir en compte quan s'escriu un fitxer de configuració prèvia. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Poseu tan sols un espai o un tabulador entre tipus i valor: qualsevol espai addicional s'interpretarà que pertany al valor. </p></li>
+<li class="listitem"><p>Una línia es pot dividir en vàries afegint una barra invertida (<span class="quote">«<span class="quote"><code class="literal">\</code></span>»</span>) com a caràcter per continuar. Un bon lloc per dividir una línia és després del nom de la pregunta; un lloc dolent és entre un tipus i un valor. </p></li>
+<li class="listitem"><p>Les variables «debconf» («templates» o plantilles) utilitzades pel mateix instal·lador haurien de tenir <span class="quote">«<span class="quote">d-i</span>»</span> com a propietari; per donar valor a les variables utilitzades en el sistema instal·lat, s'ha d'utilitzar el nom del paquet que conté la plantilla «debconf» corresponent. Tan sols les variables diferents de <span class="quote">«<span class="quote">d-i</span>»</span> es propagaran a la base de dades «debconf» del sistema instal·lat. </p></li>
+<li class="listitem"><p>La major part de les preguntes s'han d'omplir utilitzant els valors vàlids (en anglès) i no amb valors traduïts. Però, hi ha algunes preguntes (per exemple al <code class="classname">partman</code>) on s'han d'utilitzar valors traduïts. </p></li>
+<li class="listitem"><p>Algunes preguntes agafen un codi com a valor en comptes del text anglès que es mostra a la instal·lació. </p></li>
+<li class="listitem"><p>Començar amb <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>Un comentari consisteix en una línia que <span class="emphasis"><em>comença</em></span> amb un caràcter de sostingut (<span class="quote">«<span class="quote"><code class="literal">#</code></span>»</span>) i que arriba fins al final de la línia. </p></li>
+</ul></div>
+<p>La manera més fàcil de preparar un fitxer de configuració prèvia és utilitzar el fitxer d'exemple enllaçat a <a class="xref" href="apbs04.html" title="B.4. Continguts del fitxer de configuració prèvia (per a trixie)">Secció B.4, «Continguts del fitxer de configuració prèvia (per a trixie)»</a> com a base i continuar la feina des d'allí. </p>
+<p>Un mètode alternatiu és fer la instal·lació manual, i després, quan es reinicie, utilitzar l'ordre <span class="command"><strong>debconf-get-selections</strong></span> del paquet <code class="classname">debconf-utils</code> per bolcar la base de dades de «debconf» i la base de dades «cdebconf» de l'instal·lador a un únic fitxer: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Per altra banda, un fitxer generat d'aquesta manera tindrà alguns elements que no es poden configurar prèviament, i el fitxer d'exemple és el millor lloc per on començar per la majoria d'usuaris. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Aquest mètode utilitza el fet de que, al final la instal·lació, la base de dades «cdebconf» de l'instal·lador es guarda al sistema instal·lat a <code class="filename">/var/log/installer/cdebconf</code>. Però, com que la base de dades pot contenir informació sensible, aquests fitxers tan sols els pot llegir el superusuari. </p>
+<p>El directori <code class="filename">/var/log/installer</code> i tots els seus fitxers s'esborraran del vostre sistema si purgueu el paquet <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Per comprovar els possibles valors per a les preguntes, podeu utilitzar l'ordre <span class="command"><strong>nano</strong></span> per examinar els fitxers <code class="filename">/var/lib/cdebconf</code> mentre la instal·lació s'està realitzant. Vegeu <code class="filename">templates.dat</code> per a les plantilles i <code class="filename">questions.dat</code> per als valors assignats a les variables. </p>
+<p>Per comprovar si el format del vostre fitxer de configuració prèvia és vàlid abans de fer una instal·lació, podeu utilitzar l'ordre <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Utilització de la configuració prèvia </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Continguts del fitxer de configuració prèvia (per a trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

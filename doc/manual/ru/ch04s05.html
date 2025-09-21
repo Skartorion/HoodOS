@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Подготовка файлов для загрузки по TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Глава 4. Получение носителя с дистрибутивом">
+<link rel="prev" href="ch04s04.html" title="4.4. Подготовка файлов для загрузки с жёсткого диска">
+<link rel="next" href="ch04s06.html" title="4.6. Автоматическая установка">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Подготовка файлов для загрузки по TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 4. Получение носителя с дистрибутивом</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Подготовка файлов для загрузки по TFTP</h2></div></div></div>
+<p>Если ваша машина подключена к локальной сети, то вы можете загрузить её по сети с другой машины через TFTP. Для этого на удалённую машину в определённое место вам нужно поместить загрузочные файлы и настроить поддержку загрузки вашей машины. </p>
+<p>Вам нужно настроить TFTP сервер, а если машин много, то DHCP сервер . </p>
+<p> <span class="phrase">BOOTP — это IP протокол, который информирует компьютер о его IP-адресе и где в сети получить загрузочный образ.</span> DHCP (Dynamic Host Configuration Protocol) более гибок и обратно совместим с BOOTP. Некоторые системы могут быть настроены только через DHCP. </p>
+<p>Trivial File Transfer Protocol (TFTP) используется для загрузки загрузочного образа на клиентскую машину. Теоретически, можно использовать любой сервер на любой платформе, которая реализует эти протоколы. В примерах этого раздела мы используем команды из SunOS 4.x, SunOS 5.x (так называемый Solaris) и GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примечание]" src="images/note.png"></td>
+<th align="left">Примечание</th>
+</tr>
+<tr><td align="left" valign="top"><p>Для сервера Debian GNU/Linux мы рекомендуем <code class="classname">tftpd-hpa</code>. Он написан автором системного загрузчика <code class="classname">syslinux</code> и поэтому, скорее всего, не вызовет проблем. Также неплох <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Настройка DHCP сервера</h3></div></div></div>
+<p>Одним из свободных DHCP серверов является ISC <span class="command"><strong>dhcpd</strong></span>. В Debian GNU/Linux он доступен из пакета <code class="classname">isc-dhcp-server</code>. Вот пример его конфигурационного файла (обычно <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>В этом примере определён единственный сервер <em class="replaceable"><code>servername</code></em>, который работает в качестве DHCP, TFTP серверов и шлюза сети. Вам почти наверняка нужно изменить опцию domain-name, а также имя сервера и аппаратный адрес клиента. Опция <em class="replaceable"><code>filename</code></em> должна содержать имя файла, который нужно получить по TFTP. </p>
+<p>После редактирования конфигурационного файла для <span class="command"><strong>dhcpd</strong></span>, перезагрузите сервер командой <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1654"></a>4.5.1.1. Включение загрузки PXE в конфигурацию DHCP</h4></div></div></div>
+<p>Вот другой пример <code class="filename">dhcp.conf</code>, который можно использовать, если включён метод предстартового выполнения среды (PXE) по TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# нужно изменить согласно вашим настройкам
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# адрес шлюза, который может быть другим
+# (для доступа в интернет, например)
+  option routers 192.168.1.1;
+# используемый dns
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+ next-server 192.168.1.3;
+ host tftpclient {
+# аппаратный адрес клиента tftp
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Заметим, что для PXE загрузки в filename клиента <code class="filename">pxelinux.0</code> записан системный загрузчик, а не образ ядра (смотрите ниже <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Копирование TFTP образов в каталог TFTP сервера">Раздел 4.5.4, «Копирование TFTP образов в каталог TFTP сервера»</a>). </p>
+<p>If your machine uses UEFI to boot, you will have to specify a boot loader appropriate for UEFI machines, for example </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Настройка BOOTP сервера</h3></div></div></div>
+<p>Для GNU/Linux есть два BOOTP сервера. Первый — CMU <span class="command"><strong>bootpd</strong></span>. Второй, на самом деле являющийся сервером DHCP — ISC <span class="command"><strong>dhcpd</strong></span>. В Debian GNU/Linux они находятся в пакетах <code class="classname">bootp</code> и <code class="classname">isc-dhcp-server</code> соответственно. </p>
+<p>To use CMU <span class="command"><strong>bootpd</strong></span>, you must first uncomment (or add) the relevant line in <code class="filename">/etc/inetd.conf</code>. On Debian GNU/Linux, you can run <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, then <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> to do so. Just in case your BOOTP server does not run Debian, the line in question should look like: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Now, you must create an <code class="filename">/etc/bootptab</code> file. This has the same sort of familiar and cryptic format as the good old BSD <code class="filename">printcap</code>, <code class="filename">termcap</code>, and <code class="filename">disktab</code> files. See the <code class="filename">bootptab</code> manual page for more information. For CMU <span class="command"><strong>bootpd</strong></span>, you will need to know the hardware (MAC) address of the client. Here is an example <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> You will need to change at least the <span class="quote">«<span class="quote">ha</span>»</span> option, which specifies the hardware address of the client. The <span class="quote">«<span class="quote">bf</span>»</span> option specifies the file a client should retrieve via TFTP; see <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Копирование TFTP образов в каталог TFTP сервера">Раздел 4.5.4, «Копирование TFTP образов в каталог TFTP сервера»</a> for more details. </p>
+<p>Напротив, настройка BOOTP в ISC <span class="command"><strong>dhcpd</strong></span> очень проста, так как здесь клиенты BOOTP считаются одним из вариантов клиентов DHCP. Некоторые архитектуры требуют сложной настройки для загрузки клиентов по BOOTP. Если у вас один из таких случаев, прочитайте раздел <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Настройка DHCP сервера">Раздел 4.5.1, «Настройка DHCP сервера»</a>. Если нет, то достаточно просто добавить директиву <strong class="userinput"><code>allow bootp</code></strong> в блок настройки подсети, содержащей клиента, в <code class="filename">/etc/dhcp/dhcpd.conf</code>и перезапустить <span class="command"><strong>dhcpd</strong></span> командой <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Включение TFTP сервера</h3></div></div></div>
+<p>Чтобы сервер TFTP заработал, во-первых нужно проверить что включена <span class="command"><strong>tftpd</strong></span>. </p>
+<p>Программа <code class="classname">tftpd-hpa</code> может быть запущена двумя способами. Она может запускаться по требованию службой <code class="classname">inetd</code>, или может быть настроена для работы как независимая служба. Выбор метода происходит при при установке пакета, и его можно изменить через перенастройку пакета. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примечание]" src="images/note.png"></td>
+<th align="left">Примечание</th>
+</tr>
+<tr><td align="left" valign="top"><p>Исторически, TFTP-серверы используют каталог <code class="filename">/tftpboot</code> для хранения образов. Однако, пакеты Debian GNU/Linux могут использовать другие каталоги, чтобы соответствовать <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a>. Например, <code class="classname">tftpd-hpa</code> по умолчанию использует <code class="filename">/srv/tftp</code>. Вам может потребоваться изменить примеры конфигурации для соответствия. </p></td></tr>
+</table></div>
+<p>По умолчанию, все альтернативные программы <span class="command"><strong>in.tftpd</strong></span>, доступные в Debian, протоколируют запросы TFTP в системный журнал. Некоторые из них имеют параметр <strong class="userinput"><code>-v</code></strong>, позволяющий включить более подробный протокол. Рекомендуется проверить эти сообщения в журнале в случае возникновения проблем с загрузкой; это хорошая отправная точка при поиске причин ошибок. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Копирование TFTP образов в каталог TFTP сервера</h3></div></div></div>
+<p>Далее, поместите нужный загрузочный образ TFTP из <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Where to Find Installation Files">Раздел 4.2.1, «Where to Find Installation Files»</a> в каталог загрузочных образов <span class="command"><strong>tftpd</strong></span>. Вы можете сделать ссылку на этот файл для файла, который <span class="command"><strong>tftpd</strong></span> будет передавать для загрузки определённому клиенту. К сожалению, имя файла зависит от клиента TFTP и никак не стандартизовано. </p>
+<p>For PXE booting, everything you should need is set up in the <code class="filename">netboot/netboot.tar.gz</code> tarball. Simply extract this tarball into the <span class="command"><strong>tftpd</strong></span> boot image directory. Make sure your dhcp server is configured to pass <code class="filename">pxelinux.0</code> to <span class="command"><strong>tftpd</strong></span> as the filename to boot. For UEFI machines, you will need to pass an appropriate EFI boot image name (such as <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Подготовка файлов для загрузки с жёсткого диска </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Автоматическая установка</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

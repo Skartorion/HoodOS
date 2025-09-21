@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. 为使用 TFTP 网络引导准备文件</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch04.html" title="第 4 章 获取系统安装介质">
+<link rel="prev" href="ch04s04.html" title="4.4. 为从硬盘引导准备文件">
+<link rel="next" href="ch04s06.html" title="4.6. 自动化安装">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. 为使用 TFTP 网络引导准备文件</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 4 章 获取系统安装介质</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. 为使用 TFTP 网络引导准备文件</h2></div></div></div>
+<p>如果您的机器连接到了一个局域网，您可以从网络上的另外一台机器上面通过 TFTP 来引导它。如果您倾向从另外一台机器上面引导安装系统，则引导文件需要放在那台机器上面的某个特殊地方，并且配置好能够支持对您的机器进行引导。 </p>
+<p>您需要设置一台 TFTP 服务器，并且对于很多机器来说，还需要一台 DHCP 服务器 <span class="phrase">，或 BOOTP 服务器</span>。 </p>
+<p> <span class="phrase">BOOTP 是一种 IP 协议，用来告诉一台计算机它自己 IP 地址以及从网络何处获得启动映像。</span> DHCP (Dynamic Host Configuration Protocol) 是一个更灵活，向后兼容的 BOOTP 扩展。有些系统只能通过 DHCP 来配置。 </p>
+<p>普通文件传输协议(Trivial File Transfer Protocol (TFTP))被用于为客户提供引导映像。理论上，任意服务器，在任意平台上只要实现了这些协议就都能够被应用。在这一节的一些例子里面，我们将提供在 SunOS 4.x、SunOS 5.x (即 Solaris) 和 GNU/Linux 上面的一些操作例子。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>对于 Debian GNU/Linux 服务器，我们推荐使用 <code class="classname">tftpd-hpa</code>。它由 <code class="classname">syslinux</code> bootloader 的同一作者开发，因此不会导致很多问题。另一个好的选择是 <code class="classname">atftpd</code>。 </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. 设置 DHCP 服务器</h3></div></div></div>
+<p>一个 DHCP 服务器自由软件是 ISC <span class="command"><strong>dhcpd</strong></span>。对于 Debian GNU/Linux，推荐使用 <code class="classname">isc-dhcp-server</code> 软件包。这里是它的一个简单的配置示例文件(参阅 <code class="filename">/etc/dhcp/dhcpd.conf</code>)： </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>在这个例子中，一台服务器 <em class="replaceable"><code>servername</code></em> 负责执行包括 DHCP 服务器、TFTP 服务器和网关在内的所有工作。您需要修改域名选项，以及服务器名和客户端硬件地址。<em class="replaceable"><code>filename</code></em> 选项应该是将要从 TFTP 获取的文件名。 </p>
+<p>在编辑了 <span class="command"><strong>dhcpd</strong></span> 配置文件后，您需要使用下面的命令重新启动：<strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>。 </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1586"></a>4.5.1.1. 在 DHCP 配置中打开 PXE 引导功能</h4></div></div></div>
+<p>这里是另外一个采用 TFTP 的 Pre-boot Execution Environment (PXE) 方法的 <code class="filename">dhcp.conf</code> 配置例子。</p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# The next paragraph needs to be modified to fit your case
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# the gateway address which can be different
+# (access to the internet for instance)
+  option routers 192.168.1.1;
+# indicate the dns you want to use
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> 注意对于 PXE 引导来说，客户端文件名 <code class="filename">pxelinux.0</code> 是一个 boot loader，而非一个内核映象(参见下面的 <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. 将 TFTP 映像放到适当的位置">第 4.5.4 节 “将 TFTP 映像放到适当的位置”</a>)。 </p>
+<p>如果机器使用 UEFI 来引导，那么必须指定适于 UEFI 机器的引导程序，例如 </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. 架设 BOOTP 服务器</h3></div></div></div>
+<p>在 GNU/Linux 下面可以使用两种 BOOTP 服务器。首先是 CMU <span class="command"><strong>bootpd</strong></span>，另外一种实际上是 DHCP 服务器：ISC <span class="command"><strong>dhcpd</strong></span>。Debian GNU/Linux 中它们分别被包含在 <code class="classname">bootp</code> 和 <code class="classname">isc-dhcp-server</code> 软件包。 </p>
+<p>为了使用 CMU <span class="command"><strong>bootpd</strong></span>，您必须首先将 <code class="filename">/etc/inetd.conf</code> 中相关的注释标记去掉(或者加入一些新行)。在 Debian GNU/Linux 里，您可以运行 <strong class="userinput"><code>update-inetd --enable bootps</code></strong>，然后执行 <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> 来实现此任务。万一您的 BOOTP 服务器不是运行在 Debian 上，这行看起来应该像这样：</p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> 现在，您必须创建一个 <code class="filename">/etc/bootptab</code> 文件。它具有和一些经典的 BSD 文件很相似，并使用相同的加密格式。这些文件包括 <code class="filename">printcap</code>、<code class="filename">termcap</code> 和 <code class="filename">disktab</code>。参见 <code class="filename">bootptab</code> 的手册页以获得更多的信息。对于 CMU <span class="command"><strong>bootpd</strong></span>，您将需要知道客户机硬件(MAC)地址。这里有一个示例 <code class="filename">/etc/bootptab</code>：</p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> 您至少需要修改 <span class="quote">“<span class="quote">ha</span>”</span> 选项，它指定了客户机的硬件地址。<span class="quote">“<span class="quote">bf</span>”</span> 选项则指定了一个客户机应该通过 TFTP 取得的文件名称。请从 <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. 将 TFTP 映像放到适当的位置">第 4.5.4 节 “将 TFTP 映像放到适当的位置”</a> 处获得更多的信息。 </p>
+<p>相反，通过 ISC <span class="command"><strong>dhcpd</strong></span> 设置 BOOTP 就非常容易。因为它把 BOOTP 客户程序看成一个特殊的 DHCP 客户端。部分体系结构需要经过复杂的设置才能从 BOOTP 启动客户端。如果您的机器属于这种情况，请阅读<a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. 设置 DHCP 服务器">第 4.5.1 节 “设置 DHCP 服务器”</a>。否则，大概只需要将 <strong class="userinput"><code>allow bootp</code></strong> 指令添加到包含客户机的子网的配置部分 <code class="filename">/etc/dhcp/dhcpd.conf</code>，并用命令 <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong> 重新启动 <span class="command"><strong>dhcpd</strong></span>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. 开启 TFTP 服务器</h3></div></div></div>
+<p>要准备好 TFTP 服务器，您首先需要确定 <span class="command"><strong>tftpd</strong></span> 已经启动。 </p>
+<p>对于 <code class="classname">tftpd-hpa</code> 有两种方式可以启动服务。它可以通过系统的 <code class="classname">inetd</code> 守护程序启动，或者设置为独立的守护程序。这可以在安装软件包的时候选择，也可以用重新配置软件包方式修改。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>因为历史原因，TFTP 服务器使用 <code class="filename">/tftpboot</code> 作为映像文件目录。然而，Debian GNU/Linux 软件包遵守 <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> 使用其他的目录。例如，<code class="classname">tftpd-hpa</code> 默认使用 <code class="filename">/srv/tftp</code>。您或许要适当地调整一下配置文件示例。 </p></td></tr>
+</table></div>
+<p>Debian 中所有 <span class="command"><strong>in.tftpd</strong></span> 参数默认都会将 TFTP 请求记录到系统日志中。有些还支持 <strong class="userinput"><code>-v</code></strong> 选项增加详细程度。万一遇到引导问题，推荐先检查这些日志信息，这对于分析错误是一个好的起始点。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. 将 TFTP 映像放到适当的位置</h3></div></div></div>
+<p>接下来，将 <a class="xref" href="ch04s02.html#where-files" title="4.2.1. 在哪里能找到安装文件">第 4.2.1 节 “在哪里能找到安装文件”</a> 中找到的 TFTP 启动映像放置到 <span class="command"><strong>tftpd</strong></span> 引导映像目录中。您可能需要将该文件链接到 <span class="command"><strong>tftpd</strong></span> 所使用的引导特定客户端的文件名。不幸的是，这个文件名完全决定于 TFTP 客户程序，而且没有一个强制的标准。 </p>
+<p>对于用 PXE 引导来说，您所需的只是建立 <code class="filename">netboot/netboot.tar.gz</code> 压缩包。只须将此包解压到 <span class="command"><strong>tftpd</strong></span> 引导映像目录下。并确保您的 DHCP 服务器的配置将会把 <code class="filename">pxelinux.0</code> 作为启动所需的文件名传递给 <span class="command"><strong>tftpd</strong></span>。对于 UEFI 机器，需要传递适当的 EFI 引导映像名称（如 <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>）。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. 为从硬盘引导准备文件 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. 自动化安装</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

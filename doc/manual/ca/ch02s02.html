@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>2.2. Dispositius que requereixen microprogramari</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch02.html" title="Capítol 2. Requisits del sistema">
+<link rel="prev" href="ch02s01.html" title="2.1. Maquinari suportat">
+<link rel="next" href="ch02s03.html" title="2.3. Compra de maquinari específic per a GNU/Linux">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">2.2. Dispositius que requereixen microprogramari</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch02s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 2. Requisits del sistema</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch02s03.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="hardware-firmware"></a>2.2. Dispositius que requereixen microprogramari</h2></div></div></div>
+<p>A part de la disponibilitat d'un controlador de dispositiu, algun maquinari també requereix carregar l'anomenat <em class="firstterm">firmware</em> o <em class="firstterm">microprogramari</em> al dispositiu abans de què esdevingui operatiu. Això és comú en targetes de xarxa (especialment NIC sense fils), però per exemple alguns dispositius USB o inclús algunes controladores de discs durs també requereixen microprogramari. </p>
+<p>Amb moltes targes gràfiques, la funcionalitat bàsica està disponible sense microprogramari addicional, però l'ús de funcions avançades requereix un que un fitxer apropiat de microprogramari estigui instal·lat al sistema. </p>
+<p>En bastants dispositius antics que necessiten microprogramari («firmware») per a funcionar, el fitxer de microprogramari està ubicat de forma permanent, de fàbrica, en un xip EEPROM/Flaix del dispositiu. Actualment, la majoria de dispositius ja no tenen el microprogramari ubicat d'aquesta manera, i el fitxer de microprogramari es pot descarregar en el dispositiu pel sistema operatiu cada vegada que el sistema arrenca. </p>
+<p>En molts casos el microprogramari no és lliure d'acord amb el criteri emprat pel projecte Debian GNU/Linux i per tant no es pot incloure en la distribució principal. Si el controlador del dispositiu està inclòs en la distribució i Debian GNU/Linux pot distribuir legalment el microprogramari, aquest estarà normalment disponible com un paquet separat a la secció «non-free-firmware» del repositori de la distribució (o a la secció «non-free» abans de Debian GNU/Linux 12.0). </p>
+<p>Tanmateix, això no significa que aquest maquinari no pugui ser utilitzat durant la instal·lació. A partir de Debian GNU/Linux 12.0, seguint la <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022 Resolució General sobre el microprogramari no lliure</a>, les imatges oficials de la instal·lació poden incloure paquets de microprogramari no lliure. Per defecte, el <code class="classname">debian-installer</code> detectarà el microprogramari necessari (basat en els registres del nucli i en la informació de «modalias»), i instal·larà els paquets rellevants si es troben en un mitjà d'instal·lació (p. ex. al «netinst»). El gestor de paquets serà configurat automàticament amb els components corresponents de manera que aquests paquets obtinguin actualitzacions de seguretat. Això normalment significa que el component «non-free-firmware» quedarà habilitat, a més del «main». </p>
+<p>Els usuaris que vulguin desactivar completament la cerca de microprogramari poden fer-ho establint el paràmetre d'arrencada <strong class="userinput"><code>firmware=never</code></strong>. És un àlies de la forma més llarga <strong class="userinput"><code>hw-detect/firmware-lookup=never</code></strong>. </p>
+<p>Tret que la cerca de microprogramari estigui completament desactivada, el <code class="classname">debian-installer</code> suporta carregar fitxers de microprogramari i paquets contenint microprogramari d'un mitjà extraïble, com ara un llapis USB. Vegeu <a class="xref" href="ch06s04.html" title="6.4. Carregar microprogramari no inclòs a l'instal·lador">Secció 6.4, «Carregar microprogramari no inclòs a l'instal·lador»</a> per a informació detallada de com carregar fitxers de microprogramari o paquets durant la instal·lació. Tingueu en compte que és menys probable que el <code class="classname">debian-installer</code> us demani fitxers de programari ara que es poden incloure paquets de microprogramari no lliure a les imatges d'instal·lació. </p>
+<p>Si el <code class="classname">debian-installer</code> requereix un fitxer de microprogramari i vostè no disposa del fitxer o bé no desitja instal·lar un fitxer de microprogramari que no sigui lliure en el seu sistema, podeu optar per continuar sense carregar el microprogramari. Hi ha diversos casos en què un dispositiu sol·licita microprogramari addicional degut a que pot ésser necessari en certes circumstàncies, però el dispositiu pot funcionar sense ell en molts sistemes (és el que passa amb algunes targetes de xarxa que fan servir el controlador tg3). </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch02s01.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch02s03.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">2.1. Maquinari suportat </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 2.3. Compra de maquinari específic per a GNU/Linux</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

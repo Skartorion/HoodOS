@@ -1,0 +1,414 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. Debian GNU/Linux installeren vanuit een Unix/Linux-Systeem</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apd.html" title="Bijlage D. Varia">
+<link rel="prev" href="apds02.html" title="D.2. De hoeveelheid schijfruimte die nodig is voor taken">
+<link rel="next" href="apds04.html" title="D.4. Debian GNU/Linux installeren met het Parallel Line Internet Protocol (PLIP)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. Debian GNU/Linux installeren vanuit een Unix/Linux-Systeem</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage D. Varia</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. Debian GNU/Linux installeren vanuit een Unix/Linux-Systeem</h2></div></div></div>
+<p>In dit onderdeel wordt beschreven hoe u Debian GNU/Linux installeert vanuit een bestaand Unix- of Linux-systeem zonder gebruik te maken van het menu-georiënteerde installatiesysteem waarover het in de rest van deze handleiding gaat. Om een dergelijke <span class="quote">“<span class="quote">cross-installatie</span>”</span> HOWTO werd verzocht door gebruikers die naar Debian GNU/Linux wilden overschakelen vanuit Red Hat, Mandriva, en SUSE. In dit onderdeel wordt ervan uitgegaan dat u tot op zekere hoogte vertrouwd bent met het geven van *nix-commando's en met het laveren door het bestandssysteem. In dit onderdeel symboliseert <code class="prompt">$</code> een commando dat uitgevoerd moet worden in het huidige systeem van de gebruiker, terwijl <code class="prompt">#</code> verwijst naar een commando dat in de Debian chroot uitgevoerd wordt. </p>
+<p>Nadat het nieuwe Debian systeem naar uw voorkeur geconfigureerd werd, kunt u de (eventuele) bestaande gebruikersgegevens ernaartoe verplaatsen terwijl het systeem blijft functioneren. Daarom is dit een installatie van Debian GNU/Linux <span class="quote">“<span class="quote">zonder dat het systeem een tijd onbereikbaar is</span>”</span>. Het is ook een handige manier om met hardware om te gaan waarmee diverse opstart- en installatiemedia anders moeilijk overweg kunnen. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vermits het grootste deel van deze procedure handmatig uitgevoerd moet worden, moet u er rekening mee houden dat u een groot deel van de basisconfiguratie van het systeem zelf zult moeten uitvoeren, wat over het algemeen ook een grondiger kennis van Debian en van Linux vereist dan een gewone installatie. U kunt niet verwachten dat u met deze werkwijze een systeem bekomt dat identiek is aan een systeem dat op een gewone manier geïnstalleerd werd. U moet er ook rekening mee houden dat in de hier beschreven werkwijze enkel de basisstappen voor het opzetten van een systeem beschreven worden. Mogelijk zijn bijkomende stappen op het gebied van installatie en/of configuratie nodig. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4872"></a>D.3.1. Aan de slag</h3></div></div></div>
+<p>Met het schijfindelingsgereedschap van uw huidig *nix-systeem moet u volgens uw behoeften de harde schijf herindelen en minstens één bestandssysteem en een wisselgeheugenpartitie creëren. U moet minstens ongeveer 647MB beschikbaar hebben voor de installatie van een systeem waarin u enkel aan de console kunt werken, of ongeveer 2635MB als u zinnens bent X te installeren (en meer als u grafische werkomgevingen zoals GNOME of KDE Plasma wilt installeren). </p>
+<p>Maak vervolgens bestandssystemen aan op de partities. Om bijvoorbeeld een ext3-bestandssysteem te creëren op partitie <code class="filename">/dev/sda6</code> (dat is de root-partitie in ons voorbeeld), geeft u de opdracht </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Om in de plaats daarvan een ext2-bestandssysteem te creëren, laat u <strong class="userinput"><code>-j</code></strong> weg. </p>
+<p>Initialiseer en activeer het wisselgeheugen (swap) (vervang het partitienummer door het nummer van de partitie die u wilt gebruiken als Debian swap-partitie): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Koppel een partitie aan als <code class="filename">/mnt/debinst</code> (het installatiepunt dat op uw nieuwe systeem het root-bestandssysteem (<code class="filename">/</code>) zal zijn). De naam van het aankoppelpunt is puur arbitrair gekozen; hieronder blijven we diezelfde naam ervoor gebruiken. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top"><p>Indien u wilt dat onderdelen van het bestandssysteem (bijv. /usr) aangekoppeld worden op aparte partities, dan moet u deze mappen handmatig creëren en aankoppelen voor u verdergaat met de volgende fase. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4893"></a>D.3.2. <span class="command"><strong>debootstrap</strong></span> installeren</h3></div></div></div>
+<p>Het hulpprogramma dat door het installatiesysteem van Debian gebruikt wordt en dat geldt als de officiële manier voor het installeren van een Debian basissysteem, is <span class="command"><strong>debootstrap</strong></span>. Het maakt gebruik van <span class="command"><strong>wget</strong></span> en van <span class="command"><strong>ar</strong></span>, maar voorts gebruikt het enkel <code class="classname">/bin/sh</code> en het basisgereedschap van Unix/Linux<a href="#ftn.id4901" class="footnote" name="id4901"><sup class="footnote">[21]</sup></a>. Installeer <span class="command"><strong>wget</strong></span> en <span class="command"><strong>ar</strong></span> als zij nog niet aanwezig zijn op uw huidige systeem en download en installeer vervolgens <span class="command"><strong>debootstrap</strong></span>. </p>
+<p>Of u kunt de volgende werkwijze gebruiken om het handmatig te installeren. Maak een werkmap aan om het .deb-bestand in uit te pakken: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir werk
+# cd werk
+</pre></div>
+<p> Het programma <span class="command"><strong>debootstrap</strong></span> bevindt zich in het Debian-archief (zorg ervoor om het bij uw architectuur passende bestand te selecteren). Download het <span class="command"><strong>debootstrap</strong></span>.deb-bestand uit de <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> pool</a>, kopieer het pakket naar de werkmap en pak er de bestanden uit. U moet over de rechten van systeembeheerder beschikken om de bestanden te installeren. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /volledig-pad-naar-werk/werk/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4918"></a>D.3.3. Het programma <span class="command"><strong>debootstrap</strong></span> uitvoeren</h3></div></div></div>
+<p>Als u <span class="command"><strong>debootstrap</strong></span> uitvoert, kan het programma de benodigde bestanden rechtstreeks uit het archief ophalen. U kunt in het voorbeeld van het commando hieronder <strong class="userinput"><code>ftp.nl.debian.org/debian</code></strong> vervangen door gelijk welke spiegelserver voor het Debian-archief, bij voorkeur een spiegelserver die vanuit netwerkoogpunt dichtbij is. De spiegelservers worden opgesomd in <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Indien u een installatie-image met trixie Debian GNU/Linux aangekoppeld heeft op <code class="filename">/cdrom</code>, kunt u de http-URL vervangen door de bestands-URL: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Vervang in het <span class="command"><strong>debootstrap</strong></span>-commando <em class="replaceable"><code>ARCH</code></em> door een van de volgende architectuurnamen: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> Als de doelarchitectuur verschilt van die van de host, moet u de optie <strong class="userinput"><code>--foreign</code></strong> toevoegen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4940"></a>D.3.4. Het basissysteem configureren</h3></div></div></div>
+<p>U heeft nu op schijf een echt, hoewel eerder afgeslankt, Debian-systeem. <span class="command"><strong>chroot</strong></span> er naartoe: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Als de doelarchitectuur verschilt van die van de host, moet u eerst qemu-user-static kopiëren naar de nieuwe host: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> Na het chrooten moet u mogelijk de terminaldefinitie instellen om ze compatibel te maken met het Debian basissysteem, bijvoorbeeld: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> Afhankelijk van de waarde van TERM, kan het zijn dat om voor de terminal ondersteuning te krijgen, u het pakket <code class="classname">ncurses-term</code> moet installeren. </p>
+<p>Als de doelarchitectuur verschilt van die van de host, moet u de meerfasige bootstrap afronden: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4955"></a>D.3.4.1. Apparaatbestanden creëren</h4></div></div></div>
+<p>Op dit punt bevat <code class="filename">/dev/</code> slechts heel basale apparaatbestanden. Mogelijk zijn bijkomende apparaatbestanden nodig voor de volgende stappen van de installatie. Er zijn verschillende manieren om dit aan te pakken. Welke methode u moet gebruiken hangt af van het host-systeem dat u voor de installatie gebruikt, van het feit of u al dan niet een modulaire kernel gaat gebruiken en of u zinnens bent om voor het nieuwe systeem dynamische (bijvoorbeeld door <code class="classname">udev</code> te gebruiken) dan wel statische apparaatbestanden te gebruiken. </p>
+<p>Enkele van de beschikbare opties zijn: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>het pakket makedev installeren en (na het chrooten) een standaardset van statische apparaatbestanden creëren met </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>enkel specifieke apparaatbestanden handmatig creëren met <span class="command"><strong>MAKEDEV</strong></span> </p></li>
+<li class="listitem"><p>de map /dev van uw host-systeem met de optie bind (mount --bind) aankoppelen bovenop /dev van het doelsysteem. Merk op dat de postinstallatiescripts (postinst) van sommige pakketten apparaatbestanden proberen aan te maken. Gebruik deze mogelijkheid dus met zorg. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4971"></a>D.3.4.2. Partities aankoppelen</h4></div></div></div>
+<p>U moet  <code class="filename">/etc/fstab</code> creëren. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Hier volgt een voorbeeld dat u volgens uw behoeften kunt aanpassen: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: informatie over het statische bestandssysteem.
+#
+# bestandssysteem    aankoppelpunt   type    opties                  dump pass
+/dev/XXX             /               ext3    defaults                 0    1
+/dev/XXX             /boot           ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX             none            swap    sw                       0    0
+proc                 /proc           proc    defaults                 0    0
+
+/dev/cdrom           /media/cdrom    iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX             /tmp            ext3    rw,nosuid,nodev          0    2
+/dev/XXX             /var            ext3    rw,nosuid,nodev          0    2
+/dev/XXX             /usr            ext3    rw,nodev                 0    2
+/dev/XXX             /home           ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Gebruik <strong class="userinput"><code>mount -a</code></strong> om alle bestandssystemen die u opgegeven heeft in uw <code class="filename">/etc/fstab</code> aan te koppelen. Of gebruik het volgende commando om bestandssystemen apart aan te koppelen: </p>
+<div class="informalexample"><pre class="screen">
+# mount /pad   # bijv.: mount /usr
+</pre></div>
+<p> De huidige Debian-systemen plaatsen hun aankoppelpunten voor verwijderbare media onder <code class="filename">/media</code>, maar behouden uit compatibiliteitsoverwegingen symbolische koppelingen in <code class="filename">/</code>. Maak die waar nodig aan, bijvoorbeeld: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> U kunt het proc-bestandssysteem meerdere keren en op willekeurige plaatsen aankoppelen, hoewel <code class="filename">/proc</code> gangbaar is. Indien u niet <strong class="userinput"><code>mount -a</code></strong> gebruikte, moet u voor u verdergaat eerst proc aankoppelen: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Met het commando <strong class="userinput"><code>ls /proc</code></strong> zou u nu een niet-lege map te zien moeten krijgen. Mocht dit mislukken, dan kunt u mogelijk proc aankoppelen van buiten de chroot: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4995"></a>D.3.4.3. De tijdzone instellen</h4></div></div></div>
+<p>Door de derde regel van het bestand <code class="filename">/etc/adjtime</code> in te stellen op <span class="quote">“<span class="quote">UTC</span>”</span> of <span class="quote">“<span class="quote">LOCAL</span>”</span> bepaalt u of het systeem de tijd van de hardwareklok zal interpreteren als respectievelijk aangeduid in UTC of in de lokale tijd. Het volgende commando stelt u in staat om dit in te stellen. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Hierna volgt een voorbeeld: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Het volgende commando laat u toe uw tijdzone te kiezen. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5007"></a>D.3.4.4. Het netwerk configureren</h4></div></div></div>
+<p>Om het netwerk te configureren moet u <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> en <code class="filename">/etc/hosts</code> bewerken. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> Hier volgen enkele eenvoudige voorbeelden uit <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuratiebestand voor ifup(8), ifdown(8)
+# Zie de manpagina interfaces(5) voor informatie over beschikbare
+# opties.
+######################################################################
+
+# De interface loopback is niet langer vereist, maar kan zo nodig
+# gebruikt worden.
+#
+# auto lo
+# iface lo inet loopback
+
+# Om dhcp te gebruiken:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Een voorbeeld van een configuratie met een statisch IP-adres:
+# (network, broadcast en gateway zijn facultatief)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Geef uw naamservers en opzoekingsrichtlijnen op in <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Een eenvoudig voorbeeld van het bestand <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Geef de hostnaam van uw systeem op (2 tot 63 lettertekens): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianComputerNaam &gt; /etc/hostname
+</pre></div>
+<p> En een basaal bestand <code class="filename">/etc/hosts</code> met ondersteuning voor IPv6: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianComputerNaam
+
+# De volgende regels zijn wenselijk bij IPv6-compatibele computers
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Indien u verschillende netwerkkaarten heeft, moet u de namen van de stuurprogrammamodules in het bestand <code class="filename">/etc/modules</code> in de gewenste volgorde plaatsen. Tijdens het opstarten zal iedere kaart dan geassocieerd worden met de verwachte interfacenaam (eth0, eth1, enz.) </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5031"></a>D.3.4.5. Apt configureren</h4></div></div></div>
+<p>Debootstrap zal een heel basaal bestand <code class="filename">/etc/apt/sources.list</code> aangemaakt hebben, waardoor het installeren van bijkomende pakketten mogelijk is. Mogelijk wilt u echter extra pakketbronnen toevoegen, bijvoorbeeld voor broncodepakketten en voor beveiligingsupdates: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.nl.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Denk eraan om het commando <strong class="userinput"><code>apt update</code></strong> uit te voeren nadat u de lijst met pakketbronnen wijzigde. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5038"></a>D.3.4.6. Het taalgebied en het toetsenbord configureren</h4></div></div></div>
+<p>Om de lokalisatie-instellingen zo te configureren dat een andere taal dan het Engels gebruikt wordt, moet u het pakket dat ondersteuning biedt voor <code class="classname">locales</code> installeren en configureren. Tegenwoordig wordt aanbevolen om een lokalisatie van het type UTF-8 te gebruiken. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Om zo nodig uw toetsenbord te configureren: </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>Merk op dat u het toetsenbord niet kunt instellen terwijl u zich in de chroot bevindt, maar dat het op deze manier geconfigureerd wordt in functie van de volgende herstart van de computer. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5047"></a>D.3.5. Een kernel installeren</h3></div></div></div>
+<p>Indien u zinnens bent om dit systeem op te starten, zult u wellicht een Linux kernel en een bootloader willen hebben. Ga na welke voorverpakte kernels beschikbaar zijn met: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Installeer vervolgens het kernelpakket van uw keuze aan de hand van zijn pakketnaam. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-enz</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5056"></a>D.3.6. Zet de bootloader op</h3></div></div></div>
+<p>Om te maken dat uw Debian GNU/Linux-systeem kan opstarten, moet u uw bootloader instellen om de geïnstalleerde kernel met uw nieuwe root-partitie te laden. Merk op dat <span class="command"><strong>debootstrap</strong></span> geen bootloader installeert, maar dat u <span class="command"><strong>apt</strong></span> binnen uw Debian chroot kunt gebruiken om dat te doen. </p>
+<p>Gebruik het commando <strong class="userinput"><code>info grub</code></strong> om de instructies over het opzetten van de bootloader te lezen. Indien u het systeem dat u gebruikte om Debian te installeren behoudt, moet u gewoon aan uw bestaande <code class="filename">grub.cfg</code> van grub2 een extra item voor de Debian-installatie toevoegen. </p>
+<p>Het installeren en instellen van <code class="classname">grub2</code> is zo eenvoudig als dit: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> Het tweede commando installeert <span class="command"><strong>grub2</strong></span> (in dit geval in het MBR van <code class="literal">sda</code>). Het laatste commando creëert een correct en werkend bestand <code class="filename">/boot/grub/grub.cfg</code>. </p>
+<p>Merk op dat dit ervan uitgaat dat er een apparaatbestand <code class="filename">/dev/sda</code> gecreëerd werd. Er bestaan andere mogelijkheden om <span class="command"><strong>grub2</strong></span> te installeren, maar die vallen buiten het bestek van deze bijlage. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5075"></a>D.3.7. Toegang vanop afstand: SSH installeren en de toegang opzetten</h3></div></div></div>
+<p>Indien u via de console op het systeem kunt inloggen, kunt u dit onderdeel overslaan. Indien het systeem later toegankelijk moet zijn over het netwerk, dient u SSH te installeren en de toegang op te zetten. </p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Standaard staat voor root (de systeembeheerder) inloggen met een wachtwoord uitgeschakeld. Dus kan het instellen van de toegang gebeuren door een wachtwoord in te stellen en inloggen met een wachtwoord voor root terug mogelijk te maken: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> De volgende optie moet geactiveerd worden: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> De toegang kan ook mogelijk gemaakt worden door aan het account van root een ssh-sleutel toe te voegen: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Tenslotte kan de toegang ook mogelijk gemaakt worden door een gewone gebruiker toe te voegen en voor deze een wachtwoord in te stellen: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5088"></a>D.3.8. Afwerking</h3></div></div></div>
+<p>Zoals reeds eerder vermeld werd, zal het geïnstalleerde systeem erg basaal zijn. Indien u liever heeft dat het systeem wat meer voldragen is, kunt u op een makkelijke manier alle pakketten installeren die een prioriteit <span class="quote">“<span class="quote">standard</span>”</span> (standaard) hebben: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> U kunt natuurlijk ook gewoon <span class="command"><strong>apt</strong></span> gebruiken om individuele pakketten te installeren. </p>
+<p>Na de installatie zullen er zich in <code class="filename">/var/cache/apt/archives/</code> een heleboel gedownloade pakketten bevinden. U kunt schijfruimte vrijmaken met de opdracht: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4901" class="footnote"><p><a href="#id4901" class="para"><sup class="para">[21] </sup></a> Het betreft hier de belangrijkste GNU hulpprogramma's en commando's zoals <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> en <span class="command"><strong>gzip</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. De hoeveelheid schijfruimte die nodig is voor taken </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> D.4. Debian GNU/Linux installeren met het Parallel Line Internet Protocol (PLIP)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

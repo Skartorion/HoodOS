@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Використання preseeding</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Настанова з інсталяції Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Додаток B. Автоматичне встановлення з готовими відповідями">
+<link rel="prev" href="apbs01.html" title="B.1. Вступ">
+<link rel="next" href="apbs03.html" title="B.3. Створення файлу попередньої конфігурації">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Використання preseeding</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="назад"></a> </td>
+<th width="60%" align="center">Додаток B. Автоматичне встановлення з готовими відповідями</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Використання preseeding</h2></div></div></div>
+<p>Спочатку вам потрібно створити файл попередньої конфігурації і розмістити його в тому місці, звідки ви хочете його використовувати. Створення файлу попередньої конфігурації описано далі у цьому додатку. Помістити його в потрібне місце досить просто для мережевого попереднього завантаження або якщо ви хочете прочитати файл з USB-накопичувача. Якщо ви хочете включити файл до інсталяційного ISO-образу, вам доведеться ремастерити образ. Як отримати файл попередньої конфігурації до initrd, не є предметом розгляду у цьому документі; будь ласка, зверніться до документації розробників для <code class="classname">debian-installer</code>. </p>
+<p>Приклад файлу попередньої конфігурації, який ви можете використати як основу для власного файлу попередньої конфігурації, доступний за адресою <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. Цей файл базується на фрагментах конфігурації, включених до цього додатку. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Завантаження файлу попередньої конфігурації</h3></div></div></div>
+<p>Якщо ви використовуєте попереднє висівання initrd, вам потрібно лише переконатися, що файл з назвою <code class="filename">preseed.cfg</code> включено до кореневого каталогу initrd. Програма встановлення автоматично перевірить наявність цього файлу і завантажить його. </p>
+<p>Для інших методів попереднього встановлення вам потрібно вказати програмі встановлення, який файл використовувати під час завантаження. Зазвичай це робиться шляхом передачі ядру параметра завантаження, або вручну під час завантаження, або шляхом редагування файлу конфігурації завантажувача <span class="phrase">(наприклад, <code class="filename">syslinux.cfg</code>) і додавання параметра в кінець рядка(ів) додавання ядра.</span> </p>
+<p>Якщо ви вказали файл попередньої конфігурації у конфігурації завантажувача, ви можете змінити конфігурацію так, щоб вам не потрібно було натискати клавішу Enter для завантаження програми встановлення. <span class="phrase">Для syslinux це означає встановлення тайм-ауту на <code class="literal">1</code> в <code class="filename">syslinux.cfg</code>.</span> </p>
+<p>Щоб переконатися, що програма встановлення отримає правильний файл попередньої конфігурації, ви можете додатково вказати контрольну суму для цього файлу. Наразі це має бути md5-сума, і якщо її вказано, вона має збігатися з файлом попередньої конфігурації, інакше програма встановлення відмовиться її використовувати. </p>
+<div class="informalexample"><pre class="screen">Параметри завантаження, які слід вказати:
+- якщо ви завантажуєтеся по мережі:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- або
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- якщо ви завантажуєте відреставрований інсталяційний образ:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- якщо ви встановлюєте з USB-носія (покладіть файл попередньої конфігурації в
+  до каталогу верхнього рівня USB-накопичувача):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Зверніть увагу, що <code class="filename">preseed/url</code> можна скоротити до <code class="filename">url</code>, <code class="filename">preseed/file</code> до <code class="filename">file</code> і <code class="filename">preseed/file/checksum</code> до <code class="filename">preseed-md5</code>, коли вони передаються як параметри завантаження. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Використання параметрів завантаження для попереднього вибору питань</h3></div></div></div>
+<p>Якщо файл попередньої конфігурації не може бути використаний для попереднього вибору деяких кроків, інсталяцію все одно можна повністю автоматизувати, оскільки ви можете вказати значення попереднього вибору у командному рядку під час завантаження програми встановлення. </p>
+<p>Параметри завантаження також можна використовувати, якщо ви не хочете використовувати преселекцію, а просто хочете отримати відповідь на конкретне запитання. Деякі приклади, де це може бути корисно, описані в інших розділах цього посібника. </p>
+<p>Щоб задати значення для використання всередині <code class="classname">debian-installer</code>, просто передайте <strong class="userinput"><code><em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong> для будь-якої з попередньо заданих змінних, перелічених у прикладах у цьому додатку. Якщо значення має бути використано для налаштування пакунків для цільової системи, вам слід додати <em class="firstterm">owner</em><a href="#ftn.id4039" class="footnote" name="id4039"><sup class="footnote">[19]</sup></a> змінної як у <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong>. Якщо ви не вкажете власника, значення змінної не буде скопійовано до бази даних debconf у цільовій системі і, таким чином, залишиться невикористаним під час конфігурування відповідного пакунка. </p>
+<p>Зазвичай, попереднє введення запитання таким чином означає, що воно не буде поставлене. Щоб встановити певне значення за замовчуванням для питання, але все одно поставити його, використовуйте <span class="quote">«<span class="quote">?=</span>»</span> замість <span class="quote">«<span class="quote">=</span>»</span> як оператор. Див. також <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Використання попередньої обробки для зміни значень за замовчуванням">Розділ B.5.2, «Використання попередньої обробки для зміни значень за замовчуванням»</a>. </p>
+<p>Зверніть увагу, що деякі змінні, які часто задаються у запрошенні до завантаження, мають коротший псевдонім. Якщо доступний псевдонім, він використовується в прикладах у цьому додатку замість повної змінної. Наприклад, змінну <code class="literal">preseed/url</code> було змінено на <code class="literal">url</code>. Іншим прикладом є псевдонім <code class="literal">tasks</code>, який перекладається як <code class="literal">tasksel:tasksel/first</code>. </p>
+<p><span class="quote">«<span class="quote">---</span>»</span> у параметрах завантаження має особливе значення. Параметри ядра, які з'являються після останньої <span class="quote">«<span class="quote">---</span>»</span>, можна скопіювати до конфігурації завантажувача встановленої системи (якщо це підтримується програмою встановлення завантажувача). Програма встановлення автоматично відфільтрує всі параметри (наприклад, параметри попередньої конфігурації), які вона розпізнає. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Поточні ядра linux (2.6.9 і вище) приймають максимум 32 параметри командного рядка і 32 параметри оточення, включно з будь-якими параметрами, доданими за замовчуванням для програми встановлення. Якщо ці числа буде перевищено, ядро впаде у паніку (аварійно завершить роботу). (У попередніх версіях ядра ці значення були меншими.) </p></td></tr>
+</table></div>
+<p>Для більшості інсталяцій, деякі параметри за замовчуванням у файлі конфігурації завантажувача, такі як <code class="literal">vga=normal</code>, можна безпечно вилучити, що дозволить вам додати більше параметрів для попереднього завантаження. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примітка]" src="images/note.png"></td>
+<th align="left">Примітка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Не завжди можливо вказати значення з пробілами для параметрів завантаження, навіть якщо ви відокремлюєте їх лапками. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Автоматичний режим</h3></div></div></div>
+<p>Існує декілька особливостей програми встановлення, які в поєднанні дозволяють за допомогою досить простих командних рядків у завантажувальному вікні створювати як завгодно складні налаштовані автоматичні установки. </p>
+<p>Це можна зробити за допомогою вибору завантаження <code class="literal">Automated install</code>, який також називається <code class="literal">auto</code> для деяких архітектур або способів завантаження. У цьому розділі <code class="literal">auto</code> не є параметром, а означає вибір цього варіанта завантаження і додавання наступних параметрів завантаження у запрошенні до завантаження. <span class="phrase">Див. <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Екран завантаження">Розділ 5.1.5, «Екран завантаження»</a> для отримання інформації про те, як додати параметр завантаження.</span> </p>
+<p>Щоб проілюструвати це, наведемо кілька прикладів, які можна використовувати при завантажувальному запиті: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Це залежить від наявності DHCP-сервера, який доставить машину до місця, де <code class="literal">autoserver</code> може бути розпізнано завдяки DNS, можливо, після додавання локального домену, якщо це було передбачено DHCP. Якщо це було зроблено на сайті з доменом <code class="literal">example.com</code>, і у них є нормальне налаштування DHCP, це призведе до того, що файл попереднього завантаження буде отримано з <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Остання частина цієї адреси (<code class="literal">d-i/trixie/./preseed.cfg</code>) береться з <code class="literal">auto-install/defaultroot</code>. За замовчуванням, сюди входить каталог <code class="literal">trixie</code>, щоб у майбутніх версіях можна було вказати власне кодове ім'я і дозволити людям мігрувати вперед у контрольований спосіб. Біт <code class="literal">/./</code> використовується для позначення кореня, відносно якого можна прив'язати наступні шляхи (для використання у командах preseed/include та preseed/run). Це дозволяє вказувати файли як повні URL-адреси, шляхи, що починаються з /, які таким чином закріплюються, або навіть шляхи відносно місця, де було знайдено останній попередньо завантажений файл. Це може бути використано для створення більш портативних скриптів, коли цілу ієрархію скриптів можна перемістити в нове місце, не порушуючи її, наприклад, скопіювавши файли на USB-накопичувач, коли вони були запущені на веб сервері. У цьому прикладі, якщо у файлі попереднього завантаження встановити <code class="literal">preseed/run</code> у <code class="literal">/scripts/late_command.sh</code>, то файл буде отримано з <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Якщо немає локальної інфраструктури DHCP або DNS, або якщо ви не хочете використовувати шлях за замовчуванням до <code class="filename">preseed.cfg</code>, ви можете використовувати явний URL, і якщо ви не використовуєте елемент <code class="literal">/./</code>, він буде прив'язаний до початку шляху (тобто до третього <code class="literal">/</code> в URL-адресі). Ось приклад, який вимагає мінімальної підтримки з боку локальної мережевої інфраструктури: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> Це працює наступним чином: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>якщо в URL-адресі відсутній протокол, вважається, що це http, </p></li>
+<li class="listitem"><p>якщо секція імені хоста не містить крапок, то до нього додається домен, отриманий з DHCP, і </p></li>
+<li class="listitem"><p>якщо після імені хоста немає символів <code class="literal">/</code>, то додається шлях за замовчуванням. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Окрім вказівки url, ви також можете вказати налаштування, які безпосередньо не впливають на поведінку самого <code class="classname">debian-installer</code>, але можуть бути передані скриптам, вказаним за допомогою <code class="literal">preseed/run</code> у завантаженому файлі пресета. Наразі єдиним прикладом цього є <code class="literal">auto-install/classes</code>, який має псевдонім <code class="literal">classes</code>. Це можна використовувати таким чином: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Класи можуть, наприклад, позначати тип системи, яку буде встановлено, або локалізацію, яку буде використано. </p>
+<p>Звичайно, можна розширити цю концепцію, і якщо ви це зробите, доцільно використовувати для цього простір імен автоінсталяції. Таким чином, ви можете мати щось на кшталт <code class="literal">auto-install/style</code>, який потім використовуватиметься у ваших скриптах. Якщо ви вважаєте за потрібне це зробити, будь ласка, згадайте про це у списку розсилки <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code>, щоб ми могли уникнути конфліктів просторів імен, і, можливо, додати псевдонім для параметра для вас. </p>
+<p>Вибір завантаження <code class="literal">auto</code> ще не визначено на всіх арках. Того ж ефекту можна досягти простим додаванням двох параметрів <code class="literal">auto=true priority=critical</code> до командного рядка ядра. Параметр ядра <code class="literal">auto</code> є псевдонімом для <code class="literal">auto-install/enable</code>, і його значення <code class="literal">true</code> затримує питання про локаль і клавіатуру доти, доки не буде можливості їх попередньо встановити, а <code class="literal">priority</code> є псевдонімом для <code class="literal">debconf/priority</code> і встановлення його у значення <code class="literal">critical</code> зупиняє будь-які питання з нижчим пріоритетом. </p>
+<p>Якщо вибрано автоматичне встановлення без визначення конфігурації попереднього завантаження, користувачеві буде запропоновано вказати розташування попереднього завантаження. Крім того, якщо було вказано конфігурацію попереднього запуску, цей запит зазвичай пригнічується, щоб увімкнути повністю неінтерактивне встановлення. Однак, якщо намір полягає в тому, щоб змінити значення за замовчуванням за допомогою <code class="literal">preseed.cfg</code> в initrd, тоді результат справді має поводитись так, ніби попереднього завантаження ще не було вказано, навіть якщо воно було. У цьому випадку для змінної debconf <code class="literal">auto-install/cloak_initrd_preseed</code> можна встановити значення <code class="literal">true</code> (наприклад, у <code class="literal">preseed.cfg</code> initrd). щоб отримати необхідну поведінку. </p>
+<p>Додаткові опції, які можуть представляти інтерес при спробі автоматизувати установку при використанні DHCP, такі: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code> що змушує машину вибирати першу-ліпшу мережеву карту і терплячіше чекати відповіді на свій DHCP-запит. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Підказка]" src="images/tip.png"></td>
+<th align="left">Підказка</th>
+</tr>
+<tr><td align="left" valign="top"><p>Великий приклад використання цього фреймворку, включаючи приклади скриптів і класів, можна знайти на <a class="ulink" href="http://hands.com/d-i/" target="_top">сайті його розробника</a>. Приклади, доступні там, також показують багато інших приємних ефектів, яких можна досягти, творчо використовуючи попередню конфігурацію. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Псевдоніми, корисні для попередньої обробки</h3></div></div></div>
+<p>Наступні псевдоніми можуть бути корисними при використанні (автоматичного режиму) попередньої обробки. Зверніть увагу, що це просто короткі псевдоніми для назв запитань, і вам завжди потрібно вказувати значення: наприклад, <code class="literal">auto=true</code> або <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>пріоритет</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>автоматично</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>класи</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>файл</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>тема</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>мова</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>країна</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>локаль</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>мапа клавіш</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>модулі</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>прошивка</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>інтерфейс</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>домен</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>протокол</td>
+<td>дзеркало/протокол</td>
+</tr>
+<tr>
+<td>набір</td>
+<td>дзеркало/набір</td>
+</tr>
+<tr>
+<td>рекомендації</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>завдання</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>робочий стіл</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Приклади попереднього завантаження завантажувального запиту</h3></div></div></div>
+<p>Ось кілька прикладів того, як може виглядати запрошення до завантаження (вам потрібно буде адаптувати його до ваших потреб)<span class="phrase">; див. також <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Екран завантаження">Розділ 5.1.5, «Екран завантаження»</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Встановити французьку мову як мову та Францію як країну:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Щоб вибрати англійську мову як мову і Німеччину як країну, а також використовувати німецьку розкладку клавіатури:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# Щоб встановити робочий стіл MATE:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# Щоб встановити веб-сервер завдання:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Використання DHCP-сервера для вказівки файлів попередньої конфігурації</h3></div></div></div>
+<p>Також можна використовувати DHCP, щоб вказати файл попередньої конфігурації для завантаження з мережі. DHCP дозволяє вказати ім'я файлу. Зазвичай це файл для мережевого завантаження, але якщо це URL-адреса, то інсталяційні носії, які підтримують мережеве попереднє завантаження, завантажать файл з URL-адреси і використають його як файл попередньої конфігурації. Ось приклад налаштування у файлі dhcpd.conf для версії 3 DHCP-сервера ISC (пакунок isc-dhcp-server Debian). </p>
+<div class="informalexample"><pre class="screen">якщо підрядок (опція vendor-class-identifier, 0, 3) = "d-i" {
+    назва файлу "http://host/preseed.cfg";
+}
+</pre></div>
+<p>Зауважте, що у наведеному вище прикладі це ім'я файла обмежується DHCP-клієнтами, які ідентифікують себе як <span class="quote">«<span class="quote">d-i</span>»</span>, тому воно не вплине на звичайних DHCP-клієнтів, а лише на програму встановлення. Ви також можете помістити текст у строфу лише для одного конкретного хоста, щоб уникнути попереднього завантаження всіх інсталяцій у вашій мережі. </p>
+<p>Хорошим способом використання попереднього встановлення DHCP є встановлення лише значень, характерних для вашої мережі, наприклад, дзеркала Debian. Таким чином, при встановленні у вашій мережі буде автоматично вибрано хороше дзеркало, але решту інсталяції можна виконати інтерактивно. Використання попереднього встановлення DHCP для повної автоматизації встановлення Debian слід використовувати з обережністю. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4039" class="footnote"><p><a href="#id4039" class="para"><sup class="para">[19] </sup></a> Власником змінної (або шаблону) debconf зазвичай є назва пакунка, який містить відповідний шаблон debconf. Для змінних, що використовуються у самій програмі встановлення, власником є <span class="quote">«<span class="quote">d-i</span>»</span>. Шаблони і змінні можуть мати більше одного власника, що допомагає визначити, чи можна їх вилучити з бази даних debconf у разі очищення пакунка. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="назад"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Догори"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="далі"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Вступ </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Початок"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Створення файлу попередньої конфігурації</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

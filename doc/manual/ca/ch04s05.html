@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Preparació dels fitxers per a l'arrencada en xarxa TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Capítol 4. Obtenir el suport d'instal·lació del sistema">
+<link rel="prev" href="ch04s04.html" title="4.4. Preparació dels fitxers per arrencar des del disc dur">
+<link rel="next" href="ch04s06.html" title="4.6. Instal·lació automàtica">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Preparació dels fitxers per a l'arrencada en xarxa TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítol 4. Obtenir el suport d'instal·lació del sistema</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Preparació dels fitxers per a l'arrencada en xarxa TFTP</h2></div></div></div>
+<p>Si teniu una màquina connectada a una xarxa d'àrea local, podeu arrencar-la des d'una altra màquina de la xarxa fent servir TFTP. Si voleu arrencar el sistema d'instal·lació des d'una altra màquina, els fitxers d'arrencada hauran de col·locar-se a llocs específics d'aquesta, la qual ha de configurar-se a fi de permetre l'arrencada de la vostra. </p>
+<p>Heu d'instal·lar un servidor TFTP, i en nombroses màquines, cal també un servidor DHCP <span class="phrase">, o un servidor BOOTP</span>. </p>
+<p> <span class="phrase">BOOTP és un protocol IP que indica a l'ordinador la seua pròpia adreça IP i el lloc de la xarxa on obtenir la imatge d'arrencada.</span> El DHCP (Protocol de configuració dinàmica d'ordinadors centrals) és una extensió més flexible, i compatible, del BOOTP. Alguns sistemes només es poden configurar fent servir el DHCP. </p>
+<p>El protocol de transferència trivial de fitxers (TFTP) s'empra per posar a disposició del client la imatge d'arrencada. En teoria, es pot usar qualsevol servidor de qualsevol plataforma que implemente aquests protocols. Els exemples d'aquesta secció ofereixen instruccions per al SunOS 4.x, el SunOS 5.x (àlies Solaris) i el GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Per a un servidor Debian GNU/Linux es recomana <code class="classname">tftpd-hpa</code>. Ha estat escrit pel mateix autor del carregador d'arrencada <code class="classname">syslinux</code> i és per tant el que menys problemes hauria de donar. Una bona alternativa és <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Configurar un servidor DHCP</h3></div></div></div>
+<p>Un servidor que és programari gratuït de DHCP és el <span class="command"><strong>dhcpd</strong></span> d'ISC. A Debian GNU/Linux, es recomana utilitzar el paquet <code class="classname">isc-dhcp-server</code>. Hi ha un fitxer d'exemple de configuració per utilitzar-lo (normalment <code class="filename">/etc/dhcpd3/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>En aquest exemple, hi ha un servidor <em class="replaceable"><code>servername</code></em> que fa tota la feina del servidor DHCP, servidor de TFTP i passarel·la de xarxa. És quasi segur que necessitareu canviar les opcions «domain-name», i també el nom del servidor i l'adreça màquina del client. L'opció <em class="replaceable"><code>filename</code></em> hauria de ser el nom del fitxer que es descarregarà per TFTP. </p>
+<p>Després d'editar el fitxer de configuració del <span class="command"><strong>dhcpd</strong></span>, reengegueu-lo amb <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id1586"></a>4.5.1.1. Habilitar l'arrencada amb PXE a la configuració del servidor de DHCP</h4></div></div></div>
+<p>Aquí teniu un altre exemple de <code class="filename">dhcp.conf</code> que fa servir el mètode Pre-boot Execution Environment (PXE) de TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# El paràgraf següent necessita modificar per ajustar-lo al vostre cas
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# la adreça de la passarel·la podria ser diferent
+# (l'accés a Internet de exemple)
+  option routers 192.168.1.1;
+# poseu el dns que utilitzeu
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# adreça màquina del client tftp
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Adoneu-vos que en l'arrencada amb PXE, el fitxer client de nom <code class="filename">pxelinux.0</code> és el carregador de l'arrencada, no una imatge del nucli (vegeu <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Posar les imatges del TFTP al seu lloc">Secció 4.5.4, «Posar les imatges del TFTP al seu lloc»</a> més endavant). </p>
+<p>Si la vostra màquina usa UEFI per engegar, haureu d'especificar un gestor d'arranc apropiat per a màquines UEFI, per exemple </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# adreça mac del client tftp
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Configurar un servidor BOOTP</h3></div></div></div>
+<p>Hi ha dos servidors de BOOTP a GNU/Linux. El primér és el <span class="command"><strong>bootpd</strong></span> de CMU. L'altre és també un servidor de DHCP, el <span class="command"><strong>dhcpd</strong></span> de ISC. A Debian GNU/Linux són als paquets <code class="classname">bootp</code> i <code class="classname">isc-dhcp-server</code> respectivament. </p>
+<p>Per fer servir el <span class="command"><strong>bootpd</strong></span> de CMU, elimineu el comentari (o bé afegiu) la línia important al <code class="filename">/etc/inetd.conf</code>. A Debian GNU/Linux, podeu executar <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, i després <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> per aconseguir-ho. En el cas que el servidor BOOTP no utilitze Debian, la línia en qüestió seria com aquesta: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Ara, podeu generar un fitxer <code class="filename">/etc/bootptab</code>. Aquest té el mateix tipus de format críptic i familiar que els antics fitxers de BSD <code class="filename">printcap</code>, <code class="filename">termcap</code>, i <code class="filename">disktab</code>. Vegeu la pàgina de manual del <code class="filename">bootptab</code> per obtenir més informació. Pel <span class="command"><strong>bootpd</strong></span> de CMU, necessitareu saber l'adreça màquina (MAC) del client. A continuació teniu exemple de <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> Necessitareu canviar al menys l'opció <span class="quote">«<span class="quote">ha</span>»</span>, que especifica l'adreça màquina del client. L'opció <span class="quote">«<span class="quote">bf</span>»</span> especifica quin fitxer hauria de descarregar un client via TFTP; per a més detalls, vegeu <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Posar les imatges del TFTP al seu lloc">Secció 4.5.4, «Posar les imatges del TFTP al seu lloc»</a>. </p>
+<p>Per altra banda, configurar el BOOTP amb el <span class="command"><strong>dhcpd</strong></span> d'ISC és molt fàcil, ja que considera els clients BOOTP com un cas un poc especial de clients de DHCP. A algunes arquitectures necessitareu d'una configuració complexa per arrencar els clients via BOOTP. Si aquest és el vostre cas, llegiu la secció <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Configurar un servidor DHCP">Secció 4.5.1, «Configurar un servidor DHCP»</a>. Altrament, ho aconseguireu afegint la directiva <strong class="userinput"><code>allow bootp</code></strong> al bloc de configuració per la xarxa que conté el client al fitxer <code class="filename">/etc/dhcp/dhcpd.conf</code>, i reiniciant el <span class="command"><strong>dhcpd</strong></span> amb <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Habilitació del servidor TFTP</h3></div></div></div>
+<p>Per a posar en marxa el servidor TFTP, assegureu-vos primer que teniu activat el <span class="command"><strong>tftpd</strong></span>. </p>
+<p>En el cas de <code class="classname">tftpd-hpa</code> hi ha dues formes d'executar el servei. Pot ser iniciat sota demanda pel dimoni <code class="classname">inetd</code> del sistema o es pot configurar per a executar com un dimoni independent. El mètode a emprar és seleccionat en instal·lar el paquet i pot ser canviat reconfigurant aquest. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Històricament, els servidors TFTP utilitzen el directori <code class="filename">/tftpboot</code> per servir les imatges. Per altra banda, els paquets de Debian GNU/Linux poden utilitzar altres directoris per complir amb l'<a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Estàndard de la Jerarquia del Sistema de Fitxers</a>. Per exemple, el <code class="classname">tftpd-hpa</code> utilitza per defecte <code class="filename">/srv/tftp</code>. Es possible que hagueu d'ajustar els exemples de configuració d'aquesta secció en conseqüència. </p></td></tr>
+</table></div>
+<p>Totes les alternatives de l'<span class="command"><strong>in.tftpd</strong></span> que hi ha a Debian per defecte haurien d'enregistrar les peticions TFTP al registre del sistema. Algunes d'elles suporten un paràmetre <strong class="userinput"><code>-v</code></strong> per mostrar una sortida més detallada. Es recomana que comproveu aquests missatges registrats en el cas que patiu problemes d'arrencada com a punt d'inici al diagnòstic de la causa dels problemes. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Posar les imatges del TFTP al seu lloc</h3></div></div></div>
+<p>Després, col·loqueu la imatge d'arrencada TFTP que us calga, i que figura a <a class="xref" href="ch04s02.html#where-files" title="4.2.1. On trobar arxius d'instal·lació">Secció 4.2.1, «On trobar arxius d'instal·lació»</a>, al directori d'imatges d'arrencada del <span class="command"><strong>tftpd</strong></span>. Haureu de fer un enllaç des d'aquest fitxer al fitxer que emprarà el <span class="command"><strong>tftpd</strong></span> per arrencar un client determinat. Malauradament, el nom del fitxer el determina el client TFTP i no hi existeix cap norma ben establerta. </p>
+<p>Per a arrencar amb PXE, només cal l'arxiu tar <code class="filename">netboot/netboot.tar.gz</code>. Extraieu-lo al directori d'imatge d'arrencada del <span class="command"><strong>tftpd</strong></span>. Assegureu-vos que el servidor DHCP està configurat per passar <code class="filename">pxelinux.0</code> al <span class="command"><strong>tftpd</strong></span> com a nom del fitxer d'arrencada. Per a màquines UEFI, necessitareu passar un nom d'imatge d'arrencada EFI apropiat (com ara <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Preparació dels fitxers per arrencar des del disc dur </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Instal·lació automàtica</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

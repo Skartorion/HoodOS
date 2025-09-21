@@ -1,0 +1,235 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. 설치 과정의 문제 해결</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="데비안 GNU/리눅스 설치 안내서">
+<link rel="up" href="ch05.html" title="5장. 설치 시스템 부팅하기">
+<link rel="prev" href="ch05s03.html" title="5.3. 부팅 파라미터">
+<link rel="next" href="ch06.html" title="6장. 데비안 설치 프로그램 사용하기">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. 설치 과정의 문제 해결</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<th width="60%" align="center">5장. 설치 시스템 부팅하기</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. 설치 과정의 문제 해결</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. 광학 미디어의 안정성</h3></div></div></div>
+<p>가끔, 특히 구형 드라이브의 경우, 광학 디스크에서 부팅이 실패할 수도 있습니다. 심지어는 (디스크에서 성공적으로 부팅한 경우에도) 디스크를 인식하지 못하거나 설치 도중에 디스크를 읽으면서 오류가 발생하는 경우도 있습니다. </p>
+<p>이러한 문제는 여러가지 원인이 있을 수 있습니다. 여기서는 일부 많이 발생하는 문제 및 각각의 경우 대처하는 방법을 설명합니다. 나머지는 여러분에게 맡깁니다. </p>
+<p>제일 먼저 확인할 수 있는 간단한 일이 두 가지 있습니다. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>디스크가 부팅하지 않으면, 디스크를 올바르게 넣었는지 그리고 혹시 디스크 표면이 깨끗한지 확인하십시오. </p></li>
+<li class="listitem"><p>설치 프로그램이 디스크를 인식하지 못하면, <span class="guimenuitem">설치 미디어 찾기 및 마운트</span> 옵션을 다시 한 번 실행해 보십시오. 구형 CD-ROM 드라이브에서 발생하는 일부 DMA 관련 문제는 이런 식으로 해결된다고 알려져 있습니다. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>이렇게 해도 해결되지 않으면, 아래에 나와 있는 방법을 시도해 보십시오. 전부는 아니지만 대부분의 경우, 여기에 나와 있는 방법은 CD-ROM과 DVD 모두에 적용됩니다. </p>
+<p>광학 디스크에서 제대로 설치할 수 없는 경우, 사용할 수 있는 다른 설치 방법을 시도해 보십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2789"></a>5.4.1.1. 공통 사항</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>일부 오래 된 CD-ROM 드라이브는 최근의 CD 라이터에서 구운 디스크를 일지 못합니다. </p></li>
+<li class="listitem"><p>일부 아주 오래 된 CD-ROM 드라이브는 <span class="quote">“<span class="quote">직접 메모리 접근</span>”</span>(DMA) 기능을 사용할 경우 올바르게 동작하지 않습니다. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2797"></a>5.4.1.2. 문제점 파악 및 해결 방법</h4></div></div></div>
+<p>광학 디스크 부팅이 실패하면, 아래에 나온 방법을 시도해 보십시오. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>BIOS/UEFI가 광학 디스크 부팅을 지원하는지 확인하고 (아주 오래 된 시스템이 경우에만 해당됩니다) 광학 드라이브가 해당 미디어를 지원하는지 확인하십시오. </p></li>
+<li class="listitem">
+<p>ISO 이미지를 다운로드했다면, 그 이미지의 md5sum이 이미지를 받은 곳과 같은 곳에 있는 <code class="filename">MD5SUMS</code> 파일 안에 있는 md5sum과 일치하는지 확인하십시오. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> 그 다음, 구운 디스크의 md5sum이 일치하는지도 확인하십시오. 다음 명령을 사용하면 됩니다. 이미지의 크기를 이용해서 지정한 바이트 수만큼 디스크에서 읽어들입니다. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>설치 프로그램이 성공 후, 디스크를 찾을 수 없는 경우, 한 번 다시 시도하면 해결할 수 있습니다. 광학 드라이브가 여러 개 있는 경우 다른 광학 드라이브로 바꾸어보십시오. 그래도 동작하지 않거나 디스크를 인식하지만 읽으면서 오류가 발생하면 다음을 시도해 보십시오. Linux 기초 지식이 필요합니다. 명령을 실행하려면 먼저 두 번째 가상 콘솔(VT2)로 전환해서 쉘을 활성화하십시오. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>VT4로 전환해서 <code class="filename">/var/log/syslog</code>의 내용을 보고 (<span class="command"><strong>nano</strong></span>를 편집기로 사용) 특정 오류 메시지가 있는지 확인하십시오. 그 다음에 <span class="command"><strong>dmesg</strong></span>의 출력도 확인해 보십시오. </p></li>
+<li class="listitem">
+<p><span class="command"><strong>dmesg</strong></span> 출력에서 광학 드라이브를 인식했는지 확인하십시오. 다음과 같은 내용이 있어야 합니다(연속된 줄이 아닐 수도 있습니다): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> 이와 같은 내용이 없으면, 드라이브가 연결된 컨트롤러를 인식하지 못했거나 아예 지원하지 않는다는 뜻입니다. 해당 컨트롤러에 무슨 드라이버가 필요한지 알려면, <span class="command"><strong>modprobe</strong></span> 명령을 사용해 수동으로 드라이버를 읽어들여 보십시오. </p>
+</li>
+<li class="listitem"><p><code class="filename">/dev/</code> 아래에 광학 드라이브의 장치 노드가 있는지 확인하십시오. 위의 예에서 장치 노드는 <code class="filename">/dev/sr0</code>입니다. <code class="filename">/dev/cdrom</code> 파일도 있어야 합니다. </p></li>
+<li class="listitem">
+<p><span class="command"><strong>mount</strong></span> 명령으로 광학 디스크가 이미 마운트되어 있지는 않은 지 확인하십시오. 마운트되어 있지 않다면 수동으로 마운트해 보십시오: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> 이 명령어 다음에 무슨 오류 메시지가 없는지 확인하십시오. </p>
+</li>
+<li class="listitem">
+<p>DMA가 켜져 있는지 확인하십시오: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> 첫번째 열의 <code class="literal">using_dma</code> 다음에 나오는 <span class="quote">“<span class="quote">1</span>”</span>은 DMA가 켜져 있다는 뜻입니다. DMA가 켜져 있다면 꺼 보십시오: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> 광학 드라이브에 해당하는 장치 노드가 있는 디렉터리 안에서 실행해야 하는 것에 유의하십시오. </p>
+</li>
+<li class="listitem"><p>설치하는 데 문제가 있다면, 설치 프로그램의 메인 메뉴 맨 아래 부분에 있는 옵션을 사용해 설치 미디어가 올바른지 확인해 보십시오. 이 옵션은 디스크를 안정적으로 읽을 수 있는지 시험하는 목적으로도 사용합니다. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2849"></a>5.4.2. 부팅 설정</h3></div></div></div>
+<p>문제가 생겨서 커널이 부팅 과정에서 멈추거나, 주변 장치를 인식하지 못하거나, 드라이브를 제대로 인식하지 못하거나 하는 경우, 먼저 부팅 파라미터가 <a class="xref" href="ch05s03.html" title="5.3. 부팅 파라미터">5.3절. “부팅 파라미터”</a>에 쓰여 있는 것처럼 제대로 되었는지 확인하십시오. </p>
+<p>장치의 펌웨어가 없어서 문제가 발생할 수도 있습니다. (<a class="xref" href="ch02s02.html" title="2.2. 펌웨어가 필요한 장치">2.2절. “펌웨어가 필요한 장치”</a> 및 <a class="xref" href="ch06s04.html" title="6.4. 없는 펌웨어 읽어들이기">6.4절. “없는 펌웨어 읽어들이기”</a> 참고.) </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2856"></a>5.4.3. 소프트웨어 음성 합성 장치</h3></div></div></div>
+<p>소프트웨어 음성 합성 장치가 동작하지 않으면, 대부분의 경우 사운드 장치의 문제입니다. 사운드 장치의 드라이버가 설치 프로그램에 들어있지 않거나, 아니면 믹서 중에 일반적이지 않은 이름의 채널이 있어서 묵음으로 설정된 경우입니다. 다음 명령의 결과를 포함해 버그 리포트를 보내 주십시오. 사운드가 동작하는 리눅스 시스템과 같은 컴퓨터에서(예를 들어 라이브 CD) 실행하십시오. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. 자주 발생하는 <span class="phrase">64-bit PC</span> 설치 문제</h3></div></div></div>
+<p>자주 발생하는 설치 문제중에 몇 개는 설치 프로그램에 부팅 파라미터를 넘기는 방법으로 해결할 수 있습니다. </p>
+<p>커널이 부팅할 때 화면에 괴상한 그림이 나온다면, 예를 들어 전부 하얀 색이 되거나 전부 검은 색이 되거나 가지가지 색의 픽셀 쓰레기가 나오거나 하면, 프레임버퍼 모드로 제대로 전환하지 못하는 문제 있는 비디오 카드가 붙어 있다는 뜻입니다. 그러면 <strong class="userinput"><code>vga=normal nomodeset</code></strong> 부팅 파라미터로 프레임버퍼 콘솔을 사용하지 않을 수 있습니다. 그러면 콘솔 기능의 한계 때문에 설치할 때 언어는 일부 언어만 사용할 수 있습니다. 자세한 방법은 <a class="xref" href="ch05s03.html" title="5.3. 부팅 파라미터">5.3절. “부팅 파라미터”</a> 부분을 참고하십시오. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2879"></a>5.4.4.1. PCMCIA 설정 단계에서 시스템 멈춤</h4></div></div></div>
+<p>Dell에서 제조한 아주 오래 전 노트북 모델은 PCMCIA 장치를 찾을 때 특정 하드웨어 주소에 접근하는 순간 멈춰 버립니다. 그 외의 노트북 모델도 비슷한 현상이 나타날 수 있습니다. 만약 그러한 문제가 발생하고 설치할 때 PCMCIA 기능이 필요없다면, <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong> 부팅 파라미터로 PCMCIA를 끌 수 있습니다. 설치를 마친 다음에 PCMCIA를 설정해서 문제가 발생하는 구간을 제외할 수 있습니다. </p>
+<p>다른 방법으로 전문가 모드에서 설치 프로그램을 부팅할 수 있습니다. 그 다음에 하드웨어에 필요한 리소스 범위를 입력합니다. 예를 들어, 위에서 말한 Dell 노트북을 가지고 있다면, 여기서 <strong class="userinput"><code>exclude port 0x800-0x8ff</code></strong>라고 입력합니다. <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">System resource settings section of the PCMCIA HOWTO</a>에 보면 리소스 범위 관련 옵션의 목록이 있습니다. 설치 프로그램에서 이 값을 입력할 때, 쉼표를 쓰지 않는다는 것에 유의하십시오. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. 커널 시작 메시지 해석하기</h3></div></div></div>
+<p>부팅 과정에서, <code class="computeroutput">can't find <em class="replaceable"><code>something</code></em></code> 혹은 <code class="computeroutput"><em class="replaceable"><code>something</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>something</code></em></code>, 아니면 심지어는 <code class="computeroutput">this driver release depends on <em class="replaceable"><code>something</code></em></code> 형식의 메시지를 볼 수 있습니다. 이러한 메시지 대부분은 아무런 문제를 일으키지 않습니다. 설치 시스템은 여러 가지 주변 장치가 달린 컴퓨터에서 동작하도록 만들어졌기 때문에 이런 메시지가 나옵니다. 당연히 그 어떤 컴퓨터도 모든 종류의 주변 장치를 가진 컴퓨터는 없으므로, 운영체제에서는 찾으려는 주변 장치가 없을 때 이러한 메시지를 내보냅니다. 또 시스템이 일시적으로 멈추는 현상이 일어날 수도 있습니다. 이러한 현상은 어떤 장치가 응답할 때까지 기다리는데, 그 장치가 없을 때 발생합니다. 이런 시간이 너무 오래 걸린다고 생각한다면, 나중에 직접 설정한 커널을 사용할 수 있습니다<span class="phrase">(<a class="xref" href="ch08s05.html" title="8.5. 새 커널 컴파일하기">8.5절. “새 커널 컴파일하기”</a> 참고)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. 설치 문제 보고하기</h3></div></div></div>
+<p>최초 부팅 단계를 지나갔지만 설치를 마치지 못했다면, <span class="guimenuitem">디버깅 기록 저장</span> 메뉴가 도움이 될 수도 있습니다. 이 메뉴를 이용하면 시스템 오류 로그와 설정 정보를 설치 프로그램에서 저장 미디어로 복사하거나, 웹브라우저를 이용해 다운로드할 수 있습니다. 이 정보는 무엇이 잘못되었는지 및 어떻게 고치는지에 대한 단서가 들어 있습니다. 버그를 보고할 때 이 정보를 버그 보고에 첨부해 주십시오. </p>
+<p>그 외의 설치 메시지는 설치할 때 <code class="filename">/var/log/</code>에 들어 있고, 설치된 시스템으로 부팅한 다음에는 <code class="filename">/var/log/installer/</code>에 들어 있습니다. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. 설치 보고 제출</h3></div></div></div>
+<p>그래도 문제가 있다면, 설치 리포트를 보내 주십시오. (가능하면 영어로 부탁합니다.) 설치가 성공했을 경우에도 설치 리포트를 보내 주시는 게 좋습니다. 그래야 사용자가 어떤 하드웨어 설정을 사용하는지에 대한 정보를 많이 얻을 수 있습니다. </p>
+<p>주의: 설치 보고서는 데비안 버그 추적 시스템(BTS)에 공개되며, 공개 메일링 리스트에도 전달됩니다. 공개해도 상관 없는 전자메일 주소를 사용하도록 하십시오. </p>
+<p>작동하고 있는 데비안 시스템이 있다면, 설치 리포트를 보내는 가장 쉬운 방법은 다음과 같습니다. <code class="classname">installation-report </code>와 <code class="classname">reportbug</code>패키지를 설치(<span class="command"><strong>apt install installation-report reportbug </strong></span>)하고 ,<a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. 시스템 외부에 전자메일 보내기">8.4.2절. “시스템 외부에 전자메일 보내기”</a>에서 설명한대로 <code class="classname">reportbug</code>를 설정하여 <span class="command"><strong>reportbug installation-reports</strong></span>를 실행하십시오. </p>
+<p>다른 방법으로, 설치 보고서를 작성하실 때 아래 형식을 이용하시고, <code class="classname">installation-reports"</code> 패키지에 대한 버그를 <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>로 메일을 보내 제출해 주십시오.  </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;설치 프로그램을 어떻게 부팅했는지? CD/DVD? USB 메모리? 네트워크?&gt;
+Image version: &lt;설치 이미지를 받은 URL을 쓰는 게 가장 좋습니다&gt;
+Date: &lt;설치한 날짜 및 시각&gt;
+
+Machine: &lt;컴퓨터 설명(예, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &gt;df -Tl 명령어의 결과. 파티션 테이블의 raw 정보가 좋습니다.&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+유용하다고 생각하는 모든 설치 로그 파일을 이 보고서에 첨부하십시오. (로그
+파일은 설치 시스템의 /var/log/ 안에 있고, 설치한 시스템에서는
+/var/log/installer 아래에 들어 있습니다.) 크기가 큰 파일은 gzip으로
+압축하십시오.
+
+&lt;설치 과정을 문장으로 설명하십시오. 그리고 처음에 설치했을 때 
+      들었던 생각, 평가, 아이디어 따위도 써 주십시오.&gt;
+</pre></div>
+<p> 버그 보고서에 문제가 무엇인지 설명하시고, 커널이 멈춘 경우에 마지막으로 볼 수 있는 커널 메시지를 넣으십시오. 문제가 발생할 때 어떤 과정을 거쳤는지 설명하십시오. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="이전"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="위로"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="다음"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. 부팅 파라미터 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="처음으로"></a></td>
+<td width="40%" align="right" valign="top"> 6장. 데비안 설치 프로그램 사용하기</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

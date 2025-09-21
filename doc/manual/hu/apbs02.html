@@ -1,0 +1,274 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. Előírás használata</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apb.html" title="B. függelék - Automata telepítés előírással">
+<link rel="prev" href="apbs01.html" title="B.1. Bemutatás">
+<link rel="next" href="apbs03.html" title="B.3. Elő-beállító fájl létrehozása">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. Előírás használata</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">B. függelék - Automata telepítés előírással</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. Előírás használata</h2></div></div></div>
+<p>Először létre kell hoznod egy előkonfigurációs fájlt, és el kell helyezned abban a könyvtárban, ahonnan használni szeretnéd. Az előkonfigurációs fájl létrehozása később kerül bemutatásra ebben a függelékben. A fájl megfelelő helyre tétele viszonylag egyszerű hálózati előzetes konfigurálás esetén vagy ha a fájlt egy USB-meghajtóról szeretnéd beolvasni. Ha a fájlt egy telepítési ISO képfájlba szeretnéd beilleszteni, újra kell készítened a képet. Az, hogy hogyan kerül az előkonfigurációs fájl az initrd-be, ezen dokumentum hatókörén kívül esik; kérlek, tekintsd meg a <code class="classname">debian-installer</code> fejlesztői dokumentációját. </p>
+<p>Egy példa előbeállító fájl, mely sajátod alapjául szolgálhat elérhető innen: <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. E fájl e függelék beállító töredékeire épül. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. Az előbeállító fájl betöltése</h3></div></div></div>
+<p>Initrd előírás használatakor csak el kell helyezni a <code class="filename">preseed.cfg</code> fájlt az initrd gyökér könyvtárába. A telepítő önműködően betölti e fájlt, ha létezik. </p>
+<p>A többi előzetes konfigurációs módszerhez meg kell mondanod a telepítőnek, hogy melyik fájlt használja, amikor elindítod. Ezt általában úgy teheted meg, hogy egy indítási paramétert adsz át a kernelnek, akár manuálisan indításkor, akár a bootloader konfigurációs fájl szerkesztésével <span class="phrase">(pl. <code class="filename">syslinux.cfg</code>), és hozzáadva a paramétert a kernelhez tartozó append sor(ok) végére.</span> </p>
+<p>Ha megadod az előkonfigurációs fájlt a bootloader konfigurációjában, módosíthatod a beállítást úgy, hogy ne kelljen entert nyomnod a telepítő elindításához. <span class="phrase">A syslinux esetén ez azt jelenti, hogy az időzítést <code class="literal">1</code> értékre kell állítania a <code class="filename">syslinux.cfg</code> fájlban.</span> </p>
+<p>A helyes előbeállító fájl betöltéséhez megadható hozzá egy ellenőrző összeg. Jelenleg ez egy md5sum kell legyen, és ha nem egyezik, a telepítő elveti a fájlt. </p>
+<div class="informalexample"><pre class="screen">Indítási paraméterek megadása:
+
+- ha hálózatról bootolsz:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+- vagy
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- ha újramasterelt telepítési képről bootolsz:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- ha USB adathordozóról telepítesz (helyezd az előkonfigurációs fájlt az USB-meghajtó legfelső szintű könyvtárába):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>Figyelj arra, hogy a <code class="filename">preseed/url</code> rövidíthető <code class="filename">url</code>-re, a <code class="filename">preseed/file</code> pedig <code class="filename">file</code>-ra, és a <code class="filename">preseed/file/checksum</code> <code class="filename">preseed-md5</code>-re, amikor rendszerindítási paraméterként adod meg őket. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. Indító paraméterek használata kérdések előírt válaszára</h3></div></div></div>
+<p>Ha egy előbeállító fájl nem használható egyes lépésekhez, a telepítő akkor is teljesen automatizálható, mert az előíró értékek átadhatók paraméterként is a telepítő indításakor. </p>
+<p>Indító paraméterek teljes előírás nélkül is használhatók 1-1 kérdés megválaszolására. Pár hasznos példa erre a kézikönyv más részeiben. </p>
+<p>Ha egy értéket a <code class="classname">debian-installer</code> rendszeren belül szeretnél beállítani, egyszerűen add meg így: <strong class="userinput"><code><em class="replaceable"><code>elérési/út/a/változóhoz</code></em>=<em class="replaceable"><code>érték</code></em></code></strong>, a példákban szereplő preseed változók bármelyikére, ebben a függelékben. Ha az értéket a célrendszer csomagjainak konfigurálására használod, meg kell előznie a változót annak <em class="firstterm">tulajdonosa</em><a href="#ftn.id3995" class="footnote" name="id3995"><sup class="footnote">[19]</sup></a>, például így: <strong class="userinput"><code><em class="replaceable"><code>tulajdonos</code></em>:<em class="replaceable"><code>elérési/út/a/változóhoz</code></em>=<em class="replaceable"><code>érték</code></em></code></strong>. Ha nem adsz meg tulajdonost, akkor a változó értéke nem másolódik át a célrendszer debconf adatbázisába, így az adott csomag konfigurálása során nem kerül felhasználásra. </p>
+<p>Általában, ha így adsz meg egy kérdést előre, az azt jelenti, hogy a kérdést nem fogja a telepítő feltenni. Ha szeretnél egy konkrét alapértelmezett értéket beállítani egy kérdéshez, de mégis azt szeretnéd, hogy a kérdést feltegye, akkor a <span class="quote">„<span class="quote">=</span>”</span> operátor helyett használd a <span class="quote">„<span class="quote">?=</span>”</span>-t. Lásd még a(z) <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. Előírás használata alap értékek módosítására">B.5.2. szakasz - Előírás használata alap értékek módosítására</a> részt is. </p>
+<p>Megjegyzés: néhány változónak, amelyeket gyakran állítanak be a boot promptnál, rövidebb aliasa van. Ha van alias, akkor ebben a függelékben az alias szerepel a példákban a teljes változó helyett. Például a <code class="literal">preseed/url</code> változó aliasaként <code class="literal">url</code> szerepel. Egy másik példa a <code class="literal">tasks</code> alias, amely a <code class="literal">tasksel:tasksel/first</code>-re fordítódik. </p>
+<p>A <span class="quote">„<span class="quote">---</span>”</span> az indító lehetőségeknél különleges értelmű. Az utolsó <span class="quote">„<span class="quote">---</span>”</span> utáni kernel paraméterek a telepített rendszer boot-betöltő beállításaiba kerülnek (ha a telepítő támogatja az adott boot-betöltőhöz). A telepítő önműködően kiszűri az általa ismert lehetőségeket (például az előkonfigurációs lehetőségeket). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>A jelenlegi linux kernelek (2.6.9 és később) legfeljebb 32 parancssori és 32 környezeti opciót fogadnak a telepítő által alapban hozzáadott lehetőségekkel együtt. Ezt átlépve kernel pánik (összeomlás) következik. (Korábban e számok kisebbek voltak.) </p></td></tr>
+</table></div>
+<p>A legtöbb telepítésnél a boot-betöltő beállító fájlban lévő sok alap lehetőség, például a <code class="literal">vga=normal</code>, biztonsággal eltávolítható, mely lehetővé teszi több lehetőség átadását az előírásnak. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Szóköz karaktert tartalmazó értékek még idézőjel segítségével sem mindig adhatók meg. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. Automata mód</h3></div></div></div>
+<p>A Debian telepítőnek több olyan funkciója van, amelyek lehetővé teszik, hogy viszonylag egyszerű parancssorok a boot promptnál tetszőlegesen összetett, testreszabott automatikus telepítéseket eredményezzenek. </p>
+<p>Ezt úgy lehet bekapcsolni, hogy a rendszerindításnál az <code class="literal">Automated install</code> lehetőséget választod, amit bizonyos architektúráknál vagy indítási módoknál <code class="literal">auto</code>-nak is hívnak. Ebben a részben az <code class="literal">auto</code> tehát nem egy paramétert jelent, hanem azt, hogy ezt az indítási lehetőséget választod, és a következő rendszerindítási paramétereket adod meg az indítási képernyőn. <span class="phrase">Lásd a <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Az Indítóképernyő">5.1.5. szakasz - Az Indítóképernyő</a> részt, ha szeretnéd megtudni, hogyan adhatsz meg rendszerindítási paramétereket.</span> </p>
+<p>Íme az indító jelnél használható pár példa: </p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> Egy DHCP kiszolgáló megadja egy DNS által feloldható <code class="literal">auto-szerver</code> helyét, akár egy a DHCP által adott helyi tartomány hozzáadása után. Ha az <code class="literal">example.com</code> volt a tartomány, és jó a DHCP beállítás, az előíró fájl helye: <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code>. </p>
+<p>Az url utolsó része (<code class="literal">d-i/trixie/./preseed.cfg</code>) innen jön: <code class="literal">auto-install/defaultroot</code>. Alapban tartalmazza az <code class="literal">trixie</code> könyvtárat, e felépítés később lehetővé teszi más kódnevek megadását. A <code class="literal">/./</code> egy gyökeret jelöl, melyhez az al-útvonalak köthetők (a preseed/include és preseed/run esetében használatos). Így a fájlok teljes URL leírásokkal, / jellel kezdődő útvonalakkal, vagy a legutóbbi előíró fájlhoz viszonyított relatív útvonalakkal is megadhatók. Így sokkal hordozhatóbb szkriptek írhatók, melyek hierarchiája törés nélkül áthelyezhető, például egy web-szerverről fájlokat másolva egy USB tárra. E példában, ha az előíró fájl a <code class="literal">preseed/run</code> értékéül ezt adja: <code class="literal">/scripts/late_command.sh</code>, a fájl innen kerül letöltésre: <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code>. </p>
+<p>Ha nincs helyi DHCP vagy DNS, vagy nem akarod az alap útvonalat használni a <code class="filename">preseed.cfg</code> fájlra, lehetőség van egy url megadására, mely <code class="literal">/./</code> elem nélkül az útvonal elejére kerül (ami a 3. <code class="literal">/</code> az URL szerkezetében). Itt egy helyi hálózat minimális támogatását igénylő példa: </p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/útvonal/az/előíró.fájlomhoz</code></em>
+</pre></div>
+<p> Így működik: </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>ha az URL nem tartalmaz protokollt, http kerül kiválasztásra, </p></li>
+<li class="listitem"><p>ha a gépnév szakaszban nincs pont, a DHCP által adott tartomány kerül hozzáadásra, és </p></li>
+<li class="listitem"><p>Ha egyetlen <code class="literal">/</code> jel sem szerepel a gépnév után, akkor az alap útvonal kerül hozzáadásra. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Az url megadásán túl, megadhatsz beállításokat, melyek nem hatnak közvetlenül a <code class="classname">debian-installer</code> viselkedésére, de átadhatók szkripteknek a <code class="literal">preseed/run</code> használatával a betöltött előíró fájlban. Jelenleg, ennek egyetlen példája az <code class="literal">auto-install/classes</code>, melyre egy álnév a <code class="literal">classes</code>. Példa:</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> Az osztályok például leírhatják a telepítendő rendszer típusát vagy a helyi beállítást. </p>
+<p>Természetesen ez az elképzelés kiterjeszthető, és erre igen jó az auto-install név-hely. Például így: <code class="literal">auto-install/style</code>, melyet később szkriptjeidben használsz. Ha ezt szükségesnek érzed, írj a <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> listára, így elkerülhetjük a név-hely ütközéseket és talán adhatunk egy álnevet a szükséges paraméternek. </p>
+<p>Az <code class="literal">auto</code> boot választás még nincs minden architektúrára definiálva. Ugyanazt a hatást érheted el, ha egyszerűen hozzáadod a két paramétert <code class="literal">auto=true priority=critical</code> a kernel parancssorához. Az <code class="literal">auto</code> kernel paraméter az <code class="literal">auto-install/enable</code> aliasa, és ha <code class="literal">true</code>-ra állítod, akkor késlelteti a nyelvi és billentyűzetkérdéseket, amíg lehetőség nem nyílik ezek előzetes megválaszolására, míg a <code class="literal">priority</code> a <code class="literal">debconf/priority</code> aliasa, és ha <code class="literal">critical</code>-ra állítod, akkor megakadályozza, hogy alacsonyabb prioritású kérdéseket tegyenek fel. </p>
+<p>Amikor egy automatikus telepítést választasz anélkül, hogy előre beállított konfigurációt is megadnál, a rendszer kérni fogja, hogy adj meg egy előbeállítási helyet. Alternatívaként, ha egy előre beállított konfiguráció már meg van adva, akkor ez a kérés általában elnyomásra kerül, hogy lehetővé tegye a teljesen interaktív telepítést. Azonban ha az a cél, hogy alapértelmezéseket módosíts előbeállításokkal egy <code class="literal">preseed.cfg</code> fájl használatával az initrd-ben, akkor a végeredménynek úgy kellene viselkednie, mintha még nem lett volna előbeállítás megadva, még akkor is, ha már meg van. Ebben az esetben a debconf változót <code class="literal">auto-install/cloak_initrd_preseed</code> beállíthatod <code class="literal">true</code> értékre (például az initrd <code class="literal">preseed.cfg</code> fájljában), hogy elérd a kívánt viselkedést. </p>
+<p>További hasznos lehetőségek lehetnek a telepítés önműködővé tételére DHCP esetén: <code class="literal">interface=auto netcfg/dhcp_timeout=60</code>, melyek a gépet az 1. elérhető NIC használatára utasítják és türelmesebbé teszik egy válaszra DHCP kérésükhöz. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tipp]" src="images/tip.png"></td>
+<th align="left">Tipp</th>
+</tr>
+<tr><td align="left" valign="top"><p>E keretrendszer használatáról átfogó példa található szkriptekkel és osztályokkal a <a class="ulink" href="http://hands.com/d-i/" target="_top">fejlesztő weblapján</a>. Az elérhető példák sok más az elő-beállítás használatával elérhető szép hatást is mutatnak. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. Az előírásnál használható álnevek</h3></div></div></div>
+<p>A következő aliasok hasznosak lehetnek, ha (automata módban) előzetes megválaszolást használsz. Fontos megjegyezni, hogy ezek egyszerűen rövid aliasok a kérdésnevekhez, és mindig meg kell adnod egy értéket is: például <code class="literal">auto=true</code> vagy <code class="literal">interface=eth0</code>. </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>fájl</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>asztal</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. Indítási prompt előzetes konfigurálásának példái</h3></div></div></div>
+<p>Íme néhány példa arra, hogyan nézhet ki az indítási prompt (ezt a saját igényeidhez kell igazítanod<span class="phrase">; lásd még <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Az Indítóképernyő">5.1.5. szakasz - Az Indítóképernyő</a></span>). </p>
+<div class="informalexample"><pre class="screen"># Francia nyelv és Franciaország mint ország beállításához:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# Angol nyelv és Németország mint ország beállításához, német billentyűzetkiosztással:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# A MATE asztali környezet telepítéséhez:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# A web-szerver feladat telepítéséhez:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. Egy DHCP kiszolgáló használata előbeállító fájlok megadására</h3></div></div></div>
+<p>DHCP használatával megadható egy hálózatról letöltendő előbeállító fájl is. A DHCP lehetővé teszi egy fájlnév megadását. Simán ez egy netboot fájl, de ha úgy tűnik: URL, akkor a hálózati előírást támogató telepítő média letölti és előbeállító fájlként használja a fájlt. Itt egy példa, hogyan állíts be ilyet az ISC DHCP kiszolgáló 3. verziójának (a isc-dhcp-server Debian csomag) dhcpd.conf fájljában. </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>A fenti példa a magukat <span class="quote">„<span class="quote">d-i</span>”</span> néven azonosító DHCP ügyfelekre korlátozza a fájlnevet, így ez nem hat a sima DHCP ügyfelekre csak a telepítőre. Egy idézőjelben megadott szövegben csak egy gép is megadható, a hálózaton lévő össze telepítés előírásának elkerülésére. </p>
+<p>A DHCP előírás egy jó módja csak a hálózatra vonatkozó értékek előírása, mind például a Debian tükör. Így a hálózat automatikusan egy jó tükröt kap, emellett a telepítés interaktívan végezhető. A Debian telepítés teljes automatizálását DHCP előírással figyelmesen kell végezni. </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3995" class="footnote"><p><a href="#id3995" class="para"><sup class="para">[19] </sup></a> Egy debconf változó (vagy sablon) tulajdonosa általában az a csomag, amely a megfelelő debconf sablont tartalmazza. Az installáló saját változóinál a tulajdonos neve <span class="quote">„<span class="quote">d-i</span>”</span>. A sablonoknak és változóknak több tulajdonosa is lehet, ami segít eldönteni, hogy eltávolíthatók-e a debconf adatbázisból a csomag törlésekor. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. Bemutatás </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> B.3. Elő-beállító fájl létrehozása</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

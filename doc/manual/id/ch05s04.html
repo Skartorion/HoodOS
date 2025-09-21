@@ -1,0 +1,237 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.4. Penelusuran Masalah Proses Instalasi</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Bab 5. Mem-boot Sistem Instalasi">
+<link rel="prev" href="ch05s03.html" title="5.3. Parameter Boot">
+<link rel="next" href="ch06.html" title="Bab 6. Menggunakan Pemasang Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.4. Penelusuran Masalah Proses Instalasi</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 5. Mem-boot Sistem Instalasi</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-troubleshooting"></a>5.4. Penelusuran Masalah Proses Instalasi</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="unreliable-cd"></a>5.4.1. Keandalan media optik</h3></div></div></div>
+<p>Terkadang, terutama dengan drive yang lebih lama, pemasang mungkin gagal mem-boot dari cakram optik. Pemasang juga bisa — bahkan setelah boot berhasil dari cakram tersebut — gagal untuk mengenali cakram atau mengembalikan kesalahan saat membaca dari itu selama instalasi. </p>
+<p>Ada banyak kemungkinan penyebab yang berbeda untuk masalah ini. Kami hanya dapat mencantumkan beberapa masalah umum dan memberikan saran umum tentang cara menanganinya. Sisanya terserah Anda. </p>
+<p>Ada dua hal yang sangat sederhana yang harus Anda coba terlebih dahulu. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Jika cakram tidak bisa boot, periksa apakah itu dimasukkan dengan benar dan tidak kotor. </p></li>
+<li class="listitem"><p>Jika pemasang gagal mengenali cakram, coba jalankan opsi <span class="guimenuitem">Deteksi dan kait media instalasi</span> untuk kedua kalinya. Beberapa masalah terkait DMA dengan drive CD-ROM yang sangat tua diketahui diselesaikan dengan cara ini. </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Jika ini tidak berhasil, maka coba saran di sub bagian di bawah ini. Sebagian besar, tetapi tidak semua, saran yang dibahas di sana berlaku untuk CD-ROM dan DVD. </p>
+<p>Jika Anda tidak bisa membuat instalasi bekerja dari cakram optik, cobalah salah satu metode instalasi lain yang tersedia. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2796"></a>5.4.1.1. Masalah umum</h4></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Beberapa drive CD-ROM yang lebih tua tidak mendukung pembacaan dari cakram yang dibakar dengan kecepatan tinggi menggunakan penulis CD modern. </p></li>
+<li class="listitem"><p>Beberapa drive CD-ROM yang sangat tua tidak berfungsi dengan benar jika <span class="quote">“<span class="quote">direct memory access</span>”</span> (DMA) diaktifkan untuk mereka. </p></li>
+</ul></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2804"></a>5.4.1.2. Cara menyelidiki dan mungkin memecahkan masalah</h4></div></div></div>
+<p>Jika cakram optik gagal di-boot, coba saran yang tercantum di bawah ini. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Periksa apakah BIOS/UEFI Anda benar-benar mendukung boot dari cakram optik (hanya menjadi masalah untuk sistem yang sangat lama) dan bahwa boot dari media tersebut diaktifkan di BIOS/UEFI. </p></li>
+<li class="listitem">
+<p>Jika Anda mengunduh image iso, periksalah apakah md5sum image itu cocok dengan yang tercantum untuk image dalam berkas <code class="filename">MD5SUMS</code> yang harus ada di lokasi yang sama dengan tempat Anda mengunduh image. </p>
+<div class="informalexample"><pre class="screen">
+$ md5sum <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+a20391b12f7ff22ef705cee4059c6b92  <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>
+</pre></div>
+<p> Selanjutnya, periksa apakah md5sum dari cakram yang dibakar juga cocok. Perintah berikut harus berfungsi. Ini menggunakan ukuran image untuk membaca jumlah byte yang benar dari cakram. </p>
+<div class="informalexample"><pre class="screen">$ dd if=/dev/cdrom | \
+&gt; head -c `stat --format=%s <em class="replaceable"><code>debian-testing-i386-netinst.iso</code></em>` | \
+&gt; md5sum
+a20391b12f7ff22ef705cee4059c6b92  -
+262668+0 records in
+262668+0 records out
+134486016 bytes (134 MB) copied, 97.474 seconds, 1.4 MB/s
+</pre></div>
+<p>
+
+  </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Jika, setelah pemasang berhasil di-boot, cakram tidak terdeteksi, kadang-kadang hanya mencoba lagi dapat memecahkan masalah. Jika Anda memiliki lebih dari satu drive optik, coba ubah cakram ke drive lainnya. Jika itu tidak berfungsi atau jika cakram dikenali tetapi ada kesalahan saat membacanya, coba saran yang tercantum di bawah ini. Beberapa pengetahuan dasar tentang Linux diperlukan untuk ini. Untuk menjalankan salah satu perintah, Anda harus terlebih dahulu beralih ke konsol virtual kedua (VT2) dan mengaktifkan shell di sana. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Beralih ke VT4 atau melihat konten <code class="filename">/var/log/syslog</code> (gunakan <span class="command"><strong>nano</strong></span> sebagai editor) untuk memeriksa pesan kesalahan tertentu. Setelah itu, periksa juga keluaran dari <span class="command"><strong>dmesg</strong></span>. </p></li>
+<li class="listitem">
+<p>Periksa keluaran dari <span class="command"><strong>dmesg</strong></span> jika drive optik Anda dikenali. Anda akan melihat sesuatu seperti (baris tidak harus berturutan): </p>
+<div class="informalexample"><pre class="screen">
+ata1.00: ATAPI: MATSHITADVD-RAM UJ-822S, 1.61, max UDMA/33
+ata1.00: configured for UDMA/33
+scsi 0:0:0:0: CD-ROM            MATSHITA DVD-RAM UJ-822S  1.61 PQ: 0 ANSI: 5
+sr0: scsi3-mmc drive: 24x/24x writer dvd-ram cd/rw xa/form2 cdda tray
+cdrom: Uniform CD-ROM driver Revision: 3.20
+</pre></div>
+<p> Jika Anda tidak melihat sesuatu seperti itu, kemungkinan pengontrol yang terhubung dengan drive Anda tidak dikenali atau mungkin tidak didukung sama sekali. Jika Anda tahu driver apa yang diperlukan untuk pengontrol, Anda dapat mencoba memuatnya secara manual menggunakan <span class="command"><strong>modprobe</strong></span>. </p>
+</li>
+<li class="listitem"><p>Periksa apakah ada simpul perangkat untuk drive optik Anda di bawah <code class="filename">/dev/</code>. Pada contoh di atas, ini akan menjadi <code class="filename">/dev/sr0</code>. Juga harus ada <code class="filename">/dev/cdrom</code>. </p></li>
+<li class="listitem">
+<p>Gunakan perintah <span class="command"><strong>mount</strong></span> untuk memeriksa apakah cakram optik sudah dikait; jika tidak, coba pasang secara manual: </p>
+<div class="informalexample"><pre class="screen">
+$ mount /dev/<em class="replaceable"><code>hdc</code></em> /cdrom
+</pre></div>
+<p> Periksa apakah ada pesan kesalahan setelah perintah itu. </p>
+</li>
+<li class="listitem">
+<p>Periksa apakah DMA saat ini diaktifkan: </p>
+<div class="informalexample"><pre class="screen">
+$ cd /proc/<em class="replaceable"><code>ide</code></em>/<em class="replaceable"><code>hdc</code></em>
+$ grep using_dma settings
+using_dma      1       0       1       rw
+</pre></div>
+<p> Suatu <span class="quote">“<span class="quote">1</span>”</span> di kolom pertama setelah <code class="literal">using_dma</code> berarti diaktifkan. Jika benar, coba nonaktifkan: </p>
+<div class="informalexample"><pre class="screen">
+$ echo -n "using_dma:0" &gt;settings
+</pre></div>
+<p> Pastikan Anda berada di direktori untuk perangkat yang sesuai dengan drive optik Anda. </p>
+</li>
+<li class="listitem"><p>Jika ada masalah selama instalasi, coba periksa integritas media instalasi menggunakan opsi di dekat bagian bawah menu utama pemasang. Opsi ini juga dapat digunakan sebagai tes umum jika cakram dapat dibaca dengan andal. </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2856"></a>5.4.2. Konfigurasi Boot</h3></div></div></div>
+<p>Jika Anda memiliki masalah dan kernel hang selama proses boot, tidak mengenali periferal yang sebenarnya Anda miliki, atau drive tidak dikenali dengan benar, hal pertama yang harus diperiksa adalah parameter boot, seperti yang dibahas dalam <a class="xref" href="ch05s03.html" title="5.3. Parameter Boot">Bagian 5.3, “Parameter Boot”</a>. </p>
+<p>Dalam beberapa kasus, malfungsi dapat disebabkan oleh firmware perangkat yang kurang (lihat <a class="xref" href="ch02s02.html" title="2.2. Perangkat yang Membutuhkan Firmware">Bagian 2.2, “Perangkat yang Membutuhkan Firmware”</a> dan <a class="xref" href="ch06s04.html" title="6.4. Memuat Firmware yang Kurang">Bagian 6.4, “Memuat Firmware yang Kurang”</a>). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2863"></a>5.4.3. Sintesis Ucapan Perangkat Lunak</h3></div></div></div>
+<p>Jika sintesis ucapan perangkat lunak tidak berfungsi, kemungkinan besar ada masalah dengan papan suara Anda, biasanya karena driver untuk itu tidak termasuk dalam pemasang, atau karena memiliki nama tingkat mixer yang tidak biasa yang diatur untuk dibisukan secara baku. Dengan demikian Anda harus mengirimkan laporan bug yang mencakup keluaran dari perintah berikut, dijalankan pada mesin yang sama dari sistem Linux yang diketahui memiliki suara bekerja (misalnya, live CD). </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>dmesg</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lspci</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>lsmod</code></strong></p></li>
+<li class="listitem"><p><strong class="userinput"><code>amixer</code></strong></p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="i386-boot-problems"></a>5.4.4. Masalah Instalasi <span class="phrase">64-bit PC</span> Umum</h3></div></div></div>
+<p>Ada beberapa masalah instalasi umum yang dapat diselesaikan atau dihindari dengan meneruskan parameter boot tertentu ke pemasang. </p>
+<p>Jika layar Anda mulai menampilkan gambar aneh saat kernel boot, misalnya. putih bersih, hitam murni, atau sampah piksel berwarna, sistem Anda mungkin berisi kartu video bermasalah yang tidak beralih ke mode framebuffer dengan benar. Kemudian Anda dapat menggunakan parameter boot <strong class="userinput"><code>vga=normal nomodeset</code></strong> untuk menonaktifkan konsol framebuffer. Hanya set bahasa yang dikurangi yang akan tersedia selama instalasi karena fitur konsol yang terbatas. Lihat <a class="xref" href="ch05s03.html" title="5.3. Parameter Boot">Bagian 5.3, “Parameter Boot”</a> untuk detailnya. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2886"></a>5.4.4.1. Sistem Membeku Selama Fase Konfigurasi PCMCIA</h4></div></div></div>
+<p>Beberapa model laptop yang sangat tua yang diproduksi oleh Dell diketahui crash ketika deteksi perangkat PCMCIA mencoba mengakses beberapa alamat perangkat keras. Laptop lain mungkin menampilkan masalah serupa. Jika Anda mengalami masalah seperti itu dan Anda tidak memerlukan dukungan PCMCIA selama instalasi, Anda dapat menonaktifkan PCMCIA menggunakan parameter boot <strong class="userinput"><code>hw-detect/start_pcmcia=false</code></strong>. Anda kemudian dapat mengonfigurasi PCMCIA setelah instalasi selesai dan mengecualikan rentang sumber daya yang menyebabkan masalah. </p>
+<p>Atau, Anda dapat mem-boot penginstal dalam mode ahli. Anda kemudian akan diminta untuk memasukkan opsi rentang sumber daya yang dibutuhkan perangkat keras Anda. Misalnya, jika Anda memiliki salah satu laptop Dell yang disebutkan di atas, Anda harus memasukkan <strong class="userinput"><code>port 0x800-0x8ff</code></strong> di sini. Ada juga daftar beberapa opsi rentang sumber daya umum di <a class="ulink" href="http://pcmcia-cs.sourceforge.net/ftp/doc/PCMCIA-HOWTO-1.html#ss1.12" target="_top">Bagian pengaturan sumber daya sistem dari PCMCIA HOWTO</a>. Perhatikan bahwa Anda harus menghilangkan koma, jika ada, ketika Anda memasukkan nilai ini di penginstal. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="kernel-msgs"></a>5.4.5. Menginterpretasikan Pesan Awal Mula Kernel</h3></div></div></div>
+<p>Selama urutan boot, Anda mungkin melihat banyak pesan dalam bentuk <code class="computeroutput">can't find <em class="replaceable"><code>sesuatu</code></em></code>, atau <code class="computeroutput"><em class="replaceable"><code>sesuatu yang</code></em> not present</code>, <code class="computeroutput">can't initialize <em class="replaceable"><code>sesuatu</code></em></code>, atau bahkan <code class="computeroutput">this driver release depends on <em class="replaceable"><code>sesuatu</code></em></code>. Sebagian besar pesan ini tidak berbahaya. Anda melihatnya karena kernel untuk sistem instalasi dibangun untuk berjalan pada komputer dengan banyak perangkat periferal yang berbeda. Jelas, tidak ada satu komputer pun yang akan memiliki setiap perangkat periferal yang mungkin, sehingga sistem operasi dapat mengeluarkan beberapa keluhan saat mencari periferal yang tidak Anda miliki. Anda mungkin juga melihat sistem berhenti sejenak. Ini terjadi ketika sedang menunggu perangkat merespons, dan perangkat itu tidak ada di sistem Anda. Jika Anda menemukan waktu yang diperlukan untuk mem-boot sistem terlalu lama dan tidak dapat diterima, Anda dapat membuat kernel ubahan nanti <span class="phrase">(lihat <a class="xref" href="ch08s05.html" title="8.5. Mengkompilasi Kernel Baru">Bagian 8.5, “Mengkompilasi Kernel Baru”</a>)</span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="problem-report"></a>5.4.6. Melaporkan Masalah Instalasi</h3></div></div></div>
+<p>Jika Anda melewati fase boot awal tetapi tidak dapat menyelesaikan instalasi, opsi menu <span class="guimenuitem">Simpan log debug</span> mungkin akan membantu. Ini memungkinkan Anda menyimpan log kesalahan sistem dan informasi konfigurasi dari pemasang pada media penyimpanan, atau mengunduhnya menggunakan peramban web. Informasi ini dapat memberikan petunjuk tentang apa yang salah dan bagaimana memperbaikinya. Jika Anda mengirimkan laporan kutu, Anda mungkin ingin melampirkan informasi ini ke laporan kutu. </p>
+<p>Pesan instalasi terkait lainnya dapat ditemukan di <code class="filename">/var/log/</code> selama instalasi, dan <code class="filename">/var/log/installer/</code> setelah komputer di-boot ke dalam sistem yang dipasang. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="submit-bug"></a>5.4.7. Mengirimkan Laporan Instalasi</h3></div></div></div>
+<p>Jika Anda masih memiliki masalah, silakan kirimkan laporan instalasi (harap dalam bahasa Inggris, bila mungkin). Kami juga mendorong laporan instalasi untuk dikirim bahkan jika instalasi berhasil, sehingga kami bisa mendapatkan informasi sebanyak mungkin tentang jumlah konfigurasi perangkat keras terbesar. </p>
+<p>Perhatikan bahwa laporan instalasi Anda akan dipublikasikan di Debian Bug Tracking System (BTS) dan diteruskan ke milis publik. Pastikan Anda menggunakan alamat surel yang Anda tidak keberatan untuk dipublikasikan. </p>
+<p>Jika Anda memiliki sistem Debian yang berjalan, cara termudah untuk mengirim laporan instalasi adalah dengan memasang paket <code class="classname">installation-report</code> dan <code class="classname">reportbug</code> (<span class="command"><strong>apt install installation-report reportbug</strong></span>), mengonfigurasi <code class="classname">reportbug</code> seperti yang dijelaskan dalam <a class="xref" href="ch08s04.html#mail-outgoing" title="8.4.2. Mengirim Surel ke Luar Sistem">Bagian 8.4.2, “Mengirim Surel ke Luar Sistem”</a>, dan menjalankan perintah <span class="command"><strong>reportbug installation-reports</strong></span>. </p>
+<p>Atau Anda dapat menggunakan templat ini saat mengisi laporan instalasi, dan mengajukan laporan sebagai laporan bug terhadap paket pseudo <code class="classname">installation-reports</code>, dengan mengirimkannya ke <code class="email">&lt;<a class="email" href="mailto:submit@bugs.debian.org">submit@bugs.debian.org</a>&gt;</code>. </p>
+<div class="informalexample"><pre class="screen">
+Package: installation-reports
+
+Boot method: &lt;How did you boot the installer? CD/DVD? USB stick? Network?&gt;
+Image version: &lt;Full URL to image you downloaded is best&gt;
+Date: &lt;Date and time of the install&gt;
+
+Machine: &lt;Description of machine (eg, IBM Thinkpad R32)&gt;
+Processor:
+Memory:
+Partitions: &lt;df -Tl will do; the raw partition table is preferred&gt;
+
+Output of lspci -knn (or lspci -nn):
+
+Base System Installation Checklist:
+[O] = OK, [E] = Error (please elaborate below), [ ] = didn't try it
+
+Initial boot:           [ ]
+Detect network card:    [ ]
+Configure network:      [ ]
+Detect media:           [ ]
+Load installer modules: [ ]
+Detect hard drives:     [ ]
+Partition hard drives:  [ ]
+Install base system:    [ ]
+Clock/timezone setup:   [ ]
+User/password setup:    [ ]
+Install tasks:          [ ]
+Install boot loader:    [ ]
+Overall install:        [ ]
+
+Comments/Problems:
+
+&lt;Deskripsi dari instalasi, dalam uraian, dan sebarang pemikiran,
+komentar, dan ide yang ada punya dalam instalasi awal.&gt;
+
+Harap pastikan bahwa sebarang log instalasi yang Anda pikir akan
+berguna dilampirkan ke laporan ini. (Anda dapat temukan mereka
+dalam sistem pemasang di /var/log dan nanti pada sistem yang
+dipasang di bawah /var/log/installer. Harap kompresi berkas besar
+memakai gzip.
+
+</pre></div>
+<p> Dalam laporan kutu, uraikan apa masalahnya, termasuk pesan kernel terakhir yang nampak dalam kasus kernel hang. Uraikan langkah-langkah yang Anda lakukan yang menyebabkan sistem berada dalam keadaan bermasalah tersebut. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.3. Parameter Boot </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> Bab 6. Menggunakan Pemasang Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

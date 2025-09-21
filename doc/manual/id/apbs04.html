@@ -1,0 +1,673 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Isi berkas prakonfigurasi (untuk trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Lampiran B. Mengotomatiskan instalasi menggunakan preseed">
+<link rel="prev" href="apbs03.html" title="B.3. Membuat berkas prakonfigurasi">
+<link rel="next" href="apbs05.html" title="B.5. Opsi tingkat lanjut">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Isi berkas prakonfigurasi (untuk trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Lampiran B. Mengotomatiskan instalasi menggunakan preseed</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Isi berkas prakonfigurasi (untuk trixie)</h2></div></div></div>
+<p>Fragmen konfigurasi yang digunakan dalam lampiran ini juga tersedia sebagai contoh berkas prakonfigurasi dari <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Perhatikan bahwa contoh ini didasarkan pada instalasi bagi arsitektur Intel x86. Jika Anda memasang arsitektur yang berbeda, beberapa contoh (seperti pemilihan papan ketik dan instalasi bootloader) mungkin tidak relevan dan perlu diganti dengan pengaturan debconf yang sesuai bagi arsitektur Anda. </p>
+<p>Detail tentang bagaimana berbagai komponen Pemasang Debian benar-benar bekerja dapat ditemukan di <a class="xref" href="ch06s03.html" title="6.3. Menggunakan Komponen Individual">Bagian 6.3, “Menggunakan Komponen Individual”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Pelokalan</h3></div></div></div>
+<p>Selama instalasi normal, pertanyaan tentang pelokalan diajukan terlebih dahulu, sehingga nilai-nilai ini hanya dapat di-preseed melalui metode parameter boot initrd atau kernel. Mode otomatis (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modus otomatis">Bagian B.2.3, “Modus otomatis”</a>) mencakup pengaturan <code class="literal">auto-install/enable=true</code> (biasanya melalui alias preseed <code class="literal">auto</code>). Ini menunda pengajuan pertanyaan pelokalan, sehingga mereka dapat di-preseed dengan metode apa pun. </p>
+<p>Lokal dapat digunakan untuk menentukan bahasa dan negara dan dapat berupa kombinasi bahasa yang didukung oleh <code class="classname">debian-installer</code> dan negara yang dikenal. Jika kombinasi tidak membentuk lokal yang valid, pemasang akan secara otomatis memilih lokal yang valid untuk bahasa yang dipilih. Untuk menentukan lokal sebagai parameter boot, gunakan <strong class="userinput"><code>locale=<em class="replaceable"><code>en_US.UTF-8</code></em></code></strong>. </p>
+<p>Meskipun metode ini sangat mudah digunakan, metode ini tidak memungkinkan preseed dari semua kemungkinan kombinasi bahasa, negara, dan lokal<a href="#ftn.id4804" class="footnote" name="id4804"><sup class="footnote">[20]</sup></a>. Jadi sebagai alternatif nilai-nilai dapat di-preseed secara individual. Bahasa dan negara juga dapat ditentukan sebagai parameter boot. </p>
+<div class="informalexample"><pre class="screen"># Preseed hanya lokal menetapkan bahasa, negara, dan lokal.
+d-i debian-installer/locale string id_ID.UTF-8
+
+# Nilai-nilai juga dapat di-preseed secara individual untuk fleksibilitas
+# yang lebih besar.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string ID
+#d-i debian-installer/locale string en_GB.UTF-8
+# Secara opsional tentukan lokal tambahan yang akan dihasilkan.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, id_ID.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Konfigurasi papan ketik terdiri dari memilih peta tombol dan (untuk peta tombol non-latin) tombol sakelar untuk beralih antara peta tombol non-latin dan peta tombol AS. Hanya varian peta tombol dasar yang tersedia selama instalasi. Varian lanjutan hanya tersedia di sistem yang dipasang, melalui <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Pemilihan papan ketik.
+d-i keyboard-configuration/xkb-keymap select us
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Untuk melewati konfigurasi papan ketik, preseed <code class="classname">keymap</code> dengan <strong class="userinput"><code>skip-config</code></strong>. Ini akan mengakibatkan peta tombol kernel tetap aktif. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Sintesis wicara</h3></div></div></div>
+<p>Ketika memasang dengan sintesis perangkat lunak berbicara (mis. <code class="literal">speakup.synth=soft</code> diberikan pada baris perintah kernel), papan suara dan suara yang akan digunakan dapat di-preseed. </p>
+<p>Karena sintesis wicara dimulai sangat awal, ini hanya dapat di-preseed dari initrd atau baris perintah kernel. </p>
+<p>Preseed <code class="literal">espeakup/voice</code> juga memungkinkan untuk mengonfigurasi sistem yang dipasang dengan fitur aksesibilitas bicara. Ini berdampak bahkan jika sintesis wicara perangkat lunak tidak benar-benar diaktifkan di dalam pemasang. </p>
+<div class="informalexample"><pre class="screen"># Kartu ALSA mana yang akan dipakai untuk perangkat lunak berbicara.
+# Bisa berupa suatu angka dari 0, atau suatu ID seperti terlihat di
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Suara espeak-ng mana yang akan dipakai
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Konfigurasi jaringan</h3></div></div></div>
+<p>Tentu saja, preseed konfigurasi jaringan tidak akan berfungsi jika Anda memuat berkas prakonfigurasi dari jaringan. Tapi itu bagus ketika Anda mem-boot dari disk optik atau flash disk USB. Jika Anda memuat berkas prakonfigurasi dari jaringan, Anda dapat meneruskan parameter konfigurasi jaringan dengan menggunakan parameter boot kernel. </p>
+<p>Jika Anda perlu memilih antarmuka tertentu saat netboot sebelum memuat berkas prakonfigurasi dari jaringan, gunakan parameter boot seperti <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Meskipun preseed konfigurasi jaringan biasanya tidak dimungkinkan saat menggunakan preseed jaringan (menggunakan <span class="quote">“<span class="quote">preseed/url</span>”</span>), Anda dapat menggunakan hack berikut untuk mengatasinya, misalnya jika Anda ingin mengatur alamat statis untuk antarmuka jaringan. Hack memaksa konfigurasi jaringan untuk berjalan lagi setelah berkas prakonfigurasi dimuat dengan membuat skrip <span class="quote">“<span class="quote">preseed/run</span>”</span> yang berisi perintah berikut: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Variabel debconf berikut relevan untuk konfigurasi jaringan. </p>
+<div class="informalexample"><pre class="screen"># Nonaktifkan konfigurasi jaringan sepenuhnya. Ini berguna untuk
+# instalasi cdrom pada perangkat non-jaringan di mana pertanyaan jaringan,
+# peringatan, dan batas waktu yang lama adalah gangguan.
+#d-i netcfg/enable boolean false
+
+# netcfg akan memilih antarmuka yang memiliki link jika memungkinkan. Ini
+# membuatnya melewati menampilkan daftar jika ada lebih dari satu antarmuka.
+d-i netcfg/choose_interface select auto
+
+# Untuk memilih antarmuka tertentu sebagai gantinya:
+#d-i netcfg/choose_interface select eth1
+
+# Untuk mengatur batas waktu deteksi link lain (bakunya adalah 3 detik).
+# Nilai ditafsirkan sebagai detik.
+#d-i netcfg/link_wait_timeout string 10
+
+# Jika Anda memiliki server dhcp yang lambat dan pemasang kehabisan waktu
+# menunggu, ini mungkin berguna.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Konfigurasi jaringan otomatis adalah baku.
+# Jika Anda lebih suka mengonfigurasi jaringan secara manual, hapus komentar
+# baris ini dan konfigurasi jaringan statis di bawah ini.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Jika Anda ingin berkas prakonfigurasi bekerja pada sistem baik dengan dan
+# tanpa server dhcp, hapus komentar pada baris-baris ini dan konfigurasi
+# jaringan statis di bawah ini.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Konfigurasi jaringan statis.
+#
+# Contoh IPv4
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# Contoh IPv6
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Setiap nama host dan nama domain yang ditetapkan dari dhcp lebih diutamakan
+# daripada nilai yang ditetapkan di sini. Namun, menetapkan nilai masih mencegah
+# pertanyaan ditampilkan, bahkan jika nilai berasal dari dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# Jika Anda ingin memaksa nama host, terlepas dari apa yang server DHCP
+# kembalikan atau apa entri DNS terbalik untuk IP, hapus komentar
+# dan sesuaikan baris berikut.
+#d-i netcfg/hostname string somehost
+
+# Nonaktifkan dialog kunci WEP yang mengganggu itu.
+d-i netcfg/wireless_wep string
+# Nama host dhcp aneh yang digunakan beberapa ISP sebagai kata sandi.
+#d-i netcfg/dhcp_hostname string radish
+
+# Jika Anda ingin sepenuhnya menonaktifkan pencarian firmware (yaitu tidak
+# menggunakan berks firmware atau paket yang mungkin tersedia pada image instalasi):
+#d-i hw-detect/firmware-lookup string never
+
+# Jika firmware tidak bebas diperlukan untuk jaringan atau perangkat keras
+# lainnya, Anda dapat konfigurasikan pemasang untuk selalu mencoba memuatnya,
+# tanpa diminta. Atau ubah ke false untuk menonaktifkan bertanya.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Harap dicatat bahwa <span class="command"><strong>netcfg</strong></span> akan secara otomatis menentukan netmask jika <code class="classname">netcfg/get_netmask</code> tidak di-preseed. Dalam hal ini, variabel harus ditandai sebagai <code class="literal">seen</code> untuk instalasi otomatis. Demikian pula <span class="command"><strong>netcfg</strong></span> akan memilih alamat yang sesuai jika <code class="classname">netcfg/get_gateway</code> tidak disetel. Sebagai kasus khusus, Anda dapat mengatur <code class="classname">netcfg/get_gateway</code> ke <span class="quote">“<span class="quote">none</span>”</span> untuk menentukan bahwa tidak ada gateway yang harus digunakan. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Konsol jaringan</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Gunakan pengaturan berikut jika Anda ingin menggunakan komponen
+# network-console untuk instalasi jarak jauh melalui SSH. Ini hanya masuk akal
+# jika Anda bermaksud untuk melakukan sisa instalasi secara manual.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password iniG3mb0k
+#d-i network-console/password-again password iniG3mb0k
+</pre></div>
+<p>Informasi lebih lanjut terkait konsol jaringan dapat ditemukan di <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Instalasi melalui konsol jaringan">Bagian 6.3.10, “Instalasi melalui konsol jaringan”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Pengaturan cermin</h3></div></div></div>
+<p>Tergantung pada metode instalasi yang Anda gunakan, cermin dapat digunakan untuk mengunduh komponen tambahan dari pemasang, untuk memasang sistem dasar, dan untuk mengatur <code class="filename">/etc/apt/sources.list</code> bagi sistem yang dipasang. </p>
+<p>Parameter <code class="classname">mirror/suite</code> menentukan keluarga bagi sistem yang dipasang. </p>
+<p>Parameter <code class="classname">mirror/udeb/suite</code> menentukan keluarga untuk komponen tambahan bagi pemasang. Hanya berguna untuk mengatur ini jika komponen benar-benar diunduh melalui jaringan dan harus cocok dengan keluarga yang digunakan untuk membangun initrd bagi metode instalasi yang digunakan untuk instalasi. Biasanya pemasang akan secara otomatis menggunakan nilai yang benar dan seharusnya tidak perlu mengatur ini. </p>
+<div class="informalexample"><pre class="screen"># Protokol cermin:
+# Jika Anda memilih ftp, string mirror/country tidak perlu diatur.
+# Nilai baku untuk protokol cermin: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Keluarga yang akan dipasang.
+#d-i mirror/suite string testing
+# Keluarga yang akan digunakan untuk memuat komponen pemasang (opsional).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Penyiapan akun</h3></div></div></div>
+<p>Kata sandi untuk akun root dan nama serta kata sandi untuk akun pengguna reguler pertama dapat di-preseed. Untuk kata sandi, Anda dapat menggunakan teks polos atau <span class="emphasis"><em>hash</em></span> crypt(3). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ketahuilah bahwa kata sandi preseed tidak sepenuhnya aman karena semua orang yang memiliki akses ke berkas prakonfigurasi akan memiliki pengetahuan tentang kata sandi ini. Menyimpan kata sandi yang di-hash dianggap aman kecuali algoritma hash yang lemah seperti DES atau MD5 digunakan yang memungkinkan serangan brute force. Algoritma hash kata sandi yang disarankan adalah SHA-256 dan SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Lewati pembuatan akun root (akun pengguna normal akan dapat
+# menggunakan sudo).
+#d-i passwd/root-login boolean false
+# Atau, untuk melewati pembuatan akun pengguna normal.
+#d-i passwd/make-user boolean false
+
+# Kata sandi root, baik dalam teks polos
+#d-i passwd/root-password password r00tme
+#d-i passwd/root-password-again password r00tme
+# atau dienkripsi menggunakan hash crypt(3).
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Untuk membuat akun pengguna normal.
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Kata sandi pengguna normal, baik dalam teks polos
+#d-i passwd/user-password password insecure
+#d-i passwd/user-password-again password insecure
+# atau dienkripsi menggunakan hash crypt(3).
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Buat pengguna pertama dengan UID yang ditentukan, bukan baku.
+#d-i passwd/user-uid string 1010
+
+# Akun pengguna akan ditambahkan ke beberapa grup awal standar.
+# Untuk menimpa itu, gunakan ini.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>Variabel <code class="classname">passwd/root-password-crypted</code> dan <code class="classname">passwd/user-password-crypted</code> juga dapat di-preseed dengan <span class="quote">“<span class="quote">!</span>”</span> sebagai nilainya. Dalam hal ini, akun yang sesuai dinonaktifkan. Ini mungkin nyaman untuk akun root, asalkan tentu saja metode alternatif diatur agar memungkinkan aktivitas administratif atau login root (misalnya dengan menggunakan otentikasi kunci SSH atau <span class="command"><strong>sudo</strong></span>). </p>
+<p>Perintah berikut (tersedia dari paket <code class="classname">whois</code> ) dapat digunakan untuk menghasilkan hash crypt(3) berbasis SHA-512 untuk kata sandi: </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Penyiapan jam dan zona waktu</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Mengontrol apakah jam perangkat keras diatur ke UTC atau tidak.
+d-i clock-setup/utc boolean true
+
+# Anda dapat mengatur ini ke pengaturan yang valid untuk $TZ; lihat
+# isi dari /usr/share/zoneinfo/ untuk nilai yang valid.
+d-i time/zone string Asia/Jakarta
+
+# Mengontrol apakah akan menggunakan NTP untuk mengatur jam selama
+# instalasi
+d-i clock-setup/ntp boolean true
+# NTP server yang akan digunakan. Bakunya hampir selalu baik-baik
+# saja di sini.
+#d-i clock-setup/ntp-server string pool.ntp.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Pemartisian</h3></div></div></div>
+<p>Menggunakan preseed untuk mempartisi hard disk terbatas pada apa yang didukung oleh <code class="classname">partman-auto</code>. Anda dapat memilih untuk mempartisi ruang kosong yang ada pada disk atau seluruh disk. Tata letak disk dapat ditentukan dengan menggunakan resep yang telah ditentukan, resep khusus dari berkas resep, atau resep yang termasuk dalam berkas prakonfigurasi. </p>
+<p>Preseed pengaturan partisi lanjutan menggunakan RAID, LVM, dan enkripsi didukung, tetapi tidak dengan fleksibilitas penuh yang mungkin saat mempartisi selama instalasi non-preseed. </p>
+<p>Contoh di bawah ini hanya memberikan informasi dasar tentang penggunaan resep. Untuk informasi terperinci, lihat berkas <code class="filename">partman-auto-recipe.txt</code> dan <code class="filename">partman-auto-raid-recipe.txt</code> yang disertakan dalam paket <code class="classname">debian-installer</code>. Kedua berkas juga tersedia dari <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top">repositori sumber <code class="classname">debian-installer</code></a>. Perhatikan bahwa fungsionalitas yang didukung dapat berubah di antara rilis. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Identifikasi disk tergantung pada urutan pemuatan driver mereka. Jika ada beberapa disk dalam sistem, pastikan disk yang benar akan dipilih sebelum menggunakan preseed. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Contoh pemartisian</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Jika sistem memiliki ruang kosong, Anda dapat memilih untuk hanya mempartisi
+# ruang tersebut. Ini hanya dihormati jika partman-auto/method (di bawah) tidak
+# disetel.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Sebagai alternatif, Anda dapat menentukan disk untuk dipartisi. Jika sistem
+# hanya memiliki satu disk, pemasang akan menggunakan itu secara baku, tetapi
+# sebaliknya nama perangkat harus diberikan dalam format tradisional non-devfs
+# (mis. /dev/sda dan bukan mis. /dev/discs/disc0/disc).
+# Misalnya, untuk menggunakan hard disk SCSI/SATA pertama:
+#d-i partman-auto/disk string /dev/sda
+# Selain itu, Anda harus menentukan metode yang akan digunakan.
+# Metode yang tersedia saat ini adalah:
+# - regular: gunakan tipe partisi biasa untuk arsitektur Anda
+# - lvm:     gunakan LVM untuk mempartisi disk
+# - crypto:  gunakan LVM di dalam partisi terenkripsi
+d-i partman-auto/method string lvm
+
+# Anda dapat menentukan jumlah ruang yang akan digunakan untuk grup volume
+# LVM. Itu bisa berupa ukuran dengan unitnya (mis. 20 GB), persentase dari
+# ruang kosong atau kata kunci 'max'.
+d-i partman-auto-lvm/guided_size string max
+
+# Jika salah satu disk yang akan dipartisi secara otomatis
+# berisi konfigurasi LVM lama, pengguna biasanya akan menerima a
+# peringatan. Ini dapat di-preseed ...
+d-i partman-lvm/device_remove_lvm boolean true
+# Hal yang sama berlaku untuk larik RAID perangkat lunak yang sudah ada
+# sebelumnya:
+d-i partman-md/device_remove_md boolean true
+# Dan hal yang sama berlaku untuk konfirmasi untuk menulis partisi lvm.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# Anda dapat memilih salah satu dari resep partisi yang telah ditentukan
+# sebelumnya:
+# - atomic: semua berkas dalam satu partisi
+# - home:   partisi /home terpisah
+# - multi:  partisi /home, /var, dan /tmp terpisah
+# - server: partisi /var dan /srv terpisah; swap dibatasi ke 1G
+# - small_disk: skema yang didedikasikan ke hard disk kecil (di bawah 10GB)
+d-i partman-auto/choose_recipe select atomic
+
+# Atau berikan resep Anda sendiri ...
+# Jika Anda memiliki cara untuk memasukkan berkas resep ke dalam lingkungan
+# d-i, Anda bisa menunjuk itu saja.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Jika tidak, Anda dapat memasukkan seluruh resep ke dalam berkas
+# prakonfigurasi menjadi satu baris (logis). Contoh ini membuat partisi 
+# /boot kecil, swap yang cocok, dan menggunakan sisa ruang untuk partisi
+# root:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# Format resep lengkap didokumentasikan di berkas partman-auto-recipe.txt
+# yang disertakan dalam paket 'debian-installer' atau tersedia dari
+# repositori sumber D-I. Ini juga mendokumentasikan cara menentukan pengaturan
+# seperti label sistem berkas, nama grup volume, dan perangkat fisik mana
+# yang akan disertakan dalam grup volume.
+
+## Pemartisian untuk EFI
+# Jika sistem Anda membutuhkan partisi EFI, Anda dapat menambahkan sesuatu
+# seperti ini untuk resep di atas, sebagai elemen pertama dalam resep:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# Fragmen di atas adalah untuk arsitektur amd64; detailnya mungkin
+# berbeda pada arsitektur lain. Paket 'partman-auto' di repositori
+# sumber D-I mungkin memiliki contoh yang dapat Anda ikuti.
+
+# Ini membuat partman otomatis mempartisi tanpa konfirmasi, asalkan
+# Anda memberi tahu apa yang harus dilakukan dengan menggunakan salah satu
+# metode di atas.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Paksa booting UEFI ('kompatibilitas BIOS' akan hilang). Baku: false.
+#d-i partman-efi/non_efi_system boolean true
+# Pastikan tabel partisi adalah GPT - ini diperlukan untuk EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# Saat enkripsi disk diaktifkan, lewati penghapusan partisi sebelumnya.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Pemartisian menggunakan RAID</h4></div></div></div>
+<p>Anda juga dapat menggunakan preseed untuk mengatur partisi pada array RAID perangkat lunak. Yang didukung adalah tingkat RAID 0, 1, 5, 6, dan 10, membuat array yang terdegradasi, dan menentukan perangkat serep. </p>
+<p>Jika Anda menggunakan RAID 1, Anda dapat melakukan preseed grub untuk memasang ke semua perangkat yang digunakan dalam array; lihat <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Instalasi boot loader">Bagian B.4.12, “Instalasi boot loader”</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Jenis partisi otomatis ini mudah salah. Ini juga merupakan fungsionalitas yang menerima pengujian yang relatif sedikit dari pengembang <code class="classname">debian-installer</code>. Tanggung jawab untuk mendapatkan berbagai resep dengan benar (sehingga masuk akal dan tidak bertentangan) terletak pada pengguna. Periksa <code class="filename">/var/log/syslog</code> jika Anda mengalami masalah. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Metode harus diatur ke "raid".
+#d-i partman-auto/method string raid
+# Tentukan disk yang akan dipartisi. Mereka semua akan mendapatkan tata letak
+# yang sama, jadi ini hanya akan berfungsi jika disk berukuran sama.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Selanjutnya Anda perlu menentukan partisi fisik yang akan digunakan. 
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Terakhir Anda perlu menentukan bagaimana partisi yang sebelumnya
+# telah didefinisikan akan digunakan dalam pengaturan RAID. Ingatlah untuk
+# menggunakan nomor partisi yang benar bagi partisi logis. Tingkat RAID 0,
+# 1, 5, 6 dan 10 didukung;
+# perangkat dipisahkan menggunakan "#".
+# Parameternya adalah:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+# &lt;perangkat&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Untuk informasi tambahan lihat berkas partman-auto-raid-recipe.txt
+# yang disertakan dalam paket 'debian-installer' atau tersedia dari
+# repositori sumber D-I
+
+# Ini membuat partman secara otomatis mempartisi tanpa konfirmasi.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Mengontrol bagaimana partisi dikait</h4></div></div></div>
+<p>Biasanya, sistem berkas dipasang menggunakan universally unique identifier (UUID) sebagai kunci; ini memungkinkan mereka untuk dipasang dengan benar bahkan jika nama perangkat mereka berubah. UUID itu panjang dan sulit dibaca, jadi, jika Anda mau, pemasang dapat memasang sistem berkas berdasarkan nama perangkat tradisional, atau berdasarkan label yang Anda tetapkan. Jika Anda meminta pemasang untuk memasang dengan label, sistem berkas apa pun tanpa label akan dipasang menggunakan UUID sebagai gantinya. </p>
+<p>Perangkat dengan nama stabil, seperti volume logis LVM, akan terus menggunakan nama tradisionalnya daripada UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Nama perangkat tradisional dapat berubah berdasarkan urutan kernel menemukan perangkat saat boot, yang dapat menyebabkan sistem berkas yang salah dipasang. Demikian pula, label cenderung berbenturan jika Anda menancapkan disk baru atau flash disk USB, dan jika itu terjadi, perilaku sistem Anda saat dimulai akan acak. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Defaultnya adalah memasang oleh UUID, tetapi Anda juga dapat memilih
+"tradisional" untuk menggunakan nama perangkat tradisional, atau "label"
+# untuk mencoba label sistem berkas sebelum fallback ke UUID.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Instalasi sistem dasar</h3></div></div></div>
+<p>Sebenarnya tidak banyak yang bisa di-preseed untuk tahap instalasi ini. Satu-satunya pertanyaan yang diajukan menyangkut pemasangan kernel. </p>
+<div class="informalexample"><pre class="screen"># Konfigurasikan APT untuk tidak memasang paket yang direkomendasikan secara
+# baku. Penggunaan ini opsi dapat mengakibatkan sistem yang tidak lengkap dan
+# hanya boleh digunakan oleh very pengguna berpengalaman.
+#d-i base-installer/install-recommends boolean false
+
+# Paket gambar kernel (meta) yang akan diinstal; "tidak ada" dapat digunakan
+# jika tidak kernel harus diinstal.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Penyiapan apt</h3></div></div></div>
+<p>Penyiapan <code class="filename">/etc/apt/sources.list</code> dan opsi konfigurasi dasar sepenuhnya otomatis berdasarkan metode instalasi Anda dan jawaban atas pertanyaan sebelumnya. Anda dapat secara opsional menambahkan repositori (lokal) lainnya. </p>
+<div class="informalexample"><pre class="screen"># Pilih, jika Anda ingin memindai media instalasi tambahan
+# (baku: false).
+d-i apt-setup/cdrom/set-first boolean false
+# Anda dapat memilih untuk memasang firmware non-free.
+#d-i apt-setup/non-free-firmware boolean true
+# Anda dapat memilih untuk memasang perangkat lunak non-free dan contrib.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Hapus komentar pada baris berikut, jika Anda tidak ingin entri sources.list
+# untuk image instalasi DVD/BD aktif dalam sistem yang dipasang
+# (entri untuk image netinst atau CD akan tetap dinonaktifkan, terlepas dari
+# pengaturan ini).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Hapus komentar ini jika Anda tidak ingin menggunakan cermin jaringan.
+#d-i apt-setup/use_mirror boolean false
+# Pilih layanan pembaruan mana yang akan digunakan; tentukan cermin yang
+# akan digunakan. Nilai yang ditunjukkan di bawah ini adalah baku normal.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Repositori tambahan, local[0-9] tersedia
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Aktifkan baris deb-src
+#d-i apt-setup/local0/source boolean true
+# URL ke kunci publik repositori lokal; Anda harus memberikan kunci atau
+# apt akan mengeluh tentang repositori yang tidak diotentikasi dan sebagainya
+# sources.list baris akan dibiarkan dikomentari.
+#d-i apt-setup/local0/key string http://local.server/key
+# atau kita bisa menyediakannya in-line dengan enkoding base64
+# konten dari berkas kunci (dengan `base64 -w0`) menyatakannya
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# Jika berkas kunci yang disediakan berakhiran ".asc" file kunci harus
+# berupa Kunci PGP ASCII-armoured, jika berakhiran ".gpg" perlu
+# menggunakan format "GPG key public keyring", format "basis data keybox"
+# saat ini tidak didukung.
+
+# Secara baku pemasang mengharuskan repositori diotentikasi
+# menggunakan kunci GPG yang dikenal. Pengaturan ini dapat digunakan untuk
+# menonaktifkan otentikasi. Peringatan: Tidak aman, tidak disarankan.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Hapus komentar ini untuk menambahkan konfigurasi multiarch bagi i386
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Pemilihan paket</h3></div></div></div>
+<p>Anda dapat memilih untuk memasang kombinasi tugas apa pun yang tersedia. Tugas yang tersedia saat tulisan ini dibuat termasuk: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (alat standar) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (desktop grafis) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (desktop Gnome) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (desktop XFCE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (desktop KDE Plasma) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (desktop Cinnamon) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (desktop MATE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (desktop LXDE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (server web) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (server SSH) </p></li>
+</ul></div>
+<p>Anda juga dapat memilih untuk tidak memasang tugas apa pun, dan memaksa instalasi satu set paket dengan cara lain. Kami sarankan untuk selalu menyertakan tugas <strong class="userinput"><code>standard</code></strong>. </p>
+<p>Atau jika Anda tidak ingin dialog tasksel ditampilkan sama sekali, preseed <code class="classname">pkgsel/run_tasksel</code> (tidak ada paket yang dipasang melalui tasksel dalam kasus itu). </p>
+<p>Jika Anda ingin memasang beberapa paket individual selain paket yang dipasang oleh tugas, Anda dapat menggunakan parameter <code class="classname">pkgsel/include</code>. Nilai parameter ini dapat berupa daftar paket yang dipisahkan oleh koma atau spasi, yang memungkinkannya digunakan dengan mudah pada baris perintah kernel juga. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Atau pilih untuk tidak menampilkan dialog tasksel sama sekali (dan jangan
+# memasang paket apa pun):
+#d-i pkgsel/run_tasksel boolean false
+
+# Paket tambahan individual untuk dipasang
+#d-i pkgsel/include string openssh-server build-essential
+# Apakah akan meningkatkan paket setelah debootstrap.
+# Nilai yang diizinkan: none (tidak satu pun), safe-upgrade
+# (tingkatkan dengan aman), full-upgrade (tingkatkan penuh)
+#d-i pkgsel/upgrade select none
+
+# Anda dapat memilih, jika sistem Anda akan melaporkan kembali perangkat
+# lunak apa yang Anda pasang, dan perangkat lunak apa yang Anda gunakan.
+# Bakunya adalah tidak melaporkan kembali, tetapi mengirim laporan
+# membantu proyek menentukan perangkat lunak apa yang paling
+# populer dan mesti disertakan pada DVD pertama.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Instalasi boot loader</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub adalah boot loader (untuk x86).</span>
+
+# Ini cukup aman untuk diatur, itu membuat grub memasang secara otomatis ke
+# partisi UEFI/boot record jika tidak ada sistem operasi lain yang terdeteksi
+# pada mesin.
+d-i grub-installer/only_debian boolean true
+
+# Yang ini membuat grub-installer memasang ke partisi UEFI/boot record, jika
+# itu juga menemukan beberapa OS lain, yang kurang aman karena mungkin tidak
+# bisa mem-boot OS lain itu.
+d-i grub-installer/with_other_os boolean true
+
+# Terutama karena flash disk USB potensial, lokasi drive utama tidak
+# dapat ditentukan dengan aman secara umum, jadi ini perlu ditentukan:
+#d-i grub-installer/bootdev  string /dev/sda
+# Untuk memasang ke perangkat utama (dengan asumsi itu bukan flash disk USB):
+#d-i grub-installer/bootdev  string default
+
+# Atau, jika Anda ingin memasang ke lokasi selain partisi UEFI/
+# boot record, hapus komentar dan edit baris-baris ini:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Untuk memasang grub ke beberapa disk:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Kata sandi opsional untuk grub, baik dalam teks polos
+#d-i grub-installer/password password r00tme
+#d-i grub-installer/password-again password r00tme
+# atau dienkripsi menggunakan hash MD5, lihat grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Gunakan opsi berikut untuk menambahkan parameter boot tambahan untuk
+# sistem yang dipasang (jika didukung oleh pemasang bootloader).
+# Catatan: opsi yang diteruskan ke pemasang akan ditambahkan secara otomatis.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>Hash MD5 untuk kata sandi bagi <code class="classname">grub</code> dapat dihasilkan menggunakan <span class="command"><strong>grub-md5-crypt</strong></span>, atau menggunakan perintah dari contoh di <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Penyiapan akun">Bagian B.4.6, “Penyiapan akun”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Menyelesaikan instalasi</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Selama instalasi dari konsol serial, konsol virtual biasa (VT1-VT6)
+# biasanya dinonaktifkan di /etc/inittab. Hapus komentar baris berikut
+# untuk mencegah hal ini.
+#d-i finish-install/keep-consoles boolean true
+
+# Hindari pesan terakhir tentang instalasi yang selesai.
+d-i finish-install/reboot_in_progress note
+
+# Ini akan mencegah pemasang mengeluarkan cakram selama reboot,
+# yang berguna dalam beberapa situasi.
+#d-i cdrom-detect/eject boolean false
+
+# Ini adalah cara membuat pemasang shutdown ketika selesai, tetapi tidak
+# reboot ke sistem yang dipasang.
+#d-i debian-installer/exit/halt boolean true
+# Ini akan mematikan mesin alih-alih hanya menghentikannya.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Preseed paket lainnya</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Tergantung pada perangkat lunak apa yang Anda pilih untuk dipasang, atau
+# jika ada yang salah selama proses instalasi, ada kemungkinan bahwa
+# pertanyaan lain mungkin ditanyakan. Anda juga dapat mem-preseed-nya,
+# tentu saja. Untuk mendapatkan daftar setiap kemungkinan pertanyaan yang
+# dapat ditanyakan selama instalasi, lakukan instalasi, dan kemudian
+# jalankan perintah ini:
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4804" class="footnote"><p><a href="#id4804" class="para"><sup class="para">[20] </sup></a> Preseed <code class="literal">locale</code> untuk <strong class="userinput"><code>en_NL</code></strong> misalnya akan menghasilkan <code class="literal">en_US.UTF-8</code> sebagai lokal baku bagi sistem yang dipasang. Jika misalnya <code class="literal">en_GB.UTF-8</code> lebih disukai sebagai gantinya, nilai-nilainya perlu di-preseed secara individual. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Membuat berkas prakonfigurasi </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Opsi tingkat lanjut</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

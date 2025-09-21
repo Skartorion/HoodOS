@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Läsa in saknad fast programvara</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="ch06.html" title="Kapitel 6. Användning av Debian Installer">
+<link rel="prev" href="ch06s03.html" title="6.3. Användning av individuella komponenter">
+<link rel="next" href="ch06s05.html" title="6.5. Anpassningar">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Läsa in saknad fast programvara</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Kapitel 6. Användning av Debian Installer</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Läsa in saknad fast programvara</h2></div></div></div>
+<p>Vissa enheter kräver att fast programvara läses in, vilket beskrivs i <a class="xref" href="ch02s02.html" title="2.2. Enheter som kräver fast programvara">Avsnitt 2.2, ”Enheter som kräver fast programvara”</a>. I de flesta fall kommer enheten inte att fungera alls om inte den fasta programvaran finns tillgänglig; ibland kan grundläggande funktionalitet erbjudas om den fasta programvaran saknas och att den fasta programvaran endast behövs för att aktivera ytterligare funktioner. </p>
+<p>Med sin start i Debian GNU/Linux 12.0, efter <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">2022 allmän resolution om icke-fri fastprogramvara</a>, kan officiella installationsavbilder (som netinst) innehålla icke-fria paket för fastprogramvara. Även med dessa paket för fastprogramvara tillgängliga kan vissa fastprogramvara-filer fortfarande saknas. Eller så kanske man använder netboot-filer, som inte inkluderar paket för fastprogramvara. </p>
+<p>Om en enhet begära fast programvara som inte finns tillgänglig kommer <code class="classname">debian-installer</code> att visa en dialogruta som erbjuder att läsa in den saknade fasta programvaran. Om detta alternativ väljs kommer <code class="classname">debian-installer</code> att söka av tillgängliga enheter efter antingen fristående filer för fast programvara eller paket som innehåller den fasta programvaran. Om den hittas kommer den fasta programvaran att kopieras till den rätta platsen (<code class="filename">/lib/firmware</code>) och drivrutinsmodulen kommer att läsas om. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Vilka enheter som söks av och vilka filsystem som stöds är beroende på arkitekturen, installationsmetoden och vilket steg i installationen. Speciellt under tidiga steg i installationen kommer inläsning av fast programvara att fungera bäst från ett FAT-formaterat USB-minne. <span class="phrase">På i386 och amd64 kan även fast programvara läsas in från ett MMC- eller SD-kort.</span> </p></td></tr>
+</table></div>
+<p>Observera att det är möjligt att hoppa över inläsning av fast programvara om du vet att enheten kommer att fungera även utan den eller om enheten inte behövs under installationen. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3423"></a>6.4.1. Förbereda ett media</h3></div></div></div>
+<p>Den vanligaste metoden för att ladda sådan fastprogramvara är från något flyttbart medium som ett USB-minne. För att förbereda ett USB-minne (eller annat medium som en hårddiskpartition) måste fastprogramvarafilerna eller paketen placeras i antingen rotkatalogen eller en katalog som heter <code class="filename">/firmware</code> i filsystemet på mediet. Det rekommenderade filsystemet att använda är FAT eftersom det är mest säkert att stödjas under de tidiga stadierna av installationen. </p>
+<p>Tar-arkiv och zip filer som innehåller aktuella paket för de flesta vanliga fasta programvaror,och tillhörande metadata för att säkerställa en korrekt upptäckt av installationsprogrammet (<code class="filename">dep11</code> katalogen), finns tillgängliga från: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Hämta helt enkelt ner tar-arkivet eller zip filer för den korrekta utgåvan och packa upp den på mediats filsystem. </p>
+<p>Det är också möjligt att kopiera individuella filer med fast programvara i valfritt media. Fristående fast programvara kan till exempel hämtas från ett redan installerat system eller från maskinvarans tillverkare. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3434"></a>6.4.2. Fast programvara och det installerade systemet</h3></div></div></div>
+<p>All fastprogramvara som laddas under installationen kommer att kopieras automatiskt till det installerade systemet. I de flesta fall säkerställer detta att enheten som kräver fastprogramvara också kommer att fungera korrekt efter att systemet har startat om till det installerade systemet. Men om det installerade systemet kör en annan kärnversion än installationsprogrammet, finns det en liten chans att den fasta programvaran inte kan laddas på grund av skev version. </p>
+<p>Om den fasta programvaran lästes in från ett paket med fast programvara så kommer <code class="classname">debian-installer</code> även att installera detta paket för det installerade systemet och automatiskt lägga till sektionen non-free-firmware för paketarkivet i APT:s <code class="filename">sources.list</code>. Detta har fördelen att den fasta programvaran kommer att uppdateras automatiskt om en ny version blir tillgänglig. </p>
+<p>Om inläsningen av den fasta programvaran hoppades över under installationen så kommer den relevanta enheten antagligen inte att fungera med det installerade systemet tills den fasta programvaran (paket) har installerats manuellt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Notera]" src="images/note.png"></td>
+<th align="left">Notera</th>
+</tr>
+<tr><td align="left" valign="top"><p>Om den fasta programvaran lästes in från fristående filer kommer den fasta programvaran som kopierades till det installerade systemet <span class="emphasis"><em>inte</em></span> att uppdateras automatiskt såvida inte motsvarande paket för fast programvara (om tillgänglig) har installerats efter att installationen färdigställdes. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Slutför det installerade systemet</h3></div></div></div>
+<p>Beroende på hur installationen utfördes kan det vara så att behovet av viss fastprogramvara inte upptäcktes under installationen, att relevant fastprogramvara inte var tillgänglig eller att man valde att inte installera viss fastprogramvara vid den tidpunkten. I vissa fall kan en lyckad installation fortfarande hamna i en svart skärm eller en förvrängd skärm vid omstart till det installerade systemet. När det händer kan följande lösningar prövas: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Skicka alternativet <code class="code">nomodeset</code> på kärnans kommandorad. Detta kan hjälpa till att starta upp i ett <span class="quote">”<span class="quote">reservgrafik</span>”</span>-läge.</p></li>
+<li class="listitem"><p>Använd <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> knappkombinationen för att byta till VT2, vilket kan erbjuda en funktionell inloggningsprompt.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Användning av individuella komponenter </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Anpassningar</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

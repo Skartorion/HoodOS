@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.2. Katalogträdet</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="apc.html" title="Appendix C. Partitionera för Debian">
+<link rel="prev" href="apcs01.html" title="C.1. Bestämma Debian-partitioner och storlekar">
+<link rel="next" href="apcs03.html" title="C.3. Rekommenderad partitionstabell">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.2. Katalogträdet</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Appendix C. Partitionera för Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="directory-tree"></a>C.2. Katalogträdet</h2></div></div></div>
+<p>Debian GNU/Linux följer <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a> för namngivning av kataloger och filer. Den här standarden låter användarna och programvaror att förutse platsen för filer och kataloger. Rotnivåkatalogen representeras helt enkelt av ett snedstreck, <code class="filename">/</code>. På rotnivån, alla inkluderar Debian-system dessa kataloger: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Katalog</th>
+<th>Innehåll</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="filename">bin</code></td>
+<td>Systemkritiska kommandobinärer</td>
+</tr>
+<tr>
+<td><code class="filename">boot</code></td>
+<td>Statiska filer för starthanteraren</td>
+</tr>
+<tr>
+<td><code class="filename">dev</code></td>
+<td>Enhetsfiler</td>
+</tr>
+<tr>
+<td><code class="filename">etc</code></td>
+<td>Värdspecifik systemkonfiguration</td>
+</tr>
+<tr>
+<td><code class="filename">home</code></td>
+<td>Användarnas hemkataloger</td>
+</tr>
+<tr>
+<td><code class="filename">lib</code></td>
+<td>Viktiga delade bibliotek och kärnmoduler</td>
+</tr>
+<tr>
+<td><code class="filename">media</code></td>
+<td>Innehåller monteringspunkter för flyttbart media</td>
+</tr>
+<tr>
+<td><code class="filename">mnt</code></td>
+<td>Monteringspunkt för montering av temporärt filsystem</td>
+</tr>
+<tr>
+<td><code class="filename">proc</code></td>
+<td>Virtuell katalog för systeminformation</td>
+</tr>
+<tr>
+<td><code class="filename">root</code></td>
+<td>Hemkatalog för root-användaren</td>
+</tr>
+<tr>
+<td><code class="filename">run</code></td>
+<td>Variabel data för körningstid</td>
+</tr>
+<tr>
+<td><code class="filename">sbin</code></td>
+<td>Nödvändiga systembinärer</td>
+</tr>
+<tr>
+<td><code class="filename">sys</code></td>
+<td>Virtuell katalog för systeminformation</td>
+</tr>
+<tr>
+<td><code class="filename">tmp</code></td>
+<td>Temporära filer</td>
+</tr>
+<tr>
+<td><code class="filename">usr</code></td>
+<td>Sekundär hierarki</td>
+</tr>
+<tr>
+<td><code class="filename">var</code></td>
+<td>Variabeldata</td>
+</tr>
+<tr>
+<td><code class="filename">srv</code></td>
+<td>Data för tjänster som tillhandahålls av systemet</td>
+</tr>
+<tr>
+<td><code class="filename">opt</code></td>
+<td>Tilläggsprogrampaket</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+</p>
+<p>Följande är en lista på viktiga beaktanden angående kataloger och partitioner. Observera att diskanvändning varierar stort beroende på systemkonfiguration och specifika användningsmönster. Rekommendationerna här är allmänna riktlinjer och ge en startpunkt för partitionering. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Rootpartitionen <code class="filename">/</code> måste alltid fysiskt innehålla <code class="filename">/etc</code>, <code class="filename">/bin</code>, <code class="filename">/sbin</code>, <code class="filename">/lib </code>, <code class="filename">/dev</code> och <code class="filename">/usr</code>, annars kommer du inte att kunna starta. Det betyder att du bör tillhandahålla minst 700–850MB diskutrymme för rootpartitionen inklusive <code class="filename">/usr</code>, eller 5–6GB för en arbetsstation eller en serverinstallation. </p></li>
+<li class="listitem"><p><code class="filename">/var</code>: variabel data såsom nyhetsartiklar, e-post, webbplatser, databaser, cache för paketsystemet, etc. kommer att placeras under den här katalogen. Storleken på den här katalogen beror mycket på användningen av ditt system men för de flesta personer kommer det här att bestämmas av pakethanteringsverktygets behov. Om du tänker göra en full installation av i stort sett allt som Debian kan erbjuda, på en enda gång, bör 2 eller 3 GB utrymme för <code class="filename">/var</code> vara tillräckligt. Om du tänker installera i omgångar (så att säga, installera tjänster och verktyg, följt av textprogram, sedan X, ...), kan du komma runt med 300–500 MB. Om hårddiskutrymme är begränsat och du inte planerar att göra några större systemuppdateringar, kan du klara dig med så lite som 30 eller 40 MB. </p></li>
+<li class="listitem"><p><code class="filename">/tmp</code>: temporärdata som skapats av program kommer sannolikt att hamna i den här katalogen. 40–100 MB bör nog vara tillräckligt. Vissa program — inklusive arkivhanterare, verktyg för cd/dvd-tillverkning och multimediaprogram — kan använda <code class="filename">/tmp</code> för att temporärt lagra bildfiler. Om du planerar att använda sådana program bör du justera tillgängligt utrymme för <code class="filename">/tmp</code> på lämpligt sätt. </p></li>
+<li class="listitem"><p><code class="filename">/home</code>: varje användare komma att lägga sin personliga data i en underkatalog till den här katalogen. Dess storlek beror på hur många användare som kommer att använda systemet och vilka filer som lagras i deras kataloger. Beroende på din planerade användning bör du reservera omkring 100 MB för varje användare, men anpassa det här värdet till dina behov. Reservera mycket mer utrymme om du planerar att spara en hel del multimediafiler (bilder, MP3, filmer) i din hemkatalog. </p></li>
+</ul></div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs01.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apcs03.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.1. Bestämma Debian-partitioner och storlekar </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> C.3. Rekommenderad partitionstabell</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

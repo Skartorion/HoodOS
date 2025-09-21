@@ -1,0 +1,679 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Conținutul fișierului de preconfigurare (pentru trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apb.html" title="Anexa B. Automatizarea instalării folosind preconfigurarea">
+<link rel="prev" href="apbs03.html" title="B.3. Crearea unui fișier de preconfigurare">
+<link rel="next" href="apbs05.html" title="B.5. Opțiuni avansate">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Conținutul fișierului de preconfigurare (pentru trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa B. Automatizarea instalării folosind preconfigurarea</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Conținutul fișierului de preconfigurare (pentru trixie)</h2></div></div></div>
+<p>Fragmentele de configurare utilizate în această anexă sunt, de asemenea, disponibile ca exemplu de fișier de preconfigurare în <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Rețineți că acest exemplu se bazează pe o instalare pentru arhitectura Intel x86. Dacă instalați o arhitectură diferită, unele dintre exemple (cum ar fi selecția tastaturii și instalarea încărcătorului de pornire) pot să nu fie relevante și vor trebui înlocuite cu opțiunile debconf adecvate pentru arhitectura dvs. </p>
+<p>Detalii despre modul în care funcționează efectiv diferitele componente ale programului de instalare Debian pot fi găsite în <a class="xref" href="ch06s03.html" title="6.3. Utilizarea de componente individuale">Secțiune 6.3, „Utilizarea de componente individuale”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Localizarea</h3></div></div></div>
+<p>În timpul unei instalări normale, întrebările despre localizare (limba, țara și aranjamentul de tastatură) sunt puse mai întâi, astfel încât aceste valori pot fi prestabilite numai prin metoda „initrd” sau cea a parametrilor de pornire a nucleului. Modul automat (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modul auto">Secțiune B.2.3, „Modul auto”</a>) include parametrul predefinit <code class="literal">auto-install/enable=true</code> (în mod normal prin variabila-alias de preconfigurare <code class="literal">auto</code>). Acest lucru întârzie adresarea întrebărilor de localizare, astfel încât acestea să poată fi prestabilite prin orice metodă. </p>
+<p>Localizarea poate fi folosită pentru a specifica atât limba, cât și țara și poate fi orice combinație de limbă acceptată de <code class="classname">debian-installer</code> și o țară recunoscută. Dacă combinația nu formează o localizare validă, programul de instalare va selecta automat o localizare care este validă pentru limba selectată. Pentru a specifica localizarea ca parametru de pornire, utilizați <strong class="userinput"><code>locale=<em class="replaceable"><code>ro_RO.UTF-8</code></em></code></strong>. </p>
+<p>Deși această metodă este foarte ușor de utilizat, nu permite preconfigurarea tuturor combinațiilor posibile de limbă, țară și localizare <span class="emphasis"><em>locale</em></span><a href="#ftn.id4839" class="footnote" name="id4839"><sup class="footnote">[20]</sup></a>. Deci, alternativ, valorile pot fi preconfigurate individual. Limba și țara pot fi, de asemenea, specificate ca parametri de pornire. </p>
+<div class="informalexample"><pre class="screen"># Preconfigurarea localizării stabilește doar limba, țara și localizarea.
+d-i debian-installer/locale string ro_RO.UTF-8
+
+# Valorile pot fi, de asemenea, prestabilite individual pentru o mai mare flexibilitate.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# Opțional, specificați localizări suplimentare pentru a fi generate.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Configurarea tastaturii constă în selectarea unui aranjament de tastatură și (pentru aranjamentele de tastaturi non-latine) o tastă de comutare pentru a comuta între aranjamentul tastaturii non-latină și aranjamentul tastaturii SUA. Doar variantele de bază ale aranjamentului de tastatură sunt disponibile în timpul instalării. Variante avansate sunt disponibile numai în sistemul instalat, prin <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Selectarea tastaturii.
+d-i keyboard-configuration/xkb-keymap select ro(Lat2-Terminus16)
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Pentru a sări peste configurarea tastaturii, prefixați variabila <code class="classname">keymap</code> la valoarea <strong class="userinput"><code>skip-config</code></strong> (omite-configurarea). Acest lucru va duce la rămânerea activă a aranjamentului tastaturii nucleului. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Sinteza vocală</h3></div></div></div>
+<p>La instalarea cu software de sinteză vocală (adică cu opțiunea <code class="literal">speakup.synth=soft</code> pasată în linia de comandă a nucleului), placa de sunet și vocea care urmează să fie utilizată pot fi preconfigurate. </p>
+<p>Deoarece sinteza vocală este inițiată foarte devreme, aceasta poate fi preconfigurată numai din „initrd” sau din linia de comandă a nucleului. </p>
+<p>Preconfigurarea <code class="literal">espeakup/voice</code> permite, de asemenea, configurarea sistemului instalat cu caracteristici de accesibilitate vocală. Acest lucru intră în vigoare chiar dacă software-ul de sinteză vocală nu a fost de fapt activat în cadrul programului de instalare. </p>
+<div class="informalexample"><pre class="screen"># Care este placa ALSA care urmează să fie utilizată pentru software-ul vocal.
+# Poate fi un număr de la 0, sau un ID, așa cum se vede în:
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Vocea espeak-ng care urmează să fie utilizată:
+#d-i espeakup/voice string en
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Configurarea rețelei</h3></div></div></div>
+<p>Desigur, preconfigurarea rețelei nu va funcționa dacă încărcați fișierul de preconfigurare din rețea. Dar este perfectă când porniți de pe un disc optic sau un stick USB. Dacă încărcați fișiere de preconfigurare din rețea, puteți pasa parametrii de configurare a rețelei utilizând parametrii de pornire a nucleului. </p>
+<p>Dacă trebuie să alegeți o anumită interfață atunci când porniți din rețea înainte de a încărca un fișier de preconfigurare din rețea, utilizați un parametru de pornire precum <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>Deși predefinirea configurației de rețea nu este în mod normal posibilă atunci când se utilizează predefinirea rețelei (folosind <span class="quote">„<span class="quote">preseed/url</span>”</span>), puteți utiliza următorul truc pentru a ocoli acest lucru, de exemplu, dacă doriți să definiți o adresă statică pentru interfața de rețea. Trucul constă în a forța configurarea rețelei să ruleze din nou după ce fișierul de preconfigurare a fost încărcat prin crearea unui script <span class="quote">„<span class="quote">preseed/run</span>”</span> care să conțină următoarele comenzi: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>Următoarele variabile debconf sunt relevante pentru configurarea rețelei. </p>
+<div class="informalexample"><pre class="screen"># Dezactivează complet configurația rețelei. Acest lucru este util pentru
+# instalările CDROM pe mașini care nu sunt conectate la rețea, unde întrebările
+# de rețea, avertismentele și timpii de așteptare lungi sunt o pacoste.
+#d-i netcfg/enable boolean false
+
+# netcfg va alege o interfață care are conexiune, dacă este posibil. Acest
+# lucru face ca să nu se afișeze o listă dacă există mai mult de o interfață.
+d-i netcfg/choose_interface select auto
+
+# În schimb, pentru a alege o anumită interfață:
+#d-i netcfg/choose_interface select eth1
+
+# Pentru a stabili un interval de timp diferit pentru detectarea conexiunii
+# (valoarea implicită este de 3 secunde). Valorile sunt interpretate ca secunde.
+#d-i netcfg/link_wait_timeout string 10
+
+# Dacă aveți un server dhcp lent și programul de instalare se oprește în
+# așteptarea acestuia, acest lucru ar putea fi util:
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# În mod implicit, configurarea rețelei este automată.
+# Dacă preferați să configurați manual rețeaua, decomentați această linie și
+# configurația statică de rețea de mai jos.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Dacă doriți ca fișierul de preconfigurare să funcționeze pe sisteme atât cu,
+# cât și fără un server dhcp, decomentați aceste linii și configurația statică
+# a rețelei de mai jos.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Configurare statică a rețelei.
+#
+# Exemplu IPv4
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# Exemplu IPv6
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Orice nume de gazdă și nume de domeniu atribuite de dhcp au prioritate față
+# de valorile stabilite aici. Cu toate acestea, stabilirea valorilor previne
+# în continuare afișarea întrebărilor, chiar dacă valorile provin de la dhcp.
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# Dacă doriți să forțați un nume de gazdă, indiferent de ceea ce returnează
+# serverul DHCP sau care este intrarea DNS inversă pentru IP, decomentați și
+# ajustați următoarea linie.
+#d-i netcfg/hostname string gazdă-oarecare
+
+# Dezactivați acel dialog enervant al cheii WEP:
+d-i netcfg/wireless_wep string
+# Și numele de gazdă dhcp ciudat pe care unii furnizori de servicii de Internet
+# îl folosesc ca o parolă.
+#d-i netcfg/dhcp_hostname string radish
+
+# Dacă doriți să dezactivați complet căutarea firmware-ului (adică să nu
+# folosiți fișiere sau pachete de firmware care ar putea fi disponibile în
+# imaginile de instalare):
+#d-i hw-detect/firmware-lookup string never
+
+# Dacă este necesar un firmware care nu este liber pentru placa de rețea sau
+# alt dispozitiv, puteți configura programul de instalare să încerce întotdeauna
+# să-l încarce, fără a fi solicitat. Sau schimbați valoarea booleană la „false”
+# pentru a dezactiva solicitarea.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Vă rugăm să rețineți că <span class="command"><strong>netcfg</strong></span> va determina automat masca de rețea dacă <code class="classname">netcfg/get_netmask</code> nu este preconfigurată. În acest caz, variabila trebuie să fie marcată ca <code class="literal">seen</code> pentru instalările automate. În mod similar, <span class="command"><strong>netcfg</strong></span> va alege o adresă adecvată dacă <code class="classname">netcfg/get_gateway</code> nu este definită. Ca un caz special, puteți definii <code class="classname">netcfg/get_gateway</code> la <span class="quote">„<span class="quote">none</span>”</span> pentru a specifica că nu trebuie utilizată nicio pasarelă(poartă de acces). </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Consola de rețea</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Utilizați următoarele configurări dacă doriți să utilizați componenta consolă
+# de rețea pentru instalarea de la distanță prin SSH. Acest lucru are sens numai
+# dacă intenționați să efectuați manual restul instalării.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key
+#d-i network-console/password password r00tme
+#d-i network-console/password-again password r00tme
+</pre></div>
+<p>Mai multe informații referitoare la consola de rețea pot fi găsite în <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Instalarea prin consola de rețea (network-console)">Secțiune 6.3.10, „Instalarea prin consola de rețea (network-console)”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Configurări pentru oglindă</h3></div></div></div>
+<p>În funcție de metoda de instalare pe care o utilizați, o oglindă poate fi utilizată pentru a descărca componentele suplimentare ale programului de instalare, pentru a instala sistemul de bază și pentru a crea fișierul de configurare <code class="filename">/etc/apt/sources.list</code> pentru sistemul instalat. </p>
+<p>Parametrul <code class="classname">mirror/suite</code> determină distribuția pentru sistemul instalat. </p>
+<p>Parametrul <code class="classname">mirror/udeb/suite</code> determină distribuția pentru componentele suplimentare ale programului de instalare. Este util să definiți acest parametru numai dacă componentele sunt efectiv descărcate prin rețea și ar trebui să corespundă distribuției care a fost utilizată pentru a construi fișierul „initrd” pentru metoda de instalare utilizată pentru instalare. În mod normal, programul de instalare va utiliza automat valoarea corectă și nu ar trebui să fie nevoie să definiți acest lucru. </p>
+<div class="informalexample"><pre class="screen"># Protocol oglindă:
+# Dacă selectați ftp, nu este necesar să definiți șirul „mirror/country”.
+# Valoarea implicită pentru protocolul oglinzii este: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string http.us.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Distribuția de instalat.
+#d-i mirror/suite string testing
+# Distribuția de utilizat pentru încărcarea componentelor programului
+# de instalare (opțional).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Configurarea contului</h3></div></div></div>
+<p>Parola pentru contul root și numele și parola pentru primul cont de utilizator obișnuit pot fi predefinite. Pentru parole puteți folosi fie valori în text clar, fie <span class="emphasis"><em>hashes</em></span> crypt(3) (rezultatul algoritmilor de criptare asupra acestor valori în text clar). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Rețineți că predefinirea parolelor nu este complet sigură, deoarece toți cei care au acces la fișierul de preconfigurare vor avea cunoștințe despre aceste parole. Stocarea parolelor cu algoritmi de criptare este considerată sigură, cu excepția cazului în care se utilizează un algoritm de criptare slab, cum ar fi DES sau MD5, care permite atacuri de „forță brută”. Algoritmii recomandați de criptare a parolei sunt SHA-256 și SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Omiteți crearea unui cont root (contul de utilizator normal va putea
+# utiliza sudo).
+#d-i passwd/root-login boolean false
+# Alternativ, pentru a omite crearea unui cont de utilizator normal.
+#d-i passwd/make-user boolean false
+
+# Parola de root, fie în text clar ...
+#d-i passwd/root-password password Eu_r00t-Debian
+#d-i passwd/root-password-again password Eu_r00t-Debian
+# ... fie criptată folosind un algoritm de criptare „hash crypt(3)”.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Pentru a crea un cont de utilizator normal.
+#d-i passwd/user-fullname string Debian User
+#d-i passwd/username string debian
+# Parola utilizatorului normal, fie în text clar ...
+#d-i passwd/user-password password eu_UtilizatOr-Debian
+#d-i passwd/user-password-again password eu_UtilizatOr-Debian
+# ... fie criptată folosind un algoritm de criptare „hash crypt(3)”.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Creați primul utilizator cu identificatorul de utilizator (UID) specificat
+# în loc de cel implicit.
+#d-i passwd/user-uid string 1010
+
+# Contul de utilizator va fi adăugat la unele grupuri inițiale standard. Pentru
+# a controla căror grupuri va fi adăugat acest cont de utilizator, utilizați de
+# exemplu:
+#d-i passwd/user-default-groups string audio cdrom video
+# pentru al adăuga grupurilor „audio”, „cdrom” și „video”
+</pre></div>
+<p>Variabilele <code class="classname">passwd/root-password-crypted</code> și <code class="classname">passwd/user-password-crypted</code> pot fi, de asemenea, predefinite cu <span class="quote">„<span class="quote">!</span>”</span> ca valoare. În acest caz, contul corespunzător este dezactivat. Acest lucru poate fi convenabil pentru contul root, cu condiția, desigur, că o metodă alternativă este configurată pentru a permite activități administrative sau autentificare root (de exemplu, folosind autentificarea cu cheie SSH sau comanda <span class="command"><strong>sudo</strong></span>). </p>
+<p>Următoarea comandă (disponibilă din pachetul <code class="classname">whois</code>) poate fi folosită pentru a genera un hash crypt(3) bazat pe SHA-512 pentru o parolă (o parolă criptată utilizând algoritmul SHA-512): </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Configurarea ceasului și a fusului orar</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Controlează dacă ceasul hardware este fixat la UTC.
+d-i clock-setup/utc boolean true
+
+# Puteți stabilii aceasta la orice valoare validă pentru $TZ; consultați 
+# conținutul directorului „/usr/share/zoneinfo/” pentru valori valide.
+d-i time/zone string Europe/Bucharest
+
+# Controlează dacă se utilizează NTP pentru a configura ceasul în timpul
+# instalării
+d-i clock-setup/ntp boolean true
+# Server NTP de utilizat. Valoarea implicită este aproape întotdeauna bună aici.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Partiţionarea</h3></div></div></div>
+<p>Utilizarea preconfigurării pentru partiționarea discului dur/solid este limitată la ceea ce este acceptat de <code class="classname">partman-auto</code>. Puteți alege să partiționați fie spațiul liber existent pe un disc, fie întregul disc. Dispunerea partițiilor pe disc poate fi determinată folosind o rețetă predefinită, o rețetă personalizată dintr-un fișier de rețetă sau o rețetă inclusă în fișierul de preconfigurare. </p>
+<p>Preconfigurarea opțiunilor avansate de partiție folosind RAID, LVM și criptare este acceptată, dar nu cu flexibilitatea deplină oferită atunci când partiționați în timpul unei instalări fără preconfigurare. </p>
+<p>Exemplele de mai jos oferă doar informații de bază despre utilizarea rețetelor. Pentru informații detaliate, consultați fișierele <code class="filename">partman-auto-recipe.txt</code> și <code class="filename">partman-auto-raid-recipe.txt</code> incluse în pachetul <code class="classname">debian-installer</code>. Ambele fișiere sunt disponibile și din <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top"><code class="classname">debian-installer</code> depozitul sursă</a>. Rețineți că funcționalitatea acceptată se poate modifica între versiuni. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Identificarea discurilor depinde de ordinea în care sunt încărcați controlorii acestora. Dacă există mai multe discuri în sistem, asigurați-vă că va fi selectat cel corect înainte de a utiliza preconfigurarea. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Exemplu de partiționare</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Dacă sistemul are spațiu liber, puteți alege să partiționați doar acel spațiu.
+# Acest lucru este respectat numai dacă variabila „partman-auto/method” (mai
+# jos) nu este definită.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Alternativ, puteți specifica un disc de partiționat. Dacă sistemul are un
+# singur disc, programul de instalare îl va folosi implicit, dar în caz contrar,
+# numele dispozitivului trebuie să fie dat în format tradițional, non-devfs (de
+# exemplu, „/dev/sda” și nu, de exemplu, „/dev/discs/disc0/disc”).
+# De exemplu, pentru a utiliza primul disc dur/solid SCSI/SATA:
+#d-i partman-auto/disk string /dev/sda
+# În plus, va trebui să specificați metoda de utilizat.
+# Metodele disponibile în prezent sunt următoarele:
+# - regular: utilizează tipurile obișnuite de partiții pentru arhitectura dvs.
+# - lvm:     utilizează LVM pentru a partiționa discul
+# - crypto:  utilizează LVM în cadrul unei partiții criptate
+d-i partman-auto/method string lvm
+
+# Puteți defini cantitatea de spațiu care va fi utilizată pentru grupul de
+# volume LVM. Poate să fie o dimensiune cu unitatea sa (de ex. 20 GB), un
+# procent de spațiu liber sau cuvântul cheie „max”.
+d-i partman-auto-lvm/guided_size string max
+
+# Dacă unul dintre discurile care urmează să fie partiționate automat conține
+# o configurație LVM veche, utilizatorul va primi în mod normal un avertisment.
+# Acest lucru poate fi evitat, preconfigurând...
+d-i partman-lvm/device_remove_lvm boolean true
+# Același lucru este valabil și pentru ansamblul RAID software preexistent:
+d-i partman-md/device_remove_md boolean true
+# Și același lucru este valabil și pentru confirmarea de a scrie partițiile lvm:
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# Puteți alege una dintre rețetele de partiționare predefinite:
+# - atomic: toate fișierele într-o singură partiție
+# - home:   partiție /home separată
+# - multi:  partiții /home, /var, și /tmp separate
+# - server: partiții /var și /srv separate; partiție swap limitată la 1Go
+# - small_disk: schemă dedicată discurilor dure mici (sub 10Go)
+d-i partman-auto/choose_recipe select atomic
+
+# Sau oferiți o rețetă proprie...
+# Dacă aveți o modalitate de a introduce un fișier de rețetă în mediul d-i,
+# puteți pur și simplu să îl indicați.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Dacă nu, puteți pune o rețetă întreagă în fișierul de preconfigurare într-o
+# singură linie (logică). Acest exemplu creează o partiție mică /boot, o partiție
+# pentru spațiul de interschimb (swap) adecvată și folosește restul spațiului
+# pentru partiția rădăcină:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# Formatul complet al rețetei este documentat în fișierul partman-auto-recipe.txt
+# inclus în pachetul „debian-installer” sau disponibil din depozitul sursă D-I.
+# Aceasta documentează, de asemenea, modul de specificare al opțiunilor,
+# cum ar fi etichetele sistemului de fișiere, numele grupurilor de volume și ce
+# dispozitive fizice să fie incluse într-un grup de volume.
+
+## Partiționarea pentru EFI
+# Dacă sistemul dvs. are nevoie de o partiție EFI, puteți adăuga ceva de genul
+# acesta la rețeta de mai sus, ca prim element din rețetă:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# Fragmentul de mai sus este pentru arhitectura „amd64”; detaliile pot fi
+# diferite pe alte arhitecturi. Pachetul „partman-auto” din depozitul sursă D-I
+# poate avea un exemplu pe care îl puteți urma.
+
+# Acest lucru face ca «partman» să partiționeze automat fără confirmare, cu
+# condiția să-i spuneți ce să facă folosind una dintre metodele de mai sus.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Forțează pornirea UEFI („compatibilitatea BIOS” se va pierde). Implicit: „false”
+#d-i partman-efi/non_efi_system boolean true
+# Asigurați-vă că tabela de partiții este GPT - acest lucru este necesar
+# pentru EFI:
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# Când criptarea discului este activată, omite ștergerea prealabilă a partițiilor:
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Partiționarea utilizând RAID</h4></div></div></div>
+<p>De asemenea, puteți utiliza preconfigurarea pentru a configura partiții pe ansambluri RAID software. Sunt acceptate nivelurile RAID 0, 1, 5, 6 și 10, creând ansambluri reduse și specificând dispozitive de rezervă. </p>
+<p>Dacă utilizați RAID 1, puteți preconfigura «grub» pentru a-l instala pe toate dispozitivele folosite în ansamblul de discuri; consultați <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. Instalarea încărcătoruluii de pornire">Secțiune B.4.12, „Instalarea încărcătoruluii de pornire”</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Acest tip de partiționare automată este ușor de greșit. Este, de asemenea, funcționalitatea care primește relativ puține teste de la dezvoltatorii <code class="classname">debian-installer</code>. Responsabilitatea de a obține diferitele rețete corecte (deci să aibă sens și să nu intre în conflict) revine utilizatorului. Verificați mesajele din fișierul <code class="filename">/var/log/syslog</code> dacă întâmpinați probleme. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Metoda trebuie să fie fixată la „raid”.
+#d-i partman-auto/method string raid
+# Specificați discurile care urmează să fie partiționate. Toate discurile vor
+# primi aceeași schemă de partiționare, deci acest lucru va funcționa numai
+# dacă discurile au aceeași dimensiune.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Apoi, trebuie să specificați partițiile fizice care vor fi utilizate.
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# La urmă, trebuie să specificați cum vor fi utilizate partițiile definite
+# anterior în configurarea RAID. Nu uitați să utilizați numerele corecte ale
+# partițiilor pentru partițiile logice. Sunt acceptate nivelurile RAID 0, 1, 5,
+# 6 și 10; dispozitivele sunt separate folosind „#”.
+# Parametrii sunt:
+# &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \
+#          &lt;devices&gt; &lt;sparedevices&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Pentru informații suplimentare, consultați fișierul „partman-auto-raid-recipe.txt”
+# inclus în pachetul „debian-installer” sau disponibil din depozitul sursă D-I.
+
+# Aceste valori ale variabilelor fac ca «partman» să partiționeze automat,
+# fără confirmare:
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. Controlarea modului de montare a partițiilor</h4></div></div></div>
+<p>În mod normal, sistemele de fișiere sunt montate folosind un identificator unic universal (UUID); acest lucru le permite să fie montate corect chiar dacă numele dispozitivului lor se schimbă. Identificatoarele acestea sunt lungi și greu de citit, așa că, dacă preferați, instalatorul poate monta sisteme de fișiere pe baza numelor tradiționale de dispozitive sau pe baza unei etichete pe care o atribuiți. Dacă cereți instalatorului să monteze după etichetă, orice sisteme de fișiere fără etichetă vor fi montate folosind un UUID. </p>
+<p>Dispozitivele cu nume stabile, cum ar fi volumele logice LVM, vor continua să folosească numele lor tradiționale, mai degrabă decât un UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Avertisment]" src="images/warning.png"></td>
+<th align="left">Avertisment</th>
+</tr>
+<tr><td align="left" valign="top"><p>Numele tradiționale de dispozitive se pot schimba în funcție de ordinea în care nucleul descoperă dispozitivele la pornire, ceea ce poate duce la montarea unui sistem de fișiere greșit. În mod similar, este posibil ca etichetele să intre în conflict dacă conectați un nou disc sau o unitate USB și, dacă se întâmplă acest lucru, comportamentul sistemului dumneavoastră la pornire va fi aleatoriu. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Implicit este montarea prin UUID, dar puteți alege și „traditional” pentru
+# a utiliza nume tradiționale de dispozitive sau „label” pentru a încerca
+# etichetele sistemului de fișiere înainte de a reveni la UUID.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. Instalarea sistemului de bază</h3></div></div></div>
+<p>Puține elemente pot fi preconfigurate în această etapă a instalării. Singurele întrebări puse se referă la instalarea nucleului. </p>
+<div class="informalexample"><pre class="screen"># Configurează APT pentru a nu instala pachetele recomandate în mod implicit.
+# Utilizarea acestei opțiuni poate duce la un sistem incomplet și ar trebui
+# să fie folosită numai de utilizatorii cu experiență.
+#d-i base-installer/install-recommends boolean false
+
+# Pachetul (meta) imagine a nucleului care urmează să fie instalat; „none”
+# poate fi folosit dacă nu trebuie instalat niciun nucleu.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Configurarea lui «apt»</h3></div></div></div>
+<p>Configurarea fișierului <code class="filename">/etc/apt/sources.list</code> și a opțiunilor de configurare de bază este complet automatizată pe baza metodei dvs. de instalare și a răspunsurilor la întrebările anterioare. Puteți adăuga opțional și alte depozite (locale). </p>
+<div class="informalexample"><pre class="screen"># Alegeți dacă doriți să scanați medii de instalare suplimentare
+# (implicit: „false”).
+d-i apt-setup/cdrom/set-first boolean false
+# Puteți alege să instalați software din arhivele „non-free” și „contrib”.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Înlăturați marca de comentariu din următoarea linie, dacă nu doriți să aveți
+# în fișierul „sources.list” intrarea pentru o imagine de instalare DVD/BD activă
+# în sistemul instalat (intrările pentru imaginile netinst sau CD vor fi oricum
+# dezactivate, indiferent de această valoare).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Înlăturați marca de comentariu dacă nu doriți să utilizați o oglindă de rețea:
+#d-i apt-setup/use_mirror boolean false
+# Selectați ce servicii de actualizare să utilizați; definiți oglinzile care
+# vor fi utilizate.
+# Valorile prezentate mai jos sunt valorile implicite normale.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Depozite suplimentare, locale[0-9] disponibile:
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Activați liniile „deb-src”:
+#d-i apt-setup/local0/source boolean true
+# Adresa URL pentru cheia publică a depozitului local; trebuie să furnizați
+# o cheie sau «apt» se va plânge că de depozitul este neautentificat și astfel
+# linia respectivă din fișierul „sources.list” va fi lăsată cu marca de comentariu
+#d-i apt-setup/local0/key string http://local.server/key
+# sau se poate furniza în linie prin codificarea base64 a conținutului
+# fișierului cheie (cu `base64 -w0`) și specificându-l astfel:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# Conținutul fișierului de chei este verificat pentru a vedea dacă pare a fi
+# armat ASCII (în formatul ASCII).
+# Dacă este, va fi salvat cu o extensie „.asc”, în caz contrar, va primi
+# o extensie „.gpg”.
+# Formatul „keybox database” (bază de date cu casetă de chei) nu este acceptat
+# momentan (a se vedea generatoare/60local în sursa apt-setup).
+
+# În mod implicit, programul de instalare necesită ca depozitele să fie
+# autentificate folosind o cheie gpg cunoscută. Această configurare poate fi
+# utilizată pentru a dezactiva autentificarea respectivă.
+# Avertisment: această configurare nu este sigură, nici recomandată.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Înlăturați marca de comentariu pentru a adăuga configurația multi-arhitectură
+# (multiarch) pentru i386:
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Selectarea pachetelor</h3></div></div></div>
+<p>Puteți alege să instalați orice combinație de sarcini disponibile. Sarcinile disponibile la momentul scrierii acestui document includ: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (Instrumente standard) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (Mediu de birou grafic) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (Mediul de birou Gnome) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (Mediul de birou XFCE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (Mediul de birou KDE Plasma) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Mediul de birou Cinnamon) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (Mediul de birou MATE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (Mediul de birou LXDE) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (Server Web) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (Server SSH) </p></li>
+</ul></div>
+<p>De asemenea, puteți alege să nu instalați sarcini și să forțați instalarea unui set de pachete într-un alt mod. Vă recomandăm să includeți întotdeauna sarcina <strong class="userinput"><code>standard</code></strong>. </p>
+<p>Sau dacă doriți ca dialogul «tasksel» să nu fie afișat deloc, predefiniți <code class="classname">pkgsel/run_tasksel</code> (nu sunt instalate pachete prin «tasksel» în acest caz). </p>
+<p>Dacă doriți să instalați unele pachete individuale în plus față de pachetele instalate de sarcinile predefinite de instalare, puteți utiliza parametrul <code class="classname">pkgsel/include</code>. Valoarea acestui parametru poate fi o listă de pachete separate prin virgule sau spații, ceea ce îi permite să fie folosit cu ușurință și în linia de comandă a nucleului. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+# Sau alegeți să nu afișați deloc dialogul «tasksel» (și nu instalați niciun
+# pachet):
+#d-i pkgsel/run_tasksel boolean false
+
+# Pachete suplimentare individuale de instalat
+#d-i pkgsel/include string openssh-server build-essential
+# Dacă se actualizează pachetele după debootstrap.
+# Valorile permise sunt: „none” (niciunul), „safe-upgrade” (actualizare sigură),
+# „full-upgrade” (actualizare completă)
+#d-i pkgsel/upgrade select none
+
+# Puteți alege dacă sistemul dumneavoastră va raporta ce software ați instalat
+# și ce software utilizați. Implicit este de a nu raporta, dar trimiterea de
+# rapoarte ajută proiectul să determine ce software este cel mai popular și ar
+# trebui inclus pe primul DVD.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. Instalarea încărcătoruluii de pornire</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub este încărcătorul de pornire (pentru x86).</span>
+
+# Aceasta este o configurație adecvată și sigură, face ca «grub» să se instaleze
+# automat în partiția/sectorul de pornire (UEFI) dacă nu este detectat niciun
+# alt sistem de operare pe mașină.
+d-i grub-installer/only_debian boolean true
+
+# Configurația următoare, face ca «grub-installer» să instaleze «grub» în
+# partiția/sectorul de pornire (UEFI) dacă este detectat un alt sistem de
+# operare, care este mai puțin sigură, deoarece ar putea să nu poată porni
+# acel alt sistem de operare.
+d-i grub-installer/with_other_os boolean true
+
+# Datorită în special a potențialelor stick-uri USB, locația unității primare
+# nu poate fi determinată în siguranță în general, așa că trebuie specificată:
+#d-i grub-installer/bootdev  string /dev/sda
+# Pentru a instala pe dispozitivul principal (presupunând că nu este un stick USB):
+#d-i grub-installer/bootdev  string default
+
+# Alternativ, dacă doriți să instalați într-o altă locație decât partiția/sectorul
+# de pornire (UEFI), înlăturați mărcile de comentariu și editați aceste rânduri:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Pentru a instala «grub» pe mai multe discuri:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Parolă opțională pentru «grub», fie în text clar
+#d-i grub-installer/password password Eu_r00t
+#d-i grub-installer/password-again password Eu_r00t
+# sau criptat folosind un hash MD5, a se vedea grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Utilizați următoarea opțiune pentru a adăuga parametri de pornire suplimentari
+# pentru sistemul instalat (dacă este acceptat de programul de instalare al
+# încărcătorului de pornire).
+# Notă: opțiunile transmise programului de instalare vor fi adăugate automat.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>Un „hash MD5” (rezultatul algoritmului de criptare MD5) pentru o parolă pentru <code class="classname">grub</code> poate fi generat folosind <span class="command"><strong>grub-md5-crypt</strong></span> sau folosind comanda din exemplul inclus în <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Configurarea contului">Secțiune B.4.6, „Configurarea contului”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. Finalizarea instalării</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># În timpul instalărilor din consola serială, consolele virtuale obișnuite
+# (VT1-VT6) sunt în mod normal dezactivate în „/etc/inittab”. Înlăturați marca
+# de comentariu din următoarea linie pentru a preveni acest lucru.
+#d-i finish-install/keep-consoles boolean true
+
+# Evitați ultimul mesaj despre finalizarea instalării.
+d-i finish-install/reboot_in_progress note
+
+# Acest lucru va împiedica programul de instalare să scoată discul în timpul
+# repornirii, ceea ce este util în unele situații.
+#d-i cdrom-detect/eject boolean false
+
+# Acesta este modul în care puteți face ca programul de instalare să se oprească
+# după ce termină, dar să nu repornească în sistemul instalat.
+#d-i debian-installer/exit/halt boolean true
+# Acest lucru va deconecta mașina în loc să o oprească pur și simplu.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Preconfigurarea altor pachete</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># În funcție de software-ul pe care alegeți să-l instalați sau dacă lucrurile
+# merg prost în timpul procesului de instalare, este posibil să vi se pună alte
+# întrebări. Le puteți preconfigura și pe acestea, desigur. Pentru a obține o
+# listă cu toate întrebările posibile care ar putea fi puse în timpul unei
+# instalări, faceți o instalare și apoi executați aceste comenzi:
+#   debconf-get-selections --installer &gt; file
+#   debconf-get-selections &gt;&gt; file
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4839" class="footnote"><p><a href="#id4839" class="para"><sup class="para">[20] </sup></a>Preconfigurând <code class="literal">locale</code> la <strong class="userinput"><code>en_NL</code></strong>, în exemplul dat, ar avea ca rezultat a <code class="literal">en_US.UTF-8</code> ca localizare implicită <span class="emphasis"><em>locale</em></span> pentru sistemul instalat. Dacă de exemplu, se preferă <code class="literal">en_GB.UTF-8</code>, valorile vor trebui să fie preconfigurate individual. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Crearea unui fișier de preconfigurare </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Opțiuni avansate</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

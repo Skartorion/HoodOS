@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Instal·lació de Debian GNU/Linux per «Parallel Line IP» (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia d'instal·lació de Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Apèndix D. Informació variada">
+<link rel="prev" href="apds03.html" title="D.3. Instal·lar Debian GNU/Linux des d'un sistema Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Instal·lació de Debian GNU/Linux utilitzant PPP sobre Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Instal·lació de Debian GNU/Linux per «Parallel Line IP» (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apèndix D. Informació variada</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Instal·lació de Debian GNU/Linux per «Parallel Line IP» (PLIP)</h2></div></div></div>
+<p>Aquesta secció explica com instal·lar Debian GNU/Linux en un ordinador sense una targeta Ethernet, però amb un ordinador passarel·la remot adjunt per mitjà d'un cable «Null-Modem» (també anomenat cable «Null-Printer»). És recomanable que l'ordinador passarel·la estigui connectat a una xarxa que tingui una rèplica de Debian (per exemple, a Internet). </p>
+<p>En l'exemple d'aquest apèndix configurarem una connexió PLIP utilitzant una passarel·la connectada a Internet a través d'una connexió de marcatge directe (ppp0). Farem servir les adreces IP 192.168.0.1 i 192.168.0.2 per a les interfícies PLIP del sistema destí i origen respectivament (és recomanable que aquestes adreces no s'utilitzin dins l'espai d'adreces de la vostra xarxa). </p>
+<p>La connexió PLIP configurada durant la instal·lació romandrà disponible després d'arrencar el sistema instal·lat (consulteu <a class="xref" href="ch07.html" title="Capítol 7. Arrancada del nou sistema Debian">Capítol 7, <i>Arrancada del nou sistema Debian</i></a>). </p>
+<p>Abans de començar, necessitareu comprovar la configuració de la BIOS (adreces base IO i IRQ) per als ports paral·lels dels sistemes origen i destí. Els valors més habituals són <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5098"></a>D.4.1. Requeriments</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Un ordinador destí, anomenat <span class="emphasis"><em>destí</em></span>, on s'instal·larà el sistema Debian. </p></li>
+<li class="listitem"><p>Suports d'instal·lació del sistema, consulteu <a class="xref" href="ch02s04.html" title="2.4. Mitjans d'instal·lació">Secció 2.4, «Mitjans d'instal·lació»</a>. </p></li>
+<li class="listitem"><p>Un altre ordinador connectat a Internet, anomenat <span class="emphasis"><em>origen</em></span>, que farà de passarel·la. </p></li>
+<li class="listitem"><p>Un cable «Null-Modem DB-25». Consulteu el <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> per a més informació sobre aquest cable i instruccions de com elaborar-ne el vostre propi. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5113"></a>D.4.2. Configuració de l'origen</h3></div></div></div>
+<p>La següent seqüència d'intèrpret d'ordres és un exemple simple de com configurar l'ordinador origen com a passarel·la cap a Internet fent servir «ppp0». </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Eliminem els mòduls que s'executen al nucli per evitar conflictes i per a
+# tornar-los a configurar manualment.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configurem la interfície PLIP (en aquest cas «plip0», vegeu «dmesg | grep plip»)
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configurem la passarel·la
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5123"></a>D.4.3. Instal·lació del destí</h3></div></div></div>
+<p>Arrenqueu el suport d'instal·lació. És necessari executar la instal·lació en mode expert; introduïu <strong class="userinput"><code>expert</code></strong> a l'indicador d'arrencada. Si necessiteu establir paràmetres per mòduls del nucli, ho necessitareu també a l'indicador d'ordres de l'arrencada. Per exemple, per arrencar l'instal·lador i establir els valors de les opcions <span class="quote">«<span class="quote">io</span>»</span> i <span class="quote">«<span class="quote">irq</span>»</span> del mòdul «parport_pc», introduïu a l'indicador d'ordres de l'arrencada: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> A continuació hi ha les respostes recomanades de diverses fases de la instal·lació. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Carrega els components de l'instal·lador des del medi d'instal·lació</span>
+
+</p>
+<p>Seleccioneu l'opció <strong class="userinput"><code>plip-modules</code></strong> de la llista; això farà disponibles els controladors de PLIP al sistema d'instal·lació. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Detecta el maquinari de xarxa</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Si el destí <span class="emphasis"><em>té</em></span> una targeta de xarxa, es mostrarà una llista dels controladors per a les targetes detectades. Si voleu imposar que el <code class="classname">debian-installer</code> utilitzi PLIP, heu de desseleccionar tots els mòduls llistats. Òbviament, si l'ordinador destí no té cap targeta de xarxa, l'instal·lador no mostrarà aquesta llista. </p></li>
+<li class="listitem"><p>Com que anteriorment no s'ha detectat/seleccionat cap xarxa, l'instal·lador us demanarà que seleccioneu un controlador de xarxa d'una llista. Seleccioneu el mòdul <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Configuració de la xarxa</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Configuració automàtica de la xarxa amb DHCP: No </p></li>
+<li class="listitem"><p>Adreça IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Adreça punt a punt: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Adreces dels servidors de noms: podeu introduir les mateixes adreces que les utilitzades a l'origen (vegeu <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Pujar"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Següent"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Instal·lar Debian GNU/Linux des d'un sistema Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inici"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Instal·lació de Debian GNU/Linux utilitzant PPP sobre Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Создание файла ответов</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Приложение B. Автоматическая установка с помощью списка ответов">
+<link rel="prev" href="apbs02.html" title="B.2. Использование автоматической установки">
+<link rel="next" href="apbs04.html" title="B.4. Содержимое файла ответов (для trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Создание файла ответов</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Приложение B. Автоматическая установка с помощью списка ответов</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Создание файла ответов</h2></div></div></div>
+<p>Файл ответов аналогичен формату файла используемому программой <span class="command"><strong>debconf-set-selections</strong></span>. Общая форма строки файла ответов: </p>
+<div class="informalexample"><pre class="screen">&lt;владелец&gt; &lt;имя вопроса&gt; &lt;тип вопроса&gt; &lt;значение&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Файл должен начинаться с <code class="literal">#_preseed_V1</code> </p>
+<p>При написании файла ответов есть несколько правил, которые нужно помнить. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Между типом и значением вставляйте только один пробел или отступ(tab): любой дополнительный пробельный символ будет включён в значение. </p></li>
+<li class="listitem"><p>Строка может быть разбита на несколько строк, с помощью добавления обратного слеша (<span class="quote">«<span class="quote"><code class="literal">\</code></span>»</span>) в конец строки. Хорошо разделять строку после имени вопроса; плохо — между типом и значением. При обратном объединении нескольких строк все начальные/конечные пробельные символы будут сжаты в один. </p></li>
+<li class="listitem"><p>Владельцем переменных debconf (шаблонов), используемых только в самой программе установки, нужно назначать <span class="quote">«<span class="quote">d-i</span>»</span>; для переменных автоматизации установки, используемых в установленной системе, должно использоваться имя пакета, содержащее соответствующий шаблон debconf. В базу данных debconf в установленной системе попадут только переменные, у которых владельцем установлено нечто, отличное от <span class="quote">«<span class="quote">d-i</span>»</span>. </p></li>
+<li class="listitem"><p>Для большинства вопросов нужно указывать ответы на английском языке, а не их перевод. Однако, есть несколько вопросов (например, в <code class="classname">partman</code>), где нужно использовать ответы на родном языке. </p></li>
+<li class="listitem"><p>В ответах некоторых вопросов вместо английского текста указывается код, который показывается во время установки. </p></li>
+<li class="listitem"><p>Начинайте с <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>A comment consists of a line which <span class="emphasis"><em>starts</em></span> with a hash character (<span class="quote">«<span class="quote"><code class="literal">#</code></span>»</span>) and extends up to the length of that line. </p></li>
+</ul></div>
+<p>Самый простой путь создания файла ответов это использовать файл примера <a class="xref" href="apbs04.html" title="B.4. Содержимое файла ответов (для trixie)">Раздел B.4, «Содержимое файла ответов (для trixie)»</a> в качестве основы и изменить его. </p>
+<p>Альтернативный метод — выполнить установку вручную и затем, после перезагрузки, использовать команду <span class="command"><strong>debconf-get-selections</strong></span> из пакета <code class="classname">debconf-utils</code>, чтобы сохранить базу данных debconf и базу данных программы установки cdebconf в один файл: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>файл</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>файл</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>файл</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Однако, таким образом созданный файл будет содержать некоторые элементы,которые не должны быть автоматизированы, и всё-таки для большинства пользователей лучше использовать файл примера. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Примечание]" src="images/note.png"></td>
+<th align="left">Примечание</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Этот метод основан на том, что в конце установки, база данных программы установки cdebconf сохраняется в установленной системе в <code class="filename">/var/log/installer/cdebconf</code>. Однако, так как база данных может содержать частную информацию, по умолчанию файл разрешено читать только суперпользователю. </p>
+<p>Каталог <code class="filename">/var/log/installer</code> и все файлы в нём будут удалены из системы при вычистке пакета <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>Для выяснения возможных ответов на вопросы можно использовать редактор <span class="command"><strong>nano</strong></span> для просмотра файла <code class="filename">/var/lib/cdebconf</code> прямо во время процесса установки. В файле <code class="filename">templates.dat</code> хранятся необработанные шаблоны, а в <code class="filename">questions.dat</code> — текущие значения и значения, назначенные переменным. </p>
+<p>Для проверки правильности формата файла ответов до установки, можно использовать команду <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Использование автоматической установки </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Содержимое файла ответов (для trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. Instalar Debian GNU/Linux a través de una línea IP paralela (PLIP)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="apd.html" title="Apéndice D. Información adicional">
+<link rel="prev" href="apds03.html" title="D.3. Instalar Debian GNU/Linux desde un sistema Unix/Linux">
+<link rel="next" href="apds05.html" title="D.5. Instalación de Debian GNU/Linux a través de PPP sobre Ethernet (PPPoE)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. Instalar Debian GNU/Linux a través de una línea IP paralela (PLIP)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Apéndice D. Información adicional</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. Instalar Debian GNU/Linux a través de una línea IP paralela (PLIP)</h2></div></div></div>
+<p>Esta sección explica cómo se puede instalar Debian GNU/Linux en un ordenador que carezca de tarjeta de red y que sólo tiene un ordenador actuando como pasarela conectado a través de un cable de <span class="quote">“<span class="quote">módem nulo</span>”</span> (también llamado cable <span class="quote">“<span class="quote">null-modem</span>”</span> o <span class="quote">“<span class="quote">null-printer</span>”</span>). El sistema pasarela debería estar conectado a una red por la que se pueda acceder a una réplica de Debian (por ejemplo, en Internet). </p>
+<p>En el ejemplo de este apéndice se configura una conexión PLIP con una pasarela que está conectada a Internet a través de una conexión de acceso telefónico (ppp0). Se utilizarán las direcciones IP 192.168.0.1 y 192.168.0.2 para las interfaces PLIP en el sistema a instalar (objetivo) y en el sistema origen, respectivamente (estas direcciones IP deberían estar libres en su espacio de direcciones de red). </p>
+<p>La conexión PLIP que se configura durante la instalación también estará disponible después del reinicio del sistema en el propio sistema instalado (véase <a class="xref" href="ch07.html" title="Capítulo 7. Arrancar desde tu nuevo sistema Debian">Capítulo 7, <i>Arrancar desde tu nuevo sistema Debian</i></a>). </p>
+<p>Antes de empezar, deberás comprobar la configuración de la BIOS (dirección base IO e IRQ) de los puertos paralelos de los sistemas de origen y destino. Los valores más comunes son <code class="literal">io=0x378</code>, <code class="literal">irq=7</code>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5120"></a>D.4.1. Requisitos</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Un sistema destino, llamado <span class="emphasis"><em>objetivo</em></span>, donde se va a instalar Debian. </p></li>
+<li class="listitem"><p>Los medios para la instalación del sistema; véase <a class="xref" href="ch02s04.html" title="2.4. Medios de instalación">Sección 2.4, “Medios de instalación”</a>. </p></li>
+<li class="listitem"><p>Otro ordenador conectado a Internet, llamado <span class="emphasis"><em>fuente</em></span>, que funcionará como puerta de enlace. </p></li>
+<li class="listitem"><p>Un cable <span class="quote">“<span class="quote">módem nulo</span>”</span> DB-25. Para más información sobre este cable e instrucciones de cómo hacer uno, puede consultar el documento <a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a>. </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5136"></a>D.4.2. Configurar el sistema origen</h3></div></div></div>
+<p>El programa mostrado a continuación es un ejemplo sencillo que configura el ordenador fuente como una pasarela a Internet utilizando ppp0. </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# Eliminamos los módulos que están ejecutándose en el núcleo para evitar
+# conflictos y para reconfigurarlos manualmente.
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configura la interfaz plip (plip0 en este caso, pruebe en caso de duda "dmesg | grep plip" ).
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configurar la pasarela.
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5146"></a>D.4.3. Instalar el objetivo</h3></div></div></div>
+<p>Arranque con el medio de instalación. Tiene que ejecutar la instalación en modo experto, utilizando <strong class="userinput"><code>expert</code></strong> en el indicador de sistema del arranque. También debe indicar los parámetros que necesite para los módulos del núcleo en el indicador de sistema del arranque. Por ejemplo, deberá introducir lo que se muestra a continuación si necesita arrancar el instalador y fijar los valores necesarios a las opciones <span class="quote">“<span class="quote">io</span>”</span> e <span class="quote">“<span class="quote">irq</span>”</span> en el módulo parport_pc: </p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> Abajo se dan las respuestas que debería dar durante las distintas fases de la instalación. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Cargar componentes del instalador desde la midea de instalación</span>
+
+</p>
+<p>Seleccione la opción <strong class="userinput"><code>plip-modules</code></strong> de la lista, esto hará que el sistema de instalación pueda utilizar los controladores PLIP. </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Detección del hardware de red</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Si el objetivo <span class="emphasis"><em>tiene</em></span> una tarjeta de red se mostrará una lista de los módulos con controladores para las tarjetas detectadas. Si quiere hacer que <code class="classname">debian-installer</code> utilice plip en lugar de éstas tendrá que deseleccionar todos los módulos de controladores listados. Obviamente, si el objetivo no tiene una tarjeta de red el instalador no mostrará esta lista. </p></li>
+<li class="listitem"><p>El instalador le preguntará si quiere seleccionar un módulo de controlador de red de la lista dado que antes no se ha seleccionado ni detectado una tarjeta de red. Seleccione el módulo <strong class="userinput"><code>plip</code></strong>. </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">Configuración de redes</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>¿Desea configurar automáticamente la red con DHCP? No </p></li>
+<li class="listitem"><p>Dirección IP: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> </p></li>
+<li class="listitem"><p>Dirección punto a punto: <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> </p></li>
+<li class="listitem"><p>Direcciones de servidores de nombres: puede introducir la misma dirección que la que utiliza la fuente (consúltela en <code class="filename">/etc/resolv.conf</code>) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Instalar Debian GNU/Linux desde un sistema Unix/Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> D.5. Instalación de Debian GNU/Linux a través de PPP sobre Ethernet (PPPoE)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

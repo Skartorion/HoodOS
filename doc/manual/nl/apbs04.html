@@ -1,0 +1,700 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.4. Inhoud van het antwoordbestand (voor trixie)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apb.html" title="Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen">
+<link rel="prev" href="apbs03.html" title="B.3. Een antwoordbestand aanmaken">
+<link rel="next" href="apbs05.html" title="B.5. Opties voor gevorderden">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.4. Inhoud van het antwoordbestand (voor trixie)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-contents"></a>B.4. Inhoud van het antwoordbestand (voor trixie)</h2></div></div></div>
+<p>De configuratiefragmenten die in deze bijlage gebruikt worden, zijn ook terug te vinden in een voorbeeldconfiguratiebestand uit <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>. </p>
+<p>Merk op dat dit voorbeeld gebaseerd is op een installatie voor de architectuur x86 van Intel. Indien u een installatie uitvoert op een andere architectuur, kan het zijn dat sommige voorbeelden (zoals de selectie van het toetsenbord en de installatie van de bootloader) niet relevant zijn en vervangen moeten worden door debconf-instellingen die aangepast zijn aan uw architectuur. </p>
+<p>Gedetailleerde informatie over de eigenlijke werking van de verschillende componenten van het installatiesysteem van Debian kunt u vinden in <a class="xref" href="ch06s03.html" title="6.3. Individuele componenten gebruiken">Paragraaf 6.3, “Individuele componenten gebruiken”</a>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-l10n"></a>B.4.1. Lokalisatie</h3></div></div></div>
+<p>Tijdens een gewone installatie worden de vragen over lokalisatie eerst gesteld, en dus kunnen deze waarden enkel vooraf geconfigureerd worden via de methode met initrd of via kernelopstartparameters. De modus auto (<a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Automatische modus">Paragraaf B.2.3, “Automatische modus”</a>) stelt <code class="literal">auto-install/enable=true</code> in (gewoonlijk via de preconfiguratiealias <code class="literal">auto</code>). Dit stelt de lokalisatievragen uit, zodat ze vooraf geconfigureerd kunnen worden met gelijk welke methode. </p>
+<p>Het taalgebied kan gebruikt worden om zowel de taal als het land te specificeren en kan om het even welke combinatie zijn van een door <code class="classname">debian-installer</code> ondersteunde taal en een erkend land. Indien de combinatie van beide elementen geen geldig taalgebied is, zal het installatiesysteem zelf automatisch een taalgebied selecteren dat geldig is voor de geselecteerde taal, Om het taalgebied via een opstartparameter te specificeren, gebruikt u bijvoorbeeld <strong class="userinput"><code>locale=<em class="replaceable"><code>nl_BE.UTF-8</code></em></code></strong> (of nl_NL). </p>
+<p>Hoewel deze methode makkelijk in gebruik is, laat ze niet toe om in een preconfiguratie alle mogelijke combinaties van taal, land en taalgebied<a href="#ftn.id4246" class="footnote" name="id4246"><sup class="footnote">[20]</sup></a> te vormen. Als alternatieve mogelijkheid kunt u dus de verschillende waarden apart preconfigureren. Taal en land kunnen ook als opstartparameters opgegeven worden. </p>
+<div class="informalexample"><pre class="screen"># Enkel locale (taalgebied) preconfigureren stelt zowel taal, land als taalgebied
+# in.
+d-i debian-installer/locale string en_US.UTF-8
+
+# Met het oog op meer flexibiliteit kunnen de waarden ook apart
+  gepreconfigureerd worden.
+#d-i debian-installer/language string en
+#d-i debian-installer/country string NL
+#d-i debian-installer/locale string en_GB.UTF-8
+# Eventueel kunt u ook extra te genereren taaldefinities opgeven.
+#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
+</pre></div>
+<p>
+
+</p>
+<p>Het configureren van het toetsenbord behelst het selecteren van een toetsenbordindeling en (voor niet-Latijnse toetsenbordindelingen) een schakeltoets om te wisselen tussen de niet-Latijnse toetsenbordindeling en de US-toetsenbordindeling. Enkel de basisvarianten van de toetsenbordindelingen zijn tijdens het installatieproces beschikbaar. Meer gespecialiseerde varianten kunnen enkel op het geïnstalleerde systeem beschikbaar gemaakt worden met behulp van het commando <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span>. </p>
+<div class="informalexample"><pre class="screen"># Toetsenbordselectie.
+d-i keyboard-configuration/xkb-keymap select us
+# d-i keyboard-configuration/toggle select No toggling
+</pre></div>
+<p>
+
+</p>
+<p>Om de toetsenbordconfiguratie over te slaan, gebruikt u de preconfiguratie <code class="classname">keymap</code> met <strong class="userinput"><code>skip-config</code></strong>. Het resultaat is dat de toetsenbordindeling van de kernel actief blijft. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-speech"></a>B.4.2. Spraaksynthese</h3></div></div></div>
+<p>Bij een installatie met softwarematige spraaksynthese (d.w.z. als <code class="literal">speakup.synth=soft</code> doorgegeven wordt op de opdrachtregel van de kernel) kunnen het geluidsbord en de te gebruiken stem vooraf worden geconfigureerd. </p>
+<p>Omdat spraaksynthese al heel vroeg wordt gestart, kan ze alleen vooraf geconfigureerd worden via initrd of de opdrachtregel van de kernel. </p>
+<p>Vooraf configureren van <code class="literal">espeakup/voice</code> maakt het ook mogelijk het geïnstalleerde systeem te configureren met spraaktoegankelijkheidsfuncties. Dit heeft effect zelfs als softwarematige spraaksynthese niet daadwerkelijk was ingeschakeld in het installatiesysteem. </p>
+<div class="informalexample"><pre class="screen"># Te gebruiken ALSA-kaart voor software-spraak.
+# Kan een getal vanaf 0 zijn of een ID zoals in
+# /sys/class/sound/card*/id
+#d-i espeakup/card string 0
+
+# Te gebruiken stem voor espeak-ng
+
+#d-i espeakup/voice string nl
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network"></a>B.4.3. Netwerkconfiguratie</h3></div></div></div>
+<p>Uiteraard zal het configureren van het netwerk via een antwoordbestand niet lukken als u het antwoordbestand over het netwerk moet ophalen. Maar het gaat perfect als u opstart van een optische schijf of een USB-stick. Als u antwoordbestanden ophaalt over het netwerk, kunt u configuratieparameters voor het netwerk opgeven onder de vorm van opstartparameters voor de kernel. </p>
+<p>Indien u een specifieke netwerkkaart moet gebruiken bij het opstarten over het netwerk vooraleer een antwoordbestand via het netwerk opgehaald wordt, moet u een opstartparameter gebruiken zoals <strong class="userinput"><code>interface=<em class="replaceable"><code>eth1</code></em></code></strong>. </p>
+<p>De configuratie van het netwerk vooraf instellen is normaal gezien niet mogelijk als u met een antwoordbestand op het netwerk werkt (met <span class="quote">“<span class="quote">preseed/url</span>”</span>). U kunt echter het volgende trucje toepassen om dit te omzeilen, bijvoorbeeld als u een statisch adres wilt instellen voor de netwerkkaart. De truc bestaat erin om af te dwingen dat de netwerkconfiguratie opnieuw uitgevoerd wordt nadat het antwoordbestand geladen is door een <span class="quote">“<span class="quote">preseed/run</span>”</span>-script te maken dat de volgende commando's bevat: </p>
+<div class="informalexample"><pre class="screen">kill-all-dhcp; netcfg
+</pre></div>
+<p>
+
+</p>
+<p>De volgende debconf-variabelen zijn relevant voor de configuratie van het netwerk. </p>
+<div class="informalexample"><pre class="screen"># Netwerkconfiguratie volledig uitschakelen. Dit is nuttig
+# voor installaties met cd op een niet met een netwerk verbonden
+# systeem waarbij vragen en waarschuwingen over een netwerk
+# en ermee verband houdende lange wachttijden storend zijn.
+#d-i netcfg/enable boolean false
+
+# netcfg zal waar mogelijk een netwerkkaart kiezen met een verbinding.
+# Daardoor wordt geen lijst getoond in het geval van meerdere netwerkkaarten.
+d-i netcfg/choose_interface select auto
+
+# Om daarentegen een specifieke netwerkkaart uit te pikken:
+#d-i netcfg/choose_interface select eth1
+
+# Om de wachttijd bij het detecteren van een verbinding
+# te wijzigen (standaard ingesteld op 3 seconden).
+# De waarde wordt in seconden geïnterpreteerd.
+#d-i netcfg/link_wait_timeout string 10
+
+# Dit kan nuttig zijn als u een trage dhcp-server heeft,
+# waardoor het installatiesysteem het wachten opgeeft.
+#d-i netcfg/dhcp_timeout string 60
+#d-i netcfg/dhcpv6_timeout string 60
+
+# Automatische netwerkconfiguratie is de standaard.
+# Als u het netwerk zelf wilt configureren, moet u het commentaarteken
+# verwijderen bij deze regel en ook hieronder bij de configuratie van
+# het statische netwerk.
+#d-i netcfg/disable_autoconfig boolean true
+
+# Als u het antwoordbestand zowel in een omgeving met als zonder dhcp-server
+# wilt gebruiken moet u het commentaarteken verwijderen bij deze regels
+# en hieronder bij de configuratie van het statische netwerk.
+#d-i netcfg/dhcp_failed note
+#d-i netcfg/dhcp_options select Configure network manually
+
+# Configuratie van een statisch netwerk.
+#
+# IPv4-voorbeeld
+#d-i netcfg/get_ipaddress string 192.168.1.42
+#d-i netcfg/get_netmask string 255.255.255.0
+#d-i netcfg/get_gateway string 192.168.1.1
+#d-i netcfg/get_nameservers string 192.168.1.1
+#d-i netcfg/confirm_static boolean true
+#
+# IPv6-voorbeeld
+#d-i netcfg/get_ipaddress string fc00::2
+#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::
+#d-i netcfg/get_gateway string fc00::1
+#d-i netcfg/get_nameservers string fc00::1
+#d-i netcfg/confirm_static boolean true
+
+# Computernamen en domeinnamen die via dhcp toegekend worden
+# hebben voorrang op de hier ingestelde waarden. Deze waarden
+# instellen voorkomt echter dat vragen hierover getoond worden,
+# zelfs ook als de waarden via dhcp verkregen worden.
+d-i netcfg/get_hostname string niet-toegekende-computernaam
+d-i netcfg/get_domain string niet-toegekend-domein
+
+# Indien u een computernaam wilt opleggen, ongeacht wat de DHCP-server
+# zegt of wat een terugwaartse DNS-opzoeking op basis van het IP-adres
+# oplevert, moet u de onderstaande regel aanpassen
+# en het commentaarteken ervoor verwijderen.
+#d-i netcfg/hostname string willekeurige-computernaam
+
+# Die vervelende vraag naar een WEP-sleutel uitzetten.
+d-i netcfg/wireless_wep string
+# De ongerijmde dhcp-computernaam die sommige ISP's
+# als een soort van wachtwoord gebruiken.
+#d-i netcfg/dhcp_hostname string radijs
+
+# Als u het opzoeken van firmware volledig wilt uitschakelen
+# (d.w.z. geen firmwarebestanden of pakketten gebruiken die
+# mogelijk beschikbaar zijn op installatie-images):
+#d-i hw-detect/firmware-lookup string never
+
+# Indien niet-vrije firmware nodig is voor het netwerk of voor
+# andere hardware, kunt u het installatiesysteem zodanig configureren
+# dat het die altijd zonder vragen tracht te laden. Of u kunt de waarde
+# instellen op false om het stellen van de vraag uit te schakelen.
+#d-i hw-detect/load_firmware boolean true
+</pre></div>
+<p>Merk op dat <span class="command"><strong>netcfg</strong></span> het netwerkmasker automatisch zal vaststellen als <code class="classname">netcfg/get_netmask</code> niet vooraf geconfigureerd is. In dergelijk geval moet bij automatische installaties de variabele als <code class="literal">seen</code> gemarkeerd worden. Evenzo zal <span class="command"><strong>netcfg</strong></span> een passend adres kiezen als <code class="classname">netcfg/get_gateway</code> niet ingesteld werd. Een bijzondere toepassing is dat u <code class="classname">netcfg/get_gateway</code> kunt instellen op <span class="quote">“<span class="quote">none</span>”</span> om aan te geven dat er geen gateway gebruikt moet worden. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-network-console"></a>B.4.4. Netwerkconsole</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Gebruik de volgende instellingen als u de netwerkconsolecomponent
+# wilt gebruiken voor een installatie vanop afstand via SSH. Dit is
+# enkel zinvol als u de rest van de installatie handmatig wilt uitvoeren.
+#d-i anna/choose_modules string network-console
+#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-sleutel
+#d-i network-console/password password IkBenr00t
+#d-i network-console/password-again password IkBenr00t
+</pre></div>
+<p>Meer informatie in verband met network-console is te vinden in <a class="xref" href="ch06s03.html#network-console" title="6.3.10. Installatie over netwerk-console">Paragraaf 6.3.10, “Installatie over netwerk-console”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-mirror"></a>B.4.5. Spiegelserverinstellingen</h3></div></div></div>
+<p>Afhankelijk van de installatiemethode die u gebruikt, kan een spiegelserver gebruikt worden om bijkomende componenten van het installatiesysteem op te halen, om het basissysteem te installeren of om het bestand <code class="filename">/etc/apt/sources.list</code> op het geïnstalleerde systeem in te stellen. </p>
+<p>De parameter <code class="classname">mirror/suite</code> bepaalt welke suite (voorbeelden zijn stable, testing, enz.) op het geïnstalleerde systeem gebruikt wordt. </p>
+<p>De parameter <code class="classname">mirror/udeb/suite</code> bepaalt welke suite gebruikt moet worden voor de bijkomende componenten van het installatiesysteem. Het is enkel zinvol om dit in te stellen als er inderdaad componenten over het netwerk opgehaald worden. De ingestelde waarde moet overeenkomen met de suite die gebruikt werd voor het bouwen van het initrd van de gebruikte installatiemethode. Normaal gezien kiest het installatiesysteem automatisch de correcte waarde en is het niet nodig om deze in te stellen. </p>
+<div class="informalexample"><pre class="screen"># Spiegelserver-protocol:
+# Indien u ftp selecteert, moet de waarde voor mirror/country niet ingesteld worden.
+# Standaardwaarde voor het spiegelserver-protocol: http.
+#d-i mirror/protocol string ftp
+d-i mirror/country string manual
+d-i mirror/http/hostname string ftp.nl.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+# Te installeren suite.
+#d-i mirror/suite string testing
+# Te gebruiken suite voor het ophalen van componenten van het installatiesysteem (facultatief).
+#d-i mirror/udeb/suite string testing
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-account"></a>B.4.6. Accounts instellen</h3></div></div></div>
+<p>Het wachtwoord voor het account van root (de systeembeheerder) en de naam en het wachtwoord van de eerste gewone gebruiker kunnen vooraf geconfigureerd worden. Voor de wachtwoorden kunt u ofwel gebruik maken van waarden in ongecodeerde tekst of in crypt(3) <span class="emphasis"><em>hashes</em></span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>U moet weten dat wachtwoorden vooraf configureren via een antwoordbestand niet volledig veilig is, aangezien iedereen die toegang heeft tot het antwoordbestand deze wachtwoorden kan kennen. Het opslaan van wachtwoorden in de vorm van een hashcode wordt als veilig beschouwd tenzij een zwak hashalgoritme gebruikt wordt, zoals DES of MD5. Deze kunnen met brute kracht gekraakt worden. Aanbevolen algoritmes voor het hashen van wachtwoorden zijn SHA-256 en SHA512. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Sla het aanmaken van het account van root over.
+# (het account van de gewone gebruiker zal sudo kunnen gebruiken).
+#d-i passwd/root-login boolean false
+# Als u daarentegen het aanmaken van het account
+# voor de gewone gebruiker wilt overslaan.
+#d-i passwd/make-user boolean false
+
+# Wachtwoord van root, ofwel in ongecodeerde tekst
+#d-i passwd/root-password password IkBenr00t
+#d-i passwd/root-password-again password IkBenr00t
+# ofwel geëncrypteerd met een crypt(3) hash.
+#d-i passwd/root-password-crypted password [crypt(3) hash]
+
+# Om een account voor een gewone gebruiker aan te maken.
+#d-i passwd/user-fullname string Gebruiker van Debian
+#d-i passwd/username string gebruiker
+# Wachtwoord van de gewone gebruiker, ofwel in ongecodeerde tekst
+#d-i passwd/user-password password niet-veilig
+#d-i passwd/user-password-again password niet-veilig
+# ofwel geëncrypteerd met een crypt(3) hash.
+#d-i passwd/user-password-crypted password [crypt(3) hash]
+# Maak de eerste gebruiker aan met het opgegeven UID in plaats van de standaard.
+#d-i passwd/user-uid string 1010
+
+# Het account van de gewone gebruiker wordt standaard toegevoegd
+# aan een aantal groepen. Om dit aan te passen gebruikt u het volgende.
+#d-i passwd/user-default-groups string audio cdrom video
+</pre></div>
+<p>De variabelen <code class="classname">passwd/root-password-crypted</code> en <code class="classname">passwd/user-password-crypted</code> kunt u in de preconfiguratie ook de waarde <span class="quote">“<span class="quote">!</span>”</span> geven. In dat geval wordt het betreffende account uitgeschakeld. Dit kan handig zijn voor het account van root, uiteraard op voorwaarde dat een andere methode ingesteld wordt om het uitvoeren van beheerstaken of het inloggen van root mogelijk te maken (bijvoorbeeld door bij SSH gebruik te maken van authenticatie via een sleutel of door gebruik te maken van <span class="command"><strong>sudo</strong></span>). </p>
+<p>Het volgende commando (te vinden in het pakket <code class="classname">whois</code>) kan gebruikt worden om een SHA-512 crypt(3) hash te genereren voor een wachtwoord: </p>
+<div class="informalexample"><pre class="screen">mkpasswd -m sha-512
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-time"></a>B.4.7. Instellen van klok en tijdzone</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Bepaalt of de hardwareklok op UTC ingesteld moet worden.
+d-i clock-setup/utc boolean true
+
+# U kunt dit instellen op elke geldige waarde voor $TZ; raadpleeg voor
+# mogelijke waarden de inhoud van /usr/share/zoneinfo/.
+d-i time/zone string US/Eastern
+
+# Bepaalt of tijdens de installatie NTP moet gebruikt worden
+# om de tijd in te stellen
+d-i clock-setup/ntp boolean true
+# Te gebruiken NTP-server. De standaard voldoet hier bijna altijd.
+#d-i clock-setup/ntp-server string ntp.example.com
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-partman"></a>B.4.8. Schijfindeling</h3></div></div></div>
+<p>Wat u op het vlak van het indelen van de harde schijf kunt doen met een antwoordbestand, is gelimiteerd tot wat door <code class="classname">partman-auto</code> ondersteund wordt. U kunt ofwel kiezen voor het indelen van bestaande vrije ruimte op een harde schijf, ofwel voor het indelen van een volledige harde schijf. De indeling van de schijf kan bepaald worden door gebruik te maken van een vooraf gedefinieerd schema, van een aangepast schema uit een bestand of van een schema dat in het antwoordbestand opgenomen wordt. </p>
+<p>Het vooraf configureren van gespecialiseerde schijfindelingsopstellingen met RAID, LVM en encryptie wordt ondersteund, maar niet met de volledige flexibiliteit die beschikbaar is bij een schijfindeling tijdens een installatie zonder preconfiguratie. </p>
+<p>De hiernavolgende voorbeelden verschaffen enkel basisinformatie over het gebruik van zogenaamde schema's of recepten. Raadpleeg voor gedetailleerde informatie de bestanden <code class="filename">partman-auto-recipe.txt</code> en <code class="filename">partman-auto-raid-recipe.txt</code> uit het pakket <code class="classname">debian-installer</code>. Beide bestanden zijn ook te vinden in het <a class="ulink" href="https://salsa.debian.org/installer-team/debian-installer/tree/master/doc/devel" target="_top">depot van de broncode van <code class="classname">debian-installer</code></a>. Merk op dat tussen verschillende releases de ondersteunde functionaliteit veranderingen kan ondergaan. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>Het identificeren van schijven is afhankelijk van de volgorde waarin hun stuurprogramma's geladen worden. Indien het systeem verschillende schijven bevat, moet u er heel zeker van zijn dat de correcte schijf geselecteerd zal worden vooraleer u preconfiguratie gaat gebruiken. </p></td></tr>
+</table></div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-example"></a>B.4.8.1. Een schijfindelingsvoorbeeld</h4></div></div></div>
+<div class="informalexample"><pre class="screen"># Indien er op het systeem vrije ruimte is, kunt u ervoor
+# kiezen om enkel die in te delen. Dit wordt enkel gehonoreerd
+# als partman-auto/method (hieronder) niet ingesteld werd.
+#d-i partman-auto/init_automatically_partition select biggest_free
+
+# Een andere mogelijkheid is om op te geven dat een specifieke schijf
+# ingedeeld moet worden. Als het systeem maar één schijf heeft, zal het
+# installatiesysteem standaard die gebruiken, maar anders moet de
+# naam van de schijf opgegeven worden in het gebruikelijke
+# niet-devfs formaat (dus bijv. /dev/sda en niet bijv. /dev/discs/disc0/disc).
+# Om bijvoorbeeld de eerste SCSI/SATA harde schijf te gebruiken:
+#d-i partman-auto/disk string /dev/sda
+# Bovendien moet u de te gebruiken methode opgeven.
+# De methodes die momenteel gebruikt mogen worden, zijn:
+# - regular: de voor uw architectuur gewone schijfindelingstypes gebruiken
+# - lvm:     LVM gebruiken om de schijf in te delen
+# - crypto:  LVM gebruiken binnen een geëncrypteerde partitie
+d-i partman-auto/method string lvm
+
+# U kunt definiëren hoeveel ruimte gebruikt zal worden voor de
+# LVM-volumegroep. Dit kan een grootte, uitgedrukt in een bepaalde
+# eenheid zijn (bijv. 20 GB), een percentage van de vrije ruimte of 
+# het trefwoord 'max'.
+d-i partman-auto-lvm/guided_size string max
+
+# Indien een van de schijven die automatisch ingedeeld zal worden, een oude
+# LVM-configuratie bevat, krijgt de gebruiker normaal gezien een waarschuwing.
+# Met behulp van preconfiguratie kan men die uitzetten...
+d-i partman-lvm/device_remove_lvm boolean true
+# Hetzelfde geldt in het geval er al een software RAID aanwezig is:
+d-i partman-md/device_remove_md boolean true
+# Op dezelfde manier kan men het schrijven van de lvm-partities bevestigen.
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+# U kunt gebruik maken van een van de drie voorgedefinieerde indelingsschema's:
+# - atomic: alle bestanden in één partitie
+# - home:   aparte partitie voor /home
+# - multi:  aparte partities voor /home, /var en /tmp
+# - server: aparte partities /var en /srv; swap beperkt tot 1G
+# - small_disk: schema bedoeld voor kleine small harde schijven (onder 10GB)
+d-i partman-auto/choose_recipe select atomic
+
+# Of u kunt een eigen schema aanreiken...
+# Indien u een methode heeft om een bestand dat het schema bevat, in de
+# omgeving van debian-installer te krijgen, kunt u er gewoon naar verwijzen.
+#d-i partman-auto/expert_recipe_file string /hd-media/recipe
+
+# Is dit niet het geval, dan kunt u een volledig schema plaatsen in
+# het antwoordbestand in de vorm van één (logische) regel.
+# In dit voorbeeld wordt een kleine /boot-partitie gemaakt en een passende
+# swap-partitie, terwijl de overige ruimte naar de root-partitie gaat:
+#d-i partman-auto/expert_recipe string                         \
+#      boot-root ::                                            \
+#              40 50 100 ext3                                  \
+#                      $primary{ } $bootable{ }                \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ /boot }                     \
+#              .                                               \
+#              500 10000 1000000000 ext3                       \
+#                      method{ format } format{ }              \
+#                      use_filesystem{ } filesystem{ ext3 }    \
+#                      mountpoint{ / }                         \
+#              .                                               \
+#              64 512 300% linux-swap                          \
+#                      method{ swap } format{ }                \
+#              .
+
+# De volledige indeling van een schema of zogenaamd recept wordt
+# toegelicht in het bestand partman-auto-recipe.txt dat in het pakket
+# 'debian-installer' te vinden is en ook in het depot met de broncode van D-I.
+# Daarin wordt ook uitgelegd hoe u instellingen zoals bestandssysteemlabels
+# en volumegroepnamen moet opgeven en hoe u kunt aangeven welke fysieke
+# apparaten in een volumegroep opgenomen moeten worden.
+
+## Schijfindeling voor EFI
+# Indien uw systeem een EFI-partitie nodig heeft, zou u iets als het volgende
+# kunnen toevoegen aan het bovenstaande recept, als het eerste element van het
+# recept:
+#               538 538 1075 free                              \
+#                      $iflabel{ gpt }                         \
+#                      $reusemethod{ }                         \
+#                      method{ efi }                           \
+#                      format{ }                               \
+#               .                                              \
+#
+# Het bovenstaande fragment is voor de amd64-architectuur; voor een andere
+# architectuur kunnen de details verschillen. Het pakket 'partman-auto' in de
+# opslagruimte met de broncode van D-I bevat mogelijk een voorbeeld dat u
+# kunt volgen.
+
+# Hiermee laat u partman de schijfindeling automatisch uitvoeren zonder
+# om bevestiging te vragen, in de veronderstelling dat u het programma
+# met een van de bovenstaande methodes aangaf wat er moet gebeuren.
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# UEFI-opstart afdwingen ('BIOS-compatibiliteit' gaat verloren).
+# Standaard: false.
+#d-i partman-efi/non_efi_system boolean true
+# Ervoor zorgen dat de partitietabel GPT is - dit is vereist voor EFI
+#d-i partman-partitioning/choose_label select gpt
+#d-i partman-partitioning/default_label string gpt
+
+# In het geval er gebruik gemaakt wordt van schijfencryptie,
+# sla dan het vooraf schoonvegen van de partities over.
+#d-i partman-auto-crypto/erase_disks boolean false
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-raid"></a>B.4.8.2. Schijfindeling met RAID</h4></div></div></div>
+<p>U kunt het instellen van schijfpartities op een software RAID ook vooraf configureren. De ondersteunde RAID-niveaus zijn 0, 1, 5, 6 en 10. Ook het creëren van een aangetaste array en het opgeven van reserveapparaten worden ondersteund. </p>
+<p>Indien u RAID 1 gebruikt, kunt u vooraf configureren dat grub op alle apparaten die in de array gebruikt worden, geïnstalleerd wordt. Zie <a class="xref" href="apbs04.html#preseed-bootloader" title="B.4.12. De installatie van de bootloader">Paragraaf B.4.12, “De installatie van de bootloader”</a>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>Dit type van automatische schijfindeling kan gemakkelijk fout lopen. Het gaat ook om een functionaliteit die relatief weinig getest wordt door de ontwikkelaars van <code class="classname">debian-installer</code>. Het valt onder de verantwoordelijkheid van de gebruiker om de verschillende schema's op een correcte manier toe te passen (zodanig dat ze zin hebben en geen conflicten veroorzaken). Raadpleeg <code class="filename">/var/log/syslog</code> mocht u in de problemen komen. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Als methode moet "raid" ingesteld worden.
+#d-i partman-auto/method string raid
+# Geef de in te delen schijven op. Ze krijgen alle dezelfde indeling,
+# zodat dit enkel werkt bij schijven van dezelfde grootte.
+#d-i partman-auto/disk string /dev/sda /dev/sdb
+
+# Vervolgens moet u de fysieke partities die gebruikt moeten worden, opgeven.
+#d-i partman-auto/expert_recipe string \
+#      multiraid ::                                         \
+#              1000 5000 4000 raid                          \
+#                      $primary{ } method{ raid }           \
+#              .                                            \
+#              64 512 300% raid                             \
+#                      method{ raid }                       \
+#              .                                            \
+#              500 10000 1000000000 raid                    \
+#                      method{ raid }                       \
+#              .
+
+# Tenslotte moet u opgeven hoe de hiervoor gedefinieerde partities in de
+# RAID-opstelling gebruikt moeten worden. Gebruik voor logische partities
+# de correcte partitienummers. RAID-niveaus 0, 1, 5, 6 en 10 worden
+# ondersteund; schijven worden onderling gescheiden door "#".
+# Parameters zijn:
+#    &lt;raidtype&gt; &lt;schijfnummer&gt; &lt;reserveschijfnummer&gt; &lt;bestandssysteemtype&gt;
+#    &lt;aankoppelpunt&gt; &lt;schijven&gt; &lt;reserveschijven&gt;
+
+#d-i partman-auto-raid/recipe string \
+#    1 2 0 ext3 /                    \
+#          /dev/sda1#/dev/sdb1       \
+#    .                               \
+#    1 2 0 swap -                    \
+#          /dev/sda5#/dev/sdb5       \
+#    .                               \
+#    0 2 0 ext3 /home                \
+#          /dev/sda6#/dev/sdb6       \
+#    .
+
+# Ga voor bijkomende informatie kijken in het bestand
+# partman-auto-raid-recipe.txt uit het pakket 'debian-installer'.
+# Het is ook te vinden in het depot van de broncode van D-I.
+
+# Hiermee laat u partman de schijfindeling automatisch uitvoeren zonder
+# bevestiging te vragen.
+d-i partman-md/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+</pre></div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="preseed-partman-mount-styles"></a>B.4.8.3. De aankoppeling van partities sturen</h4></div></div></div>
+<p>Gewoonlijk worden bestandssystemen aangekoppeld op basis van hun unieke identiteitssleutel (UUID). Daardoor kunnen ze juist aangekoppeld worden, zelfs als hun schijfnaam wijzigt. UUID's zijn lang en moeilijk te lezen en dus kan het installatiesysteem, als u dat verkiest, bestandssystemen aankoppelen op basis van hun traditionele schijfnaam of op basis van een label dat u aan hen toekent. Indien u het installatiesysteem vraagt om de aankoppeling te doen op basis van een label, zal elk bestandssysteem zonder label aangekoppeld worden op basis van zijn UUID. </p>
+<p>Voor schijven met stabiele namen, zoals logische LVM-volumes, blijft gelden dat hun traditionele benaming gebruikt wordt in plaats van hun UUID. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Waarschuwing]" src="images/warning.png"></td>
+<th align="left">Waarschuwing</th>
+</tr>
+<tr><td align="left" valign="top"><p>De traditionele benaming van schijven kan veranderen op basis van de volgorde waarin de schijven bij het opstarten door de kernel ontdekt worden. Dit kan ertoe leiden dat het verkeerde bestandssysteem aangekoppeld wordt. Labels van hun kant kunnen samenvallen als u een nieuwe schijf of USB-schijf plaatst en als dit gebeurt, dan wordt het gedrag van uw systeem bij het opstarten onvoorspelbaar. </p></td></tr>
+</table></div>
+<div class="informalexample"><pre class="screen"># Het standaardgedrag is aankoppelen volgens UUID, maar u kunt ook "traditional"
+# kiezen om de traditionele schijfnamen te laten gebruiken, of "label"
+# om bestandssysteemlabels te laten gebruiken en in tweede instantie
+# terug te vallen op UUID's.
+#d-i partman/mount_style select uuid
+</pre></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-base-installer"></a>B.4.9. De installatie van het basissysteem</h3></div></div></div>
+<p>Voor dit stadium kan eigenlijk niet veel vooraf geconfigureerd worden. De enige vragen die gesteld worden, hebben betrekking op de installatie van de kernel. </p>
+<div class="informalexample"><pre class="screen"># Stel APT in om standaard geen aanbevolen pakketten te installeren.
+# Deze optie gebruiken kan een onvolledig systeem opleveren en ze zou
+# enkel door erg ervaren gebruikers toegepast mogen worden.
+#d-i base-installer/install-recommends boolean false
+
+# Het te installeren kernelimage-(meta)pakket;
+# "none" kan gebruikt worden als geen kernel geïnstalleerd moet worden.
+#d-i base-installer/kernel/image string linux-image-686
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-apt"></a>B.4.10. Apt instellen</h3></div></div></div>
+<p>Het instellen van <code class="filename">/etc/apt/sources.list</code> en het instellen van de basisopties verlopen volledig automatisch op basis van uw installatiemethode en uw eerdere antwoorden. Eventueel kunt u andere (lokale) pakketbronnen toevoegen. </p>
+<div class="informalexample"><pre class="screen"># Indien u extra installatiemedia wilt scannen, kiest u
+# (standaard: false).
+d-i apt-setup/cdrom/set-first boolean false
+
+# U kunt ervoor kiezen om niet-vrije firmware te installeren.
+#d-i apt-setup/non-free-firmware boolean true
+# U kunt ervoor kiezen om software uit non-free en contrib te installeren.
+#d-i apt-setup/non-free boolean true
+#d-i apt-setup/contrib boolean true
+# Verwijder het commentaarteken van de volgende regel
+# indien u in het geïnstalleerde systeem geen geactiveerde
+# sources.list-regel wenst te hebben voor een dvd/BD installatie-image
+# (regels voor een netinst- of een cd-image zullen hoe dan ook
+# uitgezet worden, ongeacht deze instelling).
+#d-i apt-setup/disable-cdrom-entries boolean true
+# Verwijder het commentaarteken als u geen netwerkspiegelserver wilt gebruiken.
+#d-i apt-setup/use_mirror boolean false
+# Selecteren welke updatediensten gebruikt moeten worden;
+# bepalen welke spiegelservers gebruikt moeten worden.
+# De hieronder gedemonstreerde waarden zijn de normale standaarden.
+#d-i apt-setup/services-select multiselect security, updates
+#d-i apt-setup/security_host string security.debian.org
+
+# Extra beschikbare lokale (local[0-9]) pakketbronnen
+#d-i apt-setup/local0/repository string \
+#       http://local.server/debian stable main
+#d-i apt-setup/local0/comment string local server
+# Aanzetten van de regels met deb-src
+#d-i apt-setup/local0/source boolean true
+# URL van de publieke sleutel van de lokale pakketbron; u moet een sleutel
+# opgeven, anders zal apt klagen over een niet-geauthenticeerde pakketbron
+# en zal in sources.list het commentaarteken dus vooraan de regel blijven staan.
+#d-i apt-setup/local0/key string http://local.server/key
+# of men kan hem inline verstrekken door de inhoud van het sleutelbestand
+# te coderen in base64 (met `base64 -w0`) en het zo op te geven:
+#d-i apt-setup/local0/key string base64://LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCi4uLgo=
+# De inhoud van het sleutelbestand wordt gecontroleerd om te zien
+# of het ASCII-gepantserd blijkt te zijn.
+# Is dat het geval, dan zal het opgeslagen worden met de extensie ".asc",
+# anders zal het de extensie '.gpg' krijgen.
+# De indeling "keybox database" wordt momenteel niet ondersteund.
+# (zie generators/60local in de broncode van apt-setup)
+
+# Standaard wil het installatiesysteem dat pakketbronnen geauthenticeerd
+# worden met een gekende gpg-sleutel. Deze instelling kan gebruikt worden om die
+# authenticatie uit te zetten. Waarschuwing: onveilig, niet aan te raden.
+#d-i debian-installer/allow_unauthenticated boolean true
+
+# Verwijder het commentaarteken om multi-architectuurconfiguratie voor i386 toe te voegen
+#d-i apt-setup/multiarch string i386
+
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-pkgsel"></a>B.4.11. Pakketselectie</h3></div></div></div>
+<p>U kunt voor elke mogelijke combinatie van beschikbare taken kiezen. Op dit ogenblik zijn de volgende taken beschikbaar: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><strong class="userinput"><code>standard</code></strong> (standaard gereedschappen) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>desktop</code></strong> (grafische werkomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>gnome-desktop</code></strong> (Gnome desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>xfce-desktop</code></strong> (XFCE desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>kde-desktop</code></strong> (KDE Plasma desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>cinnamon-desktop</code></strong> (Cinnamon desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>mate-desktop</code></strong> (MATE desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>lxde-desktop</code></strong> (LXDE desktopomgeving) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>web-server</code></strong> (webserver) </p></li>
+<li class="listitem"><p><strong class="userinput"><code>ssh-server</code></strong> (SSH-server) </p></li>
+</ul></div>
+<p>U kunt er ook voor kiezen om geen taken te installeren en op een andere manier het installeren van een aantal pakketten af te dwingen. We raden u aan om steeds de taak <strong class="userinput"><code>standard</code></strong> te installeren. </p>
+<p>Of indien u helemaal niet wenst dat het dialoogvenster van tasksel (in verband met het selecteren van taken) getoond wordt, gebruik dan de voorconfiguratie <code class="classname">pkgsel/run_tasksel</code> (in dat geval worden er geen pakketten geïnstalleerd via tasksel). </p>
+<p>Indien u individuele pakketten wenst te installeren naast de pakketten die door de taken geïnstalleerd worden, kunt u de parameter <code class="classname">pkgsel/include</code> gebruiken. De waarde van deze parameter kan een lijst van pakketten zijn die onderling gescheiden zijn door ofwel een komma of een spatie, waardoor dit ook gemakkelijk aan de commandoregel van de kernel toegepast kan worden. </p>
+<div class="informalexample"><pre class="screen">#tasksel tasksel/first multiselect standard, web-server, kde-desktop
+
+
+# Of ervoor kiezen om het tasksel-dialoogvenster helemaal niet
+# te laten weergeven (en pakketten niet zo te installeren):
+#d-i pkgsel/run_tasksel boolean false
+
+# Bijkomende individuele pakketten die geïnstalleerd moeten worden
+#d-i pkgsel/include string openssh-server build-essential
+# Of pakketten na debootstrap opgewaardeerd moeten worden.
+# Toegelaten waarden: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# U kunt ervoor kiezen dat uw systeem informatie zal terugkoppelen
+# over welke software u geïnstalleerd heeft en welke software u gebruikt.
+# De standaardinstelling is om daarover niet te rapporteren. Maar wel
+# terugkoppelen helpt het project om te bepalen welke software het
+# populairst is en op de eerste dvd geplaatst moet worden.
+#popularity-contest popularity-contest/participate boolean false
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootloader"></a>B.4.12. De installatie van de bootloader</h3></div></div></div>
+<div class="informalexample"><pre class="screen"><span class="phrase"># Grub is de bootloader (voor x86).</span>
+
+# Het is redelijk veilig om dit in te stellen. Het zorgt voor het automatisch
+# installeren van grub op de UEFI-partitie/boot record indien
+# geen ander besturingssysteem aangetroffen wordt op de machine.
+d-i grub-installer/only_debian boolean true
+
+# Hiermee laat u grub-installer grub installeren op de UEFI-partitie/boot record
+# als het ook een ander OS (besturingssysteem) aantreft. Dit is minder veilig,
+# aangezien het er misschien niet in slaagt om dat ander OS op te starten.
+d-i grub-installer/with_other_os boolean true
+
+# Meer bepaald wegens het feit dat er misschien USB-sticks gebruikt worden,
+# is het in het algemeen niet mogelijk om de primaire schijf precies te
+# lokaliseren en dus moet deze opgegeven worden:
+#d-i grub-installer/bootdev  string /dev/sda
+# Om de installatie op de eerste schijf uit te voeren
+# (in de veronderstelling dat dit geen USB-stick is):
+#d-i grub-installer/bootdev  string default
+
+# Als u daarentegen de installatie op een andere locatie dan op de
+# UEFI-partitie/boot record wilt uitvoeren, moet u bij deze regels
+# het commentaarteken verwijderen en hun inhoud aanpassen:
+#d-i grub-installer/only_debian boolean false
+#d-i grub-installer/with_other_os boolean false
+#d-i grub-installer/bootdev  string (hd0,1)
+# Om grub op verschillende schijven te installeren:
+#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)
+
+# Facultatief wachtwoord voor grub, ofwel in ongecodeerde tekst
+#d-i grub-installer/password password IkBenr00t
+#d-i grub-installer/password-again password IkBenr00t
+# of geëncrypteerd met een MD5-hash; zie grub-md5-crypt(8).
+#d-i grub-installer/password-crypted password [MD5 hash]
+
+# Gebruik de volgende optie om extra opstartparameters voor het geïnstalleerde
+# systeem toe te voegen (als het installatieprogramma van de bootloader
+# dit ondersteunt).
+# Noot: aan het installatiesysteem opgegeven opties worden automatisch
+# toegevoegd.
+#d-i debian-installer/add-kernel-opts string nousb
+</pre></div>
+<p>Een MD5-hash voor een wachtwoord voor <code class="classname">grub</code> kan automatissch gegenereerd worden met <span class="command"><strong>grub-md5-crypt</strong></span> of met het commando uit het voorbeeld in <a class="xref" href="apbs04.html#preseed-account" title="B.4.6. Accounts instellen">Paragraaf B.4.6, “Accounts instellen”</a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-finish"></a>B.4.13. De installatie afronden</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Tijdens een installatie vanaf een seriële console, worden normaal de
+# gewone virtuele consoles (VT1-VT6) uitgezet in /etc/inittab.
+# Verwijder het commentaarteken van de volgende regel om dit te voorkomen.
+#d-i finish-install/keep-consoles boolean true
+
+# Vermijd de laatste melding die zegt dat de installatie afgerond is.
+d-i finish-install/reboot_in_progress note
+
+# Dit zal voorkomen dat het installatiesysteem de schijf uitwerpt bij het herstarten,
+# wat in sommige situaties nuttig kan zijn.
+#d-i cdrom-detect/eject boolean false
+
+# Op de volgende manier laat u het installatiesysteem afsluiten als het klaar
+# is, zonder dat nadien het geïnstalleerde systeem opgestart wordt.
+#d-i debian-installer/exit/halt boolean true
+# Hiermee stopt u de machine niet alleen, maar zet u ze ook uit.
+#d-i debian-installer/exit/poweroff boolean true
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-other"></a>B.4.14. Andere pakketten vooraf configureren</h3></div></div></div>
+<div class="informalexample"><pre class="screen"># Onder invloed van welke software u installeert, of indien er zaken fout lopen
+# tijdens het installatieproces, is het mogelijk dat andere vragen gesteld
+# worden.
+# Ook hiervoor kunt u uiteraard de antwoorden vooraf configureren.
+# Om een overzicht te bekomen van alle mogelijke vragen die tijdens
+# een installatie gesteld kunnen worden, moet u een installatie
+# uitvoeren en nadien de volgende commando's geven:
+#   debconf-get-selections --installer &gt; bestand
+#   debconf-get-selections &gt;&gt; bestand
+</pre></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4246" class="footnote"><p><a href="#id4246" class="para"><sup class="para">[20] </sup></a> Als u bijvoorbeeld in de preconfiguratie <code class="literal">locale</code> zou instellen op <strong class="userinput"><code>en_NL</code></strong>, zou dit resulteren in <code class="literal">en_US.UTF-8</code> als standaardtaalgebied voor het geïnstalleerde systeem. Indien u bijvoorbeeld <code class="literal">en_GB.UTF-8</code> wenselijker zou vinden, zou u de individuele waarden apart moeten preconfigureren. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs03.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs05.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.3. Een antwoordbestand aanmaken </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> B.5. Opties voor gevorderden</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

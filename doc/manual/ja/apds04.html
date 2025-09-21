@@ -1,0 +1,135 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="apd.html" title="付録D 雑多な事柄">
+<link rel="prev" href="apds03.html" title="D.3. Unix/Linux システムからの Debian GNU/Linux のインストール">
+<link rel="next" href="apds05.html" title="D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">付録D 雑多な事柄</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="plip"></a>D.4. パラレルライン IP (PLIP) による Debian GNU/Linux のインストール</h2></div></div></div>
+<p>本節では、イーサネットカードがなくても、リモートゲートウェイコンピュータにヌルモデムケーブル (ヌルプリンタケーブルとも呼ばれます) で接続して Debian GNU/Linux をコンピュータにインストールする方法を説明します。ゲートウェイコンピュータは、Debian ミラーがあるネットワーク (例: インターネット) に接続していなければなりません。 </p>
+<p>この付録の例では、ダイアルアップ接続 (ppp0) でインターネットに接続したゲートウェイを用いて、PLIP 接続を設定します。target システムと source システムそれぞれの PLIP インターフェースに対して、192.168.0.1 と 192.168.0.2 の IP アドレスを使用します。(このアドレスは、あなたのネットワークアドレス空間で使われていてはいけません) </p>
+<p>PLIP 接続をインストール中に設定しておくと、インストールしたシステムを再起動したときに有効になります。(<a class="xref" href="ch07.html" title="第7章 新しい Debian システムを起動してみる">7章<i>新しい Debian システムを起動してみる</i></a> をご覧ください) </p>
+<p>始める前に、source システム、target システムの双方で、パラレルポートの BIOS 設定 (IO ベースアドレスと IRQ) をチェックする必要があります。よく使用される共通の値は、<code class="literal">io=0x378</code>, <code class="literal">irq=7</code> です。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5101"></a>D.4.1. 必要な物</h3></div></div></div>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Debian をインストールする対象コンピュータ。(<span class="emphasis"><em>target</em></span> と呼びます) </p></li>
+<li class="listitem"><p>システムをインストールするメディア。<a class="xref" href="ch02s04.html" title="2.4. インストールに利用できるメディア">「インストールに利用できるメディア」</a> をご覧ください。 </p></li>
+<li class="listitem"><p>ゲートウェイとして機能する、インターネットに繋がっている別のコンピュータ。(<span class="emphasis"><em>source</em></span> と呼びます) </p></li>
+<li class="listitem"><p>DB-25 ヌルモデムケーブル。このケーブルの詳細や自分で作成する方法については、<a class="ulink" href="http://www.tldp.org/HOWTO/PLIP-Install-HOWTO.html" target="_top">PLIP-Install-HOWTO</a> をご覧ください。 </p></li>
+</ul></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5116"></a>D.4.2. source のセットアップ</h3></div></div></div>
+<p>以下のシェルスクリプトは、source コンピュータをインターネットへのゲートウェイ (ppp0 利用) に設定する簡単なサンプルです。 </p>
+<div class="informalexample"><pre class="screen">#!/bin/sh
+
+# We remove running modules from kernel to avoid conflicts and to
+# reconfigure them manually.
+# (カーネルから競合するモジュールを取り除き、手動で再設定します)
+modprobe -r lp parport_pc
+modprobe parport_pc io=<em class="replaceable"><code>0x378</code></em> irq=<em class="replaceable"><code>7</code></em>
+modprobe plip
+
+# Configure the plip interface (plip0 for me, see dmesg | grep plip)
+# (plip インターフェースの設定 (私の環境では plip0。dmesg | grep plip 参照))
+ifconfig <em class="replaceable"><code>plip0 192.168.0.2</code></em> pointopoint <em class="replaceable"><code>192.168.0.1</code></em> netmask 255.255.255.255 up
+
+# Configure gateway
+# (ゲートウェイの設定)
+modprobe iptable_nat
+iptables -t nat -A POSTROUTING -o <em class="replaceable"><code>ppp0</code></em> -j MASQUERADE
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5126"></a>D.4.3. target のインストール</h3></div></div></div>
+<p>インストールメディアで起動してください。インストールするには、エキスパートモードで動作する必要があります。ブートプロンプトで <strong class="userinput"><code>expert</code></strong> と入力してください。カーネルモジュールにパラメータをセットする必要がある場合は、ブートプロンプトにさらに設定しなければなりません。例えばインストーラ起動時に、parport_pc モジュールに <span class="quote">「<span class="quote">io</span>」</span> オプションと <span class="quote">「<span class="quote">irq</span>」</span> オプションを渡す場合、以下のようにブートプロンプトに入力します。</p>
+<div class="informalexample"><pre class="screen">
+expert parport_pc.io=<em class="replaceable"><code>0x378</code></em> parport_pc.irq=<em class="replaceable"><code>7</code></em>
+</pre></div>
+<p> 以下は、インストール中の各段階で与える値です。 </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">インストーラコンポーネントをインストールメディアからロード</span>
+
+</p>
+<p>一覧から <strong class="userinput"><code>plip-modules</code></strong> オプションを選択してください。これにより、インストールするシステムで PLIP ドライバが使用可能になります。 </p>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">ネットワークハードウェアの検出</span>
+
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>target にネットワークカードが<span class="emphasis"><em>ある</em></span>場合、ドライバモジュール一覧に検出したカードが表示されます。<code class="classname">debian-installer</code> で plip を使用するよう強制するには、一覧にあるドライバモジュールの選択をすべてはずさなくてはなりません。言うまでもありませんが、target にネットワークカードがなければ、このリストには何も現れません。 </p></li>
+<li class="listitem"><p>ネットワークカードの検出・選択が行われないと、インストーラは、ネットワークドライバモジュールを一覧から選択するようにうながします。<strong class="userinput"><code>plip</code></strong> モジュールを選択してください。 </p></li>
+</ul></div>
+</li>
+<li class="listitem">
+<p>
+
+<span class="guimenuitem">ネットワークの設定</span>
+ 
+ </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>「DHCP でネットワークを自動的に設定していますか」には「いいえ」と答えます。 </p></li>
+<li class="listitem"><p>「IP アドレス」は <strong class="userinput"><code><em class="replaceable"><code>192.168.0.1</code></em></code></strong> とします。 </p></li>
+<li class="listitem"><p>「Point-to-Point アドレス」は <strong class="userinput"><code><em class="replaceable"><code>192.168.0.2</code></em></code></strong> とします。 </p></li>
+<li class="listitem"><p>「ネームサーバアドレス」には、source で使用しているのと同じアドレスを指定します。(<code class="filename">/etc/resolv.conf</code> をご覧ください) </p></li>
+</ul></div>
+<p>
+
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.3. Unix/Linux システムからの Debian GNU/Linux のインストール </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> D.5. PPP over Ethernet (PPPoE) を用いた Debian GNU/Linux のインストール</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

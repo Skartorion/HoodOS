@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.4. 让您的系统使用 E-Mail</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch08.html" title="第 8 章 下一步该干什么">
+<link rel="prev" href="ch08s03.html" title="8.3. 更多信息">
+<link rel="next" href="ch08s05.html" title="8.5. 编译新内核">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.4. 让您的系统使用 E-Mail</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 8 章 下一步该干什么</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="mail-setup"></a>8.4. 让您的系统使用 E-Mail</h2></div></div></div>
+<p>今天，email 是许多人生活中一个重要的组成部分。建立它有很多种选择，并且对于很多 Debian 工具如何设置正确非常重要，我们将在本节介绍一些基本的知识。 </p>
+<p>e-mail 系统共有三个主要的组成功能。首先是 <em class="firstterm">Mail User Agent</em> (MUA)，这是用户发送和读取邮件的程序。然后是 <em class="firstterm">Mail Transfer Agent</em> (MTA)，用来将邮件从一台计算机传递到另一台。最后是 <em class="firstterm">Mail Delivery Agent</em> (MDA)，用于将收到的邮件投递到用户的收件箱。 </p>
+<p>这三项功能可以由不同的程序执行，但也能合并到一个或两个程序里。还可以用不同的程序处理不同类型的邮件。 </p>
+<p>在 Linux 和 Unix 系统上 <span class="command"><strong>mutt</strong></span> 是历史悠久的常用 MUA。像其他传统的 Linux 程序一样，是基于纯文本的。它常与作为 MTA 的 <span class="command"><strong>exim</strong></span> 或 <span class="command"><strong>sendmail</strong></span>、作为 MDA 的 <span class="command"><strong>procmail</strong></span> 一起使用。 </p>
+<p>配合逐步流行的图形桌面系统，使用图形 e-mail 程序，像 GNOME 的 <span class="command"><strong>evolution</strong></span>、KDE 的 <span class="command"><strong>kmail</strong></span> 或 Mozilla 的 <span class="command"><strong>thunderbird</strong></span> 已经变得更流行。这些程序综合了 MUA、MTA 和 MDA 的功能，但也能 — 而且通常是 — 与传统的 Linux 工具一起使用。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-default"></a>8.4.1. 默认的 E-Mail 配置</h3></div></div></div>
+<p>即使您打算使用图形界面的邮件程序，安装传统的 MTA/MDA 并正确架设在您的 Debian GNU/Linux 系统上会是很有用的。其原因是很多运行在系统中的工具<a href="#ftn.id3666" class="footnote" name="id3666"><sup class="footnote">[16]</sup></a> 会通过邮件发送重要的提示通知系统管理员潜在的问题或变化。 </p>
+<p>对此，您可以通过使用 <span class="command"><strong>apt install exim4 mutt</strong></span> ，来安装 <code class="classname">exim4</code> 和 <code class="classname">mutt</code> 。 <code class="classname">exim4</code> 组合了 MTA/MDA 功能并相对小巧和灵活。它默认配置为只处理系统本地的 e-mail，系统管理员(root 帐号)的 e-mail 地址会发送到安装时创建的普通用户帐号<a href="#ftn.id3677" class="footnote" name="id3677"><sup class="footnote">[17]</sup></a>。 </p>
+<p>当系统邮件传递后，它们会添加到一个 <code class="filename">/var/mail/<em class="replaceable"><code>account_name</code></em></code> 文件。这些邮件可以通过 <span class="command"><strong>mutt</strong></span> 读取。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="mail-outgoing"></a>8.4.2. 发送邮件到系统之外</h3></div></div></div>
+<p>前面提到，安装的 Debian 系统只架设了处理本地系统的邮件，而不是用于发送或接收其他系统的邮件。 </p>
+<p>如果您希望使用 <code class="classname">exim4</code> 来处理外部邮件，请参考下一小节中可以使用的基本配置选项。确认邮件可以正确地发送和接收。 </p>
+<p>如果您打算使用图形界面的邮件程序，并使用您的 Internet Service Provider (ISP) 或公司提供的邮件服务器，就不需要配置 <code class="classname">exim4</code> 来处理外部 e-mail。只须配置您喜爱的图形界面邮件程序使用正确的服务器来发送和接收 e-mail (配置方法超出了本手册的范围)。 </p>
+<p>但是，这种情况下您可能还是要配置一些独立的工具来正确发送 e-mails。其中一个这样的工具是 <span class="command"><strong>reportbug</strong></span>，该程序的功能是提交 Debian 软件包对应的 bug 报告。它默认是使用 <code class="classname">exim4</code> 来提交 bug 报告。 </p>
+<p>要正确设置 <span class="command"><strong>reportbug</strong></span> 使用外部的邮件服务器，请执行 <span class="command"><strong>reportbug --configure</strong></span> 命令，并对是否 MTA 可用问题回答 <span class="quote">“<span class="quote">no</span>”</span>。您接着将会被问到使用哪个 SMTP 服务器来提交 bug 报告。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="config-mta"></a>8.4.3. 配置 Exim4 MTA</h3></div></div></div>
+<p>假如您还打算让系统处理外部 e-mail，需要重新配置 <code class="classname">exim4</code> 软件包<a href="#ftn.id3702" class="footnote" name="id3702"><sup class="footnote">[18]</sup></a>： </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure exim4-config
+</pre></div>
+<p>
+
+</p>
+<p>输入命令之后(作为 root)，您会被问到是否需要将配置文件分成几个小文件。如果您拿不准，就选择默认选项。 </p>
+<p>接着您将看到几个常见的邮件方案，请选择一个最近似您需求的那个。 </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">internet site</span></dt>
+<dd><p>您的系统被连接到网络上，并且您通过 SMTP 直接收发邮件。在接下来的几页中，程序会询问您一些基本问题，如：您的机器的邮件名称、您接受或转发邮件的域等等。 </p></dd>
+<dt><span class="term">mail sent by smarthost</span></dt>
+<dd>
+<p>本方案中您的送出邮件转发到另一台机器，称为 <span class="quote">“<span class="quote">smarthost</span>”</span>，它来负责发送信息到最终目的地。smarthost 一般还用于保存您的计算机接收的邮件，所以您不需要长时间在线。这也意味着您需要使用类似 fetchmail 这样的程序从 smarthost 下载邮件。 </p>
+<p>大多时候 smarthost 是您 ISP 的邮件服务器，这对拨号用户非常适合。它也可以是公司的邮件服务器，或是您自己网络中的另外一台机器。 </p>
+</dd>
+<dt><span class="term">mail sent by smarthost; no local mail</span></dt>
+<dd><p>该选项基本上与前一种情况相同，只有一点不同，本系统不再架设用于处理本地的 e-mail domain。在本系统上的邮件(比如，给系统管理员的)还是会被处理。 </p></dd>
+<dt><span class="term">local delivery only</span></dt>
+<dd><p>本选项是系统默认的配置。 </p></dd>
+<dt><span class="term">no configuration at this time</span></dt>
+<dd><p>除非您真的知道这是在干什么，否则请不要选择这一选项。这会留下一个未配置的邮件系统 — 在您再次配置它之前，您都无法收发任何邮件，并且可能会错过一些系统工具发来的重要信息。 </p></dd>
+</dl></div>
+<p>如果没有合适的方案，或者需要更精确的设置，您需要在安装完成之后编辑 <code class="filename">/etc/exim4</code> 目录下的配置文件。有关 <code class="classname">exim4</code> 更多的信息可以在 <code class="filename">/usr/share/doc/exim4</code> 下找到；<code class="filename">README.Debian.gz</code> 里面有 <code class="classname">exim4</code> 配置方面的细节，并说明从哪里找到更多的文档。 </p>
+<p>注意，如果您没有正式的域名，直接发送邮件到互联网，因为接收服务器的反垃圾邮件策略会拒绝接收邮件。这时建议使用 ISP 的邮件服务器。假如您还想直接发送邮件，可能要用另一个邮件地址替换默认生成的那个。如果您使用的是 <code class="classname">exim4</code> 作为 MTA，可以添加一个条目到 <code class="filename">/etc/email-addresses</code>。 </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3666" class="footnote"><p><a href="#id3666" class="para"><sup class="para">[16] </sup></a> 例如：<span class="command"><strong>cron</strong></span>、<span class="command"><strong>quota</strong></span>、<span class="command"><strong>logcheck</strong></span>、<span class="command"><strong>aide</strong></span>，… </p></div>
+<div id="ftn.id3677" class="footnote"><p><a href="#id3677" class="para"><sup class="para">[17] </sup></a> 转发 root 邮件到普通用户帐号是在 <code class="filename">/etc/aliases</code> 里配置。如果没有创建普通用户帐号，邮件自然会发送给 root 帐号。</p></div>
+<div id="ftn.id3702" class="footnote"><p><a href="#id3702" class="para"><sup class="para">[18] </sup></a> 您也可以卸载 <code class="classname">exim4</code> 安装其他的 MTA/MDA。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s03.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s05.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.3. 更多信息 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 8.5. 编译新内核</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

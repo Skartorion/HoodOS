@@ -1,0 +1,801 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.3. Menggunakan Komponen Individual</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Bab 6. Menggunakan Pemasang Debian">
+<link rel="prev" href="ch06s02.html" title="6.2. Pengenalan Komponen">
+<link rel="next" href="ch06s04.html" title="6.4. Memuat Firmware yang Kurang">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.3. Menggunakan Komponen Individual</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Bab 6. Menggunakan Pemasang Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="module-details"></a>6.3. Menggunakan Komponen Individual</h2></div></div></div>
+<p>Pada bagian ini kita akan menjelaskan setiap komponen pemasang secara rinci. Komponen telah dikelompokkan ke dalam tahapan yang harus dikenali oleh pengguna. Mereka disajikan dalam urutan kemunculan selama instalasi. Perhatikan bahwa tidak semua modul akan digunakan untuk setiap instalasi; modul mana yang sebenarnya digunakan tergantung pada metode instalasi yang Anda gunakan dan pada perangkat keras Anda. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-setup"></a>6.3.1. Menyiapkan Debian Penginstal dan Konfigurasi Perangkat Keras</h3></div></div></div>
+<p>Mari kita asumsikan Pemasang Debian telah di-boot dan Anda menghadapi layar pertamanya. Pada saat ini, kemampuan <code class="classname">debian-installer</code> masih sangat terbatas. Itu tidak tahu banyak tentang perangkat keras Anda, bahasa pilihan, atau bahkan tugas yang harus dilakukan. Jangan khawatir. Karena <code class="classname">debian-installer</code> cukup pintar, secara otomatis dapat menyelidiki perangkat keras Anda, menemukan sisa komponennya dan meningkatkan dirinya ke sistem instalasi yang mumpuni. Namun, Anda masih perlu membantu <code class="classname">debian-installer</code> dengan beberapa informasi, itu tidak dapat menentukan secara otomatis (seperti memilih bahasa pilihan Anda, tata letak papan tik, atau cermin jaringan yang diinginkan). </p>
+<p>Anda akan melihat bahwa <code class="classname">debian-installer</code> melakukan <em class="firstterm">deteksi perangkat keras</em> beberapa kali selama tahap ini. Pertama kali ditargetkan secara khusus pada perangkat keras yang diperlukan untuk memuat komponen pemasang (misalnya CD-ROM atau kartu jaringan Anda). Karena tidak semua driver mungkin tersedia selama menjalankan pertama ini, deteksi perangkat keras perlu diulang nanti dalam proses. </p>
+<p>Selama deteksi perangkat keras <code class="classname">debian-installer</code> memeriksa apakah salah satu driver untuk perangkat keras di sistem Anda memerlukan firmware untuk dimuat. Jika ada firmware yang diminta tetapi tidak tersedia, dialog akan ditampilkan yang memungkinkan firmware yang kurang dimuat dari media lepasan. Lihat <a class="xref" href="ch06s04.html" title="6.4. Memuat Firmware yang Kurang">Bagian 6.4, “Memuat Firmware yang Kurang”</a> untuk rincian lebih lanjut. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="lowmem"></a>6.3.1.1. Periksa memori yang tersedia / mode memori rendah</h4></div></div></div>
+<p>Satu hal yang pertama dilakukan oleh <code class="classname">debian-installer</code> adalah memeriksa memori yang tersedia. Jika memori yang tersedia terbatas, komponen ini akan membuat beberapa perubahan dalam proses instalasi yang diharapkan akan memungkinkan Anda untuk memasang Debian GNU/Linux pada sistem Anda. </p>
+<p>Langkah pertama yang diambil untuk mengurangi konsumsi memori oleh pemasang adalah menonaktifkan terjemahan, yang berarti bahwa instalasi hanya dapat dilakukan dalam bahasa Inggris. Tentu saja, Anda masih dapat melokalkan sistem yang dipasang setelah instalasi selesai. </p>
+<p>Jika itu tidak cukup, pemasang akan lebih mengurangi konsumsi memori dengan memuat hanya komponen-komponen yang penting untuk menyelesaikan instalasi dasar. Ini mengurangi fungsionalitas sistem instalasi. Anda akan diberi kesempatan untuk memuat komponen tambahan secara manual, tetapi Anda harus menyadari bahwa setiap komponen yang Anda pilih akan menggunakan memori tambahan dan dengan demikian dapat menyebabkan instalasi gagal. </p>
+<p>Jika pemasang berjalan dalam mode memori rendah, disarankan untuk membuat partisi swap yang relatif besar (1–2GB). Partisi swap akan digunakan sebagai memori virtual dan dengan demikian meningkatkan banyaknya memori yang tersedia untuk sistem. Pemasang akan mengaktifkan partisi swap sedini mungkin dalam proses instalasi. Perhatikan bahwa penggunaan swap yang berat akan mengurangi kinerja sistem Anda dan dapat menyebabkan aktivitas disk yang tinggi. </p>
+<p>Terlepas dari langkah-langkah ini, masih mungkin bahwa sistem Anda membeku, bahwa kesalahan tak terduga terjadi atau bahwa proses dibunuh oleh kernel karena sistem kehabisan memori (yang akan menghasilkan pesan <span class="quote">“<span class="quote">Out of memory</span>”</span> pada VT4 dan di syslog). </p>
+<p>Misalnya, telah dilaporkan bahwa membuat sistem berkas ext3 besar gagal dalam mode memori rendah ketika ruang swap tidak mencukupi. Jika swap yang lebih besar tidak membantu, cobalah membuat sistem berkas sebagai ext2 (yang merupakan komponen esensial dari pemasang) sebagai gantinya. Dimungkinkan untuk mengubah partisi ext2 ke ext3 setelah instalasi. </p>
+<p>Dimungkinkan untuk memaksa pemasang untuk menggunakan tingkat lowmem yang lebih tinggi daripada yang didasarkan pada memori yang tersedia dengan menggunakan parameter boot <span class="quote">“<span class="quote">lowmem</span>”</span> seperti yang dijelaskan dalam <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Parameter Pemasang Debian">Bagian 5.3.2, “Parameter Pemasang Debian”</a>. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="localechooser"></a>6.3.1.2. Memilih Opsi Pelokalan</h4></div></div></div>
+<p>Dalam kebanyakan kasus pertanyaan pertama Anda akan ditanyai menyangkut pemilihan opsi pelokalan yang akan digunakan baik untuk instalasi maupun untuk sistem yang dipasang. Opsi pelokalan terdiri dari bahasa, lokasi, dan lokal (locale). </p>
+<p>Bahasa yang Anda pilih akan digunakan selama sisa proses instalasi, asalkan terjemahan dari dialog yang berbeda tersedia. Jika tidak ada terjemahan yang valid yang tersedia untuk bahasa yang dipilih, pemasang akan beralih ke baku bahasa Inggris. </p>
+<p>Lokasi geografis yang dipilih (dalam banyak kasus suatu negara) akan digunakan nanti dalam proses instalasi untuk memilih zona waktu yang benar dan cermin Debian yang sesuai untuk negara tersebut. Bahasa dan negara bersama-sama akan membantu menentukan lokal baku untuk sistem Anda dan memilih tata letak papan ketik yang benar. </p>
+<p>Anda pertama kali akan diminta untuk memilih bahasa. Nama bahasa tercantum dalam daftar baik dalam bahasa Inggris (sisi kiri) dan dalam bahasa itu sendiri (sisi kanan); nama-nama di sisi kanan juga ditampilkan dalam skrip yang tepat untuk bahasa tersebut. Daftar ini diurut berdasarkan nama bahasa Inggris. Di bagian atas daftar adalah opsi tambahan yang memungkinkan Anda memilih lokal <span class="quote">“<span class="quote">C</span>”</span>, bukan suatu bahasa. Memilih lokal <span class="quote">“<span class="quote">C</span>”</span> akan menyebabkan instalasi dilanjutkan dalam bahasa Inggris; sistem yang dipasang tidak akan memiliki dukungan pelokalan karena paket <code class="classname">locales</code> tidak akan dipasang. </p>
+<p>Selanjutnya Anda akan diminta untuk memilih lokasi geografis Anda. Jika Anda memilih bahasa yang diakui sebagai bahasa resmi untuk lebih dari satu negara<a href="#ftn.id3149" class="footnote" name="id3149"><sup class="footnote">[4]</sup></a>, Anda akan ditampilkan daftar hanya negara-negara tersebut. Untuk memilih negara yang tidak ada dalam daftar itu, pilih <span class="guimenuitem">yang lain</span> (opsi terakhir). Anda kemudian akan disajikan dengan daftar benua; memilih benua akan mengarah ke daftar negara yang relevan di benua itu. </p>
+<p>Jika bahasa hanya memiliki satu negara yang terkait dengannya, daftar negara akan ditampilkan untuk benua atau wilayah milik negara tersebut, dengan negara tersebut dipilih sebagai baku. Gunakan opsi <span class="guibutton">Go Back</span> untuk memilih negara di benua yang berbeda. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Penting untuk memilih negara tempat Anda tinggal atau di mana Anda berada karena menentukan zona waktu yang akan dikonfigurasi untuk sistem yang dipasang. </p></td></tr>
+</table></div>
+<p>Jika Anda memilih kombinasi bahasa dan negara yang tidak ada lokal yang didefinisikan dan ada beberapa lokal untuk bahasa tersebut, maka pemasang akan memungkinkan Anda untuk memilih mana dari situs yang Anda sukai sebagai lokal baku untuk sistem yang dipasang<a href="#ftn.id3157" class="footnote" name="id3157"><sup class="footnote">[5]</sup></a>. Dalam semua kasus lain, lokal baku akan dipilih berdasarkan bahasa dan negara yang dipilih. </p>
+<p>Setiap lokal baku yang dipilih seperti yang dijelaskan dalam paragraf sebelumnya akan menggunakan <em class="firstterm">UTF-8</em> sebagai pengodean karakter. </p>
+<p>Jika Anda memasang pada prioritas rendah, Anda akan memiliki pilihan untuk memilih lokal tambahan, termasuk yang disebut lokal <span class="quote">“<span class="quote">warisan</span>”</span><a href="#ftn.id3163" class="footnote" name="id3163"><sup class="footnote">[6]</sup></a>, yang akan dihasilkan untuk sistem yang dipasang; jika Anda melakukannya, Anda akan ditanya mana dari lokal yang dipilih harus menjadi baku untuk sistem yang dipasang. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="kbd-chooser"></a>6.3.1.3. Memilih Papan Ketik</h4></div></div></div>
+<p>Papan tik sering disesuaikan dengan karakter yang digunakan dalam suatu bahasa. Pilih tata letak yang sesuai dengan papan tik yang Anda gunakan, atau pilih sesuatu yang dekat jika tata letak papan tik yang Anda inginkan tidak terwakili. Setelah instalasi sistem selesai, Anda akan dapat memilih tata letak papan tik dari berbagai pilihan yang lebih luas (jalankan <span class="command"><strong>dpkg-reconfigure keyboard-configuration</strong></span> sebagai root setelah Anda menyelesaikan instalasi). </p>
+<p>Pindahkan sorotan ke pilihan papan tik yang Anda inginkan dan tekan <span class="keycap"><strong>Enter</strong></span>. Gunakan tombol panah untuk memindahkan sorotan — mereka berada di tempat yang sama di semua tata letak papan tik bahasa nasional, sehingga tidak tergantung pada konfigurasi papan tik. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="iso-scan"></a>6.3.1.4. Mencari Image ISO Pemasang Debian</h4></div></div></div>
+<p>Saat memasang melalui metode <span class="emphasis"><em>hd-media</em></span>, akan ada saat di mana Anda perlu menemukan dan memasang image iso Pemasang Debian untuk mendapatkan sisa berkas instalasi. Komponen <span class="command"><strong>iso-scan</strong></span> melakukan hal ini. </p>
+<p>Pada awalnya, <span class="command"><strong>iso-scan</strong></span> secara otomatis mengait semua perangkat blok (misalnya partisi dan volume logis) yang memiliki beberapa sistem berkas yang dikenal pada mereka dan secara berurutan mencari nama berkas yang diakhiri dengan <code class="filename">.iso</code> (atau dalam hal ini <code class="filename">.ISO</code>). Berhati-hatilah bahwa upaya pertama hanya memindai berkas di direktori root dan di sub direktori tingkat pertama (yaitu menemukan <code class="filename">/<em class="replaceable"><code>apa pun</code></em>.iso</code>, <code class="filename">/data/<em class="replaceable"><code>whatever</code></em>.iso</code>, tetapi tidak <code class="filename">/data/tmp/<em class="replaceable"><code>apa pun</code></em>.iso</code>). Setelah image iso ditemukan, <span class="command"><strong>iso-scan</strong></span> memeriksa kontennya untuk menentukan apakah image tersebut image iso Debian yang valid atau tidak. Dalam kasus sebelumnya kita sudah selesai, dalam yang terakhir <span class="command"><strong>iso-scan</strong></span> mencari image lain. </p>
+<p>Jika upaya sebelumnya untuk menemukan image iso pemasang gagal, <span class="command"><strong>iso-scan</strong></span> akan bertanya apakah Anda ingin melakukan pencarian yang lebih menyeluruh. Tahap ini tidak hanya melihat ke direktori paling atas, tetapi benar-benar melintasi seluruh sistem berkas. </p>
+<p>Kalau <span class="command"><strong>iso-scan</strong></span> tidak menemukan image iso pemasang Anda, reboot kembali ke sistem operasi asli Anda dan periksa apakah image diberi nama dengan benar (diakhiri dengan <code class="filename">.iso</code>), jika ditempatkan pada sistem berkas yang dapat dikenali oleh <code class="classname">debian-installer</code>, dan jika tidak rusak (verifikasi checksum). Pengguna Unix yang berpengalaman dapat melakukan ini tanpa reboot di konsol kedua. </p>
+<p>Perhatikan bahwa partisi (atau disk) yang mewadahi image ISO tidak dapat digunakan kembali selama proses instalasi karena akan digunakan oleh pemasang. Untuk mengatasi hal ini, dan asalkan Anda memiliki memori sistem yang cukup, pemasang dapat menyalin image ISO ke dalam RAM sebelum memasangnya. Ini dikendalikan oleh pertanyaan debconf <code class="literal">iso-scan/copy_iso_to_ram</code> prioritas rendah (hanya ditanyakan apakah persyaratan memori terpenuhi). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="netcfg"></a>6.3.1.5. Mengonfigurasi Jaringan</h4></div></div></div>
+<p>Saat Anda memasuki langkah ini, jika sistem mendeteksi bahwa Anda memiliki lebih dari satu perangkat jaringan, Anda akan diminta untuk memilih perangkat mana yang akan menjadi antarmuka jaringan <span class="emphasis"><em>primer</em></span> Anda, yaitu yang ingin Anda gunakan untuk instalasi. Antarmuka lain tidak akan dikonfigurasi saat ini. Anda dapat mengonfigurasi antarmuka tambahan setelah instalasi selesai; lihat halaman man <span class="citerefentry"><span class="refentrytitle">interfaces</span>(5)</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-automatic"></a>6.3.1.5.1. Konfigurasi jaringan otomatis</h5></div></div></div>
+<p>Secara baku, <code class="classname">debian-installer</code> mencoba mengonfigurasi jaringan komputer Anda secara otomatis sejauh mungkin. Jika konfigurasi otomatis gagal, itu mungkin disebabkan oleh banyak faktor mulai dari kabel jaringan yang dicabut hingga infrastruktur yang kurang untuk konfigurasi otomatis. Untuk penjelasan lebih lanjut jika terjadi kesalahan, periksa pesan kesalahan pada konsol keempat. Bagaimanapun, Anda akan ditanya apakah Anda ingin mencoba lagi, atau apakah Anda ingin melakukan pengaturan manual. Terkadang layanan jaringan yang digunakan untuk konfigurasi otomatis bisa lambat dalam responsnya, jadi jika Anda yakin semuanya sudah ada, cukup mulai upaya konfigurasi otomatis lagi. Jika konfigurasi otomatis gagal berulang kali, Anda dapat memilih pengaturan jaringan manual. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-manual"></a>6.3.1.5.2. Konfigurasi jaringan manual</h5></div></div></div>
+<p>Pengaturan jaringan manual pada gilirannya menanyakan sejumlah pertanyaan tentang jaringan Anda, terutama <code class="computeroutput">Alamat IP</code>, <code class="computeroutput">Netmask</code>, <code class="computeroutput">Gateway</code>, <code class="computeroutput">Alamat server nama</code>, dan <code class="computeroutput">Nama host</code>. Selain itu, jika Anda memiliki antarmuka jaringan nirkabel, Anda akan diminta untuk menyediakan <code class="computeroutput">ESSID Nirkabel</code> (<span class="quote">“<span class="quote">nama jaringan nirkabel</span>”</span>) dan <code class="computeroutput">kunci WEP</code> atau <code class="computeroutput">frasa sandi WPA/WPA2</code>. Isi jawaban dari <a class="xref" href="ch03s03.html" title="3.3. Informasi yang Anda Perlukan">Bagian 3.3, “Informasi yang Anda Perlukan”</a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Beberapa detail teknis mungkin, atau tidak, mudah ditemukan: program mengasumsikan alamat IP jaringan adalah bitwise-AND dari alamat IP sistem Anda dan netmask Anda. Alamat broadcast baku dihitung sebagai bitwise OR dari alamat IP sistem Anda dengan negasi bitwise dari netmask. Ini juga akan menebak gateway Anda. Jika Anda tidak dapat menemukan salah satu dari jawaban ini, gunakan baku yang ditawarkan — jika perlu, Anda dapat mengubahnya dengan mengedit <code class="filename">/etc/network/interfaces</code> setelah sistem dipasang. </p></td></tr>
+</table></div>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="netcfg-ipv4-ipv6"></a>6.3.1.5.3. IPv4 dan IPv6</h5></div></div></div>
+<p>Dari Debian GNU/Linux 7.0 (<span class="quote">“<span class="quote">Wheezy</span>”</span>) dan seterusnya, <code class="classname">debian-installer</code> mendukung IPv6 serta IPv4 <span class="quote">“<span class="quote">klasik</span>”</span>. Semua kombinasi IPv4 dan IPv6 (konfigurasi hanya IPv4, hanya IPv6, dan dual-stack) didukung. </p>
+<p>Konfigurasi otomatis untuk IPv4 dilakukan melalui DHCP (Dynamic Host Configuration Protocol). Konfigurasi otomatis untuk IPv6 mendukung konfigurasi otomatis stateless menggunakan NDP (Neighbor Discovery Protocol, termasuk penugasan server DNS rekursif (RDNSS), konfigurasi otomatis stateful melalui DHCPv6 dan konfigurasi otomatis stateless/stateful campuran (konfigurasi alamat melalui NDP, parameter tambahan melalui DHCPv6). </p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-user-setup"></a>6.3.2. Menyiapkan Pengguna dan Kata Sandi</h3></div></div></div>
+<p>Tepat sebelum mengonfigurasi jam, pemasang akan memungkinkan Anda untuk mengatur akun <span class="quote">“<span class="quote">root</span>”</span> dan/atau akun untuk pengguna pertama. Akun pengguna lain dapat dibuat setelah instalasi selesai. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="user-setup-root"></a>6.3.2.1. Mengatur Kata Sandi Root</h4></div></div></div>
+<p>Akun <span class="emphasis"><em>root</em></span> juga disebut <span class="emphasis"><em>pengguna super</em></span>; ini adalah login yang melewati semua perlindungan keamanan pada sistem Anda. Akun root hanya boleh digunakan untuk melakukan administrasi sistem, dan hanya digunakan untuk waktu sesingkat mungkin. </p>
+<p>Kata sandi apa pun yang Anda buat harus berisi setidaknya 6 karakter, dan harus berisi karakter huruf besar dan kecil, serta karakter tanda baca. Berhati-hatilah saat mengatur kata sandi root Anda, karena ini adalah akun yang sangat kuat. Hindari kata-kata kamus atau penggunaan informasi pribadi apa pun yang dapat ditebak. </p>
+<p>Jika ada yang pernah memberi tahu Anda bahwa mereka membutuhkan kata sandi root Anda, berhati-hatilah. Anda biasanya tidak boleh memberikan kata sandi root Anda, kecuali Anda mengelola mesin dengan lebih dari satu administrator sistem. </p>
+<p>Jika Anda tidak menentukan kata sandi untuk pengguna <span class="quote">“<span class="quote">root</span>”</span> di sini, akun ini akan dinonaktifkan tetapi paket <span class="command"><strong>sudo</strong></span> akan dipasang nanti untuk memungkinkan tugas administratif dilakukan pada sistem baru. Secara baku, pengguna pertama yang dibuat pada sistem akan diizinkan untuk menggunakan perintah <span class="command"><strong>sudo</strong></span> untuk menjadi root. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="make-normal-user"></a>6.3.2.2. Membuat Pengguna Biasa</h4></div></div></div>
+<p>Sistem akan menanyakan apakah Anda ingin membuat akun pengguna biasa pada saat ini. Akun ini harus menjadi login pribadi utama Anda. Anda <span class="emphasis"><em>tidak</em></span> boleh menggunakan akun root untuk penggunaan sehari-hari atau sebagai login pribadi Anda. </p>
+<p>Mengapa tidak? Nah, salah satu alasan untuk menghindari menggunakan hak istimewa root adalah, sangat mudah untuk melakukan kerusakan yang tidak dapat diperbaiki sebagai root. Alasan lain adalah bahwa Anda mungkin ditipu untuk menjalankan program <span class="emphasis"><em>Trojan-horse</em></span> — itu adalah program yang memanfaatkan kekuatan pengguna super Anda untuk membahayakan keamanan sistem Anda di belakang Anda. Setiap buku bagus tentang administrasi sistem Unix akan membahas topik ini secara lebih rinci — pertimbangkan untuk membacanya jika baru bagi Anda. </p>
+<p>Anda pertama-tama akan diminta untuk nama lengkap pengguna. Kemudian Anda akan dimintai nama untuk akun pengguna; umumnya nama depan Anda atau sesuatu yang serupa akan cukup dan memang akan menjadi baku. Akhirnya, Anda akan diminta untuk kata sandi untuk akun ini. </p>
+<p>Jika suatu saat setelah instalasi Anda ingin membuat akun lain, gunakan perintah <span class="command"><strong>adduser</strong></span>. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="clock-setup"></a>6.3.3. Mengonfigurasi Jam dan Zona Waktu</h3></div></div></div>
+<p>Pemasang pertama kali akan mencoba untuk terhubung ke server waktu di Internet (menggunakan protokol <em class="firstterm">NTP</em> ) untuk mengatur waktu sistem dengan benar. Jika ini tidak berhasil, pemasang akan mengasumsikan waktu dan tanggal yang diperoleh dari jam sistem ketika sistem instalasi di-boot benar. Tidak mungkin mengatur waktu sistem secara manual selama proses instalasi. </p>
+<p>Bergantung pada lokasi yang dipilih sebelumnya dalam proses instalasi, Anda mungkin akan ditampilkan daftar zona waktu yang relevan untuk lokasi tersebut. Jika lokasi Anda hanya memiliki satu zona waktu dan Anda melakukan instalasi baku, Anda tidak akan ditanya apa pun dan sistem akan mengasumsikan zona waktu itu. </p>
+<p>Dalam mode pakar atau saat memasang pada prioritas menengah, Anda akan memiliki opsi tambahan untuk memilih <span class="quote">“<span class="quote">Coordinated Universal Time</span>”</span> (UTC) sebagai zona waktu. </p>
+<p>Jika karena alasan tertentu Anda ingin menetapkan zona waktu untuk sistem yang dipasang yang <span class="emphasis"><em>tidak</em></span> sesuai dengan lokasi yang dipilih, ada dua opsi. </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem">
+<p>Pilihan paling sederhana adalah memilih zona waktu yang berbeda setelah instalasi selesai dan Anda telah boot ke sistem baru. Perintah untuk melakukan ini adalah: </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>Atau, zona waktu dapat diatur pada awal instalasi dengan memberikan parameter <strong class="userinput"><code>time/zone=<em class="replaceable"><code>nilai</code></em></code></strong> saat Anda mem-boot sistem instalasi. Nilainya tentu saja harus menjadi zona waktu yang valid, misalnya <strong class="userinput"><code>Europe/London</code></strong> atau <strong class="userinput"><code>UTC</code></strong>. </p></li>
+</ol></div>
+<p>Untuk instalasi otomatis, zona waktu dapat diatur ke nilai yang diinginkan menggunakan preseed. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-partition"></a>6.3.4. Partisi dan Pemilihan Titik Kait</h3></div></div></div>
+<p>Pada saat ini, setelah deteksi perangkat keras telah dilakukan untuk terakhir kalinya, <code class="classname">debian-installer</code> mesti ada pada kekuatan penuh, disesuaikan untuk kebutuhan pengguna dan siap untuk melakukan beberapa pekerjaan nyata. Seperti yang ditunjukkan oleh judul bagian ini, tugas utama dari beberapa komponen berikutnya terletak pada pemartisian disk Anda, membuat sistem berkas, menetapkan titik kait, dan secara opsional mengonfigurasi opsi terkait erat seperti RAID, LVM, atau perangkat terenkripsi. </p>
+<p>Jika Anda merasa tidak nyaman dengan pemartisian, atau hanya ingin tahu lebih detail, lihat <a class="xref" href="apc.html" title="Lampiran C. Pemartisian untuk Debian">Lampiran C, <i>Pemartisian untuk Debian</i></a>. </p>
+<p>Pertama, Anda akan diberi kesempatan untuk secara otomatis mempartisi seluruh drive, atau ruang kosong yang tersedia pada drive. Ini juga disebut pemartisian <span class="quote">“<span class="quote">terpandu</span>”</span>. Jika Anda tidak ingin partisi otomatis, pilih <span class="guimenuitem">Manual</span> dari menu. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-fs"></a>6.3.4.1. Opsi partisi yang didukung</h4></div></div></div>
+<p>Partisi yang digunakan dalam <code class="classname">debian-installer</code> cukup serbaguna. Hal ini memungkinkan untuk membuat banyak skema partisi yang berbeda, menggunakan berbagai tabel partisi, sistem berkas, dan perangkat blok canggih. </p>
+<p>Pilihan tepat mana yang tersedia terutama tergantung pada arsitektur, tetapi juga pada faktor-faktor lain. Misalnya, pada sistem dengan memori internal terbatas beberapa opsi mungkin tidak tersedia. Baku juga dapat bervariasi. Jenis tabel partisi yang digunakan secara baku misalnya dapat berbeda untuk hard disk berkapasitas besar daripada hard disk yang lebih kecil. Beberapa opsi hanya dapat diubah saat memasang pada prioritas debconf sedang atau rendah; pada prioritas yang lebih tinggi baku yang masuk akal akan digunakan. </p>
+<p>Pemasang mendukung berbagai bentuk partisi canggih dan penggunaan perangkat penyimpanan, yang dalam banyak kasus dapat digunakan dalam kombinasi. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>
+    <span class="emphasis"><em>Logical Volume Management (LVM)</em></span>
+  </p></li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>RAID Perangkat Lunak</em></span>
+  </p>
+<p>Yang didukung adalah RAID level 0, 1, 4, 5, 6, dan 10. </p>
+</li>
+<li class="listitem"><p>
+    <span class="emphasis"><em>Enkripsi</em></span>
+  </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>Multipath</em></span> (eksperimental) </p>
+<p>Lihat <a class="ulink" href="https://wiki.debian.org/DebianInstaller/MultipathSupport" target="_top">Wiki kami</a> untuk informasi. Dukungan untuk multipath saat ini hanya tersedia jika diaktifkan saat pemasang di-boot. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Sistem berkas berikut didukung. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p> <span class="emphasis"><em>ext2</em></span>, <span class="phrase"><span class="emphasis"><em>ext3</em></span>,</span> <span class="phrase"><span class="emphasis"><em>ext4</em></span></span> </p>
+<p>Sistem berkas baku yang dipilih dalam banyak kasus adalah ext4. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>jfs</em></span> (tidak tersedia di semua arsitektur) </p></li>
+<li class="listitem"><p><span class="emphasis"><em>xfs</em></span> (tidak tersedia di semua arsitektur) </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>reiserfs</em></span> (opsional; tidak tersedia di semua arsitektur) </p>
+<p>Dukungan untuk sistem baerkas Reiser tidak lagi tersedia secara baku. Ketika pemasang berjalan pada prioritas debconf sedang atau rendah, itu dapat diaktifkan dengan memilih komponen <code class="classname">partman-reiserfs</code>. Hanya versi 3 dari sistem berkas tersebut yang didukung. </p>
+</li>
+<li class="listitem">
+<p>
+    <span class="emphasis"><em>qnx4</em></span>
+  </p>
+<p>Partisi yang ada akan dikenali dan mungkin untuk menetapkan titik kait untuk mereka. Tidak mungkin membuat partisi qnx4 baru. </p>
+</li>
+<li class="listitem"><p><span class="emphasis"><em>FAT16</em></span>, <span class="emphasis"><em>FAT32</em></span> </p></li>
+<li class="listitem">
+<p><span class="emphasis"><em>NTFS</em></span> (hanya baca) </p>
+<p>Partisi NTFS yang ada dapat diubah ukurannya dan dimungkinkan untuk menetapkan titik kait untuk mereka. Tidak mungkin membuat partisi NTFS baru. </p>
+</li>
+</ul></div>
+<p>
+
+</p>
+<p>Pemartisi menerima unit sebagai pangkat dari sepuluh (1 MB = 1000 kB = 1000000 B), maupun pangkat dari dua (1 MiB = 1024 kiB = 1048576 B). Awalan unit didukung hingga EB/EiB (exabyte/exbibyte). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-auto"></a>6.3.4.2. Pemartisian Terpandu</h4></div></div></div>
+<p>Jika Anda memilih pemartisian terpandu, Anda mungkin memiliki tiga opsi: untuk membuat partisi langsung pada hard disk (metode klasik), atau untuk membuatnya menggunakan Logical Volume Management (LVM), atau untuk membuatnya menggunakan LVM terenkripsi<a href="#ftn.id3343" class="footnote" name="id3343"><sup class="footnote">[7]</sup></a>. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Opsi untuk menggunakan LVM (yang terenkripsi) mungkin tidak tersedia di semua arsitektur. </p></td></tr>
+</table></div>
+<p>Saat menggunakan LVM atau LVM terenkripsi, pemasang akan membuat sebagian besar partisi di dalam satu partisi besar; keuntungan dari metode ini adalah bahwa partisi di dalam partisi besar ini dapat diubah ukurannya dengan relatif mudah nanti. Dalam kasus LVM terenkripsi, partisi besar tidak akan dapat dibaca tanpa mengetahui frasa kunci khusus, sehingga memberikan keamanan ekstra atas data (pribadi) Anda. </p>
+<p>Saat menggunakan LVM terenkripsi, pemasang juga akan secara otomatis menghapus disk dengan menulis data acak ke sana. Ini semakin meningkatkan keamanan (karena membuatnya tidak mungkin untuk mengetahui bagian mana dari disk yang digunakan dan juga memastikan bahwa jejak instalasi sebelumnya dihapus), tetapi mungkin memerlukan waktu tergantung pada ukuran disk Anda. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Jika Anda memilih partisi terpandu menggunakan LVM atau LVM terenkripsi, beberapa perubahan dalam tabel partisi perlu ditulis ke disk yang dipilih saat LVM sedang disiapkan. Perubahan ini secara efektif menghapus semua data yang saat ini ada di hard disk yang dipilih dan Anda tidak akan dapat membatalkannya nanti. Namun, pemasang akan meminta Anda untuk mengonfirmasi perubahan ini sebelum ditulis ke disk. </p></td></tr>
+</table></div>
+<p>Jika Anda memilih pemartisian terpandu<span class="phrase"> (baik klasik atau menggunakan LVM (terenkripsi)</span> untuk seluruh disk, Anda akan terlebih dahulu diminta untuk memilih disk yang ingin Anda gunakan. Periksa apakah semua disk Anda terdaftar dan, jika Anda memiliki beberapa disk, pastikan Anda memilih yang benar. Urutan mereka dalam daftar mungkin berbeda dari apa yang Anda terbiasa. Ukuran disk dapat membantu mengidentifikasi mereka. </p>
+<p>Setiap data pada disk yang Anda pilih pada akhirnya akan hilang, tetapi Anda akan selalu diminta untuk mengonfirmasi setiap perubahan sebelum ditulis ke disk. <span class="phrase"> Jika Anda telah memilih metode partisi klasik, Anda akan dapat membatalkan perubahan apa pun sampai akhir; saat menggunakan LVM (terenkripsi) ini tidak mungkin. </span> </p>
+<p>Selanjutnya, Anda akan dapat memilih dari skema yang tercantum dalam tabel di bawah ini. Semua skema memiliki pro dan kontra, beberapa di antaranya dibahas dalam <a class="xref" href="apc.html" title="Lampiran C. Pemartisian untuk Debian">Lampiran C, <i>Pemartisian untuk Debian</i></a>. Jika Anda tidak yakin, pilih yang pertama. Ingatlah bahwa pemartisian terpandu membutuhkan ruang kosong minimal untuk dioperasikan. Jika Anda tidak memberikannya setidaknya sekitar 3GB ruang (tergantung pada skema yang dipilih), pemartisian terpandu akan gagal. Juga, pada disk kecil Anda mungkin tidak melihat semua skema yang disebutkan di bawah ini. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Skema partisi</th>
+<th>Ruang minimum</th>
+<th>Partisi yang dibuat</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Semua berkas dalam satu partisi</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+<tr>
+<td>Partisi /home terpisah</td>
+<td>9GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, swap </td>
+</tr>
+<tr>
+<td>Partisi /home, /var, dan /tmp terpisah</td>
+<td>12GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/home</code>, <code class="filename">/var</code>, <code class="filename">/tmp</code>, swap </td>
+</tr>
+<tr>
+<td>Memisahkan partisi /srv dan /var; swap dibatasi ke 1GB (untuk server)</td>
+<td>8GB</td>
+<td>
+<code class="filename">/</code>, <code class="filename">/srv</code>, <code class="filename">/var</code>, swap </td>
+</tr>
+<tr>
+<td>Skema terutama untuk disk kecil</td>
+<td>3GB</td>
+<td>
+<code class="filename">/</code>, swap</td>
+</tr>
+</tbody>
+</table></div>
+<p>Jika Anda memilih pemartisian terpandu menggunakan LVM (terenkripsi), pemasang juga akan membuat partisi <code class="filename">/boot</code> terpisah. Partisi lainnya, termasuk partisi swap, akan dibuat di dalam partisi LVM. </p>
+<p>Jika Anda telah boot dalam mode EFI maka dalam penyiapan pemartisian terpandu akan ada partisi tambahan, diformat sebagai sistem berkas FAT32 yang dapat di-boot, untuk boot loader EFI. Partisi ini dikenal sebagai EFI System Partition (ESP). Ada juga item menu tambahan di menu pemformatan untuk mengatur partisi secara manual sebagai ESP. </p>
+<p>Setelah memilih skema, layar berikutnya akan menampilkan tabel partisi baru Anda, termasuk informasi tentang apakah dan bagaimana partisi akan diformat dan di mana mereka akan dikait. </p>
+<p>Daftar partisi mungkin terlihat seperti ini: </p>
+<div class="informalexample"><pre class="screen">
+  SCSI1 (0,0,0) (sda) - 6.4 GB WDC AC36400L
+        #1 primary   16.4 MB  B f ext2       /boot
+        #2 primary  551.0 MB      swap       swap
+        #3 primary    5.8 GB      ntfs
+           pri/log    8.2 MB      FREE SPACE
+
+  SCSI2 (1,0,0) (sdb) - 80.0 GB ST380021A
+        #1 primary   15.9 MB      ext3
+        #2 primary  996.0 MB      fat16
+        #3 primary    3.9 GB      xfs        /home
+        #5 logical    6.0 GB    f ext4       /
+        #6 logical    1.0 GB    f ext3       /var
+        #7 logical  498.8 MB      ext3
+</pre></div>
+<p> Contoh ini menunjukkan dua hard drive dibagi menjadi beberapa partisi; disk pertama memiliki beberapa ruang kosong. Setiap baris partisi terdiri dari nomor partisi, jenis, ukuran, bendera opsional, sistem berkas, dan titik kait (jika ada). Catatan: penyiapan khusus ini tidak dapat dibuat menggunakan pemartisian terpandu tetapi menunjukkan kemungkinan variasi yang dapat dicapai menggunakan pemartisian manual. </p>
+<p>Ini mengakhiri bahasan pemartisian terpandu. Jika Anda puas dengan tabel partisi yang dihasilkan, Anda dapat memilih <span class="guimenuitem">Selesaikan partisi dan tulis perubahan ke disk</span> dari menu untuk menerapkan tabel partisi baru (seperti yang dijelaskan di akhir bagian ini). Jika Anda tidak senang, Anda dapat memilih untuk <span class="guimenuitem">Membatalkan perubahan pada partisi</span> dan menjalankan pemartisian terpandu lagi, atau memodifikasi perubahan yang diusulkan seperti yang dijelaskan di bawah ini untuk pemartisian manual. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-manual"></a>6.3.4.3. Pemartisian Manual</h4></div></div></div>
+<p>Layar yang mirip dengan yang ditunjukkan tepat di atas akan ditampilkan jika Anda memilih pemartisian manual kecuali bahwa tabel partisi Anda yang ada akan ditampilkan dan tanpa titik kait. Cara menyiapkan tabel partisi Anda secara manual dan penggunaan partisi oleh sistem Debian baru Anda akan dibahas di sisa bagian ini. </p>
+<p>Jika Anda memilih disk bersih yang tidak memiliki partisi atau ruang kosong di atasnya, Anda akan ditanya apakah tabel partisi baru harus dibuat (ini diperlukan sehingga Anda dapat membuat partisi baru). Setelah ini, baris baru berjudul <span class="quote">“<span class="quote">RUANG BEBAS</span>”</span> akan muncul dalam tabel di bawah disk yang dipilih. </p>
+<p>Jika Anda memilih beberapa ruang kosong, Anda akan memiliki kesempatan untuk membuat partisi baru. Anda harus menjawab serangkaian pertanyaan singkat tentang ukuran, jenis (primer atau logis), dan lokasi (awal atau akhir ruang kosong). Setelah ini, Anda akan disajikan dengan gambaran rinci tentang partisi baru Anda. Pengaturan utamanya adalah <span class="guimenuitem">Gunakan sebagai:</span><span class="phrase"> </span> Pengaturan lain termasuk titik kait, opsi kait, dan bendera dapat di-boot; pengaturan mana yang ditampilkan tergantung pada bagaimana partisi akan digunakan. Jika Anda tidak menyukai baku yang telah dipilih sebelumnya, jangan ragu untuk mengubahnya sesuai keinginan Anda. Misalnya dengan memilih opsi <span class="guimenuitem">Gunakan sebagai:</span>, Anda dapat memilih sistem berkas yang berbeda untuk partisi ini, termasuk opsi untuk menggunakan partisi untuk swap,<span class="phrase"> RAID perangkat lunak, LVM,</span> atau tidak menggunakannya sama sekali. Ketika Anda puas dengan partisi baru Anda, pilih <span class="guimenuitem">Selesai mengatur partisi</span> dan Anda akan kembali ke layar utama <span class="command"><strong>partman</strong></span>. </p>
+<p>Jika Anda memutuskan ingin mengubah sesuatu tentang partisi Anda, cukup pilih partisi, yang akan membawa Anda ke menu konfigurasi partisi. Ini adalah layar yang sama seperti yang digunakan saat membuat partisi baru, sehingga Anda dapat mengubah pengaturan yang sama. Satu hal yang mungkin tidak terlalu jelas pada pandangan pertama adalah Anda dapat mengubah ukuran partisi dengan memilih item yang menampilkan ukuran partisi. Sistem berkas yang diketahui bekerja setidaknya fat16, fat32, ext2, ext3, dan swap. Menu ini juga memungkinkan Anda untuk menghapus partisi. </p>
+<p>Pastikan untuk membuat setidaknya dua partisi: satu untuk sistem berkas <span class="emphasis"><em>root</em></span> (yang harus dikait sebagai <code class="filename">/</code>) dan satu untuk <span class="emphasis"><em>swap</em></span>. Jika Anda lupa mengait sistem berkas root, <span class="command"><strong>partman</strong></span> tidak akan membiarkan Anda melanjutkan sampai Anda memperbaiki masalah ini. </p>
+<p>Jika Anda boot dalam mode EFI tetapi lupa untuk memilih dan memformat Partisi Sistem EFI, <span class="command"><strong>partman</strong></span> akan mendeteksi ini dan tidak akan membiarkan Anda melanjutkan sampai Anda mengalokasikannya. </p>
+<p>Kemampuan dari <span class="command"><strong>partman</strong></span> dapat diperluas dengan modul pemasang, tetapi tergantung pada arsitektur sistem Anda. Jadi jika Anda tidak dapat melihat semua barang yang dijanjikan, periksa apakah Anda telah memuat semua modul yang diperlukan (misalnya <code class="filename">partman-ext3</code>, <code class="filename">partman-xfs</code>, atau <code class="filename">partman-lvm</code>). </p>
+<p>Setelah Anda puas dengan partisi, pilih <span class="guimenuitem">Selesaikan partisi dan tulis perubahan ke disk</span> dari menu partisi. Anda akan disajikan dengan ringkasan perubahan yang dibuat pada disk dan diminta untuk mengonfirmasi bahwa sistem berkas harus dibuat seperti yang diminta. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-md"></a>6.3.4.4. Mengonfigurasi Perangkat Multidisk (RAID Perangkat Lunak)</h4></div></div></div>
+<p>Jika Anda memiliki lebih dari satu hard disk<a href="#ftn.id3437" class="footnote" name="id3437"><sup class="footnote">[8]</sup></a> dalam komputer Anda, Anda dapat menggunakan <span class="command"><strong>partman-md</strong></span> untuk menyiapkan drive Anda untuk meningkatkan kinerja dan/atau keandalan data Anda yang lebih baik. Hasilnya disebut <em class="firstterm">Multidisk Device</em> (atau setelah variannya yang paling terkenal <em class="firstterm">RAID perangkat lunak</em>). </p>
+<p>MD pada dasarnya adalah sekelompok partisi yang terletak pada disk yang berbeda dan digabungkan bersama untuk membentuk perangkat <span class="emphasis"><em>logis</em></span>. Perangkat ini kemudian dapat digunakan seperti partisi biasa (yaitu di <span class="command"><strong>partman</strong></span> Anda dapat memformatnya, menetapkan titik kait, dll.). </p>
+<p>Manfaat apa yang dibawanya tergantung pada jenis perangkat MD yang Anda buat. Saat ini yang didukung adalah: </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">RAID0</span></dt>
+<dd>
+<p> Terutama ditujukan untuk kinerja. RAID0 membagi semua data yang masuk menjadi <em class="firstterm">stripe</em> dan mendistribusikannya secara merata di setiap disk dalam array. Ini dapat meningkatkan kecepatan operasi baca/tulis, tetapi ketika salah satu disk gagal, Anda akan kehilangan <span class="emphasis"><em>segalanya</em></span> (bagian dari informasi masih ada di disk yang sehat, bagian lainnya <span class="emphasis"><em>ada</em></span> di disk yang gagal). </p>
+<p> Penggunaan khas untuk RAID0 adalah partisi untuk pengeditan video. </p>
+</dd>
+<dt><span class="term">RAID1</span></dt>
+<dd>
+<p> Cocok untuk pengaturan di mana keandalan adalah perhatian pertama. Ini terdiri dari beberapa (biasanya dua) partisi berukuran sama di mana setiap partisi berisi data yang sama persis. Ini pada dasarnya berarti tiga hal. Pertama, jika salah satu disk Anda gagal, Anda masih memiliki data yang dicerminkan pada disk yang tersisa. Kedua, Anda hanya dapat menggunakan sebagian kecil dari kapasitas yang tersedia (lebih tepatnya, itu adalah ukuran partisi terkecil di RAID). Ketiga, pembacaan berkas diseimbangkan di antara disk, yang dapat meningkatkan kinerja pada server, seperti server berkas, yang cenderung dibebani dengan lebih banyak pembacaan disk daripada penulisan. </p>
+<p> Secara opsional Anda dapat memiliki disk cadangan dalam array yang akan menggantikan disk yang gagal jika terjadi kegagalan. </p>
+</dd>
+<dt><span class="term">RAID5</span></dt>
+<dd>
+<p> adalah kompromi yang baik antara kecepatan, keandalan, dan redundansi data. RAID5 membagi semua data yang masuk menjadi stripe dan mendistribusikannya secara merata pada semua kecuali satu disk (mirip dengan RAID0). Tidak seperti RAID0, RAID5 juga menghitung informasi <em class="firstterm">paritas</em>, yang ditulis pada disk yang tersisa. Disk paritas tidak statis (kalau yang itu disebut RAID4), tetapi berubah secara berkala, sehingga informasi paritas didistribusikan secara merata pada semua disk. Ketika salah satu disk gagal, bagian informasi yang hilang dapat dihitung dari data yang tersisa dan paritasnya. RAID5 harus terdiri dari setidaknya tiga partisi aktif. Secara opsional Anda dapat memiliki disk serep dalam array yang akan menggantikan disk yang gagal jika terjadi kegagalan. </p>
+<p> Seperti yang Anda lihat, RAID5 memiliki tingkat keandalan yang serupa dengan RAID1 sambil mencapai redundansi yang lebih sedikit. Di sisi lain, mungkin sedikit lebih lambat pada operasi tulis daripada RAID0 karena perhitungan informasi paritas. </p>
+</dd>
+<dt><span class="term">RAID6</span></dt>
+<dd>
+<p> Mirip dengan RAID5 kecuali menggunakan dua perangkat paritas, bukan satu. </p>
+<p> Array RAID6 dapat bertahan hingga kegagalan dua disk. </p>
+</dd>
+<dt><span class="term">RAID10</span></dt>
+<dd>
+<p> RAID10 menggabungkan striping (seperti dalam RAID0) dan mirroring (seperti dalam RAID1). Ini membuat <em class="replaceable"><code>n</code></em> salinan data yang masuk dan mendistribusikannya di seluruh partisi sehingga tidak ada salinan data yang sama di perangkat yang sama. Nilai baku <em class="replaceable"><code>n</code></em> adalah 2, tetapi dapat diatur ke sesuatu yang lain dalam mode pakar. Jumlah partisi yang digunakan harus setidaknya <em class="replaceable"><code>n</code></em>. RAID10 memiliki tata letak yang berbeda untuk mendistribusikan salinan. Bakunya adalah dekat salinan. Salinan dekat memiliki semua salinan di sekitar ofset yang sama pada semua disk. Salinan jauh memiliki salinan pada ofset yang berbeda pada disk. Salinan ofset menyalin stripe, bukan salinan individual. </p>
+<p> RAID10 dapat digunakan untuk mencapai keandalan dan redundansi tanpa kekurangan harus menghitung paritas. </p>
+</dd>
+</dl></div>
+<p> Untuk meringkasnya: </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Tipe</th>
+<th>Perangkat Minimum</th>
+<th>Perangkat Cadangan</th>
+<th>Selamat dari kegagalan disk?</th>
+<th>Ruang yang Tersedia</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>RAID0</td>
+<td>2</td>
+<td>tidak</td>
+<td>tidak</td>
+<td>Ukuran partisi terkecil dikalikan dengan banyaknya perangkat di RAID</td>
+</tr>
+<tr>
+<td>RAID1</td>
+<td>2</td>
+<td>opsional</td>
+<td>ya</td>
+<td>Ukuran partisi terkecil di RAID</td>
+</tr>
+<tr>
+<td>RAID5</td>
+<td>3</td>
+<td>opsional</td>
+<td>ya</td>
+<td>Ukuran partisi terkecil dikalikan dengan (banyaknya perangkat di RAID dikurangi satu) </td>
+</tr>
+<tr>
+<td>RAID6</td>
+<td>4</td>
+<td>opsional</td>
+<td>ya</td>
+<td>Ukuran partisi terkecil dikalikan dengan (banyaknya perangkat di RAID dikurangi dua) </td>
+</tr>
+<tr>
+<td>RAID10</td>
+<td>2</td>
+<td>opsional</td>
+<td>ya</td>
+<td>Total semua partisi dibagi dengan banyaknya salinan potongan (baku adalah dua) </td>
+</tr>
+</tbody>
+</table></div>
+<p>
+
+</p>
+<p>Jika Anda ingin tahu lebih banyak tentang Software RAID, lihat <a class="ulink" href="http://www.tldp.org/HOWTO/Software-RAID-HOWTO.html" target="_top">Software RAID HOWTO</a>. </p>
+<p>Untuk membuat perangkat MD, Anda harus memiliki partisi yang diinginkan yang harus terdiri dari ditandai untuk digunakan dalam RAID. (Hal ini dilakukan di <span class="command"><strong>partman</strong></span> di menu <span class="guimenu">Pengaturan partisi</span> tempat Anda harus memilih <span class="guimenu">Gunakan sebagai:</span> → <span class="guimenuitem">volume fisik untuk RAID</span>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Pastikan bahwa sistem dapat di-boot dengan skema partisi yang Anda rencanakan. Secara umum perlu membuat sistem berkas terpisah bagi <code class="filename">/boot</code> saat menggunakan RAID dari sistem berkas root (<code class="filename">/</code>). Sebagian besar boot loader <span class="phrase">(termasuk grub)</span> mendukung RAID1 cermin (bukan striped!), jadi menggunakan misalnya RAID5 untuk <code class="filename">/</code> dan RAID1 untuk <code class="filename">/boot</code> bisa menjadi pilihan. </p></td></tr>
+</table></div>
+<p>Selanjutnya, Anda harus memilih <span class="guimenuitem">Konfigurasikan RAID perangkat lunak</span> dari menu utama <span class="command"><strong>partman</strong></span>. (Menu hanya akan muncul setelah Anda menandai setidaknya satu partisi untuk digunakan sebagai <span class="guimenuitem">volume fisik untuk RAID</span>.) Pada layar pertama dari <span class="command"><strong>partman-md</strong></span> cukup pilih <span class="guimenuitem">Buat perangkat MD</span>. Anda akan disajikan dengan daftar jenis perangkat MD yang didukung, dari mana Anda harus memilih satu (misalnya RAID1). Berikut ini tergantung pada jenis MD yang Anda pilih. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>RAID0 itu sederhana — Anda akan diberi daftar partisi RAID yang tersedia dan satu-satunya tugas Anda adalah memilih partisi yang akan membentuk MD. </p></li>
+<li class="listitem"><p>RAID1 sedikit lebih rumit. Pertama, Anda akan diminta untuk memasukkan banyaknya perangkat aktif dan banyaknya perangkat cadangan yang akan membentuk MD. Selanjutnya, Anda perlu memilih dari daftar partisi RAID yang tersedia, mana yang akan aktif, lalu mana yang akan menjadi serep. Cacah partisi yang dipilih harus sama dengan angka yang diberikan sebelumnya. Jangan khawatir. Jika Anda membuat kesalahan dan memilih banyaknya partisi yang berbeda, <code class="classname">debian-installer</code> tidak akan membiarkan Anda melanjutkan sampai Anda memperbaiki masalah. </p></li>
+<li class="listitem"><p>RAID5 memiliki prosedur penyiapan yang mirip dengan RAID1 dengan pengecualian bahwa Anda perlu menggunakan setidaknya <span class="emphasis"><em>tiga</em></span> partisi aktif. </p></li>
+<li class="listitem"><p>RAID6 juga memiliki prosedur penyiapan yang mirip dengan RAID1 kecuali bahwa setidaknya <span class="emphasis"><em>empat</em></span> partisi aktif diperlukan. </p></li>
+<li class="listitem"><p>RAID10 lagi memiliki prosedur pengaturan yang mirip dengan RAID1 kecuali dalam mode pakar. Dalam mode pakar, <code class="classname">debian-installer</code> akan menanyakan tata letak. Tata letak memiliki dua bagian. Bagian pertama adalah jenis tata letak. Ini adalah <code class="literal">n</code> (untuk salinan dekat), <code class="literal">f</code> (untuk salinan jauh), atau <code class="literal">o</code> (untuk salinan ofset). Bagian kedua adalah banyaknya salinan yang harus dibuat dari data. Setidaknya harus ada sebanyak itu perangkat aktif sehingga semua salinan dapat didistribusikan ke disk yang berbeda. </p></li>
+</ul></div>
+<p>Sangat mungkin untuk memiliki beberapa jenis MD sekaligus. Misalnya, jika Anda memiliki tiga hard drive 200 GB yang didedikasikan untuk MD, masing-masing berisi dua partisi 100 GB, Anda dapat menggabungkan partisi pertama pada ketiga disk ke dalam RAID0 (partisi pengeditan video cepat 300 GB) dan menggunakan tiga partisi lainnya (2 aktif dan 1 cadangan) untuk RAID1 (partisi 100 GB yang cukup andal untuk <code class="filename">/home</code>). </p>
+<p>Setelah menyiapkan perangkat MD sesuai keinginan, Anda dapat <span class="guimenuitem">Menyelesaikan</span> <span class="command"><strong>partman-md</strong></span> Untuk kembali ke <span class="command"><strong>partman</strong></span> untuk membuat sistem berkas pada perangkat MD baru Anda dan menetapkannya atribut biasa seperti titik kait. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-lvm"></a>6.3.4.5. Mengonfigurasi Logical Volume Manager (LVM)</h4></div></div></div>
+<p>Jika Anda bekerja dengan komputer pada tingkat administrator sistem atau pengguna <span class="quote">“<span class="quote">tingkat lanjut</span>”</span>, Anda pasti telah melihat situasi di mana beberapa partisi disk (biasanya yang paling penting) kekurangan ruang, sementara beberapa partisi lain terlalu kurang dimanfaatkan dan Anda harus mengelola situasi ini dengan memindahkan barang-barang, symlink, dll. </p>
+<p>Untuk menghindari situasi yang dijelaskan, Anda dapat menggunakan Logical Volume Manager (LVM). Sederhananya, dengan LVM Anda dapat menggabungkan partisi Anda (<em class="firstterm">volume fisik</em> dalam istilah LVM) untuk membentuk disk virtual (disebut <em class="firstterm">grup volume</em>), yang kemudian dapat dibagi menjadi partisi virtual (<em class="firstterm">volume logis</em>). Intinya adalah bahwa volume logis (dan tentu saja kelompok volume yang mendasari) dapat merentang beberapa disk fisik. </p>
+<p>Sekarang ketika Anda menyadari bahwa Anda membutuhkan lebih banyak ruang untuk partisi 160GB <code class="filename">/home</code> lama Anda, Anda cukup menambahkan disk 300GB baru ke komputer, bergabung dengan grup volume yang ada dan kemudian mengubah ukuran volume logis yang menahan sistem berkas <code class="filename">/home</code> Anda dan voila - pengguna Anda memiliki beberapa ruang lagi pada partisi 460GB yang diperbarui. Contoh ini tentu saja sedikit terlalu disederhanakan. Jika Anda belum membacanya, Anda harus berkonsultasi dengan <a class="ulink" href="http://www.tldp.org/HOWTO/LVM-HOWTO.html" target="_top">LVM HOWTO</a>. </p>
+<p>Pengaturan LVM di <code class="classname">debian-installer</code> cukup sederhana dan sepenuhnya didukung di dalam <span class="command"><strong>partman</strong></span>. Pertama, Anda harus menandai partisi untuk digunakan sebagai volume fisik bagi LVM. Ini dilakukan di menu <span class="guimenu">Pengaturan partisi</span> di mana Anda harus memilih <span class="guimenu">Gunakan sebagai:</span> → <span class="guimenuitem">volume fisik untuk LVM</span>. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ketahuilah: pengaturan LVM baru akan menghancurkan semua data pada semua partisi yang ditandai dengan kode tipe LVM. Jadi, jika Anda sudah memiliki LVM di beberapa disk Anda, dan ingin memasang Debian tambahan ke mesin itu, LVM lama (yang sudah ada) akan dihapus! Hal yang sama berlaku untuk partisi, yang (untuk alasan apa pun) secara menyesatkan ditandai dengan kode tipe LVM, tetapi berisi sesuatu yang berbeda (seperti volume terenkripsi). Anda perlu menghapus disk seperti itu dari sistem, sebelum melakukan pengaturan LVM baru! </p></td></tr>
+</table></div>
+<p>Ketika Anda kembali ke layar utama <span class="command"><strong>partman</strong></span>, Anda akan melihat opsi baru <span class="guimenuitem">Konfigurasikan Logical Volume Manager</span>. Ketika Anda memilih itu, Anda pertama kali akan diminta untuk mengonfirmasi perubahan yang tertunda ke tabel partisi (jika ada) dan setelah itu menu konfigurasi LVM akan ditampilkan. Di atas menu, ringkasan konfigurasi LVM ditampilkan. Menu itu sendiri peka konteks dan hanya menampilkan tindakan yang valid. Tindakan yang mungkin adalah: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><span class="guimenuitem">Tampilkan rincian konfigurasi</span>: menampilkan struktur perangkat LVM, nama dan ukuran volume logis, dan banyak lagi </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Membuat grup volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Membuat volume logis</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Menghapus grup volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Menghapus volume logis</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Memperluas grup volume</span>
+  </p></li>
+<li class="listitem"><p>
+    <span class="guimenuitem">Mengurangi grup volume</span>
+  </p></li>
+<li class="listitem"><p><span class="guimenuitem">Selesai</span>: kembali ke layar utama <span class="command"><strong>partman</strong></span> </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>Gunakan opsi di menu itu untuk terlebih dahulu membuat grup volume dan kemudian buat volume logis Anda di dalamnya. </p>
+<p>Setelah Anda kembali ke layar utama <span class="command"><strong>partman</strong></span>, setiap volume logis yang dibuat akan ditampilkan dengan cara yang sama seperti partisi biasa (dan Anda harus memperlakukannya seperti itu). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="partman-crypto"></a>6.3.4.6. Mengonfigurasi Volume Terenkripsi</h4></div></div></div>
+<p><code class="classname">debian-installer</code> memungkinkan Anda untuk mengatur partisi terenkripsi. Setiap berkas yang Anda tulis ke partisi seperti itu segera disimpan ke perangkat dalam bentuk terenkripsi. Akses ke data terenkripsi diberikan hanya setelah memasukkan <em class="firstterm">frasa sandi</em> yang digunakan ketika partisi terenkripsi awalnya dibuat. Fitur ini berguna untuk melindungi data sensitif jika laptop atau hard drive Anda dicuri. Pencuri mungkin mendapatkan akses fisik ke hard drive, tetapi tanpa mengetahui frasa sandi yang tepat, data pada hard drive akan terlihat seperti karakter acak. </p>
+<p>Dua partisi yang paling penting untuk dienkripsi adalah: partisi home, tempat data pribadi Anda berada, dan partisi swap, di mana data sensitif dapat disimpan untuk sementara selama operasi. Tentu saja, tidak ada yang mencegah Anda mengenkripsi partisi lain yang mungkin menarik. Misalnya <code class="filename">/var</code> di mana server basis data, server surel, atau server cetak menyimpan data mereka, atau <code class="filename">/tmp</code> yang digunakan oleh berbagai program untuk menyimpan berkas sementara yang berpotensi menarik. Beberapa orang bahkan mungkin ingin mengenkripsi seluruh sistem mereka. Umumnya satu-satunya pengecualian di sini adalah partisi <code class="filename">/boot</code> yang harus tetap tidak terenkripsi, karena secara historis tidak ada cara untuk memuat kernel dari partisi terenkripsi. (GRUB sekarang dapat melakukan itu, tetapi <code class="classname">debian-installer</code> saat ini tidak memiliki dukungan native untuk <code class="filename">/boot</code> terenkripsi. Maka penyiapan dibahas dalam <a class="ulink" href="https://cryptsetup-team.pages.debian.net/cryptsetup/encrypted-boot.html" target="_top">dokumen terpisah</a>.) </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Harap dicatat bahwa kinerja partisi terenkripsi akan kurang dari yang tidak terenkripsi karena data perlu didekripsi atau dienkripsi untuk setiap pembacaan atau penulisan. Dampak kinerja tergantung pada kecepatan CPU Anda, cipher yang dipilih, dan panjang kunci. </p></td></tr>
+</table></div>
+<p>Untuk menggunakan enkripsi, Anda harus membuat partisi baru dengan memilih sebagian ruang kosong di menu partisi utama. Pilihan lain adalah mengambil partisi yang ada (misalnya partisi biasa, volume logis LVM ,atau volume RAID). Di menu <span class="guimenu">Pengaturan partisi</span>, Anda perlu memilih <span class="guimenuitem">volume fisik untuk enkripsi</span> pada opsi <span class="guimenu">Gunakan sebagai:</span> Menu kemudian akan berubah untuk menyertakan beberapa opsi kriptografi untuk partisi. </p>
+<p>Metode enkripsi yang didukung oleh <code class="classname">debian-installer</code> adalah <em class="firstterm">dm-crypt</em> (disertakan dalam kernel Linux yang lebih baru, mampu mewadahi volume fisik LVM). </p>
+<p>Mari kita lihat opsi yang tersedia saat Anda memilih enkripsi melalui <strong class="userinput"><code>Device-mapper (dm-crypt)</code></strong>. Seperti biasa: ketika ragu, gunakan baku, karena mereka telah dipilih dengan cermat dengan mempertimbangkan keamanan. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Enkripsi: <strong class="userinput"><code>aes</code></strong></span></dt>
+<dd><p>Opsi ini memungkinkan Anda memilih algoritma (<em class="firstterm">cipher</em>) enkripsi yang akan digunakan untuk mengenkripsi data pada partisi. <code class="classname">debian-installer</code> saat ini mendukung cipher blok berikut: <em class="firstterm">aes</em>, <em class="firstterm">blowfish</em>, <em class="firstterm">serpent</em>, dan <em class="firstterm">twofish</em>. Di luar lingkup dokumen ini untuk membahas kualitas algoritma yang berbeda, namun, mungkin membantu keputusan Anda untuk mengetahui bahwa pada tahun 2000, <span class="emphasis"><em>AES</em></span> dipilih oleh American National Institute of Standards and Technology sebagai algoritma enkripsi standar untuk melindungi informasi sensitif di abad ke-21. </p></dd>
+<dt><span class="term">Ukuran kunci: <strong class="userinput"><code>256</code></strong></span></dt>
+<dd><p>Di sini Anda dapat menentukan panjang kunci enkripsi. Dengan ukuran kunci yang lebih besar, kekuatan enkripsi umumnya ditingkatkan. Di sisi lain, meningkatkan panjang kunci biasanya memiliki dampak negatif pada kinerja. Ukuran kunci yang tersedia bervariasi tergantung pada cipher. </p></dd>
+<dt><span class="term">Algoritma IV: <strong class="userinput"><code>xts-plain64</code></strong></span></dt>
+<dd>
+<p>Algoritma <em class="firstterm">Initialization Vector</em> atau <em class="firstterm">IV</em> digunakan dalam kriptografi untuk memastikan bahwa menerapkan cipher pada data <em class="firstterm">teks polos</em> yang sama dengan kunci yang sama selalu menghasilkan <em class="firstterm">teks cipher</em> yang unik. Idenya adalah untuk mencegah penyerang dari menyimpulkan informasi dari pola berulang dalam data terenkripsi. </p>
+<p>Dari alternatif yang disediakan, <strong class="userinput"><code>xts-plain64</code></strong> baku saat ini paling tidak rentan terhadap serangan yang diketahui. Gunakan alternatif lain hanya ketika Anda perlu memastikan kompatibilitas dengan beberapa sistem yang dipasang sebelumnya yang tidak bisa menggunakan algoritma lebih baru. </p>
+</dd>
+<dt><span class="term">Kunci enkripsi: <strong class="userinput"><code>Frasa Sandi</code></strong></span></dt>
+<dd>
+<p>Di sini Anda dapat memilih jenis kunci enkripsi untuk partisi ini. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term">Frasa sandi</span></dt>
+<dd><p>Kunci enkripsi akan dihitung<a href="#ftn.id3680" class="footnote" name="id3680"><sup class="footnote">[9]</sup></a> berdasarkan frasa sandi yang dapat Anda masukkan nanti dalam proses. </p></dd>
+<dt><span class="term">Kunci acak</span></dt>
+<dd>
+<p>Kunci enkripsi baru akan dihasilkan dari data acak setiap kali Anda mencoba memunculkan partisi terenkripsi. Dengan kata lain: pada setiap shutdown konten partisi akan hilang karena kunci dihapus dari memori. (Tentu saja, Anda bisa mencoba menebak kunci dengan serangan brute force, tetapi kecuali ada kelemahan yang tidak diketahui dalam algoritma cipher, itu tidak dapat dicapai dalam hidup kita.) </p>
+<p>Kunci acak berguna untuk partisi swap karena Anda tidak perlu repot-repot mengingat frasa sandi atau menghapus informasi sensitif dari partisi swap sebelum mematikan komputer Anda. Namun, itu juga berarti bahwa Anda <span class="emphasis"><em>tidak</em></span> akan dapat menggunakan fungsi <span class="quote">“<span class="quote">suspend-to-disk</span>”</span> yang ditawarkan oleh kernel Linux yang lebih baru karena tidak mungkin (selama boot berikutnya) untuk memulihkan data yang ditangguhkan yang ditulis ke partisi swap. </p>
+</dd>
+</dl></div>
+<p>
+
+</p>
+</dd>
+<dt><span class="term">Hapus data: <strong class="userinput"><code>ya</code></strong></span></dt>
+<dd><p>Menentukan apakah konten partisi ini harus ditimpa dengan data acak sebelum menyiapkan enkripsi. Ini direkomendasikan karena mungkin bagi penyerang untuk membedakan bagian partisi mana yang digunakan dan mana yang tidak. Selain itu, ini akan membuat lebih sulit untuk memulihkan data sisa dari instalasi sebelumnya<a href="#ftn.id3695" class="footnote" name="id3695"><sup class="footnote">[10]</sup></a>. </p></dd>
+</dl></div>
+<p>
+
+</p>
+<p>Setelah Anda memilih parameter yang diinginkan untuk partisi terenkripsi Anda, kembali ke menu partisi utama. Sekarang harus ada item menu baru yang disebut <span class="guimenu">Konfigurasikan volume terenkripsi</span>. Setelah Anda memilihnya, Anda akan diminta untuk mengonfirmasi penghapusan data pada partisi yang ditandai akan dihapus dan mungkin tindakan lain seperti menulis tabel partisi baru. Untuk partisi besar ini mungkin memakan waktu. </p>
+<p>Selanjutnya Anda akan diminta untuk memasukkan frasa sandi bagi partisi yang dikonfigurasi untuk menggunakannya. Frasa sandi yang baik harus lebih panjang dari 8 karakter, harus berupa campuran huruf, angka, dan karakter lainnya dan tidak boleh berisi kata atau informasi kamus umum yang mudah bergaul dengan Anda (seperti tanggal lahir, hobi, nama hewan peliharaan, nama anggota keluarga atau kerabat, dll.). </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Sebelum Anda memasukkan frasa sandi apa pun, Anda harus memastikan bahwa papan ketik Anda dikonfigurasi dengan benar dan menghasilkan karakter yang diharapkan. Jika Anda tidak yakin, Anda dapat beralih ke konsol virtual kedua dan mengetik beberapa teks di prompt. Ini memastikan bahwa Anda tidak akan terkejut nanti, misalnya dengan mencoba memasukkan frasa sandi menggunakan tata letak papan ketik qwerty saat Anda menggunakan tata letak azerty selama instalasi. Situasi ini dapat memiliki beberapa penyebab. Mungkin Anda beralih ke tata letak papan ketik lain selama instalasi, atau tata letak papan ketik yang dipilih mungkin belum diatur saat memasukkan frasa sandi bagi sistem berkas root. </p></td></tr>
+</table></div>
+<p>Jika Anda memilih untuk menggunakan metode selain frasa sandi untuk membuat kunci enkripsi, mereka akan dihasilkan sekarang. Karena kernel mungkin tidak mengumpulkan sejumlah entropi yang cukup pada tahap awal instalasi ini, prosesnya mungkin memakan waktu lama. Anda dapat membantu mempercepat proses dengan menghasilkan entropi: misalnya dengan menekan tombol-tombol acak, atau dengan beralih ke shell pada konsol virtual kedua dan menghasilkan beberapa lalu lintas jaringan dan disk (mengunduh beberapa berkas, mengumpankan berkas besar ke <code class="filename">/dev/null</code>, dll.). Ini akan diulang untuk setiap partisi yang akan dienkripsi. </p>
+<p>Setelah kembali ke menu pemartisian utama, Anda akan melihat semua volume terenkripsi sebagai partisi tambahan yang dapat dikonfigurasi dengan cara yang sama seperti partisi biasa. Contoh berikut menunjukkan volume yang dienkripsi melalui dm-crypt. </p>
+<div class="informalexample"><pre class="screen">
+Encrypted volume (<em class="replaceable"><code>sda2_crypt</code></em>) - 115.1 GB Linux device-mapper
+     #1 115.1 GB  F ext3
+</pre></div>
+<p> Sekarang adalah waktu untuk menetapkan titik kait ke volume dan secara opsional mengubah jenis sistem berkas jika baku tidak sesuai dengan Anda. </p>
+<p>Perhatikan pengidentifikasi dalam tanda kurung (dalam hal ini <em class="replaceable"><code>sda2_crypt</code></em>) dan titik kait yang Anda tetapkan untuk setiap volume terenkripsi. Anda akan membutuhkan informasi ini nanti saat mem-boot sistem baru. Perbedaan antara proses boot biasa dan proses boot dengan enkripsi yang terlibat akan dibahas nanti dalam <a class="xref" href="ch07s02.html" title="7.2. Mengait volume terenkripsi">Bagian 7.2, “Mengait volume terenkripsi”</a>. </p>
+<p>Setelah Anda puas dengan skema pemartisian, lanjutkan dengan instalasi. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-base"></a>6.3.5. Memasang Sistem Dasar</h3></div></div></div>
+<p>Meskipun tahap ini adalah yang paling tidak bermasalah, ia mengkonsumsi sebagian besar instalasi karena mengunduh, memverifikasi, dan membongkar seluruh sistem dasar. Jika Anda memiliki komputer atau koneksi jaringan yang lambat, ini bisa memakan waktu. </p>
+<p>Selama instalasi sistem dasar, pesan pembongkaran dan penyiapan paket diarahkan ke <strong class="userinput"><code>tty4</code></strong>. Anda dapat mengakses terminal ini dengan menekan <span class="keycap"><strong>Alt Kiri</strong></span>+<span class="keycap"><strong>F4</strong></span>; kembali ke proses pemasang utama dengan <span class="keycap"><strong>Alt Kiri</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Pesan pembongkaran/penyiapan yang dihasilkan selama fase ini juga disimpan di <code class="filename">/var/log/syslog</code>. Anda dapat memeriksanya di sana jika instalasi dilakukan melalui konsol serial. </p>
+<p>Sebagai bagian dari instalasi, sebuah kernel Linux akan dipasang. Pada prioritas baku, pemasang akan memilih satu untuk Anda yang paling cocok dengan perangkat keras Anda. Dalam mode prioritas yang lebih rendah, Anda akan dapat memilih dari daftar kernel yang tersedia. </p>
+<p>Ketika paket dipasang menggunakan sistem manajemen paket, secara baku juga akan memasang paket yang direkomendasikan oleh paket-paket tersebut. Paket yang direkomendasikan tidak sepenuhnya diperlukan untuk fungsionalitas inti dari perangkat lunak yang dipilih, tetapi mereka meningkatkan perangkat lunak itu dan mestinya, dalam pandangan pengelola paket, biasanya dipasang bersama dengan perangkat lunak itu. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Untuk alasan teknis paket yang dipasang selama pemasangan sistem dasar dipasang tanpa <span class="quote">“<span class="quote">Rekomendasi</span>”</span> mereka. Aturan yang dijelaskan di atas hanya berlaku setelah titik ini dalam proses instalasi. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-install-software"></a>6.3.6. Memasang Perangkat Lunak Tambahan</h3></div></div></div>
+<p>Pada titik ini Anda memiliki sistem yang dapat digunakan tetapi terbatas. Sebagian besar pengguna akan ingin memasang perangkat lunak tambahan pada sistem untuk menyesuaikannya dengan kebutuhan mereka, dan pemasang memungkinkan Anda melakukannya. Langkah ini bisa memakan waktu lebih lama daripada memasang sistem dasar jika Anda memiliki komputer atau koneksi jaringan yang lambat. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="apt-setup"></a>6.3.6.1. Mengonfigurasi apt</h4></div></div></div>
+<p>Salah satu alat yang digunakan untuk memasang paket pada sistem Debian GNU/Linux adalah program <span class="command"><strong>apt</strong></span>, dari paket <code class="classname">apt</code><a href="#ftn.id3738" class="footnote" name="id3738"><sup class="footnote">[11]</sup></a>. Front-end lain untuk manajemen paket, seperti <span class="command"><strong>aptitude</strong></span> dan <span class="command"><strong>synaptic</strong></span>, juga sedang digunakan. Front-end ini direkomendasikan untuk pengguna baru, karena mereka mengintegrasikan beberapa fitur tambahan (pencarian paket dan pemeriksaan status) dalam antarmuka pengguna yang bagus. </p>
+<p><span class="command"><strong>apt</strong></span> harus dikonfigurasi sehingga tahu dari mana mengambil paket. Hasil konfigurasi ini ditulis ke berkas <code class="filename">/etc/apt/sources.list</code>. Anda dapat memeriksa dan mengedit berkas ini sesuai keinginan Anda setelah instalasi selesai. </p>
+<p>Jika Anda memasang pada prioritas baku, pemasang sebagian besar akan mengurus konfigurasi secara otomatis, berdasarkan metode instalasi yang Anda gunakan dan mungkin menggunakan pilihan yang dibuat sebelumnya dalam instalasi. Dalam kebanyakan kasus pemasang akan secara otomatis menambahkan cermin keamanan dan, jika Anda memasang distribusi stabil, cermin untuk layanan <span class="quote">“<span class="quote">stable-updates</span>”</span>. </p>
+<p>Jika Anda memasang pada prioritas yang lebih rendah (misalnya dalam mode pakar), Anda akan dapat membuat lebih banyak keputusan sendiri. Anda dapat memilih apakah akan menggunakan layanan keamanan dan/atau stable-updates atau tidak, dan Anda dapat memilih untuk menambahkan paket dari bagian arsip <span class="quote">“<span class="quote">contrib</span>”</span>, <span class="quote">“<span class="quote">non-free</span>”</span>, dan <span class="quote">“<span class="quote">non-free-firmware</span>”</span>. </p>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-cdset"></a>6.3.6.1.1. Memasang dari beberapa image DVD</h5></div></div></div>
+<p>Jika Anda memasang dari image DVD yang merupakan bagian dari set yang lebih besar, pemasang akan bertanya apakah Anda ingin memindai media instalasi tambahan. Jika Anda memiliki media tambahan yang tersedia, Anda mungkin ingin melakukan ini sehingga pemasang dapat menggunakan paket yang disertakan pada mereka. </p>
+<p>Jika Anda tidak memiliki media tambahan, itu tidak masalah: menggunakannya tidak diperlukan. Jika Anda juga tidak menggunakan cermin jaringan (seperti yang dijelaskan di bagian berikutnya), itu dapat berarti bahwa tidak semua paket milik tugas yang Anda pilih pada langkah instalasi berikutnya dapat dipasang. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Paket disertakan pada image DVD dalam urutan popularitas mereka. Ini berarti bahwa untuk sebagian besar penggunaan hanya image pertama dari satu set yang diperlukan dan bahwa hanya sangat sedikit orang yang benar-benar menggunakan salah satu paket yang disertakan pada image terakhir dari satu set. </p>
+<p>Ini juga berarti bahwa membeli atau mengunduh dan membakar satu set DVD lengkap hanyalah buang-buang uang karena Anda tidak akan pernah menggunakan sebagian besar dari mereka. Dalam kebanyakan kasus Anda lebih baik mendapatkan hanya 1 hingga 2 DVD pertama dan memasang paket tambahan yang mungkin Anda butuhkan dari Internet dengan menggunakan cermin. </p>
+</td></tr>
+</table></div>
+<p>Jika Anda memindai beberapa media instalasi, pemasang akan meminta Anda untuk menukarnya saat membutuhkan paket dari yang saat ini tidak ada di drive. Perhatikan bahwa hanya disk yang termasuk dalam set yang sama yang harus dipindai. Urutan di mana mereka dipindai tidak terlalu penting, tetapi memindai mereka dalam urutan naik akan mengurangi kemungkinan kesalahan. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror"></a>6.3.6.1.2. Menggunakan cermin jaringan</h5></div></div></div>
+<p>Satu pertanyaan yang akan ditanyakan selama sebagian besar instalasi adalah apakah akan menggunakan cermin jaringan sebagai sumber paket atau tidak. Dalam kebanyakan kasus jawaban baku mestinya baik-baik saja, tetapi ada beberapa pengecualian. </p>
+<p>Jika Anda <span class="emphasis"><em>tidak</em></span> memasang dari image DVD, Anda benar-benar harus menggunakan cermin jaringan karena jika tidak, Anda akan berakhir dengan hanya sistem yang sangat minimal. Namun, jika Anda memiliki koneksi Internet terbatas, yang terbaik adalah <span class="emphasis"><em>tidak</em></span> memilih tugas <code class="literal">desktop</code> di langkah instalasi berikutnya. </p>
+<p>Jika Anda memasang dari DVD, paket apa pun yang diperlukan selama instalasi harus ada pada image DVD pertama. Penggunaan cermin jaringan adalah opsional. </p>
+<p>Salah satu keuntungan dari menambahkan cermin jaringan adalah bahwa pembarua, yang telah terjadi sejak image DVD dibuat dan telah dimasukkan dalam rilis titik, akan menjadi tersedia untuk instalasi, sehingga memperpanjang umur set DVD Anda tanpa mengorbankan keamanan atau stabilitas sistem yang dipasang. </p>
+<p>Singkatnya: memilih cermin jaringan umumnya merupakan ide yang bagus, kecuali jika Anda tidak memiliki koneksi internet yang baik. Jika versi paket saat ini tersedia dari media instalasi, pemasang akan selalu menggunakannya. Maka banyaknya data yang akan diunduh jika Anda memilih cermin tergantung pada </p>
+<div class="orderedlist"><ol class="orderedlist" type="1">
+<li class="listitem"><p>tugas yang Anda pilih di langkah instalasi berikutnya, </p></li>
+<li class="listitem"><p>paket mana yang diperlukan untuk tugas-tugas itu, </p></li>
+<li class="listitem"><p>mana dari paket-paket tersebut yang ada di media instalasi yang telah Anda pindai, dan </p></li>
+<li class="listitem"><p>apakah versi paket terbaru yang disertakan pada media instalasi tersedia dari cermin (baik cermin paket biasa, atau cermin untuk keamanan atau pembaruan stabil). </p></li>
+</ol></div>
+<p>
+
+</p>
+<p>Perhatikan bahwa poin terakhir berarti bahwa, bahkan jika Anda memilih untuk tidak menggunakan cermin jaringan, beberapa paket mungkin masih diunduh dari Internet jika ada pembaruan keamanan atau pembaruan stabil yang tersedia untuk mereka dan layanan tersebut telah dikonfigurasi. </p>
+</div>
+<div class="sect4">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="apt-setup-mirror-selection"></a>6.3.6.1.3. Memilih cermin jaringan</h5></div></div></div>
+<p>Kecuali Anda memilih untuk tidak menggunakan cermin jaringan, Anda akan disajikan dengan daftar cermin jaringan berdasarkan pemilihan negara Anda sebelumnya dalam proses instalasi. Memilih baku yang ditawarkan biasanya baik-baik saja. </p>
+<p>Baku yang ditawarkan adalah deb.debian.org, yang bukan cermin itu sendiri tetapi akan mengarahkan ke cermin yang mestinya mutakhir dan cepat. Cermin ini mendukung TLS (protokol https) dan IPv6. Layanan ini dikelola oleh tim Debian System Administration (DSA). </p>
+<p>Cermin juga dapat ditentukan dengan tangan dengan memilih <span class="quote">“<span class="quote">masukkan informasi secara manual</span>”</span>. Anda kemudian dapat menentukan nama host cermin dan nomor port opsional. Ini sebenarnya harus menjadi basis URL, yaitu ketika menentukan alamat IPv6, seseorang harus menambahkan tanda kurung siku di sekitarnya, misalnya <span class="quote">“<span class="quote">[2001:db8::1]</span>”</span>. </p>
+<p>Jika komputer Anda berada di jaringan khusus IPv6 (yang mungkin tidak berlaku untuk sebagian besar pengguna), menggunakan cermin baku untuk negara Anda mungkin tidak berfungsi. Semua cermin dalam daftar dapat dijangkau melalui IPv4, tetapi hanya beberapa di antaranya yang dapat digunakan melalui IPv6. Karena konektivitas cermin individu dapat berubah dari waktu ke waktu, informasi ini tidak tersedia di pemasang. Jika tidak ada konektivitas IPv6 untuk cermin baku bagi negara Anda, Anda dapat mencoba beberapa cermin lain yang ditawarkan kepada Anda atau memilih opsi <span class="quote">“<span class="quote">masukkan informasi secara manual</span>”</span>. Anda kemudian dapat menentukan <span class="quote">“<span class="quote">ftp.ipv6.debian.org</span>”</span> sebagai nama cermin, yang merupakan alias untuk cermin yang tersedia melalui IPv6, meskipun mungkin tidak akan menjadi yang tercepat. </p>
+</div>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="pkgsel"></a>6.3.6.2. Memilih dan Memasang Perangkat Lunak</h4></div></div></div>
+<p>Selama proses instalasi, Anda diberi kesempatan untuk memilih perangkat lunak tambahan untuk dipasang. Daripada memilih paket perangkat lunak individu dari <span class="phrase">102687</span>
+   
+   
+   
+   
+   
+   
+   
+   
+    paket yang tersedia, tahap proses instalasi ini berfokus pada memilih dan memasang koleksi perangkat lunak yang telah ditentukan agar dengan cepat mengatur komputer Anda untuk melakukan berbagai tugas. </p>
+<p>Tugas-tugas ini secara longgar mewakili sejumlah pekerjaan atau hal yang berbeda yang ingin Anda lakukan dengan komputer Anda, seperti <span class="quote">“<span class="quote">Lingkungan desktop</span>”</span>, <span class="quote">“<span class="quote">Server web</span>”</span>, atau <span class="quote">“<span class="quote">Server SSH</span>”</span>.<a href="#ftn.id3800" class="footnote" name="id3800"><sup class="footnote">[12]</sup></a>. <a class="xref" href="apds02.html" title="D.2. Ruang Disk yang Dibutuhkan untuk Tugas">Bagian D.2, “Ruang Disk yang Dibutuhkan untuk Tugas”</a> mencantumkan persyaratan ruang untuk tugas yang tersedia. </p>
+<p>Beberapa tugas mungkin dipilih sebelumnya berdasarkan karakteristik komputer yang Anda pasang. Jika Anda tidak setuju dengan pilihan ini, Anda dapat membatalkan pilihannya. Anda bahkan dapat memilih untuk tidak memasang tugas sama sekali pada saat ini. </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td>
+<th align="left">Tip</th>
+</tr>
+<tr><td align="left" valign="top"><p>Di antarmuka pengguna standar pemasang, Anda dapat menggunakan bilah spasi untuk menjungkitkan pilihan tugas. </p></td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Tugas <span class="quote">“<span class="quote">Lingkungan desktop</span>”</span> akan memasang lingkungan desktop grafis. </p>
+<p>Secara baku, <code class="classname">debian-installer</code> memasang lingkungan desktop <span class="phrase">Gnome</span> . Dimungkinkan untuk memilih lingkungan desktop yang berbeda secara interaktif selama instalasi. Dimungkinkan juga untuk memasang beberapa desktop, tetapi beberapa kombinasi desktop mungkin tidak dapat dipasang bersama. </p>
+<p>Perhatikan bahwa ini hanya akan berfungsi jika paket yang diperlukan untuk lingkungan desktop yang diinginkan benar-benar tersedia. Memasang salah satu lingkungan desktop yang tersedia dengan cara ini akan berfungsi dengan baik jika Anda menggunakan image DVD atau metode instalasi lainnya dengan suatu cermin jaringan. </p>
+</td></tr>
+</table></div>
+<p>Berbagai tugas server akan memasang perangkat lunak kira-kira sebagai berikut. Server web: <code class="classname">apache2</code>; Server SSH: <code class="classname">openssh</code>. </p>
+<p>Tugas <span class="quote">“<span class="quote">Utilitas sistem standar</span>”</span> akan memasang paket apa pun yang memiliki prioritas <span class="quote">“<span class="quote">standard</span>”</span>. Ini termasuk banyak utilitas umum yang biasanya tersedia di sistem Linux atau Unix apa pun. Anda harus membiarkan tugas ini dipilih kecuali Anda tahu apa yang Anda lakukan dan menginginkan sistem yang sangat minimal. </p>
+<p>Jika selama pemilihan bahasa, lokal baku selain lokal <span class="quote">“<span class="quote">C</span>”</span> dipilih, <span class="command"><strong>tasksel</strong></span> akan memeriksa apakah ada tugas pelokalan yang ditentukan untuk lokal tersebut dan secara otomatis akan mencoba memasang paket pelokalan yang relevan. Ini termasuk misalnya paket yang berisi daftar kata atau fonta khusus untuk bahasa Anda. Jika lingkungan desktop dipilih, itu juga akan memasang paket pelokalan yang sesuai untuk itu (jika tersedia). </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Mulai dengan Debian Trixie, <code class="classname">debian-installer</code> memungkinkan untuk memasang Debian Pure Blends secara langsung. Ada entri <span class="quote">“<span class="quote">Pilih sebuah Debian Blend untuk instalasi</span>”</span> di bagian bawah daftar tugas, yang memungkinkan dialog pilihan tambahan muncul, setelah <span class="command"><strong>tasksel</strong></span> selesai. </p>
+<p>Dalam dialog (<span class="command"><strong>blendsel</strong></span>) itu, Anda dapat memilih blend mana yang akan dipasang, mirip dengan pemilihan tugas ini. </p>
+<p>Lihat <a class="ulink" href="https://www.debian.org/blends" target="_top">situs web Debian</a> untuk informasi lebih lanjut tentang Debian Pure Blends. </p>
+</td></tr>
+</table></div>
+<p>Setelah Anda memilih tugas, pilih <span class="guibutton">Continue</span>. Pada titik ini, <span class="command"><strong>apt</strong></span> akan memasang paket yang merupakan bagian dari tugas yang dipilih. Jika program tertentu membutuhkan lebih banyak informasi dari pengguna, itu akan meminta Anda selama proses ini. </p>
+<p>Anda harus menyadari bahwa terutama tugas Desktop sangat besar. Terutama ketika memasang dari image CD netinst dalam kombinasi dengan cermin untuk paket yang tidak ada di netinst, pemasang mungkin ingin mengambil banyak paket melalui jaringan. Jika Anda memiliki koneksi internet yang relatif lambat, ini bisa memakan waktu lama. Tidak ada opsi untuk membatalkan instalasi paket setelah dimulai. </p>
+<p>Bahkan ketika paket disertakan pada image instalasi, pemasang masih dapat mengambilnya dari cermin jika versi yang tersedia di cermin lebih baru daripada yang disertakan pada image. Jika Anda memasang distribusi stabil, ini dapat terjadi setelah rilis titik (pembaruan dari rilis stabil asli); jika Anda memasang distribusi pengujian, ini akan terjadi jika Anda menggunakan image yang lebih lama. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-make-bootable"></a>6.3.7. Membuat Sistem Anda Dapat Di-Boot</h3></div></div></div>
+<p>Jika Anda memasang workstation tanpa disk, jelas, mem-boot disk lokal bukanlah pilihan yang berarti, dan langkah ini akan dilewati. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="os-prober"></a>6.3.7.1. Mendeteksi sistem operasi lain</h4></div></div></div>
+<p>Sebelum boot loader dipasang, pemasang akan mencoba untuk menyelidiki sistem operasi lain yang terpasang pada mesin. Jika menemukan sistem operasi yang didukung, Anda akan diberitahu tentang hal ini selama langkah instalasi boot loader, dan komputer akan dikonfigurasi untuk mem-boot sistem operasi lain ini selain Debian. </p>
+<p>Perhatikan bahwa boot beberapa sistem operasi pada satu mesin masih sesuatu yang berupa seni hitam. Dukungan otomatis untuk mendeteksi dan menyiapkan boot loader untuk mem-boot sistem operasi lain bervariasi menurut arsitektur dan bahkan dengan sub arsitektur. Jika tidak berhasil, Anda harus berkonsultasi dengan dokumentasi manajer boot Anda untuk informasi lebih lanjut. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id3848"></a>6.3.7.2. Pasang Boot Loader <span class="command"><strong>Grub</strong></span> pada drive</h4></div></div></div>
+<p>Boot loader amd64 disebut <span class="quote">“<span class="quote">grub</span>”</span>. Grub adalah boot loader yang fleksibel dan handal dan pilihan baku yang baik untuk pengguna baru dan pemain lama. </p>
+<p>Secara baku, grub akan dipasang pada partisi UEFI/Boot Record dari drive utama, di mana ia akan mengambil alih kendali penuh dari proses boot. Jika Mau, Anda bisa memasangnya di tempat lain. Lihat manual grub untuk informasi lengkap. </p>
+<p>Jika Anda tidak ingin memasang grub, gunakan tombol <span class="guibutton">Go Back</span> untuk sampai ke menu utama, dan dari sana pilih bootloader apa pun yang ingin Anda gunakan. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="nobootloader"></a>6.3.7.3. Melanjutkan Tanpa Boot Loader</h4></div></div></div>
+<p>Opsi ini dapat digunakan untuk menyelesaikan instalasi bahkan ketika tidak ada boot loader yang akan dipasang, baik karena arch/sub arch tidak menyediakannya, atau karena tidak ada yang diinginkan (misalnya Anda akan menggunakan boot loader yang ada). </p>
+<p>Jika Anda berencana untuk mengonfigurasi bootloader Anda secara manual, Anda harus memeriksa nama kernel yang dipasang di <code class="filename">/target/boot</code>. Anda juga harus memeriksa direktori itu untuk keberadaan <em class="firstterm">initrd</em>; jika ada, Anda mungkin harus menginstruksikan bootloader Anda untuk menggunakannya. Informasi lain yang Anda perlukan adalah disk dan partisi yang Anda pilih untuk sistem berkas <code class="filename">/</code> Anda dan, jika Anda memilih untuk memasang <code class="filename">/boot</code> pada partisi terpisah, juga sistem berkas <code class="filename">/boot</code> Anda. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-finish"></a>6.3.8. Menyelesaikan Instalasi</h3></div></div></div>
+<p>Ini adalah langkah terakhir dalam proses instalasi Debian dimana pemasang akan melakukan tugas menit terakhir. Ini sebagian besar terdiri dari merapikan setelah <code class="classname">debian-installer</code>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="system-clock"></a>6.3.8.1. Mengatur Jam Sistem</h4></div></div></div>
+<p>Pemasang mungkin menanyakan apakah jam komputer diatur ke UTC. Biasanya pertanyaan ini dihindari jika memungkinkan dan pemasang mencoba untuk mencari tahu apakah jam diatur ke UTC berdasarkan hal-hal seperti apa sistem operasi lain yang dipasang. </p>
+<p>Dalam mode pakar Anda akan selalu dapat memilih apakah jam diatur ke UTC atau tidak.  <span class="phrase">Sistem yang (juga) menjalankan Windows biasanya diatur ke waktu setempat. Jika Anda ingin dual-boot, pilih waktu lokal, bukan UTC.</span> </p>
+<p>Pada titik ini <code class="classname">debian-installer</code> juga akan mencoba menyimpan waktu saat ini ke jam perangkat keras sistem. Ini akan dilakukan baik dalam UTC atau waktu setempat, tergantung pada pilihan yang baru saja dibuat. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="finish-install"></a>6.3.8.2. Boot Ulang Sistem</h4></div></div></div>
+<p>Anda akan diminta untuk menghapus media boot (CD, flash disk USB, dll) yang Anda gunakan untuk mem-boot pemasang. Setelah itu sistem akan di-reboot ke sistem Debian baru Anda. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="di-miscellaneous"></a>6.3.9. Penelusuran masalah</h3></div></div></div>
+<p>Komponen yang tercantum di bagian ini biasanya tidak terlibat dalam proses instalasi, tetapi menunggu di latar belakang untuk membantu pengguna jika terjadi kesalahan. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="save-logs"></a>6.3.9.1. Menyimpan log instalasi</h4></div></div></div>
+<p>Jika instalasi berhasil, berkas log yang dibuat selama proses instalasi akan secara otomatis disimpan ke <code class="filename">/var/log/installer/</code> pada sistem Debian baru Anda. </p>
+<p>Memilih <span class="guimenuitem">Simpan log debug</span> dari menu utama memungkinkan Anda menyimpan berkas log ke flash disk USB, jaringan, hard disk, atau media lainnya. Ini dapat berguna jika Anda mengalami masalah fatal selama instalasi dan ingin mempelajari log pada sistem lain atau melampirkannya ke laporan instalasi. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="shell"></a>6.3.9.2. Menggunakan Shell dan Melihat Log</h4></div></div></div>
+<p>Ada beberapa metode yang dapat Anda gunakan untuk mendapatkan shell saat menjalankan instalasi. Pada sebagian besar sistem, dan jika Anda tidak memasang melalui konsol serial, metode termudah adalah beralih ke <span class="emphasis"><em>konsol virtual</em></span> kedua dengan menekan <span class="keycap"><strong>Alt Kiri</strong></span>+<span class="keycap"><strong>F2</strong></span><a href="#ftn.id3895" class="footnote" name="id3895"><sup class="footnote">[13]</sup></a> (pada papan ketik Mac, <span class="keycap"><strong>Option</strong></span>+<span class="keycap"><strong>F2</strong></span>). Gunakan <span class="keycap"><strong>Alt Kiri</strong></span>+<span class="keycap"><strong>F1</strong></span> untuk beralih kembali ke pemasang itu sendiri. </p>
+<p>Untuk pemasang grafis lihat juga <a class="xref" href="ch06s01.html#gtk-using" title="6.1.1. Menggunakan pemasang grafis">Bagian 6.1.1, “Menggunakan pemasang grafis”</a>. </p>
+<p>Jika Anda tidak dapat beralih konsol, ada juga butir <span class="guimenuitem">Jalankan Shell</span> pada menu utama yang dapat digunakan untuk memulai shell. Anda bisa masuk ke menu utama dari sebagian besar dialog dengan menggunakan tombol <span class="guibutton">Go Back</span> satu kali atau lebih. Ketik <strong class="userinput"><code>exit</code></strong> untuk menutup shell dan kembali ke pemasang. </p>
+<p>Pada titik ini Anda di-boot dari disk RAM, dan ada satu set utilitas Unix terbatas yang tersedia untuk Anda gunakan. Anda dapat melihat program apa yang tersedia dengan perintah <span class="command"><strong>ls /bin /sbin /usr/bin /usr/sbin</strong></span> dan dengan mengetik <span class="command"><strong>help</strong></span>. Shell adalah klon bourne shell yang disebut <span class="command"><strong>ash</strong></span> dan memiliki beberapa fitur bagus seperti pelengkapan otomatis dan sejarah. </p>
+<p>Untuk mengedit dan melihat berkas, gunakan editor teks <span class="command"><strong>nano</strong></span>. Berkas log untuk sistem instalasi dapat ditemukan di direktori <code class="filename">/var/log</code> . </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Meskipun pada dasarnya Anda dapat melakukan apa pun dalam shell yang memungkinkan perintah yang tersedia untuk Anda lakukan, opsi untuk menggunakan shell benar-benar hanya ada jika terjadi kesalahan dan untuk debugging. </p>
+<p>Melakukan hal-hal secara manual dari shell dapat mengganggu proses instalasi dan mengakibatkan kesalahan atau instalasi yang tidak lengkap. Secara khusus, Anda harus selalu membiarkan pemasang mengaktifkan partisi swap Anda dan tidak melakukan ini sendiri dari shell. </p>
+</td></tr>
+</table></div>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="network-console"></a>6.3.10. Instalasi melalui konsol jaringan</h3></div></div></div>
+<p>Salah satu komponen yang lebih menarik adalah <em class="firstterm">konsol jaringan</em>. Ini memungkinkan Anda untuk melakukan sebagian besar instalasi melalui jaringan melalui SSH. Penggunaan jaringan menyiratkan Anda harus melakukan langkah pertama instalasi dari konsol, setidaknya sampai pada titik pengaturan jaringan. (Meskipun Anda dapat mengotomatiskan bagian itu dengan <a class="xref" href="ch04s06.html" title="4.6. Instalasi Otomatis">Bagian 4.6, “Instalasi Otomatis”</a>.) </p>
+<p>Komponen ini tidak dimuat ke menu instalasi utama secara baku, jadi Anda harus secara eksplisit memintanya. Jika Anda memasang dari media optik, Anda perlu boot dengan prioritas sedang atau memanggil menu instalasi utama dan memilih <span class="guimenuitem">Muat komponen pemasang dari media instalasi</span> dan dari daftar komponen tambahan pilih <span class="guimenuitem">konsol jaringan: Lanjutkan instalasi dari jarak jauh menggunakan SSH</span>. Pemuatan yang berhasil ditunjukkan oleh entri menu baru yang disebut <span class="guimenuitem">Lanjutkan instalasi dari jarak jauh menggunakan SSH</span>. </p>
+<p><span class="phrase">Setelah memilih entri baru ini, Anda</span>  akan diminta untuk kata sandi baru yang akan digunakan untuk menghubungkan ke sistem instalasi dan untuk konfirmasinya. Itu saja. Sekarang Anda akan melihat layar yang menginstruksikan Anda untuk masuk dari jarak jauh sebagai <span class="emphasis"><em>pemasang</em></span> pengguna dengan kata sandi yang baru saja Anda berikan. Detail penting lainnya yang perlu diperhatikan di layar ini adalah sidik jari sistem ini. Anda perlu mentransfer sidik jari dengan aman ke orang yang akan melanjutkan instalasi dari jarak jauh. </p>
+<p>Jika Anda memutuskan untuk melanjutkan instalasi secara lokal, Anda selalu dapat menekan <span class="keycap"><strong>Enter</strong></span>, yang akan membawa Anda kembali ke menu utama, di mana Anda dapat memilih komponen lain. </p>
+<p>Sekarang mari kita beralih ke sisi lain dari kabel. Sebagai prasyarat, Anda perlu mengonfigurasi terminal Anda untuk pengodean UTF-8, karena itulah yang digunakan sistem instalasi. Jika tidak, instalasi jarak jauh masih mungkin, tetapi Anda mungkin menemukan artefak tampilan aneh seperti batas dialog yang hancur atau karakter non-ascii yang tidak dapat dibaca. Menjalin koneksi dengan sistem instalasi cukup sekadar mengetik: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">$</code> <strong class="userinput"><code>ssh -l installer <em class="replaceable"><code>host_tujuan</code></em></code></strong>
+</pre></div>
+<p> Dimana <em class="replaceable"><code>host_tujuan</code></em> adalah nama atau alamat IP komputer yang dipasang. Sebelum login yang sebenarnya sidik jari dari sistem jarak jauh akan ditampilkan dan Anda harus mengonfirmasi bahwa itu benar. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Server <span class="command"><strong>ssh</strong></span> di pemasang menggunakan konfigurasi baku yang tidak mengirim paket keep-alive. Pada prinsipnya, koneksi ke sistem yang dipasang harus tetap terbuka tanpa batas waktu. Namun, dalam beberapa situasi — tergantung pada pengaturan jaringan lokal Anda — koneksi mungkin hilang setelah beberapa periode tidak aktif. Salah satu kasus umum di mana ini dapat terjadi adalah ketika ada beberapa bentuk Network Address Translation (NAT) di suatu tempat antara klien dan sistem yang dipasang. Bergantung pada titik pemasangan mana koneksi hilang, Anda mungkin bisa atau tidak dapat melanjutkan instalasi setelah koneksi ulang. </p>
+<p>Anda mungkin dapat menghindari koneksi yang dijatuhkan dengan menambahkan opsi <strong class="userinput"><code>-o ServerAliveInterval=<em class="replaceable"><code>nilai</code></em></code></strong> saat memulai <span class="command"><strong>ssh</strong></span> koneksi, atau dengan menambahkan opsi itu di berkas konfigurasi <span class="command"><strong>ssh</strong></span>. Namun perlu dicatat bahwa dalam beberapa kasus menambahkan opsi ini juga dapat <span class="emphasis"><em>menyebabkan</em></span> koneksi terputus (misalnya jika paket keep-alive dikirim selama putus jaringan singkat, dari mana <span class="command"><strong>ssh</strong></span> tanpa itu akan pulih), jadi itu mesti hanya digunakan bila diperlukan. </p>
+</td></tr>
+</table></div>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Jika Anda memasang beberapa komputer secara bergiliran dan mereka kebetulan memiliki alamat IP atau nama host yang sama, <span class="command"><strong>ssh</strong></span> akan menolak untuk terhubung ke host tersebut. Alasannya adalah bahwa ia akan memiliki sidik jari yang berbeda, yang biasanya merupakan tanda serangan spoofing. Jika Anda yakin ini tidak terjadi, Anda harus menghapus baris yang relevan dari <code class="filename">~/.ssh/known_hosts</code><a href="#ftn.id3957" class="footnote" name="id3957"><sup class="footnote">[14]</sup></a> dan coba lagi. </p></td></tr>
+</table></div>
+<p>Setelah login Anda akan disajikan dengan layar awal di mana Anda memiliki dua kemungkinan yang disebut <span class="guimenuitem">Mulai menu</span> dan <span class="guimenuitem">Mulai shell</span>. Yang pertama membawa Anda ke menu pemasang utama, di mana Anda dapat melanjutkan instalasi seperti biasa. Yang terakhir memulai shell dari mana Anda dapat memeriksa dan mungkin memperbaiki sistem jarak jauh. Anda hanya harus memulai satu sesi SSH untuk menu instalasi, tetapi dapat memulai beberapa sesi untuk shell. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Awas]" src="images/warning.png"></td>
+<th align="left">Awas</th>
+</tr>
+<tr><td align="left" valign="top"><p>Setelah Anda memulai instalasi dari jarak jauh melalui SSH, Anda tidak boleh kembali ke sesi instalasi yang berjalan di konsol lokal. Melakukan hal itu dapat merusak basis data yang menyimpan konfigurasi sistem baru. Hal ini pada gilirannya dapat mengakibatkan instalasi gagal atau masalah dengan sistem yang dipasang. </p></td></tr>
+</table></div>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3149" class="footnote"><p><a href="#id3149" class="para"><sup class="para">[4] </sup></a> Dalam istilah teknis: di mana beberapa lokal ada untuk bahasa tersebut dengan kode negara yang berbeda. </p></div>
+<div id="ftn.id3157" class="footnote"><p><a href="#id3157" class="para"><sup class="para">[5] </sup></a> Pada prioritas sedang dan rendah Anda selalu dapat memilih lokal yang Anda sukai dari yang tersedia untuk bahasa yang dipilih (jika ada lebih dari satu). </p></div>
+<div id="ftn.id3163" class="footnote"><p><a href="#id3163" class="para"><sup class="para">[6] </sup></a> Lokal warisan adalah lokal yang tidak menggunakan UTF-8, tetapi salah satu standar yang lebih tua untuk pengodean karakter seperti ISO 8859-1 (digunakan oleh bahasa Eropa Barat) atau EUC-JP (digunakan oleh bahasa Jepang). </p></div>
+<div id="ftn.id3343" class="footnote"><p><a href="#id3343" class="para"><sup class="para">[7] </sup></a> Pemasang akan mengenkripsi grup volume LVM menggunakan kunci AES 256 bit dan memanfaatkan dukungan <span class="quote">“<span class="quote">dm-crypt</span>”</span> kernel. </p></div>
+<div id="ftn.id3437" class="footnote"><p><a href="#id3437" class="para"><sup class="para">[8] </sup></a> Sejujurnya, Anda dapat membangun perangkat MD bahkan dari partisi yang berada di drive fisik tunggal, tetapi itu tidak akan memberikan manfaat apa pun. </p></div>
+<div id="ftn.id3680" class="footnote"><p><a href="#id3680" class="para"><sup class="para">[9] </sup></a> Menggunakan frasa sandi sebagai kunci saat ini berarti bahwa partisi akan diatur menggunakan <a class="ulink" href="https://gitlab.com/cryptsetup/cryptsetup" target="_top">LUKS</a>. </p></div>
+<div id="ftn.id3695" class="footnote"><p><a href="#id3695" class="para"><sup class="para">[10] </sup></a> Diyakini bahwa orang-orang dari agen tiga huruf dapat memulihkan data bahkan setelah beberapa penulisan ulang media magneto optik. </p></div>
+<div id="ftn.id3738" class="footnote"><p><a href="#id3738" class="para"><sup class="para">[11] </sup></a> Perhatikan bahwa program yang benar-benar memasang paket disebut <span class="command"><strong>dpkg</strong></span>. Namun, program ini lebih merupakan alat tingkat rendah. <span class="command"><strong>apt</strong></span> adalah alat tingkat yang lebih tinggi, yang akan memanggil <span class="command"><strong>dpkg</strong></span> sebagaimana mestinya. Ia tahu cara mengambil paket dari media instalasi Anda, jaringan, atau di mana pun. Hal ini juga dapat secara otomatis memasang paket lain yang diperlukan untuk membuat paket yang Anda coba pasang berfungsi dengan benar. </p></div>
+<div id="ftn.id3800" class="footnote"><p><a href="#id3800" class="para"><sup class="para">[12] </sup></a> Anda harus tahu bahwa untuk menyajikan daftar ini, pemasang hanya memanggil program <span class="command"><strong>tasksel</strong></span>. Ini dapat dijalankan kapan saja setelah instalasi untuk memasang lebih banyak paket (atau menghapusnya), atau Anda dapat menggunakan alat yang lebih halus seperti <span class="command"><strong>aptitude</strong></span>. Jika Anda mencari paket tunggal tertentu, setelah instalasi selesai, cukup jalankan <strong class="userinput"><code>aptitude install <em class="replaceable"><code>paket</code></em></code></strong>, dimana <em class="replaceable"><code>paket</code></em> adalah nama paket yang Anda cari. </p></div>
+<div id="ftn.id3895" class="footnote"><p><a href="#id3895" class="para"><sup class="para">[13] </sup></a> Yaitu: tekan tombol <span class="keycap"><strong>Alt</strong></span> di sisi kiri <span class="keycap"><strong>bilah spasi</strong></span> dan tombol fungsi <span class="keycap"><strong>F2</strong></span> pada saat yang sama. </p></div>
+<div id="ftn.id3957" class="footnote"><p><a href="#id3957" class="para"><sup class="para">[14] </sup></a> Perintah berikut akan menghapus entri yang ada untuk host: <span class="command"><strong>ssh-keygen -R &lt;<em class="replaceable"><code>hostname</code></em>| <em class="replaceable"><code>Alamat IP</code></em>&gt;</strong></span>. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s02.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s04.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.2. Pengenalan Komponen </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> 6.4. Memuat Firmware yang Kurang</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

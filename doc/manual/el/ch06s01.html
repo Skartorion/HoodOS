@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.1. Πώς λειτουργεί ο Εγκαταστάτης</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="ch06.html" title="Κεφάλαιο 6. Χρησιμοποιώντας τον Εγκαταστάτη του Debian">
+<link rel="prev" href="ch06.html" title="Κεφάλαιο 6. Χρησιμοποιώντας τον Εγκαταστάτη του Debian">
+<link rel="next" href="ch06s02.html" title="6.2. Εισαγωγή στα συστατικά">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.1. Πώς λειτουργεί ο Εγκαταστάτης</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Κεφάλαιο 6. Χρησιμοποιώντας τον Εγκαταστάτη του Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="id2423"></a>6.1. Πώς λειτουργεί ο Εγκαταστάτης</h2></div></div></div>
+<p>Για την παρούσα αρχιτεκτονική ο <code class="classname">debian-installer</code> υποστηρίζει δύο διαφορετικές διεπαφές χρήστη: μία διεπαφή κειμένου και μία γραφική. Η γραφική διεπαφή χρησιμοποιείται εξ ορισμού εκτός και αν έχετε επιλέξει <span class="quote">«<span class="quote">Install</span>»</span> στο μενού εκκίνησης. Για περισσότερες πληροφορίες σχετικά με τον γραφικό εγκαταστάτη, παρακαλούμε συμβουλευτείτε την ενότητα <a class="xref" href="ch05s01.html#graphical" title="5.1.6. Ο γραφικός Εγκαταστάτης">Τμήμα 5.1.6, «Ο γραφικός Εγκαταστάτης»</a>. </p>
+<p>Ο Εγκαταστάτης του Debian αποτελείται από έναν αριθμό εξειδικευμένων συστατικών για κάθε εργασία της εγκατάστασης. Κάθε συστατικό εκτελεί την εργασία του, αλληλεπιδρώντας με τον χρήστη όπου είναι αυτό απαραίτητο. Για τις ίδιες τις ερωτήσεις έχουν οριστεί προτεραιότητες. Κατά την εκκίνηση του εγκαταστάτη καθορίζεται ποιες ερωτήσεις θα εμφανιστούν στο χρήστη ορίζοντας την προτεραιότητα. </p>
+<p>Σε μια τυπική εγκατάσταση, μόνο οι απαραίτητες (υψηλής προτεραιότητας) ερωτήσεις θα ερωτηθούν. Αυτό θα έχει ως αποτέλεσμα την αυτοματοποίηση της διαδικασίας εγκατάστασης με μικρή συμμετοχή του χρήστη. Τα συστατικά εκτελούνται διαδοχικά και η σειρά εκτέλεσής τους καθορίζεται κυρίως από τη μέθοδο της εγκατάστασης που χρησιμοποιείτε και την αρχιτεκτονική σας. Ο εγκαταστάτης θα χρησιμοποιήσει προκαθορισμένες τιμές για ερωτήσεις που δεν εμφανίζονται. </p>
+<p>Αν υπάρχει πρόβλημα ο χρήστης θα δει μια οθόνη σφάλματος, και αμέσως μετά θα εμφανιστεί το μενού του εγκαταστάτη, ώστε να είναι δυνατή η επιλογή κάποιας εναλλακτικής εργασίας. Αν δεν υπάρξουν προβλήματα, ο χρήστης δε θα δει ποτέ το μενού του εγκαταστάτη, παρά μόνο τις ερωτήσεις κάθε συστατικού με τη σειρά. Οι ειδοποιήσεις σοβαρών σφαλμάτων ορίζονται με προτεραιότητα <span class="quote">«<span class="quote">κρίσιμη</span>»</span> ώστε ο χρήστης θα ειδοποιείται πάντοτε. </p>
+<p>Μπορείτε να επηρεάσετε μερικές από τις προκαθορισμένες ρυθμίσεις του εγκαταστάτη εισάγοντας τις κατάλληλες παραμέτρους κατά την εκκίνηση του <code class="classname">debian-installer</code> Αν, για παράδειγμα, θέλετε να εξαναγκάσετε μια ρύθμιση στατικού δικτύου (εξ' ορισμού χρησιμοποιούνται η αυτόματη ρύθμιση IPv6 ή το DHCP αν είναι διαθέσιμα), μπορείτε να προσθέσετε την παράμετρο <strong class="userinput"><code>netcfg/disable_autoconfig=true</code></strong>. Δείτε το <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Παράμετροι του Εγκαταστάτη του Debian">Τμήμα 5.3.2, «Παράμετροι του Εγκαταστάτη του Debian»</a> για τις διαθέσιμες επιλογές. </p>
+<p>Οι έμπειροι χρήστες πιθανόν να αισθάνονται πιο άνετα με μια διεπαφή που χρησιμοποιεί μενού, όπου κάθε βήμα ελέγχεται από το χρήστη αντί να εκτελείται από τον εγκαταστάτη αυτόματα και σειριακά. Για να χρησιμοποιήσετε τον εγκαταστάτη με έναν χειροκίνητο τρόπο και με χρήση μενού, προσθέστε την παράμετρο εκκίνησης <strong class="userinput"><code>priority=medium</code></strong>. </p>
+<p>Αν η το υλικό του υπολογιστή σας απαιτεί το πέρασμα επιλογών στα αρθρώματα του πυρήνα κατά την εγκατάστασή τους, θα πρέπει να ξεκινήσετε τον εγκαταστάτη σε κατάσταση <span class="quote">«<span class="quote">expert</span>»</span>. Αυτό μπορεί να γίνει είτε χρησιμοποιώντας την εντολή <span class="command"><strong>expert</strong></span> για την εκκίνηση του εγκαταστάτη ή προσθέτοντας την παράμετρο εκκίνησης <strong class="userinput"><code>priority=low</code></strong>. Η κατάσταση expert σας δίνει πλήρη έλεγχο πάνω στον <code class="classname">debian-installer</code>. </p>
+<p>Στο βασισμένο σε κείμενο περιβάλλον δεν υποστηρίζεται η χρήση ενός ποντικιού. Εδώ είναι που μπορείτε να χρησιμοποιήσετε τα πλήκτρα για την πλοήγηση στους διάφορους διαλόγους. Το πλήκτρα <span class="keycap"><strong>Tab</strong></span> ή το <span class="keycap"><strong>δεξί</strong></span> βέλος κινούν τον δρομέα προς τα <span class="quote">«<span class="quote">εμπρός</span>»</span>, ενώ ο συνδυασμός <span class="keycap"><strong>Shift</strong></span>+<span class="keycap"><strong>Tab</strong></span> ή το  <span class="keycap"><strong>αριστερό</strong></span> βέλος κινούν τον δρομέα προς τα <span class="quote">«<span class="quote">πίσω</span>»</span>, μέσα από τα εμφανιζόμενα κουμπιά και επιλογές. Τα πλήκτρα <span class="keycap"><strong>πάνω</strong></span> και <span class="keycap"><strong>κάτω</strong></span> επιλέγουν διαφορετικά αντικείμενα από μία κυλιόμενη λίστα επιλογών αλλά διατρέχουν και την ίδια τη λίστα. Επιπλέον, σε μεγάλες λίστες, μπορείτε να πατήσετε το πλήκτρο κάποιου γράμματος για να μετακινηθείτε κατευθείαν στο κομμάτι της λίστας του οποίου τα αντικείμενα αρχίζουν με το συγκεκριμένο αυτό γράμμα, ενώ με τα πλήκτρα <span class="keycap"><strong>Pg-Up</strong></span> και <span class="keycap"><strong>Pg-Down</strong></span> μπορείτε να διατρέξετε τη λίστα ανά ενότητες. Το πλήκτρο <span class="keycap"><strong>space</strong></span> επιλέγει αντικείμενα όπως ένα κουτί ελέγχου (checkbox). Χρησιμοποιήστε το πλήκτρο <span class="keycap"><strong>Enter</strong></span> για να ενεργοποιήσετε τις επιλογές σας. </p>
+<p>Μερικοί διάλογοι πιθανόν να προσφέρουν επιπρόσθετες πληροφορίες βοήθειας. Αν είναι διαθέσιμη βοήθεια, αυτό θα υποδεικνύεται στην τελευταία γραμμή της οθόνης με την εμφάνιση του μηνύματος ότι οι σχετικές πληροφορίες είναι προσβάσιμες πατώντας το πλήκτρο <span class="keycap"><strong>F1</strong></span>. </p>
+<p>Τα μηνύματα λάθους κατευθύνονται στην τρίτη κονσόλα. Μπορείτε να έχετε πρόσβαση σ' αυτήν την κονσόλα πατώντας <span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F4</strong></span> (κρατάτε πατημένο το αριστερό πλήκτρο <span class="keycap"><strong>Alt</strong></span> πατώντας ταυτόχρονα το πλήκτρο συνάρτησης <span class="keycap"><strong>F4</strong></span> ). Eπιστρέψτε πίσω στην διαδικασία της κύριας εγκατάστασης με το συνδυασμό πλήκτρων <span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F1</strong></span>. </p>
+<p>Αυτά τα μηνύματα μπορούν να βρεθούν επίσης στο <code class="filename">/var/log/syslog</code>. Μετά την εγκατάσταση, αυτό το αρχείο καταγραφής αντιγράφεται στο <code class="filename">/var/log/installer/syslog</code> του νέου σας συστήματος. Στη διάρκεια της εγκατάστασης μπορούν να βρεθούν κι άλλα μηνύματα εγκατάστασης στο <code class="filename">/var/log/</code> και στο <code class="filename">/var/log/installer/</code> μετά την εκκίνηση του υπολογιστή σας στο εγκατεστημένο σύστημα. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="gtk-using"></a>6.1.1. Χρησιμοποιώντας τον γραφικό εγκαταστάτη</h3></div></div></div>
+<p>Ο γραφικός εγκαταστάτης δουλεύει βασικά με τον ίδιο τρόπο όπως και ο βασισμένος στο κείμενο οπότε το υπόλοιπο του εγχειριδίου μπορεί να χρησιμοποιηθεί ώστε να σας καθοδηγήσει στο υπόλοιπο της διαδικασίας εγκατάστασης. </p>
+<p>Αν προτιμάτε να χρησιμοποιήσετε το πληκτρολόγιο περισσότερο από το ποντίκι, υπάρχουν δύο πράγματα που θα πρέπει να γνωρίζετε. Για να εμφανίσετε μια συμπτυγμένη λίστα (που χρησιμοποιείται για παράδειγμα για την επιλογή χωρών από τις ηπείρους), μπορείτε να χρησιμοποιήσετε τον συνδυασμό πλήκτρων <span class="keycap"><strong>+</strong></span> και  <span class="keycap"><strong>-</strong></span>. Για ερωτήσεις για τις οποίες υπάρχουν περισσότερες από μία επιλογές (πχ. επιλογή καθηκόντων), πρέπει πρώτα να πατήσετε το tab για το κουμπί <span class="guibutton">Continue</span> αφού έχετε κάνεις τις επιλογές σας· πατώντας enter θα σας πάει σε μια άλλη επιλογή, δεν θα ενεργοποιήσει το κουμπί <span class="guibutton">Continue</span>. </p>
+<p>Αν κάποιος διάλογος προσφέρει επιπρόσθετες πληροφορίες βοήθειας, θα εμφανιστεί ένα κουμπί <span class="guibutton">Help</span>. Οι πληροφορίες βοήθειας είναι προσβάσιμες είτε ενεργοποιώντας το κουμπί είτε πατώντας το πλήκτρο <span class="keycap"><strong>F1</strong></span>. </p>
+<p>Για να αλλάξετε κονσόλα, θα χρειαστεί επίσης να χρησιμοποιήσετε το πλήκτρο <span class="keycap"><strong>Ctrl</strong></span>,  όπως ακριβώς και με το παραθυρικό σύστημα X (X Window System). Για παράδειγμα, για να περάσετε στην κονσόλα VT2 (το πρώτο κέλυφος για αποσφαλμάτωση) θα πρέπει να χρησιμοποιήσετε τον συνδυασμό πλήκτρων: <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F2</strong></span>. Ο ίδιος ο γραφικός εγκαταστάτης εκτελείται στην κονσόλα VT5, οπότε μπορείτε να χρησιμοποιήσετε τον συνδυασμό  <span class="keycap"><strong>Left Alt</strong></span>+<span class="keycap"><strong>F5</strong></span> για να επιστρέψετε σ' αυτόν. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s02.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Κεφάλαιο 6. Χρησιμοποιώντας τον Εγκαταστάτη του Debian </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> 6.2. Εισαγωγή στα συστατικά</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

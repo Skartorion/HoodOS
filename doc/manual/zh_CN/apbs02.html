@@ -1,0 +1,273 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.2. 使用预置</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="apb.html" title="附录 B. 使用预置自动进行安装">
+<link rel="prev" href="apbs01.html" title="B.1. 介绍">
+<link rel="next" href="apbs03.html" title="B.3. 创建预置文件">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.2. 使用预置</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">附录 B. 使用预置自动进行安装</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-using"></a>B.2. 使用预置</h2></div></div></div>
+<p>您首先要创建一个预置文件，并将它置于希望使用的地方。创建预置文件在后面的附录中有说明。如果您打算使用网络预置或者从 U 盘读取，直接将它放到正确的地方就可以了。如果您希望将它放到安装 ISO 映像上面，那就需要重新制作一个映像文件。而如何将预置文件包含到 initrd 里面，超出了本文档的范围；请查询 <code class="classname">debian-installer</code> 开发者文档。 </p>
+<p>有一个预置文件的例子放在 <span class="phrase"><a class="ulink" href="../example-preseed.txt" target="_top">../example-preseed.txt</a></span>，您可以拿它作为自己预置文件的基础。此文件基于本附录所列的配置文件片段。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-loading"></a>B.2.1. 加载预置文件</h3></div></div></div>
+<p>如果使用 initrd 预置，您只需确保一个名为 <code class="filename">preseed.cfg</code> 的文件包含在 initrd 的根目录里面。安装程序会自动检测并加载。 </p>
+<p>其他的预置方法，您需要在启动的时候告诉安装程序所使用的文件。这通过给内核传递引导参数完成，可以在启动时手动指定，或者编辑 bootloader 的配置文件<span class="phrase">(如: <code class="filename">syslinux.cfg</code>)，并在内核的附加行后面添加参数。</span> </p>
+<p>如果在 bootloader 配置里指定预置文件，可以修改配置而不再需要键入回车来引导安装程序。<span class="phrase">对于 syslinux，这意味着在 <code class="filename">syslinux.cfg</code> 中将超时 timeout 设置为 <code class="literal">1</code>。</span> </p>
+<p>为了保证安装程序得到正确的预置文件，您可以选择为预置文件指定校验和。当前使用的是 md5sum，如果指定了，那么配置文件必须匹配，否则安装程序将拒绝使用。 </p>
+<div class="informalexample"><pre class="screen">要指定的引导参数:
+- 如果使用网络启动:
+  preseed/url=http://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+-或者 
+  preseed/url=tftp://host/path/to/preseed.cfg
+  preseed/url/checksum=5da499872becccfeda2c4872f9171c3d
+
+- 如果从定制的安装映像启动:
+  preseed/file=/cdrom/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+
+- 如果用 USB 设备安装(将预置文件放入 U 盘的顶极目录):
+  preseed/file=/hd-media/preseed.cfg
+  preseed/file/checksum=5da499872becccfeda2c4872f9171c3d
+</pre></div>
+<p>注意，作为引导参数时 <code class="filename">preseed/url</code> 可以缩写为 <code class="filename">url</code>、<code class="filename">preseed/file</code> 缩写为 <code class="filename">file</code>、<code class="filename">preseed/file/checksum</code> 缩写为 <code class="filename">preseed-md5</code>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms"></a>B.2.2. 使用引导参数预置问题的答案</h3></div></div></div>
+<p>如果预置文件无法设置一些步骤，安装也可以完全自动进行，这是因为您可以在引导安装程序时，在命令行上为内核传递预置的值。 </p>
+<p>引导参数可以在您不想使用预置的时候使用，但只提供一个特定问题的答案。在本手册中有一些这样的示例。 </p>
+<p>要设置 <code class="classname">debian-installer</code> 中使用的值，只须传递 <strong class="userinput"><code><em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong>，它们是本附录中所列的任何一个。如果该值是用于配置目标系统的软件包，您需要预先设置 <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>path/to/variable</code></em>=<em class="replaceable"><code>value</code></em></code></strong> 中的 <em class="firstterm">owner</em><a href="#ftn.id3977" class="footnote" name="id3977"><sup class="footnote">[19]</sup></a> 变量。如果您不指定 owner，该变量的值不会复制到目标系统上的 debconf 数据库，并在相关的软件包的配置中不使用。 </p>
+<p>通常，采用这种方式预置是为了问题不再被询问。为了设置一个问题的默认答案，并仍然显示问题，请使用 <span class="quote">“<span class="quote">?=</span>”</span> 替换 <span class="quote">“<span class="quote">=</span>”</span> 作为操作符。参阅 <a class="xref" href="apbs05.html#preseed-seenflag" title="B.5.2. 使用预置修改默认值">第 B.5.2 节 “使用预置修改默认值”</a>。 </p>
+<p>注意，一些常用的引导参数变量有简写别名。如果有简写形式，它们将会被用在附录的例子里面替代全称。例如，<code class="literal">preseed/url</code> 变量简写为 <code class="literal">url</code>。另一个例子是 <code class="literal">tasks</code>，它转换成 <code class="literal">tasksel:tasksel/first</code>。 </p>
+<p><span class="quote">“<span class="quote">---</span>”</span> 在启动选项中有特殊含义。最后一个 <span class="quote">“<span class="quote">---</span>”</span> 后面出现的内核参数将被复制到安装的 bootloader 设置(假如安装程序支持 bootloader)。安装程序可以自动发现它能识别的选项(就像预置选项)。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>当前的 linux 内核(2.6.9 和更新的)，可以指定最多 32 个命令行选项和 32 个环境变量选项，包括安装程序默认的选项。如果数目超出，内核将崩溃。(早期的内核，接受的数目更少。) </p></td></tr>
+</table></div>
+<p>大多数安装过程，在引导配置文件中一些默认的选项，比如 <code class="literal">vga=normal</code>，可以放心地删除，这让您可以添加更多的预置选项。 </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[注意]" src="images/note.png"></td>
+<th align="left">注意</th>
+</tr>
+<tr><td align="left" valign="top"><p>引导参数中即使使用引号，也可能无法夹杂空格。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-auto"></a>B.2.3. auto 模式</h3></div></div></div>
+<p>有几个 Debian 安装程序的特性结合到一起，在引导提示时允许相当简单的命令行，导致了任何复杂的定制化自动安装。 </p>
+<p>这通过使用 <code class="literal">Automated install</code> 引导选择来启动，对一些架构或引导方法也被称为 <code class="literal">auto</code>。 在这节中，这样 <code class="literal">auto</code> 不是参数，它意味着选择引导选项，并在引导提示上增补后面的引导参数。<span class="phrase">请参见<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. 引导屏幕">第 5.1.5 节 “引导屏幕”</a> 如何添加引导参数的信息。</span> </p>
+<p>为了表达清楚，这里有一些例子，可以用在引导提示符后面：</p>
+<div class="informalexample"><pre class="screen">
+auto url=autoserver
+</pre></div>
+<p> 这需要一个 DHCP 服务器能找到并且 DNS 可以解析 <code class="literal">autoserver</code>，或许要加上 DHCP 提供的本地域名。如果域名是 <code class="literal">example.com</code>，并有相应的 DHCP 设置，那么预置文件将从 <code class="literal">http://autoserver.example.com/d-i/trixie/./preseed.cfg</code> 获得。 </p>
+<p>url 的最后一部分(<code class="literal">d-i/trixie/./preseed.cfg</code>)来自 <code class="literal">auto-install/defaultroot</code>。默认包括 <code class="literal">trixie</code> 目录，让将来的版本在可控的方式下指定自己的代号。<code class="literal">/./</code> 位用来定位相对于根目录的子目录(用于 preseed/include 和 preseed/run)。使文件可以指定为完整路径、以 / 开始的位置或者相对于最后一个预置的文件。这样可以建立更具移植性的脚本，让各级脚本完整地移动到新的位置而不被破坏。比如，复制 web 服务器上的文件到 U 盘。本例中，如果预置文件的 <code class="literal">preseed/run</code> 为 <code class="literal">/scripts/late_command.sh</code>，那么文件将从 <code class="literal">http://autoserver.example.com/d-i/trixie/./scripts/late_command.sh</code> 获得。 </p>
+<p>如果本地没有 DHCP 或 DNS，或者您不想使用 <code class="filename">preseed.cfg</code> 的默认路径，可以直接指定路径。并且，如果不使用 <code class="literal">/./</code> 元素，它将定位到路径的起始点 (例如 URL 中的第三个 <code class="literal">/</code>)。下面的例子是局域网中最基本的要求：</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>http://192.168.1.2/path/to/mypreseed.file</code></em>
+</pre></div>
+<p> 它会以下列方式运作： </p>
+<div class="itemizedlist"><ul class="itemizedlist compact" type="disc">
+<li class="listitem"><p>如果 URL 不含协议，就使用 http </p></li>
+<li class="listitem"><p>如果主机名不含域名，将使用 DHCP 提供的，并且 </p></li>
+<li class="listitem"><p>如果主机名后面没有 <code class="literal">/</code>，那么将加上默认路径。 </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>除了指定 url 之外，您还可以指定不直接影响 <code class="classname">debian-installer</code> 自己行为的设置，但是可以传递到预置文件加载的 <code class="literal">preseed/run</code> 中的脚本。当前，只有一个 <code class="literal">auto-install/classes</code>，它的别名是 <code class="literal">classes</code>。可以这样用：</p>
+<div class="informalexample"><pre class="screen">
+auto url=<em class="replaceable"><code>example.com</code></em> classes=<em class="replaceable"><code>class_A;class_B</code></em>
+</pre></div>
+<p> classes 可以指定系统的类型，或者本地化信息。 </p>
+<p>只要您愿意，当然可以扩充这个概念，合理应用 auto-install 名字空间就是为了这个目的。这就可能会有诸如 <code class="literal">auto-install/style</code> 的内容加入到您的脚本。如果您觉得需要这样做，请发邮件到 <code class="email">&lt;<a class="email" href="mailto:debian-boot@lists.debian.org">debian-boot@lists.debian.org</a>&gt;</code> 邮件列表说明，我们可以避免名字空间的冲突，还可能会为您增加一个参数的别名。 </p>
+<p><code class="literal">auto</code> 引导先择并未在所有架构上定义。在内核命令行上可以通过添加 <code class="literal">auto=true priority=critical</code> 两个参数达到同样的效果。<code class="literal">auto</code> 内核参数是 <code class="literal">auto-install/enable</code> 的别名，将其设为 <code class="literal">true</code> 可以延迟 locale 和键盘等问题的提出，使其可以提供预置，其中 <code class="literal">priority</code> 是 <code class="literal">debconf/priority</code> 的别名，设置它为 <code class="literal">critical</code> 可以禁止在较低优先级下的问题提出。 </p>
+<p>When an Automatic install is selected without also specifying a preseed configuration, the user will be prompted to provide a preseed location. Alternatively, if a preseed configuration has been specified, then that prompt is normally suppressed in order to enable a fully non-interactive install. However, if the intent is to modify defaults by using a <code class="literal">preseed.cfg</code> in an initrd, then the result should really behave as though no preseeding has yet been specified, even though it has. In that case, the debconf variable <code class="literal">auto-install/cloak_initrd_preseed</code> can be set to <code class="literal">true</code> (e.g. in the initrd's <code class="literal">preseed.cfg</code>). to get the required behaviour. </p>
+<p>在使用 DHCP 自动安装时还有一个有趣的额外选项：<code class="literal">interface=auto netcfg/dhcp_timeout=60</code>，这让机器使用第一个可用的网卡并耐心地等待 DHCP 的查询。 </p>
+<div class="tip"><table border="0" summary="Tip">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[提示]" src="images/tip.png"></td>
+<th align="left">提示</th>
+</tr>
+<tr><td align="left" valign="top"><p>更多使用此框架的例子，包括示例脚本和类，可以在<a class="ulink" href="http://hands.com/d-i/" target="_top">其开发者的网站</a>找到。那里的例子还显示出预置可以达到更多的效果。 </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-aliases"></a>B.2.4. 预置中有用的别名</h3></div></div></div>
+<p>下面这些别名在使用(自动)预置时很有用处。注意，它们是提问名称的简写别名，您同时需要指定一个对应的值：例如，<code class="literal">auto=true</code> 或 <code class="literal">interface=eth0</code>。 </p>
+<div class="informaltable"><table class="informaltable" border="0">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td>priority</td>
+<td>debconf/priority</td>
+</tr>
+<tr>
+<td>fb</td>
+<td>debian-installer/framebuffer</td>
+</tr>
+<tr>
+<td>auto</td>
+<td>auto-install/enable</td>
+</tr>
+<tr>
+<td>classes</td>
+<td>auto-install/classes</td>
+</tr>
+<tr>
+<td>file</td>
+<td>preseed/file</td>
+</tr>
+<tr>
+<td>url</td>
+<td>preseed/url</td>
+</tr>
+<tr>
+<td>theme</td>
+<td>debian-installer/theme</td>
+</tr>
+<tr>
+<td>language</td>
+<td>debian-installer/language</td>
+</tr>
+<tr>
+<td>country</td>
+<td>debian-installer/country</td>
+</tr>
+<tr>
+<td>locale</td>
+<td>debian-installer/locale</td>
+</tr>
+<tr>
+<td>keymap</td>
+<td>keyboard-configuration/xkb-keymap</td>
+</tr>
+<tr>
+<td>modules</td>
+<td>anna/choose_modules</td>
+</tr>
+<tr>
+<td>firmware</td>
+<td>hw-detect/firmware-lookup</td>
+</tr>
+<tr>
+<td>interface</td>
+<td>netcfg/choose_interface</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>netcfg/get_domain</td>
+</tr>
+<tr>
+<td>hostname   </td>
+<td>netcfg/get_hostname</td>
+</tr>
+<tr>
+<td>protocol</td>
+<td>mirror/protocol</td>
+</tr>
+<tr>
+<td>suite</td>
+<td>mirror/suite</td>
+</tr>
+<tr>
+<td>recommends</td>
+<td>base-installer/install-recommends</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>tasksel:tasksel/first</td>
+</tr>
+<tr>
+<td>desktop</td>
+<td>tasksel:tasksel/desktop</td>
+</tr>
+<tr>
+<td>preseed-md5</td>
+<td>preseed/file/checksum</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-bootparms-examples"></a>B.2.5. 引导提示预置的例子</h3></div></div></div>
+<p>这里是一些引导提示看起来什么样子的例子（还需要将这个与您的需要相适应<span class="phrase">；还请参见<a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. 引导屏幕">第 5.1.5 节 “引导屏幕”</a> </span>）。 </p>
+<div class="informalexample"><pre class="screen"># To set French as language and France as country:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=fr country=FR --- quiet
+# To set English as language and Germany as country, and use a German keyboard layout:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz language=en country=DE locale=en_US.UTF-8 keymap=de --- quiet
+# To install the MATE desktop:
+/install.amd/vmlinuz vga=788 initrd=/install.amd/gtk/initrd.gz desktop=mate-desktop --- quiet
+# To install the web-server task:
+/install.amd/vmlinuz initrd=/install.amd/initrd.gz tasksel:tasksel/first=web-server ---
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-dhcp"></a>B.2.6. 使用 DHCP 服务器指定预置文件</h3></div></div></div>
+<p>还可以使用 DHCP 来指定从网络下载的预置文件。DHCP 允许指定文件名。通常是用于 netboot 的文件，但如果是一个 URL，那么支持网络预置的安装介质就会从该 URL 下载，并用作预置文件。这里有一个在 dhcpd.conf 中使用的例子，它用于 ISC DHCP 服务器第 3 版(Debian 里面是 isc-dhcp-server 软件包)。 </p>
+<div class="informalexample"><pre class="screen">if substring (option vendor-class-identifier, 0, 3) = "d-i" {
+    filename "http://host/preseed.cfg";
+}
+</pre></div>
+<p>注意，上面的例子中使用的文件名限定 DHCP 客户端自己是 <span class="quote">“<span class="quote">d-i</span>”</span>，因此仅适用于安装程序，而对普通的 DHCP 客户端无效。您可以将只用于一个特殊主机的文字放在一段，以避免预置网络中的其他安装。 </p>
+<p>使用 DHCP 预置的一个好方法是仅预置网络相关的值，比如所使用的 Debian 镜像。这种方式下在网络中安装将会自动选择一个合适的镜像，而其余的安装部分仍可以交互进行。使用 DHCP 预置进行完整的 Debian 自动安装应该特别小心。 </p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id3977" class="footnote"><p><a href="#id3977" class="para"><sup class="para">[19] </sup></a> debconf 变量(或模板)的 owner 通常是包含对应 debconf 模板的软件包明。对于安装程序自己使用的变量，owner 是 <span class="quote">“<span class="quote">d-i</span>”</span>。模板和变量可以有多个 owner，以助于删除软件包时判断它们是否要从 debconf 数据库中删除。</p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.1. 介绍 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> B.3. 创建预置文件</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

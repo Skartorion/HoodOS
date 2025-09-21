@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Oprettelse af en forhåndskonfigurationsfil</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Installationsguide for Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)">
+<link rel="prev" href="apbs02.html" title="B.2. Brug af forhåndskonfiguration">
+<link rel="next" href="apbs04.html" title="B.4. Indhold af forhåndskonfigurationsfilen (for trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Oprettelse af en forhåndskonfigurationsfil</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<th width="60%" align="center">Appendiks B. Automatisering af installationen med preseeding (forhåndskonfiguration)</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Oprettelse af en forhåndskonfigurationsfil</h2></div></div></div>
+<p>Den forhåndskonfigurerede fil er i et format brugt af kommandoen <span class="command"><strong>debconf-set-selections</strong></span>. Det generelle format for en linje i en forhåndskonfigureret fil er: </p>
+<div class="informalexample"><pre class="screen">&lt;ejer&gt; &lt;spørgsmålsnavn&gt; &lt;spørgsmålstype&gt; &lt;værdi&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Filen skal starte med <code class="literal">#_preseed_V1</code> </p>
+<p>Der er nogle få regler at huske, når en forhåndskonfigurationsfil skrives. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Placer kun et enkelt mellemrum eller indryk mellem type og værdi: Eventuelle yderligere mellemrum vil blive fortolket som tilhørende værdien. </p></li>
+<li class="listitem"><p>En linje kan opdeles i flere linjer ved at tilføje en skråstreg (<span class="quote">“<span class="quote"><code class="literal">\</code></span>”</span>) som linjens fortsættelseskarakter. Et godt sted at opdele en linje er efter spørgsmålnavnet; et dårligt sted er mellem type og værdi. Opdelte linjer vil blive sammensat til en enkel linje med alle foranstillede/efterfølgende mellemrum samlet til et enkelt mellemrum. </p></li>
+<li class="listitem"><p>For debconf-værdier (skabeloner) brugt alene i selve installationsprogrammet, bør ejeren angives til <span class="quote">“<span class="quote">d-i</span>”</span>; for at forhåndskonfigurere variabler brugt i det installerede system, skal pakkenavnet der indeholder den tilsvarende debconf-skabelon bruges. Kun variabler der har deres ejer angivet som noget andet end <span class="quote">“<span class="quote">d-i</span>”</span> vil blive overført til debconf-databasen for det installerede system. </p></li>
+<li class="listitem"><p>De fleste spørgsmål skal forhåndskonfigureres via værdierne gyldige i engelsk ikke de oversatte værdier. Der er dog nogle spørgsmål (for eksempel i <code class="classname">partman</code>) hvor de oversatte værdier skal bruges. </p></li>
+<li class="listitem"><p>Nogle spørgsmål bruger en kode som værdi i stedet for den engelske tekst som vises under installationen. </p></li>
+<li class="listitem"><p>Start med <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>En kommentar består af en linje, der <span class="emphasis"><em>starter</em></span> med en havelåge (<span class="quote">“<span class="quote"><code class="literal">#</code></span>”</span>) og udvides op til længden af den linje. </p></li>
+</ul></div>
+<p>Den nemmeste måde at oprette en fil for forhåndskonfigurationen er at bruge eksempelfilen i <a class="xref" href="apbs04.html" title="B.4. Indhold af forhåndskonfigurationsfilen (for trixie)">Afsnit B.4, “Indhold af forhåndskonfigurationsfilen (for trixie)”</a> som udgangpsunkt og arbejde ud fra den. </p>
+<p>En alternativ metode er at udføre en manuel installation og så, efter genstart at bruge <span class="command"><strong>debconf-get-selections</strong></span> fra pakken <code class="classname">debconf-utils</code> til at dumpe både debconf-databsen og installationsprogrammets cdebconf-database til en enkel fil: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>file</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>file</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>En fil oprettet på denne måde vil dog have nogle elementer, som ikke skal forhåndskonfigureres og eksempelfilen er et bedre udgangspunkt for de fleste brugere. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Bemærk]" src="images/note.png"></td>
+<th align="left">Bemærk</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Denne metode afhænger af det faktum, at i slutningen af installationen, gemmes installationsprogrammets cdebconf-database til det installerede system i <code class="filename">/var/log/installer/cdebconf</code>. Da databasen kan indeholde sensitiv information, så kan filerne som standard kun læses af root (administrator). </p>
+<p>Mappen <code class="filename">/var/log/installer</code> og alle filer i den vil blive slettet fra dit system, hvis du fjerner pakken <code class="classname">installation-report</code>. </p>
+</td></tr>
+</table></div>
+<p>For at kontrollere mulige værdier for spørgsmål, så kan du bruge <span class="command"><strong>nano</strong></span> for at undersøge filerne i <code class="filename">/var/lib/cdebconf</code> mens en installation er i gang. Vis <code class="filename">templates.dat</code> for de rå skabeloner og <code class="filename">questions.dat</code> for de nuværende værdier og for værdierne tildelt variabler. </p>
+<p>For at kontrollere om formatet for forhåndskonfigurationfilen er gyldig før udføresel af en installation, så kan du bruge kommandoen <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span>. </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="forrige"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="op"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="næste"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Brug af forhåndskonfiguration </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="hjem"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Indhold af forhåndskonfigurationsfilen (for trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

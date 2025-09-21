@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.4. ハードディスク起動ファイルの準備</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux インストールガイド">
+<link rel="up" href="ch04.html" title="第4章 システムインストールメディアの入手">
+<link rel="prev" href="ch04s03.html" title="4.3. USB メモリでの起動用ファイルの準備">
+<link rel="next" href="ch04s05.html" title="4.5. TFTP ネットブート用ファイルの準備">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.4. ハードディスク起動ファイルの準備</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<th width="60%" align="center">第4章 システムインストールメディアの入手</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-drive-files"></a>4.4. ハードディスク起動ファイルの準備</h2></div></div></div>
+<p>このインストーラはハードディスクパーティションに配置したファイルから起動できます。別の OS から起動することもできますし、BIOS から直接ブートローダを起動することもできます。最近の UEFI システムであればブートローダも必要なくカーネルを直接 UEFI パーティションから起動できます。 </p>
+<p>この方法を使えば、完全な<span class="quote">「<span class="quote">ネットワークのみ</span>」</span>のインストールを行うことができます。これは、CD/DVD メディアを探して焼いたりといったリムーバブルメディアに関する厄介ごとすべてを避けることができます。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="files-grub"></a>4.4.1. <span class="command"><strong>GRUB</strong></span> を使用した Linux からのハードディスクインストーラ起動</h3></div></div></div>
+<p>本節では <span class="command"><strong>GRUB</strong></span> を使用して、linux を追加したり既存の linux を交換する方法について説明します。 </p>
+<p>起動時に、カーネルだけでなくディスクイメージをメモリに読み込むのを <span class="command"><strong>GRUB</strong></span> はサポートしています。この RAM ディスクはカーネルが root ファイルシステムとして使うことができます。 </p>
+<p>以下のファイルを、 Debian アーカイブからあなたのハードディスクの適当な場所にコピーしてください。例えば <code class="filename">/boot/newinstall/</code> などです。 </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p><code class="filename">vmlinuz</code> (カーネルバイナリ) </p></li>
+<li class="listitem"><p><code class="filename">initrd.gz</code> (RAM ディスクイメージ) </p></li>
+</ul></div>
+<p>
+
+</p>
+<p>起動のためだけにハードディスクを使用する予定で、ネットワークからすべてダウンロードするのなら、<a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz" target="_top">netboot/debian-installer/amd64/initrd.gz</a> ファイルとそれに対応するカーネル <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux" target="_top">netboot/debian-installer/amd64/linux</a> をダウンロードするとよいでしょう。これはインストーラを起動するハードディスクのパーティションを、切り直すことができます。(注意して行ってください) </p>
+<p>他の手段としては、インストール中にハードディスクの既存のパーティションを変更しない予定であれば、<a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/initrd.gz" target="_top">hd-media/initrd.gz</a> ファイルとそのカーネル <a class="ulink" href="http://http.us.debian.org/debian/dists/trixie/main/installer-amd64/current/images/hd-media/vmlinuz" target="_top">hd-media/vmlinuz</a> をダウンロードできます。同様に、ハードディスクにインストールイメージ (ファイル名が <code class="literal">.iso</code> で終わっているか要確認) をコピーしてください。インストーラをハードディスクから起動でき、ネットワークを使用せずにインストールイメージからインストールできます。 </p>
+<p>最後に、ブートローダを設定するため、 <a class="xref" href="ch05s01.html#boot-initrd" title="5.1.3. GRUB を用いた Linux からの起動">「<span class="command"><strong>GRUB</strong></span> を用いた Linux からの起動」</a> に進んでください。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s03.html"><img src="images/prev.png" alt="戻る"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="上に戻る"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s05.html"><img src="images/next.png" alt="次へ"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.3. USB メモリでの起動用ファイルの準備 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="ホーム"></a></td>
+<td width="40%" align="right" valign="top"> 4.5. TFTP ネットブート用ファイルの準備</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Chuẩn bị tập tin để khởi động qua mạng TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Chương 4. Lấy vật chứa cài đặt hệ thống">
+<link rel="prev" href="ch04s04.html" title="4.4. Chuẩn bị tập tin để khởi động đĩa cứng">
+<link rel="next" href="ch04s06.html" title="4.6. Cài đặt tự động">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Chuẩn bị tập tin để khởi động qua mạng TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Chương 4. Lấy vật chứa cài đặt hệ thống</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Chuẩn bị tập tin để khởi động qua mạng TFTP</h2></div></div></div>
+<p>Nếu máy tính của bạn có kết nối đến mạng cục bộ, bạn có thể có khả năng khởi động qua mạng từ máy khác bằng TFTP. Nếu bạn định khởi động hệ thống cài đặt từ máy khác, cần phải để các tập tin khởi động vào vị trí dứt khoát trên máy đó, cũng cấu hình máy đó để hỗ trợ khả năng khởi động máy tính riêng của bạn. </p>
+<p>Bạn cần phải thiết lập một trình phục vụ TFTP, và cho nhiều máy cũng cần một trình phục vụ DHCP<span class="phrase">, hay trình phục vụ BOOTP</span>. </p>
+<p> <span class="phrase">BOOTP là một giao thức IP báo máy tính biết địa chỉ IP của chính nó và nơi trên mạng có thể lấy ảnh khởi động.</span>  </p>
+<p>Giao thức truyền tập tin không đáng kể (TFTP) được dùng để phục vụ ảnh khởi động cho ứng dụng khách. Về lý thuyết có thể sử dụng bất kỳ trình phục vụ nào trên bất kỳ nền tảng nào mà thực hiện những giao thức này. Những lời thí dụ trong tiết đoạn này sẽ cung cấp lệnh riêng cho hệ điều hành SunOS 4.x, SunOS 5.x (cũng tên Solaris), và GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Đối vơi một trình phục vụ Debian GNU/Linux, chúng tôi khuyến khích <code class="classname">tftpd-hpa</code>. Nó được tạo bởi cùng một tác giả với bộ nạp khởi động <code class="classname">syslinux</code> thì ít nhất có thể gây ra vấn đề. Một sự chọn tốt khác là <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Thiết lập trình phục vụ DHCP</h3></div></div></div>
+<p>Một trình phục vụ DHCP phần mềm tự do là <span class="command"><strong>dhcpd</strong></span> ISC. Đối với Debian GNU/Linux, gói <code class="classname">isc-dhcp-server</code> khuyến khích. Đây là một tập tin cấu hình mẫu cho nó (xem <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "mẫu.com";
+option domain-name-servers ns1.mẫu.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "tên_máy_phục_vụ";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host tên_máy_khách {
+  filename "/tftpboot.img";
+  server-name "tên_máy_phục_vụ";
+  next-server tên_máy_phục_vụ;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+
+[option			tùy chọn
+domain-name		tên miền
+domain name servers	các máy phục vụ tên miền
+subnet-mask		mặt nạ mạng phụ
+default-lease-time		thời gian thuê mặc định
+max-lease-time	thời gian thuê tối đa
+server-name		tên máy phục vụ
+subnet			mạng phụ
+netmask			mặt nạ mạng
+range			phạm vị
+routers			các bộ định tuyến
+host				máy (hỗ trợ)
+filename			tên tập tin
+hardware ethernet	Ethernet phần cứng
+fixed-address		địa chỉ cố định]
+</pre></div>
+<p>
+
+</p>
+<p>Trong lời thí dụ này, có một máy phục vụ tên <em class="replaceable"><code>tên_máy_phục_vụ</code></em> mà làm mọi công việc của trình phục vụ DHCP, trình phục vụ TFTP và cổng ra mạng. Bình thường, bạn sẽ cần phải thay đổi những tùy chọn tên miền (domain-name), cũng như tên máy phục vụ (server-name) và địa chỉ phần cứng (hardware address) của máy khách. Tùy chọn <em class="replaceable"><code>filename</code></em> (tên tập tin) nên là tên tập tin sẽ được lấy thông qua TFTP. </p>
+<p>Sau khi bạn chỉnh sửa tập tin cấu hình của trình nền <span class="command"><strong>dhcpd</strong></span>, hãy khởi chạy lại nó bằng lệnh <strong class="userinput"><code>/etc/init.d/dhcpd3-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2161"></a>4.5.1.1. Bật khả năng khởi động PXE trong cấu hình DHCP</h4></div></div></div>
+<p>Đây là một mẫu <code class="filename">dhcp.conf</code> khác, dùng phương pháp môi trường thực hiện tiền khởi động (PXE) của giao thức TFTP. [Chú thích đã được dịch trong mẫu này.] </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "mẫu.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# Cần phải sửa đổi đoạn văn này để thích hợp với trường hợp của bạn
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# địa chỉ cổng ra mà có thể là khác
+# (v.d. truy cập Mạng)
+  option routers 192.168.1.1;
+# xác định DNS cần dùng
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+ next-server 192.168.1.3;
+ host tftpclient {
+# địa chỉ phần cứng của máy khách TFTP
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Ghi chú rằng để khởi động cách PXE, tên tập tin khách <code class="filename">pxelinux.0</code> là bộ nạp khởi động, không phải là ảnh hạt nhân (xem <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Xác định vị trí của ảnh TFTP">Phần 4.5.4, “Xác định vị trí của ảnh TFTP”</a> bên dưới). </p>
+<p>If your machine uses UEFI to boot, you will have to specify a boot loader appropriate for UEFI machines, for example </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Thiết lập trình phục vụ BOOTP</h3></div></div></div>
+<p>Có hai trình phục vụ BOOTP sẵn sàng cho GNU/Linux. Trình thứ nhất là <span class="command"><strong>bootpd</strong></span> CMU. Trình thứ hai thật là một trình phục vụ DHCP: <span class="command"><strong>dhcpd</strong></span> ISC. Trong Debian GNU/Linux hai trình này nằm trong gói<code class="classname">bootp</code> và <code class="classname">isc-dhcp-server</code> riêng từng cái. </p>
+<p>To use CMU <span class="command"><strong>bootpd</strong></span>, you must first uncomment (or add) the relevant line in <code class="filename">/etc/inetd.conf</code>. On Debian GNU/Linux, you can run <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, then <strong class="userinput"><code>/etc/init.d/inetd reload</code></strong> to do so. Just in case your BOOTP server does not run Debian, the line in question should look like: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p> Now, you must create an <code class="filename">/etc/bootptab</code> file. This has the same sort of familiar and cryptic format as the good old BSD <code class="filename">printcap</code>, <code class="filename">termcap</code>, and <code class="filename">disktab</code> files. See the <code class="filename">bootptab</code> manual page for more information. For CMU <span class="command"><strong>bootpd</strong></span>, you will need to know the hardware (MAC) address of the client. Here is an example <code class="filename">/etc/bootptab</code>: </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p> You will need to change at least the <span class="quote">“<span class="quote">ha</span>”</span> option, which specifies the hardware address of the client. The <span class="quote">“<span class="quote">bf</span>”</span> option specifies the file a client should retrieve via TFTP; see <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Xác định vị trí của ảnh TFTP">Phần 4.5.4, “Xác định vị trí của ảnh TFTP”</a> for more details. </p>
+<p>Mặt khác, tiến trình thiết lập BOOTP bằng <span class="command"><strong>dhcpd</strong></span> ISC vẫn rất dễ dàng, vì nó thấy các ứng dụng khách BOOTP là ứng dụng khách DHCP kiểu hơi đặc biệt. Một số kiến trúc nào đó yêu cầu một cấu hình phức tạp để khởi động ứng dụng khách thông qua BOOTP. Nếu máy của bạn có kiến trúc như thế, hãy đọc tiết đoạn <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Thiết lập trình phục vụ DHCP">Phần 4.5.1, “Thiết lập trình phục vụ DHCP”</a>. Khác thì rất có thể là bạn đơn giản cần thêm chỉ thị <strong class="userinput"><code>allow bootp</code></strong> (cho phép BOOTP) vào khối cấu hình dành cho mạng phụ chứa máy chạy ứng dụng khách đó trong tập tin <code class="filename">/etc/dhcp/dhcpd.conf</code>, sau đó khởi chạy lại trình nền <span class="command"><strong>dhcpd</strong></span> bằng câu lệnh <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Bật chạy trình phục vụ TFTP</h3></div></div></div>
+<p>Để chuẩn bị trình phục vụ TFTP, trước tiên bạn nên đảm bảo rằng <span class="command"><strong>tftpd</strong></span> được hiệu lực. </p>
+<p>Trong trường hợp của <code class="classname">tftpd-hpa</code>, có hai phương pháp chạy dịch vụ. Nó có thể được khởi chạy theo yêu cầu bởi trình nền <code class="classname">inetd</code> của hệ thống, hoặc nó có thể được thiết lập để chạy như là một trình nền độc lập. Phương pháp này được chọn khi gói được cài đặt, và lúc nào cũng có thể được thay đổi bằng cách cấu hình lại gói đó. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>Trong quá khứ, máy phục vụ TFTP đã dùng <code class="filename">/tftpboot</code> như là thư mục từ đó cần phục vụ ảnh. Tuy nhiên, các gói Debian GNU/Linux có thể sử dụng thư mục khác để tuân theo <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Tiêu Chuẩn Phân Cấp Hệ Thống Tập Tin</a> (FHS). Chẳng hạn, <code class="classname">tftpd-hpa</code> theo mặc định sử dụng thư mục <code class="filename">/srv/tftp</code>. Có lẽ bạn cần phải điều chỉnh những mẫu cấu hình trong phần này một cách tương ứng. </p></td></tr>
+</table></div>
+<p>Tất cả các sự chọn <span class="command"><strong>in.tftpd</strong></span> khác sẵn sàng trong Debian thì nên ghi lưu các yêu cầu TFTP vào sổ theo dõi hệ thống theo mặc định. Một số điều cũng hỗ trợ một đối số <strong class="userinput"><code>-v</code></strong> để tăng mức chi tiết của kết xuất. Khuyên bạn kiểm tra các thông điệp ghi lưu này trong trường hợp gặp vấn đề khởi động, vì sổ theo dõi là một điểm bắt đầu hữu ích để chẩn đoán nguyên nhân của lỗi. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Xác định vị trí của ảnh TFTP</h3></div></div></div>
+<p>Sau đó, hãy để ảnh khởi động TFTP cần thiết (như được tìm trong <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Where to Find Installation Files">Phần 4.2.1, “Where to Find Installation Files”</a>) vào thư mục ảnh khởi động của trình nền <span class="command"><strong>tftpd</strong></span>. Có lẽ bạn cần phải tạo một liên kết từ tập tin đó đến tập tin mà <span class="command"><strong>tftpd</strong></span> sẽ sử dụng để khởi động máy khách riêng. Tiếc là tên tập tin được quyết định bởi máy khách TFTP, và chưa có tiêu chuẩn mạnh nào. </p>
+<p>For PXE booting, everything you should need is set up in the <code class="filename">netboot/netboot.tar.gz</code> tarball. Simply extract this tarball into the <span class="command"><strong>tftpd</strong></span> boot image directory. Make sure your dhcp server is configured to pass <code class="filename">pxelinux.0</code> to <span class="command"><strong>tftpd</strong></span> as the filename to boot. For UEFI machines, you will need to pass an appropriate EFI boot image name (such as <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Chuẩn bị tập tin để khởi động đĩa cứng </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Cài đặt tự động</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

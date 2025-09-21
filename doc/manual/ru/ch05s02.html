@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>5.2. Лёгкость управления</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="ch05.html" title="Глава 5. Загрузка системы установки">
+<link rel="prev" href="ch05s01.html" title="5.1. Запуск программы установки на 64-bit PC">
+<link rel="next" href="ch05s03.html" title="5.3. Параметры загрузки">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">5.2. Лёгкость управления</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Глава 5. Загрузка системы установки</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-installer-accessibility"></a>5.2. Лёгкость управления</h2></div></div></div>
+<p>Some users may need specific support because of e.g. some visual impairment. <span class="phrase">USB braille displays are detected automatically (not serial displays connected via a serial-to-USB converter), but most other</span>  accessibility features have to be enabled manually. <span class="phrase">On machines that support it, the boot menu emits beeps when it is ready to receive keystrokes. It beeps once on BIOS systems, and beeps twice on UEFI systems.</span> Some boot parameters can <span class="phrase">then</span> be appended to enable accessibility features<span class="phrase"> (see also <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Экран запуска">Раздел 5.1.5, «Экран запуска»</a>)</span>. Note that on most architectures the boot loader interprets your keyboard as a QWERTY keyboard. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1901"></a>5.2.1. Пользовательский интерфейс программы установки</h3></div></div></div>
+<p>Программа установки Debian поддерживает несколько пользовательских интерфейсов для задания вопросов с  различной степенью удобства управления: в частности, в <strong class="userinput"><code>text</code></strong> используется простой текст, в <strong class="userinput"><code>newt</code></strong> используется текстовые псевдографические окна. Выбор можно сделать в приглашении к загрузке, смотрите документацию на <strong class="userinput"><code>DEBIAN_FRONTEND</code></strong> в <a class="xref" href="ch05s03.html#installer-args" title="5.3.2. Параметры программы установки Debian">Раздел 5.3.2, «Параметры программы установки Debian»</a>. </p>
+<p>With the <strong class="userinput"><code>newt</code></strong> front-end (used mostly with braille), one mostly just selects answers with arrow keys and presses <span class="keycap"><strong>Enter</strong></span> to validate the choice. Pressing <span class="keycap"><strong>Tab</strong></span> or <span class="keycap"><strong>Shift</strong></span> - <span class="keycap"><strong>Tab</strong></span> allows to switch between dialog elements, and notably to access the <strong class="userinput"><code>Go Back</code></strong> button, which brings back again to previous questions. Some dialogs contain check boxes, which can be ticked on and off by pressing <span class="keycap"><strong>Space</strong></span>. </p>
+<p>With the <strong class="userinput"><code>text</code></strong> front-end (used mostly with speech), one mostly selects answers either by typing their number followed by pressing <span class="keycap"><strong>Enter</strong></span>, or by selecting an answer with arrow keys, and pressing <span class="keycap"><strong>Enter</strong></span> to validate the choice. One can also not type anything and just press <span class="keycap"><strong>Enter</strong></span> to simply accept the default value. Typing <strong class="userinput"><code>&lt;</code></strong> and pressing <span class="keycap"><strong>Enter</strong></span> brings back again to previous questions. When a selection of choices has to be made (e.g. during task selection), one can type <strong class="userinput"><code>!</code></strong> to express an empty selection. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1924"></a>5.2.2. USB-дисплеи Брайля</h3></div></div></div>
+<p>USB-дисплеи Брайля должны определяться автоматически. Будет выбрана программа установки с текстовым интерфейсом, а в устанавливаемую систему будет автоматически добавлена поддержка дисплея Брайля. Вы можете просто нажать <span class="keycap"><strong>Enter</strong></span> в загрузочном меню. После того, как запустится <code class="classname">brltty</code>, вы сможете выбрать таблицу Брайля в меню параметров. Список клавиатурных комбинаций для устройств Брайля доступен на <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top">веб-сайте <code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1931"></a>5.2.3. Дисплеи Брайля, подключаемые к последовательному порту</h3></div></div></div>
+<p>Дисплеи Брайля, подключаемые к последовательному порту, невозможно определить автоматически (так как это может привести к их поломке). Поэтому вам нужно добавить параметр загрузки <strong class="userinput"><code>brltty=<em class="replaceable"><code>драйвер</code></em>,<em class="replaceable"><code>порт</code></em></code></strong>, чтобы указать <code class="classname">brltty</code>, какой драйвер и порт нужно использовать. Часть <em class="replaceable"><code>драйвер</code></em> нужно заменить на двух-буквенный код вашего терминала (см. в <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">руководстве по BRLTTY</a>). Часть <em class="replaceable"><code>порт</code></em> нужно заменить на имя устройства последовательного порта, к которому подключён дисплей, по умолчанию используется <strong class="userinput"><code>ttyS0</code></strong>, а при использовании конвертера serial-to-USB обычно указывается <strong class="userinput"><code>ttyUSB0</code></strong>. Можно указать третий параметр — для выбора имени используемой таблицы Брайля (смотрите в <a class="ulink" href="https://brltty.app/doc/Manual-BRLTTY/English/BRLTTY.html" target="_top">руководстве по BRLTTY</a>); по умолчанию используется английская таблица. Заметим, что таблицу можно изменить позже в меню параметров. Также есть четвёртый параметр, использующийся для передачи параметров драйверу Брайля,например, <strong class="userinput"><code>protocol=foo</code></strong>; это нужно очень немногим моделям. Список клавиатурных комбинаций для устройств Брайля доступен на <a class="ulink" href="https://brltty.app/doc/KeyBindings/" target="_top">веб-сайте <code class="classname">brltty</code></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1947"></a>5.2.4. ПО речевого синтеза</h3></div></div></div>
+<p>Support for software speech synthesis is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. It can be activated by selecting it in the boot menu by typing <strong class="userinput"><code>s</code></strong> <span class="keycap"><strong>Enter</strong></span>. The textual version of the installer will then be automatically selected, and support for software speech synthesis will be automatically installed on the target system. </p>
+<p>If several sound cards are detected, you will be prompted to press <span class="keycap"><strong>Enter</strong></span> when you hear speech from the desired sound card. </p>
+<p>Первый вопрос (о языке) произносится на английском, а весь остальной процесс установки озвучивается на выбранном языке (если он доступен в <code class="classname">espeak</code>). </p>
+<p>По умолчанию скорость произношения относительно медленна. Чтобы было быстрее, нажмите <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>6</strong></span>. Для замедления нажмите <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>5</strong></span>. По умолчанию выбирается средняя громкость. Чтобы сделать громче, нажмите <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>2</strong></span>. Чтобы сделать тише, нажмите <span class="keycap"><strong>CapsLock</strong></span>+<span class="keycap"><strong>1</strong></span>. Подробней о клавиатурных комбинациях читайте в <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">руководстве по использованию речи</a>. Чтобы воспользоваться ответом по умолчанию просто нажмите в приглашении <span class="keycap"><strong>Enter</strong></span>. Чтобы указать пустой ответ на вопрос, введите в приглашении <strong class="userinput"><code>!</code></strong>. Чтобы вернуться в предыдущему вопросу введите в приглашении <strong class="userinput"><code>&lt;</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1973"></a>5.2.5. Устройства речевого синтеза</h3></div></div></div>
+<p>Support for hardware speech synthesis devices is available on all installer images which have the graphical installer, i.e. all netinst and DVD images, and the netboot gtk variant. You thus need to select a <span class="quote">«<span class="quote">Graphical install</span>»</span> entry in the boot menu. </p>
+<p>Устройства речевого синтеза не определяются автоматически. Вам нужно добавить параметр загрузки <strong class="userinput"><code>speakup.synth=<em class="replaceable"><code>драйвер</code></em></code></strong>, чтобы указать <code class="classname">speakup</code>, какой драйвер нужно использовать. Часть <em class="replaceable"><code>драйвер</code></em> нужно заменить на код драйвера вашего устройства (см. в <a class="ulink" href="http://www.linux-speakup.org/spkguide.txt" target="_top">список драйверов</a>). После его указания будет автоматически выбран текстовый интерфейс программы установки, а в устанавливаемую систему будет автоматически добавлена поддержка устройств речевого синтеза. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1983"></a>5.2.6. Встраиваемые устройства</h3></div></div></div>
+<p>Некоторые устройства облегчения управления представляют собой платы, которые устанавливаются внутрь компьютера и читают текст напрямую из видеопамяти. Чтобы они смогли работать, нужно выключить использование фрейм-буфера с помощью загрузочного параметра<strong class="userinput"><code>vga=normal</code></strong> <strong class="userinput"><code>nomodeset</code></strong>. Однако, это сократит количество доступных языков установки. </p>
+<p>Если желательно активировать текстовую версию системного загрузчика до добавления загрузочного параметра, то введите <strong class="userinput"><code>h</code></strong> <span class="keycap"><strong>Enter</strong></span>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1991"></a>5.2.7. Тема с высокой контрастностью</h3></div></div></div>
+<p>For users with low vision, the installer can use a high-contrast color theme that makes it more readable. To enable it, you can use the <span class="quote">«<span class="quote">Accessible high contrast</span>»</span> entry from the boot screen with the <strong class="userinput"><code>d</code></strong> shortcut, or append the <strong class="userinput"><code>theme=dark</code></strong> boot parameter. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id1997"></a>5.2.8. Увеличение</h3></div></div></div>
+<p>Для пользователей с плохим зрением графическая программа установки частично поддерживает увеличение: комбинациями  <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>+</strong></span> и <span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>-</strong></span> увеличивается и уменьшается размер шрифта. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2006"></a>5.2.9. Экспертная установка, режим восстановления и автоматизированная установка</h3></div></div></div>
+<p>При выборе экспертной установки, режима восстановления и автоматизированной установкитакже доступны специальные возможности. Чтобы получить к ним доступ, сначала войдите в подменю <span class="quote">«<span class="quote">Advanced options</span>»</span> из загрузочного меню нажав <strong class="userinput"><code>a</code></strong>. Если используется система с BIOS (загрузочное меню подаёт один звуковой сигнал), после этого нужно нажать <span class="keycap"><strong>Enter</strong></span> ; для систем с UEFI (загрузочное меню подаёт два звуковых сигнала) этого делать не нужно. Затем, чтобы включить речевой синтез можно нажать <strong class="userinput"><code>s</code></strong> (после чего опять нужен <span class="keycap"><strong>Enter</strong></span> для систем с BIOS, и не нужен в системах с UEFI). Здесь можно использовать следующие короткие команды: <strong class="userinput"><code>x</code></strong> — экспертная установка, <strong class="userinput"><code>r</code></strong> — режим восстановления, <strong class="userinput"><code>a</code></strong> — автоматизированная установка. После каждой команды нужен <span class="keycap"><strong>Enter</strong></span>, если система использует BIOS. </p>
+<p>Выбор автоматизированной установки позволяет установить Debian полностью автоматически с помощью списка ответов, источник которых можно быть задан после включения специальных возможностей. Сама автоматизация описана в <a class="xref" href="apb.html" title="Приложение B. Автоматическая установка с помощью списка ответов">Приложение B, <i>Автоматическая установка с помощью списка ответов</i></a>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id2020"></a>5.2.10. Специальные возможности установленной системы</h3></div></div></div>
+<p>Документация по специальным возможностям установленной системы доступна на <a class="ulink" href="https://wiki.debian.org/accessibility" target="_top">вики-странице специальных возможностей Debian</a>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch05s01.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch05s03.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">5.1. Запуск программы установки на <span class="phrase">64-bit PC</span> </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> 5.3. Параметры загрузки</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

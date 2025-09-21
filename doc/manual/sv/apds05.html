@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. Installera Debian GNU/Linux över PPP over Ethernet (PPPoE)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installationsguide">
+<link rel="up" href="apd.html" title="Appendix D. Diverse bitar">
+<link rel="prev" href="apds04.html" title="D.4. Installera Debian GNU/Linux över Parallel Line IP (PLIP)">
+<link rel="next" href="ape.html" title="Appendix E. Administrivia">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. Installera Debian GNU/Linux över PPP over Ethernet (PPPoE)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<th width="60%" align="center">Appendix D. Diverse bitar</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. Installera Debian GNU/Linux över PPP over Ethernet (PPPoE)</h2></div></div></div>
+<p>I vissa länder är PPP over Ethernet (PPPoE) ett vanligt protokoll för bredbandsanslutningar (ADSL eller kabel) till en internetleverantör. Konfiguration av en nätverksanslutning med PPPoE stöds inte som standard i installationsprogrammet men går att få att fungera mycket enkelt. Det här avsnittet förklarar hur man gör. </p>
+<p>PPPoE-anslutningen som konfigurerats under installationen kommer också vara tillgänglig efter omstart till det installerade systemet (se <a class="xref" href="ch07.html" title="Kapitel 7. Starta upp ditt nya Debian-system">Kapitel 7, <i>Starta upp ditt nya Debian-system</i></a>). </p>
+<p>För att få möjligheten att konfigurera och använda PPPoE under installationen behöver du installera från en av cd/dvd-avbildningarna som finns tillgängliga. Det stöds inte för andra installationsmetoder (t.ex. nätinstallation). </p>
+<p>Installation över PPPoE är mestadels samma som för andra installationer. Följande steg förklarar skillnaderna. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Starta upp installationsprogrammet med uppstartsparameter <strong class="userinput"><code>modules=ppp-udeb</code></strong><a href="#ftn.id5187" class="footnote" name="id5187"><sup class="footnote">[22]</sup></a>. Det här kommer att se till att komponenten som ansvarar för konfigurering av PPPoE (<code class="classname">ppp-udeb</code>) kommer att läsas in och köras automatiskt. </p></li>
+<li class="listitem"><p>Följ de vanliga initiala steg för installationen (språk, land och tangentbordsval; inläsningen av ytterligare installerarkomponenter<a href="#ftn.id5193" class="footnote" name="id5193"><sup class="footnote">[23]</sup></a>). </p></li>
+<li class="listitem"><p>Nästa steg är identifieringen av nätverksmaskinvaran för att identifiera de Ethernet-kort som finns anslutna till systemet. </p></li>
+<li class="listitem">
+<p>Efter det här är konfigurationen av PPPoE startad. Installationsprogrammet kommer att söka igenom alla identifierade Ethernet-gränssnitt i ett försök att hitta en PPPoE-koncentrator (en typ av server som hanterar PPPoE-anslutningar). </p>
+<p>Det är möjligt att koncentratorn inte kommer att hittas vid första försöket. Det kan hända ibland vid långsamma eller belastade nätverk eller med felaktiga servrar. I de flesta fall lyckas ett andra försök att identifiera koncentratorn; för att försöka igen, välj <span class="guimenuitem">Konfigurera och starta en PPPoE-anslutning</span> från huvudmenyn i installationsprogrammet. </p>
+</li>
+<li class="listitem"><p>Efter att en koncentrator har hittats kommer användaren att bli tillfrågad att ange inloggningsinformationen (användarnamn och lösenord för PPPoE-anslutningen). </p></li>
+<li class="listitem"><p>Nu kommer installationsprogrammet att använda den angivna informationen för att etablera PPPoE-anslutningen. Om korrekt information har angivits kommer PPPoE-anslutningen att konfigureras och installationsprogrammet ska kunna använda den för att ansluta till Internet och hämta ner paket (om det behövs). Om inloggningsinformationen inte är korrekt eller några fel dyker upp kommer installationsprogrammet att stoppa, men konfigurationen kan startas om igen genom att välja menyposten <span class="guimenuitem">Konfigurera och starta en PPPoE-anslutning</span>. </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5187" class="footnote"><p><a href="#id5187" class="para"><sup class="para">[22] </sup></a> Se <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Uppstartsskärmen">Avsnitt 5.1.5, ”Uppstartsskärmen”</a> för information om hur man lägger till en uppstartsparameter. </p></div>
+<div id="ftn.id5193" class="footnote"><p><a href="#id5193" class="para"><sup class="para">[23] </sup></a> Komponenten <code class="classname">ppp-udeb</code> läses in som en av de ytterligare komponenterna i det här steget. Om du vill installera på medium eller låg prioritet (expertläge) kan du även manuellt välja <code class="classname">ppp-udeb</code> istället för att ange parametern <span class="quote">”<span class="quote">modules</span>”</span> vid uppstartsprompten. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Föregående"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Upp"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Nästa"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. Installera Debian GNU/Linux över Parallel Line IP (PLIP) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Hem"></a></td>
+<td width="40%" align="right" valign="top"> Appendix E. Administrivia</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

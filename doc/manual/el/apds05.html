@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.5. Εγκαθιστώντας το Debian GNU/Linux χρησιμοποιώντας PPP over Ethernet (PPPoE)</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Οδηγός Εγκατάστασης Debian GNU/Linux">
+<link rel="up" href="apd.html" title="Παράρτημα D. Διάφορα">
+<link rel="prev" href="apds04.html" title="D.4. Εγκαθιστώντας το Debian GNU/Linux πάνω από Parallel Line IP (PLIP)">
+<link rel="next" href="ape.html" title="Παράρτημα E. Διαχειριστικά">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.5. Εγκαθιστώντας το Debian GNU/Linux χρησιμοποιώντας PPP over Ethernet (PPPoE)</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<th width="60%" align="center">Παράρτημα D. Διάφορα</th>
+<td width="20%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pppoe"></a>D.5. Εγκαθιστώντας το Debian GNU/Linux χρησιμοποιώντας PPP over Ethernet (PPPoE)</h2></div></div></div>
+<p>Σε μερικές χώρες το PPP over Ethernet (PPPoE) είναι ένα συνηθισμένο πρωτόκολλο για ευρυζωνικές (ADSL ή καλωδιακές) συνδέσεις σε έναν Παροχέα Υπηρεσιών Διαδικτύου (ISP). H ρύθμιση μιας δικτυακής σύνδεσης με χρήση PPPoE δεν υποστηρίζεται εξ' ορισμού στον εγκαταστάτη, αλλά μπορείτε να την πετύχετε πολύ απλά. Η ενότητα αυτή εξηγεί το πώς. </p>
+<p>Η ρύθμιση της σύνδεσης PPPoE που κάνετε στην διάρκεια της εγκατάστασης θα είναι επίσης διαθέσιμη μετά την επανεκκίνηση στο εγκατεστημένο σύστημα (δείτε το <a class="xref" href="ch07.html" title="Κεφάλαιο 7. Μπαίνοντας στο καινούριο σας σύστημα Debian">Κεφάλαιο 7, <i>Μπαίνοντας στο καινούριο σας σύστημα Debian</i></a>). </p>
+<p>Για να έχετε την επιλογή της ρύθμισης και χρήσης PPPoE κατά τη διάρκεια της εγκατάστασης, θα χρειαστεί να κάνετε την εγκατάσταση με μία από τις εικόνες CD-ROM/DVD που είναι διαθέσιμες. Δεν υποστηρίζεται για άλλες μεθόδους εγκατάστασης (πχ. netboot). </p>
+<p>Η εγκατάσταση με χρήση PPPoE είναι λίγο πολύ η ίδια με οποιαδήποτε άλλη εγκατάσταση. Τα επόμενα βήματα εξηγούν τις διαφορές. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Εκκινήστε τον εγκαταστάτη με την παράμετρο εκκίνησης <strong class="userinput"><code>modules=ppp-udeb</code></strong>. <a href="#ftn.id5237" class="footnote" name="id5237"><sup class="footnote">[22]</sup></a>. Αυτό διασφαλίζει ότι η συνιστώσα που είναι απαραίτητη για την ρύθμιση του PPPoE (<code class="classname">ppp-udeb</code>) θα φορτωθεί και θα εκτελεστεί αυτόματα. </p></li>
+<li class="listitem"><p>Ακολουθήστε τα συνηθισμένα αρχικά βήματα της εγκατάστασης (επιλογή γλώσσας, χώρας και πληκτρολογίου; την φόρτωση των επιπρόσθετων συνιστωσών του εγκαταστάτη<a href="#ftn.id5243" class="footnote" name="id5243"><sup class="footnote">[23]</sup></a>). </p></li>
+<li class="listitem"><p>Το επόμενο βήμα είναι η ανίχνευση του υλικού για το δίκτυο, ώστε να αναγνωριστούν οποιεσδήποτε κάρτες Ethernet υπάρχουν στο σύστημα. </p></li>
+<li class="listitem">
+<p>Μετά από αυτό αρχίζει ουσιαστικά η ρύθμιση του PPPoE. Ο εγκαταστάτης θα ψάξει για όλες τις διεπαφές Ethernet που έχουν ανιχνευθεί σε μια προσπάθεια να βρει έναν PPPoE concentrator (ένα είδος εξυπηρετητή που χειρίζεται συνδέσεις PPPoE). </p>
+<p>Είναι πιθανόν ο concentrator να μην μπορεί να βρεθεί με την πρώτη προσπάθεια. Αυτό συμβαίνει περιστασιακά σε αργά ή φορτωμένα δίκτυα ή με ελλατωματικούς εξυπηρετητές. Στις περισσότερες περιπτώσεις μια δεύτερη προσπάθεια να ανιχνευθεί ο concentrator θα είναι επιτυχής; για να ξαναπροσπαθήσετε, επιλέξτε <span class="guimenuitem">Ρύθμιση και εκκίνηση μιας σύνδεσης PPPoE</span> από το κύριο μενού του εγκαταστάτη. </p>
+</li>
+<li class="listitem"><p>Αφού έχει βρεθεί ένας concentrator, ο χρήστης θα δει την προτροπή να εισάγει τις πληροφορίες του λογαριασμού (το όνομα χρήστη και τον κωδικό πρόσβασης για την σύνδεση PPPoE). </p></li>
+<li class="listitem"><p>Στο σημείο αυτό ο εγκαταστάτης θα χρησιμοποιήσει τις πληροφορίες που έχουν δοθεί για την πραγματοποίηση της σύνδεσης PPPoE. Αν δόθηκαν οι σωστές πληροφορίες, η σύνδεση PPPoE θα ρυθμιστεί και ο εγκαταστάτης θα μπορεί να την χρησιμοποιήσει για να γίνει η σύνδεση στο Διαδίκτυο και να ανακτήσει πακέτα από αυτό (αν είναι απαραίτητο). Αν οι πληροφορίες για τον λογαριασμό δεν είναι σωστές ή εμφανιστεί κάποιο λάθος, ο εγκαταστάτης θα σταματήσει, αλλά μπορεί να ξαναγίνει προσπάθεια για την ρύθμιση επιλέγοντας <span class="guimenuitem">Ρύθμιση και εκκίνηση μιας σύνδεσης PPPoE</span> από το μενού. </p></li>
+</ul></div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id5237" class="footnote"><p><a href="#id5237" class="para"><sup class="para">[22] </sup></a> Δείτε την ενότητα <a class="xref" href="ch05s01.html#boot-screen" title="5.1.5. Η οθόνη εκκίνησης">Τμήμα 5.1.5, «Η οθόνη εκκίνησης»</a> για πληροφορίες σχετικά με την προσθήκη παραμέτρων εκκίνησης. </p></div>
+<div id="ftn.id5243" class="footnote"><p><a href="#id5243" class="para"><sup class="para">[23] </sup></a> Η συνιστώσα <code class="classname">ppp-udeb</code> φορτώνεται σαν μια από τις επιπρόσθετες συνιστώσες σ'αυτό το βήμα. Αν θέλετε να κάνετε την εγκατάσταση με μέση ή χαμηλή προτεραιότητα (κατάσταση έμπειρου χρήστη), μπορείτε επίσης να επιλέξετε την συνιστώσα <code class="classname">ppp-udeb</code> με το χέρι αντί να εισάγετε την παράμετρο <span class="quote">«<span class="quote">modules</span>»</span> στο προτρεπτικό εκκίνησης. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds04.html"><img src="images/prev.png" alt="Προηγ"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Πάνω"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ape.html"><img src="images/next.png" alt="Επόμενο"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.4. Εγκαθιστώντας το Debian GNU/Linux πάνω από Parallel Line IP (PLIP) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Αρχή"></a></td>
+<td width="40%" align="right" valign="top"> Παράρτημα E. Διαχειριστικά</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

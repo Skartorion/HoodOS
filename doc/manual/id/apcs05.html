@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Program Pemartisian Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Panduan Instalasi Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Lampiran C. Pemartisian untuk Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Nama Perangkat di Linux">
+<link rel="next" href="apd.html" title="Lampiran D. Bit Acak">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Program Pemartisian Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<th width="60%" align="center">Lampiran C. Pemartisian untuk Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Program Pemartisian Debian</h2></div></div></div>
+<p>Beberapa jenis program partisi telah diadaptasi oleh pengembang Debian untuk bekerja pada berbagai jenis hard disk dan arsitektur komputer. Berikut ini adalah daftar program yang berlaku untuk arsitektur Anda. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Alat partisi yang direkomendasikan di Debian. Pisau tentara Swiss ini juga dapat mengubah ukuran partisi, membuat sistem berkas <span class="phrase"> (<span class="quote">“<span class="quote">format</span>”</span> dalam bahasa Windows)</span> dan menetapkannya ke titik kait. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Pemartisi disk Linux asli, bagus untuk guru. </p>
+<p>Hati-hati jika Anda memiliki partisi FreeBSD yang ada di mesin Anda. Kernel instalasi termasuk dukungan untuk partisi ini, tetapi cara <span class="command"><strong>fdisk</strong></span> merepresentasikan mereka (atau tidak) dapat membuat nama perangkat berbeda. Lihat <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">HOWTO Linux+FreeBSD</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Pemartisi disk layar penuh yang mudah digunakan untuk kita semua. </p>
+<p>Perhatikan bahwa <span class="command"><strong>cfdisk</strong></span> tidak memahami partisi FreeBSD sama sekali, dan, sekali lagi, nama perangkat mungkin berbeda sebagai hasilnya. </p>
+</dd>
+</dl></div>
+<p>Salah satu program ini akan dijalankan secara baku ketika Anda memilih <span class="guimenuitem">Partisi disk</span> (atau yang serupa). Dimungkinkan untuk menggunakan alat partisi yang berbeda dari baris perintah pada VT2, tetapi ini tidak disarankan. </p>
+<p>Ingatlah untuk menandai partisi boot Anda sebagai <span class="quote">“<span class="quote">Bootable</span>”</span>. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5237"></a>C.5.1. Pemartisian untuk <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>Jika Anda menggunakan hard disk baru (atau ingin menghapus seluruh tabel partisi disk Anda), tabel partisi baru perlu dibuat. <span class="quote">“<span class="quote">Pemartisian terpandu</span>”</span> melakukan ini secara otomatis, tetapi ketika mempartisi secara manual, pindahkan pilihan pada entri tingkat atas disk dan tekan <span class="keycap"><strong>Enter</strong></span>. Itu akan membuat tabel partisi baru pada disk itu. Dalam mode pakar, Anda kemudian akan diminta untuk jenis tabel partisi. Baku untuk sistem berbasis UEFI adalah <span class="quote">“<span class="quote">gpt</span>”</span>, sedangkan untuk dunia BIOS yang lebih lama nilai bakunya adalah <span class="quote">“<span class="quote">msdos</span>”</span>. Dalam instalasi prioritas standar, baku tersebut akan digunakan secara otomatis. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Catatan]" src="images/note.png"></td>
+<th align="left">Catatan</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ketika tabel partisi dengan tipe <span class="quote">“<span class="quote">gpt</span>”</span> dipilih (baku untuk sistem UEFI), ruang kosong 1 MB akan secara otomatis dibuat di awal disk. Ini dimaksudkan dan diperlukan untuk menyematkan bootloader GRUB2. </p></td></tr>
+</table></div>
+<p>Jika Anda memiliki sistem operasi lain seperti Windows dan Anda ingin mempertahankan sistem operasi itu saat memasang Debian, Anda mungkin perlu mengubah ukuran partisinya untuk mengosongkan ruang bagi instalasi Debian. Pemasang mendukung pengubahan ukuran sistem berkas FAT dan NTFS; ketika Anda sampai pada langkah pemartisian pemasang, pilih opsi <span class="guimenuitem">Manual</span> dan kemudian cukup pilih partisi yang ada dan ubah ukurannya. </p>
+<p>Sementara sistem UEFI modern tidak memiliki batasan seperti yang tercantum di bawah ini, BIOS PC lama umumnya menambahkan batasan tambahan untuk partisi disk. Ada batasan berapa banyak partisi <span class="quote">“<span class="quote">primer</span>”</span> dan <span class="quote">“<span class="quote">logis</span>”</span> yang dapat dikandung drive. </p>
+<p>Pada PC lama dengan sistem BIOS, partisi <span class="quote">“<span class="quote">primer</span>”</span> adalah skema partisi asli untuk disk PC. Namun, hanya boleh ada empat dari mereka. Untuk melewati batasan ini, partisi <span class="quote">“<span class="quote">extended</span>”</span> dan <span class="quote">“<span class="quote">logical</span>”</span> diciptakan. Dengan mengatur salah satu partisi utama Anda sebagai partisi extended, Anda dapat membagi semua ruang yang dialokasikan ke partisi itu menjadi partisi logis. Anda dapat membuat hingga 60 partisi logis per partisi extended; namun, Anda hanya dapat memiliki satu partisi extended per drive. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Sebelumnya"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Induk"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Lanjut"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Nama Perangkat di Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Depan"></a></td>
+<td width="40%" align="right" valign="top"> Lampiran D. Bit Acak</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D.3. A Debian GNU/Linux telepítése egy Unix/Linux rendszerből</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="apd.html" title="D. függelék - Vegyes tudnivalók">
+<link rel="prev" href="apds02.html" title="D.2. Feladatokhoz szükséges hely">
+<link rel="next" href="apds04.html" title="D.4. A Debian GNU/Linux telepítése Parallel Line IP (PLIP) felett">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">D.3. A Debian GNU/Linux telepítése egy Unix/Linux rendszerből</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">D. függelék - Vegyes tudnivalók</th>
+<td width="20%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="linux-upgrade"></a>D.3. A Debian GNU/Linux telepítése egy Unix/Linux rendszerből</h2></div></div></div>
+<p>E szakasz leírja, hogyan telepítsd a Debian GNU/Linux rendszeredet létező Unix vagy Linux rendszer alól a menü-vezérelt telepítő nélkül, amit már leírtunk e kézikönyvben. E <span class="quote">„<span class="quote">kereszt-telepítő</span>”</span> HOGYAN leírást seregnyi felhasználónk kérte, akik Debian GNU/Linux rendszerre váltanak mégpedig üzemszünet nélkül például Red Hat, Mandriva és SUSE disztribúciókról. A szakasz azért feltételezi legalább a legalapvetőbb *nix parancsok és fájlrendszer ismeretét. E szakaszban a <code class="prompt">$</code> a felhasználó mostani rendszerében, a <code class="prompt">#</code> a Debian chroot környezetben kiadott parancsot jelöli. </p>
+<p>A Debian telepítés végeztével átviheted rá létező felhasználói adataidat (ha vannak), és folyamatosan életben tarthatod. Ezért ez egy <span class="quote">„<span class="quote">zéró leállású</span>”</span> Debian GNU/Linux telepítés. A különböző indító vagy telepítő médiával nem baráti hardverekkel is el lehet így bánni. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Mivel ez nagyrészt manuális eljárás, tartsd észben, hogy sok alapbeállítást magadnak kell majd csinálnod a rendszeren, ez több Debian és Linux ismeretet igényel, mint egy általános telepítés. Ne várd el, hogy egy ilyen eljárás az általános telepítéssel megegyező rendszert eredményezzen. Jó azt is tudni, hogy ez a telepítés csak alaplépéseket ad a rendszer beállításához. További telepítés és/vagy beállítási lépések lehetnek szükségesek. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4881"></a>D.3.1. Kezdés</h3></div></div></div>
+<p>Mostani *nix partíciós eszközöddel particionáld újra a merevlemezt ha és ahogy szükséges, legyen legalább 1 fájlrendszer és egy csere. Mintegy 647MB kell egy csak konzolos telepítéshez vagy mintegy 2635MB X telepítése estén (ha tervezel munkakörnyezetet telepíteni, mint például a GNOME vagy a KDE Plasma, akkor jelentősen több). </p>
+<p>Ezután hozd létre a fájlrendszereket a partíciókon. Például egy ext3 fájlrendszer létrehozásához a <code class="filename">/dev/sda6</code> partíción (ez a példa gyökér partíciónk): </p>
+<div class="informalexample"><pre class="screen">
+# mke2fs -j /dev/<em class="replaceable"><code>sda6</code></em>
+</pre></div>
+<p> Egy ext2 fájlrendszerhez hagyd el a <strong class="userinput"><code>-j</code></strong> opciót. </p>
+<p>Inicializáld és aktiváld a cserehelyet (cseréld a partíció számot tervezett Debian csere partíciódra): </p>
+<div class="informalexample"><pre class="screen">
+# mkswap /dev/<em class="replaceable"><code>sda5</code></em>
+# sync
+# swapon /dev/<em class="replaceable"><code>sda5</code></em>
+</pre></div>
+<p> Csatolj egy partíciót mint <code class="filename">/mnt/debinst</code> (a csatolási pont, a leendő (<code class="filename">/</code>) fájlrendszer az új rendszeren). A csatolási pont név teljesen önkényes. alább hivatkozunk rá. </p>
+<div class="informalexample"><pre class="screen"># mkdir /mnt/debinst
+# mount /dev/<em class="replaceable"><code>sda6</code></em> /mnt/debinst
+</pre></div>
+<p>
+
+</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Megjegyzés]" src="images/note.png"></td>
+<th align="left">Megjegyzés</th>
+</tr>
+<tr><td align="left" valign="top"><p>Ha a fájlrendszer részeit (például /usr) külön partícióra akarod, létre kell hoznod és csatolnod a könyvtárakat a következők előtt. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4902"></a>D.3.2. A <span class="command"><strong>debootstrap</strong></span> telepítése</h3></div></div></div>
+<p>A Debian telepítő által használt eszköz, mely a Debian alaprendszer telepítésének hivatalos módja a <span class="command"><strong>debootstrap</strong></span>. A <span class="command"><strong>wget</strong></span> és <span class="command"><strong>ar</strong></span> programokat használja, de amúgy csak a <code class="classname">/bin/sh</code> és alapi Unix/Linux eszközöket használja<a href="#ftn.id4910" class="footnote" name="id4910"><sup class="footnote">[21]</sup></a>. Telepítsd a <span class="command"><strong>wget</strong></span> és <span class="command"><strong>ar</strong></span> programokat, majd töltsd le és telepítsd a <span class="command"><strong>debootstrap</strong></span> programot. </p>
+<p>Vagy használd az alábbi eljárást kézi telepítésére. Készíts egy munka-könyvtárat a .deb kibontására: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir munka
+# cd munka
+</pre></div>
+<p> A <span class="command"><strong>debootstrap</strong></span> bináris a Debian archívumban van (a gépednek megfelelő fájlt válaszd). Töltsd le a <span class="command"><strong>debootstrap</strong></span> .deb fájlt innen: <a class="ulink" href="http://ftp.debian.org/debian/pool/main/d/debootstrap/" target="_top"> pool</a> a munka könyvtárba és bontsd ki fájljait. Rendszergazda jog kell a fájlok telepítéséhez. </p>
+<div class="informalexample"><pre class="screen"># ar -x debootstrap_0.X.X_all.deb
+# cd /
+# zcat /a-munka-útvonala/munka/data.tar.gz | tar xv
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4927"></a>D.3.3. Futtasd a <span class="command"><strong>debootstrap</strong></span> programot</h3></div></div></div>
+<p>A <span class="command"><strong>debootstrap</strong></span> le tudja tölteni a szükséges fájlokat az archívumból. A lenti példában lévő <strong class="userinput"><code>http.us.debian.org/debian</code></strong> bármilyen Debian archívum tükörre cserélhető, lehetőleg válassz közelit. A tükrök listája itt: <a class="ulink" href="http://www.debian.org/mirror/list" target="_top">http://www.debian.org/mirror/list</a>. </p>
+<p>Egy <code class="filename">/cdrom</code> könyvtárba csatolt trixie Debian GNU/Linux telepítő kép esetén fájl URL is megadható: <strong class="userinput"><code>file:/cdrom/debian/</code></strong> </p>
+<p>Cseréld ki az <em class="replaceable"><code>ARCH</code></em> értéket a <span class="command"><strong>debootstrap</strong></span> parancsban az alábbiak egyikére: <strong class="userinput"><code>amd64</code></strong>,
+<strong class="userinput"><code>arm64</code></strong>,
+<strong class="userinput"><code>armhf</code></strong>,
+<strong class="userinput"><code>ppc64el</code></strong>,
+<strong class="userinput"><code>riscv64</code></strong>,
+<strong class="userinput"><code>s390x</code></strong>. </p>
+<div class="informalexample"><pre class="screen">
+# /usr/sbin/debootstrap --arch ARCH trixie \
+     /mnt/debinst http://ftp.us.debian.org/debian
+</pre></div>
+<p> Ha a célarchitektúra eltér a gépeden futó hoszt rendszertől, akkor hozzá kell adnod a <strong class="userinput"><code>--foreign</code></strong> kapcsolót is. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id4949"></a>D.3.4. Az alaprendszer beálíltása</h3></div></div></div>
+<p>Most van egy igazi Debian rendszered - bár még csak rendkívül egyszerű - a lemezen. A <span class="command"><strong>chroot</strong></span> segítségével válts ebbe gyökeret: </p>
+<div class="informalexample"><pre class="screen">
+# LANG=C.UTF-8 chroot /mnt/debinst /bin/bash
+</pre></div>
+<p> Ha a cél-architektúra különbözik a gazda-architektúrától, akkor először a qemu-user-static-ot át kell másolni az új gazda-gépre: </p>
+<div class="informalexample"><pre class="screen">
+# cp /usr/bin/qemu-ARCH-static /mnt/debinst/usr/bin
+# LANG=C.UTF-8 chroot /mnt/debinst qemu-ARCH-static /bin/bash
+</pre></div>
+<p> Ezután be kell állítanod egy Debian rendszerrel kompatibilis terminál definíciót, például: </p>
+<div class="informalexample"><pre class="screen">
+# export TERM=<em class="replaceable"><code>xterm-color</code></em>
+</pre></div>
+<p> A TERM értékétől függően előfordulhat, hogy az <code class="classname">ncurses-term</code> csomagot is telepítened kell, hogy támogatást kapj hozzá. </p>
+<p>Ha a cél-architektúra nem ugyanaz, mint a gazda-architektúra, akkor be kell fejezni a több fokozatú boot strap-et: </p>
+<div class="informalexample"><pre class="screen">/debootstrap/debootstrap --second-stage
+</pre></div>
+<p>
+
+</p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4964"></a>D.3.4.1. Eszközfájlok létrehozása</h4></div></div></div>
+<p>Ezen a ponton a <code class="filename">/dev/</code> csak nagyon alap eszközfájlokat tartalmaz. A telepítés következő lépéseihez további eszközfájlok kellhetnek. Ezt többféle módon is megoldhatod, hogy melyik módszert választod, az függ a telepítéshez használt rendszertől, hogy akarsz-e moduláris kernelt használni, és hogy dinamikus (például az <code class="classname">udev</code>-vel) vagy statikus eszközfájlokat szeretnél használni az új rendszerrel. </p>
+<p>Néhány az elérhető lehetőségek közül: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p>telepítsd a makedev csomagot és hozd létre a statikus eszközfájlok egy alaphalmazát(chroot után), így </p>
+<div class="informalexample"><pre class="screen"># apt install makedev
+# mount none /proc -t proc
+# cd /dev
+# MAKEDEV generic
+</pre></div>
+<p>
+
+</p>
+</li>
+<li class="listitem"><p>kézzel hozz létre csak bizonyos eszközfájlokat a <span class="command"><strong>MAKEDEV</strong></span> paranccsal </p></li>
+<li class="listitem"><p>bindeld (bind mount) a /dev-et a gazda rendszerből a célrendszer /dev-jeként; jó tudni, hogy néhány csomag postinst szkriptjei megpróbálhatnak létrehozni eszköz fájlokat, ezért ez a lehetőség csak óvatosan használandó </p></li>
+</ul></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id4980"></a>D.3.4.2. Partíciók csatolása</h4></div></div></div>
+<p>Létre kell hozni a <code class="filename">/etc/fstab</code> fájlt. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/fstab
+</pre></div>
+<p> Itt egy példa, amit módosíthatsz a saját igényeidre: </p>
+<div class="informalexample"><pre class="screen">
+# /etc/fstab: static file system information.
+#
+# file system    mount point   type    options                  dump pass
+/dev/XXX         /             ext3    defaults                 0    1
+/dev/XXX         /boot         ext3    ro,nosuid,nodev          0    2
+
+/dev/XXX         none          swap    sw                       0    0
+proc             /proc         proc    defaults                 0    0
+
+/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0
+
+/dev/XXX         /tmp          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /var          ext3    rw,nosuid,nodev          0    2
+/dev/XXX         /usr          ext3    rw,nodev                 0    2
+/dev/XXX         /home         ext3    rw,nosuid,nodev          0    2
+</pre></div>
+<p> Használd a <strong class="userinput"><code>mount -a</code></strong> parancsot a <code class="filename">/etc/fstab</code> fájlban megadott összes partíció csatolásához, vagy 1 csatolásához használj egy ilyet: </p>
+<div class="informalexample"><pre class="screen">
+ # mount /path   # például: mount /usr
+</pre></div>
+<p> A jelenlegi Debian rendszerek a külső adathordozókat már a <code class="filename">/media</code> könyvtárban kezelik, de biztosítanak kompatibilitási szimbolikus láncokat (symlink) a <code class="filename">/</code> könyvtárban. Hozd őket létre ha kell, például: </p>
+<div class="informalexample"><pre class="screen">
+# cd /media
+# mkdir cdrom0
+# ln -s cdrom0 cdrom
+# cd /
+# ln -s media/cdrom
+</pre></div>
+<p> A proc fájlrendszer többször és tetszőleges helyre csatolható, de a <code class="filename">/proc</code> adott. Ha nem használtad a <strong class="userinput"><code>mount -a</code></strong> parancsot, csatold a proc fájlrendszert a folytatás előtt: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /proc
+</pre></div>
+<p>
+
+</p>
+<p>Az <strong class="userinput"><code>ls /proc</code></strong> tele kell, hogy legyen. Ha üres, kívülről kell csatolnod: </p>
+<div class="informalexample"><pre class="screen"># mount -t proc proc /mnt/debinst/proc
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5004"></a>D.3.4.3. Időzóna beállítása</h4></div></div></div>
+<p>A <code class="filename">/etc/adjtime</code> fájl harmadik sorába <span class="quote">„<span class="quote">UTC</span>”</span>-t vagy <span class="quote">„<span class="quote">LOCAL</span>”</span>-t írva szabható meg, hogy a rendszer a hardver órát az UTC vagy a helyi időre állítva értelmezi-e. Az alábbi paranccsal állítható ez be. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/adjtime
+</pre></div>
+<p> Itt egy minta: </p>
+<div class="informalexample"><pre class="screen">
+0.0 0 0.0
+0
+UTC
+</pre></div>
+<p> Az alábbi paranccsal állítható be az időzóna. </p>
+<div class="informalexample"><pre class="screen"># dpkg-reconfigure tzdata
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5016"></a>D.3.4.4. Hálózat beállítása</h4></div></div></div>
+<p>A hálózat beállításához szerkeszd ezeket: <code class="filename">/etc/network/interfaces</code>, <code class="filename">/etc/resolv.conf</code>, <code class="filename">/etc/hostname</code> és <code class="filename">/etc/hosts</code>. </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/network/interfaces
+</pre></div>
+<p> A példák helye ez: <code class="filename">/usr/share/doc/ifupdown/examples</code>: </p>
+<div class="informalexample"><pre class="screen">
+######################################################################
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+# See the interfaces(5) manpage for information on what options are
+# available.
+######################################################################
+
+# A loopback interface igazából már nem szükséges, de még használható, ha kell:
+#
+auto lo
+iface lo inet loopback
+
+# To use dhcp:
+#
+# auto eth0
+# iface eth0 inet dhcp
+
+# Példa staikus IP-cím beállításra: (network, broadcast és gateway opcionális)
+#
+# auto eth0
+# iface eth0 inet static
+#     address 192.168.0.42
+#     network 192.168.0.0
+#     netmask 255.255.255.0
+#     broadcast 192.168.0.255
+#     gateway 192.168.0.1
+</pre></div>
+<p> Adj meg egy vagy több név-kiszolgálót és a keresést a <code class="filename">/etc/resolv.conf</code> fájlban: </p>
+<div class="informalexample"><pre class="screen">
+# editor /etc/resolv.conf
+</pre></div>
+<p> Egy egyszerű <code class="filename">/etc/resolv.conf</code>: </p>
+<div class="informalexample"><pre class="screen">
+search example.com
+nameserver 10.1.1.36
+nameserver 192.168.9.100
+</pre></div>
+<p> Add meg a rendszer gépnevét (2 és 63 karakter között): </p>
+<div class="informalexample"><pre class="screen">
+# echo DebianHostName &gt; /etc/hostname
+</pre></div>
+<p> És egy alap <code class="filename">/etc/hosts</code> fájlt IPv6 támogatással: </p>
+<div class="informalexample"><pre class="screen">
+127.0.0.1 localhost
+127.0.1.1 DebianHostName
+
+# A következő sorok IPv6-képes gépek esetén kellhetnek
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</pre></div>
+<p> Több hálózati kártya esetén a kívánt sorrendre kell rendezni a meghajtó modulok nevét a <code class="filename">/etc/modules</code> fájlban. Az indítás alatt minden kártya egy csatoló-névvel társul (eth0, eth1 és így tovább). </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5040"></a>D.3.4.5. Az APT beállítása</h4></div></div></div>
+<p>A debootstrap létrehozott egy alap <code class="filename">/etc/apt/sources.list</code> fájlt, ami lehetővé teszi további csomagok telepítését. De további források megadása is ajánlott, például a forrás csomagoké és a biztonsági frissítéseké: </p>
+<div class="informalexample"><pre class="screen">
+deb-src http://ftp.us.debian.org/debian trixie main
+
+deb http://security.debian.org/ trixie-security main
+deb-src http://security.debian.org/ trixie-security main
+</pre></div>
+<p> Futtasd az <strong class="userinput"><code>apt update</code></strong> parancsot a forrás-lista fájl módosítása után. </p>
+</div>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id5047"></a>D.3.4.6. Honosítás és billentyűzet beállítása</h4></div></div></div>
+<p>Az angol nyelvtől eltérő helyi beállítások konfigurálásához telepítsd a <code class="classname">locales</code> támogató csomagot és állítsd be. Jelenleg az UTF-8 beállítások ajánlottak. </p>
+<div class="informalexample"><pre class="screen">
+# apt install locales
+# dpkg-reconfigure locales
+</pre></div>
+<p> Állítsd be a billentyűzetet (ha szükséges): </p>
+<div class="informalexample"><pre class="screen"># apt install console-setup
+# dpkg-reconfigure keyboard-configuration 
+</pre></div>
+<p>
+
+</p>
+<p>A billentyűzet nem kerül beállításra a chroot környezetben, de az újraindítás után igen. </p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5056"></a>D.3.5. Kernel telepítése</h3></div></div></div>
+<p>A rendszer indításához kell egy Linux kernel és egy boot betöltő. Az elérhető elő-csomagolt kernelek ezzel találhatod meg: </p>
+<div class="informalexample"><pre class="screen"># apt search linux-image
+</pre></div>
+<p>
+
+</p>
+<p>Ezután telepítsd a választott kernel csomagot a csomagneve használatával. </p>
+<div class="informalexample"><pre class="screen"># apt install linux-image-<em class="replaceable"><code>arch-etc</code></em>
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5065"></a>D.3.6. A boot betöltő beállítása</h3></div></div></div>
+<p>A Debian GNU/Linux rendszer indíthatóvá tételéhez, állítsd be a boot betöltőt a telepített kernel indítására az új gyökér partícióval. A <span class="command"><strong>debootstrap</strong></span> nem telepít boot betöltőt, de az <span class="command"><strong>apt</strong></span> használható a Debian chroot környezetben erre. </p>
+<p>Futtasd az <strong class="userinput"><code>info grub</code></strong> parancsot a boot-betöltő beállításához. Ha megtartod a Debian telepítésére használt rendszert, csak adj egy bejegyzést a Debian telepítéshez a létező grub2 <code class="filename">grub.cfg</code> fájlhoz. </p>
+<p>A <code class="classname">grub2</code> telepítése és beállítása ilyen könnyű: </p>
+<div class="informalexample"><pre class="screen">
+# apt install grub-pc
+# grub-install /dev/<em class="replaceable"><code>sda</code></em>
+# update-grub
+</pre></div>
+<p> A 2. parancs telepíti a <span class="command"><strong>grub2</strong></span> programot (ez esetben a <code class="literal">sda</code> MBR részébe). Az utolsó készít egy működő <code class="filename">/boot/grub/grub.cfg</code> fájlt. </p>
+<p>Jó tudni, hogy ez feltételezi, hogy egy <code class="filename">/dev/sda</code> eszközfájl létre lett hozva. Vannak más módok is a <span class="command"><strong>grub2</strong></span> telepítésre, de azok nem tartoznak e függelék hatókörén. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5084"></a>D.3.7. Távoli elérés: SSH telepítése és hozzáférés beállítása</h3></div></div></div>
+<p>Ha be tudsz lépni a rendszerre parancssoron keresztül, átugorhatod ezt a szakaszt. Ha később a rendszernek hálózatról elérhetőnek kell lennie, SSH-t kell telepíten és beállítani a hozzáférést.
+</p>
+<div class="informalexample"><pre class="screen">
+# apt install ssh
+</pre></div>
+<p> Jelszavas root (adminisztrátor) belépés alapértelmezetten nem lehetséges, ezért a hozzáférés beállítása jelszó megadásával és a jelszavas root belépés engedélyezésével történik: </p>
+<div class="informalexample"><pre class="screen">
+# passwd
+# editor /etc/ssh/sshd_config
+</pre></div>
+<p> Ezt az opciót kell engedélyezni: </p>
+<div class="informalexample"><pre class="screen">
+PermitRootLogin yes
+</pre></div>
+<p> A hozzáférés beállítása úgy is lehetséges, hogy hozzáadunk egy ssh-kulcsot a root fiókhoz: </p>
+<div class="informalexample"><pre class="screen">
+# mkdir /root/.ssh
+# cat &lt;&lt; EOF &gt; /root/.ssh/authorized_keys
+ssh-rsa ....
+EOF
+</pre></div>
+<p> Ezeken kívül a hozzáférés még úgy is beállítható, hogy létrehozunk egy nem root felhasználói fiókot és beállítunk neki egy jelszót: </p>
+<div class="informalexample"><pre class="screen"># adduser joe
+# passwd joe
+</pre></div>
+<p>
+</p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5097"></a>D.3.8. Utolsó simítások</h3></div></div></div>
+<p>Amint már tudjuk, a telepített rendszer nagyon alap lesz. Kicsit komolyabb rendszer céljára egy könnyű mód az összes <span class="quote">„<span class="quote">szabvány</span>”</span> elsőségű csomag telepítésére az alábbi: </p>
+<div class="informalexample"><pre class="screen">
+# tasksel install standard
+</pre></div>
+<p> Természetesen az <span class="command"><strong>apt</strong></span> is használható az egyes csomagok telepítésére. </p>
+<p>A telepítés után a letöltött csomagok a <code class="filename">/var/cache/apt/archives/</code> könyvtárban vannak. Ezek teljes törlésével felszabadítható egy kis hely például így: </p>
+<div class="informalexample"><pre class="screen"># apt clean
+</pre></div>
+<p>
+
+</p>
+</div>
+<div class="footnotes">
+<br><hr width="100" align="left">
+<div id="ftn.id4910" class="footnote"><p><a href="#id4910" class="para"><sup class="para">[21] </sup></a> Ezek a GNU mag-eszközök (coreutils) és <span class="command"><strong>sed</strong></span>, <span class="command"><strong>grep</strong></span>, <span class="command"><strong>tar</strong></span> és <span class="command"><strong>gzip</strong></span> parancsok. </p></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apds02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apd.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apds04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">D.2. Feladatokhoz szükséges hely </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> D.4. A Debian GNU/Linux telepítése Parallel Line IP (PLIP) felett</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

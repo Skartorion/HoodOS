@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.5. Дополнительные параметры</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Руководство по установке Debian GNU/Linux">
+<link rel="up" href="apb.html" title="Приложение B. Автоматическая установка с помощью списка ответов">
+<link rel="prev" href="apbs04.html" title="B.4. Содержимое файла ответов (для trixie)">
+<link rel="next" href="apc.html" title="Приложение C. Разметка дисков в Debian">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.5. Дополнительные параметры</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<th width="60%" align="center">Приложение B. Автоматическая установка с помощью списка ответов</th>
+<td width="20%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-advanced"></a>B.5. Дополнительные параметры</h2></div></div></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-hooks"></a>B.5.1. Запуск пользовательских команд во время установки</h3></div></div></div>
+<p>Инструментарий автоматической установки предлагает очень мощную и гибкую возможность — способность запуска команд или сценариев в определённые моменты установки. </p>
+<p>When the filesystem of the target system is mounted, it is available in <code class="filename">/target</code>. If an installation CD/DVD is used, when it is mounted it is available in <code class="filename">/cdrom</code>. </p>
+<div class="informalexample"><pre class="screen"># Автоматизация d-i по сути небезопасна. Программа установки не выполняет
+# проверок на переполнения буфера или другого использования значений
+# такого направления из файла ответов. Используйте файлы ответов только из
+# надёжных источников! Для использования дома, и потому что это обычно
+# полезно, здесь показано как запускать свои команды оболочки внутри
+# программы установки автоматически.
+
+# Эта первая команда, которая выполняется как можно раньше сразу после
+# чтения файла ответов.
+#d-i preseed/early_command string anna-install какой-то-udeb
+# Эта команда выполняется непосредственно перед запуском утилиты разметки.
+# Это может пригодиться для динамической автоматической настройки утилиты
+# разметки, зависящей от состояния дисков (которое может быть
+# непонятно при работе preseed/early_command).
+#d-i partman/early_command \
+#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"
+# Эта команда выполняется перед окончанием установки, пока ещё
+# есть рабочий каталог /target. Вы можете выполнить chroot в /target
+# и непосредственно использовать его, или же воспользоваться командами
+# apt-install и in-target для облегчения задачи установки пакетов и
+# запуска команд в целевой системе.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
+</pre></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-seenflag"></a>B.5.2. Использование автоматической установки для изменения значений по умолчанию</h3></div></div></div>
+<p>С помощью автоматической установки можно изменить ответы по умолчанию, но вопросы всё равно будут задаваться. Для этого после задания ответа на вопрос нужно установить флаг <em class="firstterm">seen</em> в <span class="quote">«<span class="quote">false</span>»</span> после указания ответа на вопрос. </p>
+<div class="informalexample"><pre class="screen">
+d-i foo/bar string value
+d-i foo/bar seen false
+</pre></div>
+<p> Того же эффекта можно достигнуть для <span class="emphasis"><em>всех</em></span> вопросов, указав параметр <code class="classname">preseed/interactive=true</code> в приглашении к загрузке. Также это может помочь при отладке или тестировании вашего файла ответов. </p>
+<p>Заметим, что владелец <span class="quote">«<span class="quote">d-i</span>»</span> должен использоваться только для переменных, используемых в самой программе установки. Для переменных, принадлежащих устанавливаемым в систему пакетам,вы должны использовать имя этого пакета. См. сноску к <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Использование параметров загрузки для автоматизации">Раздел B.2.2, «Использование параметров загрузки для автоматизации»</a>. </p>
+<p>Если вы выполняете автоматизацию через параметры загрузки, то можете заставить программу установки задавать соответствующий вопрос с помощью оператора <span class="quote">«<span class="quote">?=</span>»</span>, а именно <strong class="userinput"><code><em class="replaceable"><code>foo</code></em>/<em class="replaceable"><code>bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong> (или <strong class="userinput"><code><em class="replaceable"><code>owner</code></em>:<em class="replaceable"><code>foo/bar</code></em>?=<em class="replaceable"><code>value</code></em></code></strong>). Естественно, это действует только на параметры, которые относятся к отображаемым во время установки вопросам, но никак не на <span class="quote">«<span class="quote">внутренние</span>»</span> параметры. </p>
+<p>Чтобы получить более подробную отладочную информацию, используйте загрузочный параметры <code class="classname">DEBCONF_DEBUG=5</code>. T Он заставит <code class="classname">debconf</code> печатать намного больше подробностей о текущих настройках каждой переменной и о ходе выполнения сценариев установки каждого пакета. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-chainload"></a>B.5.3. Последовательная загрузка нескольких файлов ответов</h3></div></div></div>
+<p>В файлах ответов поддерживаются ссылки на дополнительные файлы ответов. Любые настройки файлов, загруженных позже, будут перекрывать настройки из файлов, загруженных ранее. Это позволяет поместить, например, общие настройки сети в один файл, а более специфичные для определённых конфигураций в другие файлы. </p>
+<div class="informalexample"><pre class="screen"># Можно указать более одного файла, разделив их пробелами; все будут
+# загружены. Включаемые файлы, в свою очередь, тоже могут содержать
+# директивы preseed/include. Заметим, что если имена файлов
+# относительные, то они берутся
+# из того же каталога что и файл ответов, в который они включены.
+#d-i preseed/include string x.cfg
+
+# Программу установки можно заставить проверять контрольные суммы файлов
+# ответов перед их использованием. В данный момент поддерживается только
+# md5sums; в списке md5sums файлы должны указываться в том же порядке,
+# что и при включении файлов.
+#d-i preseed/include/checksum string 5da499872becccfeda2c4872f9171c3d
+
+# Для большей гибкости можно запустить команду оболочки и если она выдаст
+# имена файлов ответов, включить эти файлы. 
+#d-i preseed/include_command \
+#      string if [ "`hostname`" = bob ]; then echo bob.cfg; fi
+
+# Наиболее гибкий из всех способ -- загрузить и выполнить программу.
+# Программа может использовать команды, например, debconf-set для
+# управления базой данных debconf.
+# Можно указать более одного файла, разделив их пробелами
+# Заметим, что если имена файлов относительные, то они ищутся в том же
+# каталоге откуда взят файл ответов, который запускает их.
+#d-i preseed/run string foo.sh
+</pre></div>
+<p>Также возможно цепочечное выполнение автоматизации из initrd или файла, а затем автоматизацию по сети, если задать preseed/url в файлах исполняемых первыми. Это приведёт выполнению автоматизации по сети, когда сеть станет доступна. Нужно быть осторожным при настройке, так как будут выполняться два разных по сути метода автоматизации, что, например, приведёт к выполнению команды из preseed/early дважды: один раз из первого метода, второй раз после включения сети. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs04.html"><img src="images/prev.png" alt="Пред."></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Наверх"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apc.html"><img src="images/next.png" alt="След."></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.4. Содержимое файла ответов (для trixie) </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Начало"></a></td>
+<td width="40%" align="right" valign="top"> Приложение C. Разметка дисков в Debian</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

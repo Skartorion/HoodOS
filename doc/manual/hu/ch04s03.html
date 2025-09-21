@@ -1,0 +1,75 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.3. Fájlok előkészítése USB memóriáról történő bootoláshoz</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Telepítési útmutató">
+<link rel="up" href="ch04.html" title="4. fejezet - Rendszertelepítési adathordozó beszerzése">
+<link rel="prev" href="ch04s02.html" title="4.2. Fájlok letöltése a Debian tükrökről">
+<link rel="next" href="ch04s04.html" title="4.4. Fájlok előkészítése merevlemezről történő bootoláshoz">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.3. Fájlok előkészítése USB memóriáról történő bootoláshoz</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<th width="60%" align="center">4. fejezet - Rendszertelepítési adathordozó beszerzése</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="boot-usb-files"></a>4.3. Fájlok előkészítése USB memóriáról történő bootoláshoz</h2></div></div></div>
+<p>A USB stick előkészítéséhez javasoljuk, hogy olyan rendszert használj, ahol már fut a GNU/Linux és támogatott az USB. A jelenlegi GNU/Linux rendszerek esetén az USB sticknek automatikusan fel kell ismernie, amikor csatlakoztatod. Ha nem ismeri fel, ellenőrizd, hogy a usb-storage kernel modul be van-e töltve. Amikor az USB stick csatlakoztatva van, egy <code class="filename">/dev/sdX</code> nevű eszközként lesz elérhető, ahol az <span class="quote">„<span class="quote">X</span>”</span> egy betű az a-z tartományban. A <span class="command"><strong>lsblk</strong></span> parancs futtatásával meg tudod nézni, hogy melyik eszközhöz lett hozzárendelve az USB stick a csatlakoztatás előtt és után. (A <span class="command"><strong>dmesg</strong></span> parancs kimenete (rendszergazdaként) egy másik lehetséges módszer erre.) Az íráshoz lehet, hogy ki kell kapcsolnod az USB stick írásvédelmi kapcsolóját. </p>
+<div class="warning"><table border="0" summary="Warning">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Figyelem]" src="images/warning.png"></td>
+<th align="left">Figyelem</th>
+</tr>
+<tr><td align="left" valign="top"><p>Az ebben a szakaszban leírt eljárások törölnek mindent, ami már az eszközön van! Győződj meg róla, hogy a megfelelő eszköznevet használod az USB stickhez. Ha rossz eszközt adsz meg, az eredmény lehet, hogy például egy merevlemez minden adatát elveszíted. </p></td></tr>
+</table></div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="usb-copy-isohybrid"></a>4.3.1. USB meghajtó előkészítése hibrid CD/DVD képfájl használatával</h3></div></div></div>
+<p>Ehhez az architektúrához a Debian telepítési képfájljai az <span class="command"><strong>isohybrid</strong></span> technológiával készülnek; ez azt jelenti, hogy közvetlenül USB stickre írhatók, ami egy nagyon egyszerű módja a telepítési médium létrehozásának. Válassz egyszerűen egy képfájlt (például a netinst vagy DVD-1), amely elfér az USB stickeden. A telepítési képfájl beszerzéséhez lásd a <a class="xref" href="ch04s01.html" title="4.1. Hivatalos Debian GNU/Linux telepítési képfájlok">4.1. szakasz - Hivatalos Debian GNU/Linux telepítési képfájlok</a> részt. </p>
+<p>A választott telepítési képfájlt közvetlenül az USB stickre kell írnod, felülírva annak jelenlegi tartalmát. Például, ha már van egy meglévő GNU/Linux rendszered, az ISO fájlt az alábbi módon írhatod át egy USB stickre, miután megbizonyosodtál róla, hogy a stick nincs csatolva: </p>
+<div class="informalexample"><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>cp <em class="replaceable"><code>debian.iso</code></em> /dev/<em class="replaceable"><code>sdX</code></em></code></strong>
+<code class="prompt">#</code> <strong class="userinput"><code>sync</code></strong>
+</pre></div>
+<p> Az ilyen módon történő írás az USB-re a legtöbb felhasználónak megfelelő lesz. Különleges igények esetén létezik ez a <a class="ulink" href="https://wiki.debian.org/DebianInstaller/CreateUSBMedia" target="_top">wiki oldal</a>. </p>
+<p>Arról, hogyan teheted meg ezt más operációs rendszereken, a <a class="ulink" href="https://www.debian.org/CD/faq/index.en.html#write-usb" target="_top">Debian CD GYIK</a> tartalmaz információt. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Fontos]" src="images/important.png"></td>
+<th align="left">Fontos</th>
+</tr>
+<tr><td align="left" valign="top"><p>A képet a teljes lemez eszközre kell írni, nem pedig egy partícióra, például /dev/sdb-re és nem /dev/sdb1-re. Ne használj olyan eszközöket, mint az <span class="command"><strong>unetbootin</strong></span>, amelyek módosítják a képet. </p></td></tr>
+</table></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s02.html"><img src="images/prev.png" alt="Vissza"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Fel"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s04.html"><img src="images/next.png" alt="Előre"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.2. Fájlok letöltése a Debian tükrökről </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Főoldal"></a></td>
+<td width="40%" align="right" valign="top"> 4.4. Fájlok előkészítése merevlemezről történő bootoláshoz</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

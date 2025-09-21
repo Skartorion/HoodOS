@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.3. Een antwoordbestand aanmaken</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="apb.html" title="Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen">
+<link rel="prev" href="apbs02.html" title="B.2. Vooraf configureren in de praktijk">
+<link rel="next" href="apbs04.html" title="B.4. Inhoud van het antwoordbestand (voor trixie)">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.3. Een antwoordbestand aanmaken</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Bijlage B. De installatie automatiseren door antwoorden vooraf in te stellen</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-creating"></a>B.3. Een antwoordbestand aanmaken</h2></div></div></div>
+<p>Een antwoordbestand wordt opgemaakt in de indeling die door het commando <span class="command"><strong>debconf-set-selections</strong></span> gebruikt wordt. De algemene indeling van een regel in een antwoordbestand is: </p>
+<div class="informalexample"><pre class="screen">&lt;eigenaar&gt; &lt;naam_van_de_vraag&gt; &lt;vraagtype&gt; &lt;waarde&gt;
+</pre></div>
+<p>
+
+</p>
+<p>Het bestand moet beginnen met <code class="literal">#_preseed_V1</code> </p>
+<p>U moet enkele regels in acht nemen als u een antwoordbestand schrijft. </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Plaats slechts één spatie of tab tussen type en waarde: eventuele extra witruimte zal als onderdeel van de waarde geïnterpreteerd worden. </p></li>
+<li class="listitem"><p>Een regel kan in meerdere regels opgesplitst worden door een backslash (<span class="quote">“<span class="quote"><code class="literal">\</code></span>”</span>) toe te voegen als teken dat de regel voortgaat op de volgende regel. Een goede plaats om een regel te splitsen is na de naam van de vraag. Een slechte plaats om te splitsen is tussen type en waarde. Gesplitste regels zullen tot één regel samengevoegd worden en daarbij wordt alle voorafgaande witruimte tot één spatie gereduceerd. </p></li>
+<li class="listitem"><p>Voor debconf-variabelen (sjablonen) die enkel in het installatiesysteem zelf gebruikt worden, moet <span class="quote">“<span class="quote">d-i</span>”</span> als eigenaar opgegeven worden. Om variabelen vooraf te configureren die gebruikt worden in het geïnstalleerde systeem, moet de naam gebruikt worden van het pakket dat het overeenkomstige debconf-sjabloon bevat. Enkel de variabelen met een andere eigenaar dan <span class="quote">“<span class="quote">d-i</span>”</span> zullen overgedragen worden naar de debconf-databank op het geïnstalleerde systeem. </p></li>
+<li class="listitem"><p>Bij het vooraf geven van een antwoord moet voor de meeste vragen een waarde opgegeven worden die geldig is in het Engels en niet de vertaling ervan. Nochtans moet voor sommige vragen (bijvoorbeeld in <code class="classname">partman</code>) wel de vertaling van de waarde gebruikt worden. </p></li>
+<li class="listitem"><p>Sommige vragen krijgen een code als waarde in plaats van de Engelse tekst die tijdens de installatie te zien is. </p></li>
+<li class="listitem"><p>Begin met <code class="literal">#_preseed_V1</code> </p></li>
+<li class="listitem"><p>Een commentaar is een regel die <span class="emphasis"><em>begint</em></span> met een hekje (<span class="quote">“<span class="quote"><code class="literal">#</code></span>”</span>) en strekt zich over de volledige lengte van die regel uit. </p></li>
+</ul></div>
+<p>De makkelijkste manier om een antwoordbestand te maken is om het voorbeeldbestand waarnaar in <a class="xref" href="apbs04.html" title="B.4. Inhoud van het antwoordbestand (voor trixie)">Paragraaf B.4, “Inhoud van het antwoordbestand (voor trixie)”</a> gerefereerd wordt, te gebruiken als basis en daarop voort te werken. </p>
+<p>Een andere methode is om een handmatige installatie uit te voeren en nadien, na het opnieuw opstarten van het systeem, het commando <span class="command"><strong>debconf-get-selections</strong></span> uit het pakket <code class="classname">debconf-utils</code> te gebruiken om zowel de debconf-databank als de cdebconf-databank van het installatiesysteem te dumpen naar één bestand: </p>
+<div class="informalexample"><pre class="screen">$ echo "#_preseed_V1" &gt; <em class="replaceable"><code>bestand</code></em>
+$ debconf-get-selections --installer &gt;&gt; <em class="replaceable"><code>bestand</code></em>
+$ debconf-get-selections &gt;&gt; <em class="replaceable"><code>bestand</code></em>
+</pre></div>
+<p>
+
+</p>
+<p>Een bestand dat op deze manier gegenereerd wordt, bevat echter enkele elementen die niet gebruikt zouden mogen worden in een antwoordbestand en voor de meeste gebruikers is het voorbeeldbestand een beter aanknopingspunt. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Opmerking]" src="images/note.png"></td>
+<th align="left">Opmerking</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Deze methode betrouwt op het feit dat aan het einde van de installatie de cdebconf-databank van het installatiesysteem opgeslagen wordt in <code class="filename">/var/log/installer/cdebconf</code> op het geïnstalleerde systeem. Maar omdat de databank gevoelige informatie kan bevatten, kunnen de bestanden standaard enkel door de systeembeheerder gelezen worden. </p>
+<p>De map <code class="filename">/var/log/installer</code> en alle bestanden die ze bevat, zullen van uw systeem verwijderd worden als u het pakket <code class="classname">installation-report</code> wist met het commando purge. </p>
+</td></tr>
+</table></div>
+<p>Om mogelijke waarden voor vragen te controleren, kunt u <span class="command"><strong>nano</strong></span> gebruiken om de bestanden in <code class="filename">/var/lib/cdebconf</code> na te kijken terwijl een installatie bezig is. Bekijk <code class="filename">templates.dat</code> voor de ruwe sjablonen en <code class="filename">questions.dat</code> voor de huidige waarden en voor de waarden die aan variabelen toegekend werden. </p>
+<p>Om na te gaan of de indeling van uw antwoordbestand geldig is, vooraleer u een installatie gaat uitvoeren, kunt u het commando gebruiken <span class="command"><strong>debconf-set-selections -c <em class="replaceable"><code>preseed.cfg</code></em></strong></span> (waarbij preseed.cfg de naam van het antwoordbestand is). </p>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apbs02.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">B.2. Vooraf configureren in de praktijk </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> B.4. Inhoud van het antwoordbestand (voor trixie)</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

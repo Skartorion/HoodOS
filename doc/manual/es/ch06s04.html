@@ -1,0 +1,91 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>6.4. Carga de Firmware adicional</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guía Debian GNU/Linux de instalación">
+<link rel="up" href="ch06.html" title="Capítulo 6. Usar el instalador de Debian">
+<link rel="prev" href="ch06s03.html" title="6.3. Uso de componentes individuales">
+<link rel="next" href="ch06s05.html" title="6.5. Personalización">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">6.4. Carga de Firmware adicional</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 6. Usar el instalador de Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="loading-firmware"></a>6.4. Carga de Firmware adicional</h2></div></div></div>
+<p>Como se indicó en <a class="xref" href="ch02s02.html" title="2.2. Dispositivos que requieren firmware">Sección 2.2, “Dispositivos que requieren firmware”</a>, ciertos dispositivos requieren la carga de firmware. La mayoría de las veces el dispositivo no funcionará sin el firmware; en ciertas ocasiones estará disponible cierta funcionalidad básica sin que esté cargado el firmware, pero con este se podría contar con características adicionales. </p>
+<p>A partir de Debian GNU/Linux 12.0, siguiendo la <a class="ulink" href="https://www.debian.org/vote/2022/vote_003" target="_top">Resolución general 2022 sobre firmware no libre</a>, las imágenes de instalación oficiales (como netinst) pueden incluir paquetes de firmware no libre. Incluso con esos paquetes de firmware disponibles, pueden faltar algunos archivos de firmware. O uno podría estar usando archivos netboot, que no incluyen paquetes de firmware. </p>
+<p>Si un controlador de un dispositivo solicita firmware que no está disponible, el <code class="classname">debian-installer</code> mostrará un diálogo ofreciéndote la oportunidad de cargar el firmware que falta. Si seleccionas esta opción, <code class="classname">debian-installer</code> buscará ficheros o paquetes que puedan contener el firmware en los dispositivos disponibles. Si los encuentra, copiará el firmware al lugar correcto (<code class="filename">/lib/firmware</code>) y se recargará el módulo del controlador. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Los dispositivos que se escanean y los sistemas de archivos compatibles dependen de la arquitectura, el método de instalación y la etapa de la instalación. Especialmente en los primeros pasos de la instalación, la carga del firmware podría resultar mejor desde una memoria USB con formato FAT. <span class="phrase">En i386 y amd64, el firmware también se puede cargar desde una tarjeta MMC o SD.</span> </p></td></tr>
+</table></div>
+<p>Ten en cuenta que es posible obviar la carga del firmware si sabes que el dispositivo funciona sin él, o si el dispositivo no se necesita durante la instalación. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3429"></a>6.4.1. Preparación del medio</h3></div></div></div>
+<p>El método más común para cargar dicho firmware es desde algún medio extraíble como una memoria USB. Para preparar una memoria USB (u otro medio como una partición de disco duro), los archivos o paquetes de firmware deben colocarse en el directorio raíz o en un directorio llamado <code class="filename">/firmware</code> del sistema de archivos del medio. El sistema de archivos que se recomienda utilizar es FAT, ya que es el más compatible durante las primeras fases de la instalación. </p>
+<p>Los archivos tarball y zip que contienen los paquetes actuales para el firmware más común y los metadatos asociados para garantizar una detección adecuada por parte del instalador (directorio <code class="filename">dep11</code>), están disponibles en: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> <a class="ulink" href="https://cdimage.debian.org/cdimage/firmware/trixie/" target="_top">https://cdimage.debian.org/cdimage/firmware/trixie/</a> </p></li></ul></div>
+<p> Simplemente descargue el archivo tarball o zip para la versión correcta y descomprímalo en el sistema de archivos del medio . </p>
+<p>También es posible copiar ficheros individuales de firmware. Otro firmware puede obtenerse por ejemplo de un sistema previamente instalado o de un proveedor de hardware. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3440"></a>6.4.2. Firmware y el Sistema Instalado</h3></div></div></div>
+<p>Cualquier firmware cargado durante la instalación se copiará automáticamente en el sistema instalado. En la mayoría de los casos esto asegurará que el dispositivo que requiere el firmware también funcionará correctamente después de que el sistema se reinicie en el sistema instalado. Sin embargo, si el sistema instalado ejecuta una versión de kernel diferente a la del instalador, existe una pequeña posibilidad de que el firmware no se pueda cargar debido a la desviación de la versión. </p>
+<p>Si el firmware se cargó desde un paquete de firmware, <code class="classname">debian-installer</code> también instalará este paquete para el sistema instalado y añadirá automáticamente la sección de firmware no libre del archivo del paquete en <code class="filename">sources.list</code> de APT. Esto tiene la ventaja de que el firmware se actualizará automáticamente si hay una nueva versión disponible. </p>
+<p>Si se obvió la carga del firmware durante la instalación, los dispositivos en cuestión probablemente no funcionarán en el sistema instalado hasta que el (paquete de) firmware se instale manualmente. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Si el firmware se cargó desde ficheros adicionales, el firmware copiado al sistema instalado <span class="emphasis"><em>no</em></span> se actualizará automáticamente a menos que el correspondiente paquete de firmware (en caso de estar disponible) se instale después de finalizada la instalación. </p></td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="completing-installed-system"></a>6.4.3. Completando el Sistema Instalado</h3></div></div></div>
+<p>Dependiendo de cómo se haya realizado la instalación, puede ser que no se haya detectado la necesidad de algún firmware durante la instalación, que el firmware correspondiente no esté disponible, o que se haya optado por no instalar algún firmware en ese momento. En algunos casos, una instalación exitosa puede terminar con una pantalla negra o una pantalla confusa al reiniciar el sistema instalado. Cuando esto ocurre, se pueden probar las siguientes soluciones: </p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Agrega la opción <code class="code">nomodeset</code> en la línea de comandos del kernel. Esto puede ayudar a arrancar en modo <span class="quote">“<span class="quote">fallback graphics</span>”</span> .</p></li>
+<li class="listitem"><p>Usa la conbimación de teclas <span class="keycap"><strong>Ctrl</strong></span>+<span class="keycap"><strong>Alt</strong></span>+<span class="keycap"><strong>F2</strong></span> para cambiar a VT2, que podría ofrecer un aviso de inicio de sesión funcional.</p></li>
+</ul></div>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch06s03.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch06s05.html"><img src="images/next.png" alt="Siguiente"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">6.3. Uso de componentes individuales </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Inicio"></a></td>
+<td width="40%" align="right" valign="top"> 6.5. Personalización</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

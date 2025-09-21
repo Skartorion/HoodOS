@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C.5. Chương trình tạo phân vùng Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Sổ tay Cài đặt Debian GNU/Linux">
+<link rel="up" href="apc.html" title="Phụ lục C. Phân vùng cho Debian">
+<link rel="prev" href="apcs04.html" title="C.4. Tên thiết bị dưới Linux">
+<link rel="next" href="apd.html" title="Phụ lục D. Thông Tin Linh Tinh">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">C.5. Chương trình tạo phân vùng Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<th width="60%" align="center">Phụ lục C. Phân vùng cho Debian</th>
+<td width="20%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="partition-programs"></a>C.5. Chương trình tạo phân vùng Debian</h2></div></div></div>
+<p>Vài kiểu chương trình tạo phân vùng đã được làm thích nghi bởi nhà phát triển Debian để hoạt động được trên nhiều kiểu đĩa cứng và kiến trúc máy tính khác nhau. Sau đây có danh sách các chương trình thích hợp với kiến trúc của máy tính này. </p>
+<div class="variablelist"><dl class="variablelist">
+<dt><span class="term"><span class="command"><strong>partman</strong></span></span></dt>
+<dd><p>Công cụ tạo phân vùng khuyến khích trong Debian. Chương trình này có nhiều khả năng có ích: nó cũng có thể thay đổi kích cỡ của phân vùng, tạo hệ thống tập tin <span class="phrase"> (<span class="quote">“<span class="quote">format</span>”</span> [định dạng] trên hệ điều hành Windows)</span> và gán nó vào điểm lắp. </p></dd>
+<dt><span class="term"><span class="command"><strong>fdisk</strong></span></span></dt>
+<dd>
+<p>Bộ tạo phân vùng Linux gốc, thích hợp với người dùng rất kinh nghiệm. </p>
+<p>Hãy cẩn thận nếu bạn có phân vùng kiểu FreeBSD tồn tại trên máy tính. Những hạt nhân cài đặt chứa khả năng hỗ trợ những phân vùng này, nhưng cách đại diện (hay không) của <span class="command"><strong>fdisk</strong></span> có thể làm cho tên thiết bị khác biệt. Xem tài liệu Linux và FreeBSD Thế Nào <a class="ulink" href="http://www.tldp.org/HOWTO/Linux+FreeBSD-2.html" target="_top">Linux+FreeBSD HOWTO</a>. </p>
+</dd>
+<dt><span class="term"><span class="command"><strong>cfdisk</strong></span></span></dt>
+<dd>
+<p>Bộ tạo phân vùng đĩa toàn màn hình dễ dàng, thích hợp với phần lớn người. </p>
+<p>Ghi chú rằng chương trình <span class="command"><strong>cfdisk</strong></span> không hiểu phân vùng kiểu FreeBSD bằng cách nào cả, lại có kết quả là tên thiết bị có thể khác biệt. </p>
+</dd>
+</dl></div>
+<p>Một của những chương trình này sẽ được chạy theo mặc định khi bạn chọn mục trình đơn <span class="guimenuitem">Phân vùng đĩa</span> (hay tương tự). Có thể sử dụng công cụ tạo phân vùng khác từ dòng lệnh trên VT2, nhưng không khuyên bạn làm như thế. </p>
+<p>Hãy ghi nhớ cần phải đánh dấu phân vùng khởi động như là <span class="quote">“<span class="quote">Khởi động được</span>”</span> (Bootable). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id5278"></a>C.5.1. Phân vùng cho <span class="phrase">64-bit PC</span>
+</h3></div></div></div>
+<p>If you are using a new harddisk (or want to wipe out the whole partition table of your disk), a new partition table needs to be created. The <span class="quote">“<span class="quote">Guided partitioning</span>”</span> does this automatically, but when partitioning manually, move the selection on the top-level entry of the disk and hit <span class="keycap"><strong>Enter</strong></span>. That will create a new partition table on that disk. In expert mode, you will then be asked for the type of the partition table. Default for UEFI-based systems is <span class="quote">“<span class="quote">gpt</span>”</span>, while for the older BIOS world the default value is <span class="quote">“<span class="quote">msdos</span>”</span>. In a standard priority installation those defaults will be used automatically. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Ghi chú]" src="images/note.png"></td>
+<th align="left">Ghi chú</th>
+</tr>
+<tr><td align="left" valign="top"><p>When a partition table with type <span class="quote">“<span class="quote">gpt</span>”</span> was selected (default for UEFI systems), a free space of 1 MB will automatically get created at the beginning of the disk. This is intended and required to embed the GRUB2 bootloader. </p></td></tr>
+</table></div>
+<p>If you have an existing other operating system such as Windows and you want to preserve that operating system while installing Debian, you may need to resize its partition to free up space for the Debian installation. The installer supports resizing of both FAT and NTFS filesystems; when you get to the installer's partitioning step, select the option <span class="guimenuitem">Manual</span> and then simply select an existing partition and change its size. </p>
+<p>While modern UEFI systems don't have such limitations as listed below, the old PC BIOS generally adds additional constraints for disk partitioning. There is a limit to how many <span class="quote">“<span class="quote">primary</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions a drive can contain. </p>
+<p>On such old PC BIOS system, <span class="quote">“<span class="quote">primary</span>”</span> partitions are the original partitioning scheme for PC disks. However, there can only be four of them. To get past this limitation, <span class="quote">“<span class="quote">extended</span>”</span> and <span class="quote">“<span class="quote">logical</span>”</span> partitions were invented. By setting one of your primary partitions as an extended partition, you can subdivide all the space allocated to that partition into logical partitions. You can create up to 60 logical partitions per extended partition; however, you can only have one extended partition per drive. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apcs04.html"><img src="images/prev.png" alt="Trước đó"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apc.html"><img src="images/up.png" alt="Lên"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apd.html"><img src="images/next.png" alt="Kế tiếp"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">C.4. Tên thiết bị dưới Linux </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Đầu"></a></td>
+<td width="40%" align="right" valign="top"> Phụ lục D. Thông Tin Linh Tinh</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

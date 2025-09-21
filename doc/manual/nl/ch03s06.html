@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Configuratie van hardware en besturingssysteem voor de installatie</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux Installatiehandleiding">
+<link rel="up" href="ch03.html" title="Hoofdstuk 3. Vooraleer u Debian GNU/Linux installeert">
+<link rel="prev" href="ch03s05.html" title="3.5. Uw harde schijf vooraf indelen voor een multi-boot systeem">
+<link rel="next" href="ch04.html" title="Hoofdstuk 4. Media met het installatiesysteem verkrijgen">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Configuratie van hardware en besturingssysteem voor de installatie</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<th width="60%" align="center">Hoofdstuk 3. Vooraleer u Debian GNU/Linux installeert</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Configuratie van hardware en besturingssysteem voor de installatie</h2></div></div></div>
+<p>Dit deel behandelt eventuele hardware-instellingen die u moet uitvoeren voordat u Debian installeert. In het algemeen gaat het dan over het controleren en eventueel wijzigen van instellingen in de BIOS/UEFI/systeemfirmware op uw systeem. Het <span class="quote">“<span class="quote">BIOS/UEFI</span>”</span> of de <span class="quote">“<span class="quote">systeemfirmware</span>”</span> is de kernsoftware die door de hardware wordt gebruikt. Deze speelt een cruciale rol bij het begin van het opstarten (na het aanzetten van de computer). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Het instellingenmenu van het BIOS/UEFI openen</h3></div></div></div>
+<p>Het BIOS/UEFI levert de basisfuncties die nodig zijn om uw machine op te starten en uw besturingssysteem in staat te stellen uw hardware aan te spreken. Uw systeem heeft een instellingenmenu voor het BIOS/UEFI en daarmee kan het BIOS/UEFI geconfigureerd worden. Om het instellingenmenu van het BIOS/UEFI te openen moet u een toets of een toetsencombinatie indrukken na het aanzetten van de computer. Dikwijls is dat de <span class="keycap"><strong>Delete</strong></span>- of de <span class="keycap"><strong>F2</strong></span>-toets, maar sommige fabrikanten gebruiken een andere toets. Gewoonlijk verschijnt er bij het opstarten van de computer een melding waarin staat welke toets u moet indrukken om het instellingenscherm te openen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Het opstartapparaat kiezen</h3></div></div></div>
+<p>In het instellingenmenu van het BIOS/UEFI kunt u selecteren op welke apparaten en in welke volgorde gezocht zal worden naar een opstartbaar besturingssysteem. Tot de mogelijkheden waaruit gekozen kan worden, behoren meestal interne harde schijven, het cd/dvd-station. en USB-massaopslagapparaten zoals USB-sticks of externe USB harde schijven. Op moderne systemen heeft u ook vaak de mogelijkheid om te kiezen voor opstarten over het netwerk via PXE. </p>
+<p>Afhankelijk van het installatiemedium dat u gekozen heeft (CD/DVD, USB-stick, opstarten over het netwerk), moet u het passende opstartapparaat activeren als dat nog niet het geval is. </p>
+<p>De meeste BIOS/UEFI-versies laten u toe om bij het opstarten van het systeem een opstartmenu op te roepen waarin u kunt aangeven vanaf welk apparaat de computer tijdens deze sessie moet opstarten. Indien een dergelijke mogelijkheid bestaat, geeft het BIOS/UEFI bij het starten van het systeem meestal een korte melding weer in de zin van <span class="quote">“<span class="quote">press <span class="keycap"><strong>F12</strong></span> for boot menu</span>”</span>. Welke toets precies u moet gebruiken om dit menu te selecteren, varieert van systeem tot systeem. Vaak gebruikte toetsen zijn <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> en <span class="keycap"><strong>F8</strong></span>. In dit menu een apparaat selecteren wijzigt in het BIOS/UEFI niet de standaardvolgorde onder de opstartapparaten, d.w.z. dat u voor eenmaal kunt opstarten van een USB-stick, hoewel u de interne harde schijf geconfigureerd heeft als het normale primaire opstartapparaat. </p>
+<p>Indien uw BIOS/UEFI niet over een opstartmenu beschikt dat toelaat een ad-hockeuze te maken in verband met het actuele opstartapparaat, zult u de BIOS/UEFI-instellingen moeten aanpassen en het apparaat van waaruit <code class="classname">debian-installer</code> opgestart zal worden, moeten instellen als het primaire opstartapparaat. </p>
+<p>Jammer genoeg hebben sommige computers een BIOS/UEFI-versie met bugs. Het kan zijn dat het opstarten van <code class="classname">debian-installer</code> vanaf een USB-stick dan niet werkt ook al bevat het instellingenmenu van het BIOS/UEFI een dergelijke optie en heeft u de stick geselecteerd als primair opstartapparaat. Op sommige van dergelijke systemen is een USB-stick gebruiken als opstartmedium niet mogelijk. Sommige andere systemen kunnen met een trucje toch verleid worden om op te starten van de stick door in de instellingen van het BIOS/UEFI het apparaattype dat standaard <span class="quote">“<span class="quote">USB harddisk</span>”</span> of <span class="quote">“<span class="quote">USB stick</span>”</span> is, te veranderen naar <span class="quote">“<span class="quote">USB ZIP</span>”</span> of <span class="quote">“<span class="quote">USB CDROM</span>”</span>. <span class="phrase"> In het bijzonder wanneer u een isohybride installatie-image gebruikt op een USB-stick (zie <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Een USB-stick klaar maken met een hybride CD/DVD-image">Paragraaf 4.3.1, “Een USB-stick klaar maken met een hybride CD/DVD-image”</a>), kan het bij sommige BIOS'en die er niet in slagen om in USB-hardeschijfmodus op te starten van een USB-stick, helpen het apparaattype te veranderen naar <span class="quote">“<span class="quote">USB CDROM</span>”</span>.</span>. Mogelijk moet u uw BIOS/UEFI configureren om <span class="quote">“<span class="quote">USB legacy support</span>”</span> (ondersteuning voor oudere USB) te activeren. </p>
+<p>Indien u het BIOS/UEFI niet kunt manipuleren om rechtstreeks op te starten van een USB-stick, heeft u nog altijd de mogelijkheid om een ISO te gebruiken die u naar de stick kopieert. Start <code class="classname">debian-installer</code> met <a class="xref" href="ch04s04.html" title="4.4. Bestanden voorbereiden om vanaf een harde schijf op te starten">Paragraaf 4.4, “Bestanden voorbereiden om vanaf een harde schijf op te starten”</a> en nadat op de harde schijf gezocht is naar een ISO-image van het installatieprogramma, selecteert u het USB-apparaat en kiest u het installatie-image. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Systemen met UEFI firmware</h3></div></div></div>
+<p>UEFI (<span class="quote">“<span class="quote">Unified Extensible Firmware Interface</span>”</span>) is een nieuw soort systeemfirmware dat op veel moderne systemen gebruikt wordt en bedoeld is om - naast andere aanwendingen - het klassieke PC-BIOS te vervangen. </p>
+<p>Momenteel hebben de meeste PC-systemen die UEFI gebruiken ook een zogenaamde <span class="quote">“<span class="quote">Compatibility Support Module</span>”</span> (CSM) in de firmware, die exact dezelfde interfaces met het besturingssysteem biedt als het klassieke PC-BIOS, waardoor software die geschreven was voor het klassieke PC-BIOS onveranderd gebruikt kan worden. Niettemin is het de bedoeling dat UEFI ooit volledig het oude PC-BIOS zal vervangen zonder daarbij volledig neerwaarts compatibel te zijn en er bestaan reeds heel wat systemen met UEFI maar zonder CSM. </p>
+<p>Bij het installeren van een besturingssysteem op een systeem met UEFI moet u met enkele zaken rekening houden. De wijze waarop de firmware een besturingssysteem laadt verschilt fundamenteel tussen het klassieke BIOS (of UEFI in CSM-modus) en het standaard UEFI. Een belangrijk verschil is de wijze waarop de partities van een harde schijf opgeslagen worden op de harde schijf. Terwijl het klassieke BIOS en UEFI in CSM-modus een DOS-partitietabel gebruiken, gebruikt het standaard UEFI een ander partitiesysteem dat men <span class="quote">“<span class="quote">GUID Partition Table</span>”</span> (GPT) noemt. Op één enkele schijf kan voor alle praktische doeleinden slechts een van beide gebruikt worden en in het geval van een multi-boot opstelling waarbij op één enkele schijf verschillende besturingssystemen geplaatst worden, moeten ze daarom allemaal hetzelfde type partitietabel gebruiken. Opstarten van een schijf met GPT is enkel mogelijk in standaard UEFI-modus, maar het gebruik van GPT wordt meer en meer courant omdat de grootte van harde schijven toeneemt en een klassieke DOS-partitietabel geen harde schijven aankan die groter zijn dan ongeveer 2 terabytes, terwijl GPT veel grotere harde schijven aankan. Het andere grote verschil tussen BIOS (of UEFI in CSM-modus) en standaard UEFI is de locatie waar opstartcode opgeslagen wordt en in welke indeling die moet zijn. Dit betekent dat voor elk van beide systemen verschillende bootloaders nodig zijn. </p>
+<p>Dit laatste wordt van belang bij het opstarten van <code class="classname">debian-installer</code> op een UEFI-systeem met CSM, omdat <code class="classname">debian-installer</code> nagaat of het opgestart werd op een BIOS- of op een standaard UEFI-systeem en de overeenkomstige bootloader installeert. Normaal werkt dit vanzelf maar in multi-boot-omgevingen kan er zich een probleem stellen. Op sommige UEFI-systemen met CSM kan de standaard opstartmodus voor verwijderbare media verschillend zijn van wat gebruikt wordt wanneer opgestart wordt vanaf een harde schijf. Wanneer u dus het installatieprogramma opstart vanaf een USB-stick in een andere modus dan die welke gebruikt wordt voor het opstarten van een reeds geïnstalleerd systeem op de harde schijf, kan het gebeuren dat de verkeerde bootloader geïnstalleerd wordt en het systeem na het afronden van de installatie niet langer opgestart kan worden. Bij het selecteren van het opstartapparaat in het opstartmenu van de firmware, bieden sommige systemen voor elk apparaat de keuze uit twee verschillende modi, zodat de gebruiker kan selecteren of het opstarten in CSM-modus of in standaard UEFI-modus moet gebeuren. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Secure boot (veilig opstarten)</h3></div></div></div>
+<p>Een ander aspect dat verband houdt met UEFI is het zogenaamde <span class="quote">“<span class="quote">secure boot</span>”</span>-mechanisme. Secure boot (veilig opstarten) is een functie van UEFI-toepassingen die de firmware enkel toelaat code te laden en uit te voeren die cryptografisch ondertekend werd met bepaalde sleutels en waardoor elke (potentieel kwaadaardige) opstartcode die niet ondertekend is of door een onbekende sleutel ondertekend werd, geblokkeerd wordt. In de praktijk is de enige sleutel die standaard op de meeste UEFI-systemen met 'secure boot' geaccepteerd wordt, een sleutel van Microsoft die gebruikt wordt om de bootloader van Windows te ondertekenen. Debian bevat een <span class="quote">“<span class="quote">shim</span>”</span>-bootloader die ondertekend werd door Microsoft en dus correct zou moeten werken op systemen waarop veilig opstarten is ingeschakeld. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. De functionaliteit <span class="quote">“<span class="quote">fast boot</span>”</span>/<span class="quote">“<span class="quote">fast startup</span>”</span> van Windows uitzetten</h3></div></div></div>
+<p>Windows biedt een functie (<span class="quote">“<span class="quote">fast boot</span>”</span> genaamd in Windows 8, <span class="quote">“<span class="quote">fast startup</span>”</span> in Windows 10) om de opstarttijd van het systeem te verkorten. Indien deze functie actief is en u geeft Windows de opdracht om af te sluiten, sluit het niet echt af en doet het nadien dus geen echte koude start, maar doet het iets dat lijkt op een gedeeltelijke slaapstand om de <span class="quote">“<span class="quote">opstart</span>”</span>tijd in te korten. Zolang Windows het enige besturingssysteem op de computer is, is dit niet problematisch, maar indien u een dual-boot-systeem hebt waarbij een ander besturingssysteem gebruik maakt van dezelfde bestandssystemen als Windows, kan dit leiden tot problemen en gegevensverlies. In een dergelijk geval kan de echte toestand van het bestandssysteem verschillend zijn van wat Windows na de <span class="quote">“<span class="quote">opstart</span>”</span> denkt en dit kan leiden tot bederf van het bestandssysteem wanneer er nog verder geschreven wordt in het bestandssysteem. Om bij een dual-boot-systeem bestandssysteembederf tegen te gaan, moet u daarom de <span class="quote">“<span class="quote">fast boot</span>”</span>/<span class="quote">“<span class="quote">fast startup</span>”</span> functionaliteit in Windows uitzetten. </p>
+<p>Bovendien is bekend dat het Windows Update-mechanisme deze functie (soms) automatisch opnieuw inschakelt, nadat het eerder door de gebruiker werd uitgeschakeld. Wij suggereren om periodiek deze instelling opnieuw te controleren. </p>
+<p>Het kan zelfs nodig zijn om <span class="quote">“<span class="quote">fast boot</span>”</span> uit te zetten om toegang te krijgen tot het instellingenmenu van UEFI om te kunnen kiezen voor het opstarten van een ander besturingssysteem of van <code class="classname">debian-installer</code>. Op sommige UEFI-systemen zal de firmware de <span class="quote">“<span class="quote">opstart</span>”</span>tijd reduceren door de toetsenbordcontroller of de USB-hardware niet te initialiseren. In dergelijke gevallen is het noodzakelijk om Windows op te starten en er deze functionaliteit uit te zetten om in staat te zijn de opstartvolgorde te wijzigen. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Aandachtspunten in verband met apparatuur</h3></div></div></div>
+<p><b>De USB-ondersteuning in het BIOS en toetsenborden. </b>Indien u geen toetsenbord van het type PS/2 heeft, maar enkel een USB-model, kan het zijn dat u op sommige zeer oude PC's in de instellingen van het BIOS de 'legacy keyboard emulation' (oud toetsenbord emuleren) moet aanzetten om uw toetsenbord in het menu van de bootloader te kunnen gebruiken. Op moderne systemen stelt dit probleem zich niet. Indien uw toetsenbord niet werkt in het menu van de bootloader, moet u de handleiding bij uw moederbord raadplegen en zoeken naar de BIOS-optie <span class="quote">“<span class="quote">Legacy keyboard emulation</span>”</span> of <span class="quote">“<span class="quote">USB keyboard support</span>”</span>. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Terug"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Omhoog"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Volgende"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Uw harde schijf vooraf indelen voor een multi-boot systeem </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Begin"></a></td>
+<td width="40%" align="right" valign="top"> Hoofdstuk 4. Media met het installatiesysteem verkrijgen</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

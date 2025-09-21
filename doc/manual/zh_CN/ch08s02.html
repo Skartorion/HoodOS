@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>8.2. 让自己适应 Debian</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux 安装手册">
+<link rel="up" href="ch08.html" title="第 8 章 下一步该干什么">
+<link rel="prev" href="ch08s01.html" title="8.1. 关闭系统">
+<link rel="next" href="ch08s03.html" title="8.3. 更多信息">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">8.2. 让自己适应 Debian</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<th width="60%" align="center">第 8 章 下一步该干什么</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="debian-orientation"></a>8.2. 让自己适应 Debian</h2></div></div></div>
+<p>Debian 和其它的发行版有些不同。即使您熟悉其它发行版的 Linux，您也应该了解 Debian 的一些东西，以便保持您的系统处在良好整洁的状态。本章包的材料可以帮助您适应；但这并不是一个如何使用 Debian 的入门指南，而仅仅是对整个系统的一个粗略的介绍。 </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3572"></a>8.2.1. Debian 软件包系统</h3></div></div></div>
+<p>要掌握的最重要概念是 Debian 的软件包系统。事实上，您系统的绝大部分都应该由软件包系统来控制。包括：</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p> <code class="filename">/usr</code> (除了 <code class="filename">/usr/local</code>) </p></li>
+<li class="listitem"><p> <code class="filename">/var</code> (您可以创建 <code class="filename">/var/local</code>，在那里面进行安全的操作) </p></li>
+<li class="listitem"><p> <code class="filename">/bin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/sbin</code> </p></li>
+<li class="listitem"><p> <code class="filename">/lib</code> </p></li>
+</ul></div>
+<p> 例如，假设您替换了 <code class="filename">/usr/bin/perl</code>，它可以正常工作，但以后升级您的 <code class="classname">perl</code> 软件包，那里的文件将被替换。有经验的用户可以在 <span class="command"><strong>aptitude</strong></span> 里面将软件包设置为 <span class="quote">“<span class="quote">hold</span>”</span>状态，以避免这种情况。 </p>
+<p>apt 是最好的安装方法之一。您可以使用命令行模式的 <span class="command"><strong>apt-get</strong></span> ，还有 <span class="application">aptitude</span> 或 <span class="application">synaptic</span> 那样的工具（只是 <span class="command"><strong>apt</strong></span> 的图形化前端）。注意，apt 还可以让您合并 main、contrib、non-free 和 non-free-firmware，从而您可以同时具有限制的软件包（严格地讲不属于 Debian ）以及来自 Debian GNU/Linux 的软件包。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3602"></a>8.2.2. 用于 Debian 的额外软件</h3></div></div></div>
+<p>有一些官方或非官方的软件库，在默认的 Debian 安装下并未打开。它们之中含有一些重要的必备软件。关于这些软件库的信息放在 Debian Wiki 页面 <a class="ulink" href="https://wiki.debian.org/DebianSoftware" target="_top">The Software Available for Debian's Stable Release</a>。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3606"></a>8.2.3. 应用程序版本管理</h3></div></div></div>
+<p>可选版本的应用程序可以通过 update-alternatives 来管理。如果您维护着应用程序的多个版本，请阅读 update-alternatives 的 man 手册。 </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="id3609"></a>8.2.4. 定时任务管理</h3></div></div></div>
+<p>任何系统管理员权限内的任务都必须位于 <code class="filename">/etc</code> 内，这是因为它们都是配置文件。如果您有一些需要以管理员身份每天(daily)、每周(weekly)或每月(monthly)运行的定时任务，请将它们放置在 <code class="filename">/etc/cron.{daily,weekly,monthly}</code> 中。它们将在 <code class="filename">/etc/crontab</code> 中被激活，然后按照文件名的字典顺序依次运行。 </p>
+<p>另一方面，如果您有某个定时任务 (a) 需要以某个特定的用户身份运行，或者 (b) 需要在某个特定时刻或以特定周期运行，您可以使用 <code class="filename">/etc/crontab</code>，或者更好的 <code class="filename">/etc/cron.d/whatever</code>。这些特殊的文件可以包含一个额外的域，允许您指定运行该定时任务的用户帐户。 </p>
+<p>在任何情况下，您只需编辑这些文件，cron 将会自动处理它们。没有必要再运行某个特殊的命令。欲了解更多的信息，请参阅 cron(8)、crontab(5) 和 <code class="filename">/usr/share/doc/cron/README.Debian</code>。 </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch08s01.html"><img src="images/prev.png" alt="上一页"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="images/up.png" alt="上一级"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch08s03.html"><img src="images/next.png" alt="下一页"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">8.1. 关闭系统 </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="起始页"></a></td>
+<td width="40%" align="right" valign="top"> 8.3. 更多信息</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

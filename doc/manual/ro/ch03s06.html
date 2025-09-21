@@ -1,0 +1,90 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>3.6. Configurarea componentelor, dispozitivelor și a sistemului de operare înainte de instalare</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="ch03.html" title="Cap. 3. Înainte de a instala Debian GNU/Linux">
+<link rel="prev" href="ch03s05.html" title="3.5. Pre-partiționare pentru sisteme multi-pornire">
+<link rel="next" href="ch04.html" title="Cap. 4. Obținerea unui mediu de instalare a sistemului">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">3.6. Configurarea componentelor, dispozitivelor și a sistemului de operare înainte de instalare</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Cap. 3. Înainte de a instala Debian GNU/Linux</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="pre-install-bios-setup"></a>3.6. Configurarea componentelor, dispozitivelor și a sistemului de operare înainte de instalare</h2></div></div></div>
+<p>Această secțiune de preinstalare, vă va ghida în configurarea componentelor și a dispozitivelor, dacă este cazul, pe care va trebui să o faceți înainte de a instala Debian. În general, aceasta implică verificarea și, eventual, modificarea configurărilor BIOS/UEFI/microcodului de sistem pentru sistemul dumneavoastră. <span class="quote">„<span class="quote">BIOS/UEFI</span>”</span> sau <span class="quote">„<span class="quote">microcodul sistemului (system firmware)</span>”</span> este software-ul de bază folosit de componente; este invocat cel mai critic în timpul procesului de pornire (după acționarea butonului de alimentare cu energie). </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="bios-setup"></a>3.6.1. Invocarea meniului de configurare BIOS/UEFI</h3></div></div></div>
+<p>BIOS/UEFI oferă funcțiile de bază necesare pentru a porni mașina și pentru a permite sistemului de operare să vă acceseze componentele. Sistemul dumneavoastră oferă un meniu de configurare BIOS/UEFI, care este utilizat pentru a configura BIOS/UEFI. Pentru a intra în meniul de configurare BIOS/UEFI, trebuie să apăsați o tastă sau o combinație de taste după ce porniți calculatorul. Adesea este tasta <span class="keycap"><strong>Del</strong></span> sau <span class="keycap"><strong>F2</strong></span>, dar unii producători folosesc alte taste. De obicei, la pornirea calculatorului, va apărea un mesaj care indică ce tastă trebuie apăsată pentru a intra în ecranul de configurare. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="boot-dev-select-x86"></a>3.6.2. Selectarea dispozitivului de pornire</h3></div></div></div>
+<p>În meniul de configurare BIOS/UEFI, puteți selecta ce dispozitive vor fi verificate și în ce ordine, pentru găsirea unui sistem de operare pentru al pornii. Opțiunile posibile includ, de obicei, discurile dure/solide interne, unitatea CD/DVD-ROM și dispozitivele de stocare în masă USB, cum ar fi stick-uri USB sau discuri USB externe. În sistemele moderne, există adesea și posibilitatea de a activa pornirea din rețea prin PXE. </p>
+<p>În funcție de mediul de instalare (CD/DVD-ROM, stick USB, încărcare din rețea) pe care l-ați ales, ar trebui să activați dispozitivele de pornire corespunzătoare dacă nu sunt deja activate. </p>
+<p>Majoritatea versiunilor BIOS/UEFI vă permit să apelați un meniu de pornire la pornirea sistemului în care selectați de pe ce dispozitiv ar trebui să pornească calculatorul pentru sesiunea curentă. Dacă această opțiune este disponibilă, BIOS/UEFI-ul afișează de obicei un mesaj scurt, cum ar fi <span class="quote">„<span class="quote">apăsați (press) <span class="keycap"><strong>F12</strong></span> pentru meniul de pornire</span>”</span> la pornirea sistemului. Tasta reală folosită pentru a selecta acest meniu variază de la sistem la sistem; tastele utilizate în mod obișnuit sunt <span class="keycap"><strong>F12</strong></span>, <span class="keycap"><strong>F11</strong></span> și <span class="keycap"><strong>F8</strong></span>. Alegerea unui dispozitiv din acest meniu nu schimbă ordinea implicită de pornire de la BIOS/UEFI, adică puteți porni o dată de pe un stick USB în timp ce ați configurat discul intern ca dispozitiv de pornire primar. </p>
+<p>Dacă BIOS/UEFI nu vă oferă un meniu de pornire pentru a face alegeri ad-hoc ale dispozitivului de pornire curent, va trebui să schimbați configurarea BIOS/UEFI pentru a face dispozitivul de pe care <code class="classname">debian-installer</code> va fi pornit, dispozitivul de pornire principal. </p>
+<p>Din păcate, unele calculatoare pot conține versiuni BIOS/UEFI cu erori. Pornirea <code class="classname">debian-installer</code> de pe un stick USB ar putea să nu funcționeze chiar dacă există o opțiune adecvată în meniul de configurare BIOS/UEFI și stick-ul este selectat ca dispozitiv de pornire principal. Pe unele dintre aceste sisteme, utilizarea unui stick USB ca mediu de pornire este imposibilă; altele (microcoduri BIOS/UEFI) pot fi păcălite să pornească de pe stick schimbând tipul dispozitivului în configurarea BIOS/UEFI, de la <span class="quote">„<span class="quote">„USB harddisk”</span>”</span> sau <span class="quote">„<span class="quote">„USB stick”</span>”</span> implicit la <span class="quote">„<span class="quote">„USB ZIP”</span>”</span> sau <span class="quote">„<span class="quote">„USB CDROM”</span>”</span>. <span class="phrase"> În special dacă utilizați o imagine de instalare iso-hibridă pe un stick USB (consultați <a class="xref" href="ch04s03.html#usb-copy-isohybrid" title="4.3.1. Pregătirea unui stick USB utilizând o imagine hibrid CD/DVD">Secțiune 4.3.1, „Pregătirea unui stick USB utilizând o imagine hibrid CD/DVD”</a>), schimbarea tipului dispozitivului în <span class="quote">„<span class="quote">„USB CDROM”</span>”</span> ajută la unele BIOS-uri care nu vor porni de pe un stick USB în modul de disc USB.</span> Este posibil să fie necesar să configurați BIOS/UEFI-ul pentru a activa <span class="quote">„<span class="quote">suportul vechi USB</span>”</span>. </p>
+<p>Dacă nu puteți manipula BIOS/UEFI-ul pentru a porni direct de pe un stick USB, aveți în continuare opțiunea de a utiliza un ISO copiat pe stick. Porniți <code class="classname">debian-installer</code> folosind <a class="xref" href="ch04s04.html" title="4.4. Pregătirea fișierelor pentru pornirea de pe discul dur/solid">Secțiune 4.4, „Pregătirea fișierelor pentru pornirea de pe discul dur/solid”</a> și, după scanarea discurilor dure/solide pentru o imagine ISO de instalare, selectați dispozitivul USB și alegeți o imagine de instalare. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="UEFI"></a>3.6.3. Sisteme cu firmware UEFI</h3></div></div></div>
+<p>UEFI (<span class="quote">„<span class="quote">Unified Extensible Firmware Interface</span>”</span>), adică „Interfață de firmware extensibilă unificată”, este un nou tip de firmware de sistem care este utilizat pe multe sisteme moderne și este, printre alte utilizări, menită să înlocuiască clasicul BIOS pentru PC. </p>
+<p>În prezent, majoritatea sistemelor PC care utilizează UEFI au, de asemenea, un așa-numitul <span class="quote">„<span class="quote">Compatibility Support Module</span>”</span> (CSM) în firmware, care oferă exact aceleași interfețe unui sistem de operare ca și BIOS-ul PC clasic, astfel încât software-ul scris pentru clasicul PC BIOS poate fi folosit neschimbat. Cu toate acestea, UEFI este destinat să înlocuiască complet vechiul BIOS al calculatorului, fără a fi complet compatibil cu versiunile anterioare și există deja o mulțime de sisteme cu UEFI, dar fără CSM. </p>
+<p>Pe sistemele cu UEFI, există câteva lucruri de luat în considerare atunci când instalați un sistem de operare. Modul în care firmware-ul încarcă un sistem de operare este fundamental diferit între BIOS-ul clasic (sau UEFI în modul CSM) și UEFI nativ. O diferență majoră este modul în care partițiile sunt înregistrate pe discul dur. În timp ce clasicele BIOS și UEFI în modul CSM utilizează o tabelă de partiții DOS, UEFI nativ utilizează o schemă de partiționare diferită numită „tabelă de partiții cu identificatori unici la nivel global” <span class="quote">„<span class="quote">GUID Partition Table</span>”</span> (GPT). Pe un singur disc, în toate scopurile practice, doar unul dintre cele două sisteme poate fi utilizat și în cazul unei configurări multi-pornire cu sisteme de operare diferite pe un disc, toate trebuie, prin urmare, să folosească același tip de tabelă de partiții. Pornirea de pe un disc cu GPT este posibilă numai în modul nativ UEFI, dar utilizarea GPT devine din ce în ce mai comună pe măsură ce dimensiunea discului crește, deoarece tabela clasică de partiții DOS nu poate adresa discuri mai mari de aproximativ 2 Teraocteți, în timp ce GPT permite discuri mult mai mari. Cealaltă diferență majoră între BIOS (sau UEFI în modul CSM) și UEFI nativ este locația în care este stocat codul de pornire și în ce format trebuie să fie. Aceasta înseamnă că pentru fiecare sistem sunt necesare încărcătoare de pornire diferite. </p>
+<p>Aceasta din urmă devine importantă la pornirea <code class="classname">debian-installer</code> pe un sistem UEFI cu CSM deoarece <code class="classname">debian-installer</code> verifică dacă a fost pornit pe un BIOS sau pe un sistem UEFI nativ și instalează încărcătorul de pornire corespunzător. În mod normal, acest lucru funcționează pur și simplu, dar poate exista o problemă în mediile cu pornire multiplă. Pe unele sisteme UEFI cu CSM, modul de pornire implicit pentru dispozitivele amovibile poate fi diferit de ceea ce este utilizat de fapt la pornirea de pe discul dur/solid, deci la pornirea programului de instalare de pe un stick USB într-un mod diferit de cel utilizat la pornirea unui alt sistem de operare deja instalat pe discul dur/solid, ar putea fi instalat încărcătorul de pornire greșit și sistemul poate fi de nepornit după terminarea instalării. Atunci când alegeți dispozitivul de pornire dintr-un meniu de pornire a firmware-ului, unele sisteme oferă două opțiuni separate pentru fiecare dispozitiv, astfel încât utilizatorul să poată selecta dacă pornirea va avea loc în CSM sau în modul UEFI nativ. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="secure-boot"></a>3.6.4. Pornirea securizată</h3></div></div></div>
+<p>Un alt subiect legat de UEFI este așa-numitul mecanism de <span class="quote">„<span class="quote">pornire securizată</span>”</span>. Pornirea securizată înseamnă o funcție a implementărilor UEFI care permite firmware-ului să încarce și să execute doar cod semnat criptografic cu anumite chei și blocând astfel orice cod de pornire (potențial rău intenționat) care este nesemnat sau semnat cu chei necunoscute. În practică, singura cheie acceptată implicit pe majoritatea sistemelor UEFI cu pornire securizată este o cheie de la Microsoft utilizată pentru semnarea încărcătorului de pornire al Windows. Debian include un încărcător de pornire <span class="quote">„<span class="quote">shim</span>”</span> semnat de Microsoft, deci ar trebui să funcționeze corect pe sistemele cu pornirea securizată activată. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="disable-fast-boot"></a>3.6.5. Dezactivarea caracteristicii Windows de pornire rapidă <span class="quote">„<span class="quote">fast boot</span>”</span>/<span class="quote">„<span class="quote">fast startup</span>”</span>
+</h3></div></div></div>
+<p>Windows oferă o caracteristică de pornire rapidă (numită <span class="quote">„<span class="quote">fast boot</span>”</span> în Windows 8, <span class="quote">„<span class="quote">fast startup</span>”</span> în Windows 10) pentru a reduce timpul de pornire a sistemului. Din punct de vedere tehnic, atunci când această caracteristică este activată, Windows nu efectuează o închidere reală și o pornire la rece reală după aceea când i se ordonă oprirea, ci face ceva asemănător cu o suspendare parțială în disc pentru a reduce timpul de <span class="quote">„<span class="quote">pornire</span>”</span>. Atâta timp cât Windows este singurul sistem de operare de pe mașină, acest lucru nu prezintă probleme, dar poate duce la probleme și pierderi de date, atunci când aveți o configurare duală de pornire în care un alt sistem de operare accesează aceleași sisteme de fișiere ca și Windows. În acest caz, starea reală a sistemului de fișiere poate fi diferită de ceea ce Windows crede că este după <span class="quote">„<span class="quote">pornire</span>”</span> și acest lucru ar putea cauza coruperea sistemului de fișiere la accesările ulterioare de scriere în sistemul de fișiere. Prin urmare, într-o configurare duală de pornire, pentru a evita coruperea sistemului de fișiere, caracteristica de pornire rapidă<span class="quote">„<span class="quote">fast boot</span>”</span>/<span class="quote">„<span class="quote">fast startup</span>”</span> trebuie să fie dezactivată în Windows. </p>
+<p>În plus, mecanismul Windows Update a fost cunoscut (uneori) pentru a reactiva automat această caracteristică, după ce a fost dezactivată anterior de către utilizator. Se recomandă să verificați din nou această configurare periodic. </p>
+<p>De asemenea, poate fi necesară dezactivarea <span class="quote">„<span class="quote">pornirii rapide</span>”</span> pentru a permite chiar accesul la configurarea UEFI pentru a alege să pornească un alt sistem de operare sau <code class="classname">debian-installer</code>. Pe unele sisteme UEFI, firmware-ul va reduce timpul de <span class="quote">„<span class="quote">pornire</span>”</span> prin neexecutarea inițializării controlorului tastaturii sau a dispozitivului USB; în aceste cazuri, este necesar să porniți în Windows și să dezactivați această caracteristică pentru a permite o schimbare a ordinii de pornire. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="hardware-issues"></a>3.6.6. Probleme hardware de care trebuie să aveți grijă</h3></div></div></div>
+<p><b>Suportul BIOS pentru USB și tastaturi. </b>Dacă nu aveți tastatură în stil PS/2, ci doar un model USB, pe unele PC-uri foarte vechi este posibil să fie necesar să activați emularea tastaturii vechi în configurația BIOS pentru a putea folosi tastatura în meniul încărcătorului de pornire, dar acest lucru nu este o problemă pentru sistemele moderne. Dacă tastatura nu funcționează în meniul încărcătorului de pornire, consultați manualul plăcii bază și căutați în BIOS opțiunile <span class="quote">„<span class="quote">Emularea tastaturii vechi</span>”</span> (Legacy keyboard emulation) sau <span class="quote">„<span class="quote">Suport tastatură USB</span>”</span> (USB keyboard support). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch03s05.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">3.5. Pre-partiționare pentru sisteme multi-pornire </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> Cap. 4. Obținerea unui mediu de instalare a sistemului</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>B.1. Introducere</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Debian GNU/Linux - Ghid de instalare">
+<link rel="up" href="apb.html" title="Anexa B. Automatizarea instalării folosind preconfigurarea">
+<link rel="prev" href="apb.html" title="Anexa B. Automatizarea instalării folosind preconfigurarea">
+<link rel="next" href="apbs02.html" title="B.2. Utilizarea preconfigurării">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">B.1. Introducere</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<th width="60%" align="center">Anexa B. Automatizarea instalării folosind preconfigurarea</th>
+<td width="20%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="preseed-intro"></a>B.1. Introducere</h2></div></div></div>
+<p>Preconfigurarea oferă o modalitate de a oferi răspunsuri la întrebările adresate în timpul procesului de instalare, fără a fi nevoie să introduceți manual răspunsurile în timpul instalării. Acest lucru face posibilă automatizarea completă a majorității tipurilor de instalare și chiar oferă unele caracteristici care nu sunt disponibile în timpul instalărilor normale. </p>
+<p>Preconfigurarea nu este necesară. Dacă utilizați un fișier de preconfigurare gol, programul de instalare se va comporta la fel ca într-o instalare manuală normală. Fiecare întrebare pe care ați preconfigurat-o va modifica (dacă ați completat-o corect!) instalarea față de cea de bază. </p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-methods"></a>B.1.1. Metode de preconfigurare</h3></div></div></div>
+<p>Există trei metode care pot fi folosite pentru preconfigurre: <em class="firstterm">initrd</em>, <em class="firstterm">file</em> și <em class="firstterm">network</em>. Preconfigurarea „initrd” va funcționa cu orice metodă de instalare și acceptă preconfigurarea mai multor lucruri, dar necesită cea mai mare pregătire. Preconfigurările „file” și „network” pot fi utilizate cu diferite metode de instalare. </p>
+<p>Următorul tabel arată ce metode de preconfigurare pot fi utilizate și cu ce metode de instalare. </p>
+<div class="informaltable"><table class="informaltable" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>Metoda de instalare</th>
+<th>initrd</th>
+<th>file</th>
+<th>network</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CD/DVD/USB</td>
+<td>da</td>
+<td>da</td>
+<td>da<a href="#ftn.apx-ps-net" class="footnote" name="apx-ps-net"><sup class="footnote">[a]</sup></a>
+</td>
+</tr>
+<tr>
+<td>netboot</td>
+<td>da</td>
+<td>nu</td>
+<td>da</td>
+</tr>
+<tr>
+<td>hd-media <span class="phrase">(inclusiv stick-ul USB)</span>
+</td>
+<td>da</td>
+<td>da</td>
+<td>da<a href="apbs01.html#ftn.apx-ps-net" class="footnoteref"><sup class="footnoteref">[a]</sup></a>
+</td>
+</tr>
+</tbody>
+<tbody class="footnotes"><tr><td colspan="4"><div id="ftn.apx-ps-net" class="footnote"><p><a href="#apx-ps-net" class="para"><sup class="para">[a] </sup></a>dar numai dacă aveți acces la rețea și configurați <code class="literal">preseed/url</code> în mod corespunzător </p></div></td></tr></tbody>
+</table></div>
+<p>
+
+</p>
+<p>O diferență importantă între metodele de preconfigurare este punctul în care fișierul de preconfigurare este încărcat și procesat. Pentru preconfigurarea „initrd”, acesta este chiar la începutul instalării, înainte chiar să fie adresată prima întrebare. Preconfigurarea din linia de comandă a nucleului are loc imediat după. Este astfel posibil să se suprascrie configurația stabilită în „initrd” prin editarea liniei de comandă a nucleului (fie în configurația încărcătorului de pornire, fie manual la momentul pornirii pentru încărcătoarele care permit acest lucru). Pentru preconfigurarea „file”, aceasta se face după ce imaginea de instalare a fost încărcată. Pentru preconfigurarea „network”, aceasta se face doar după ce rețeaua a fost configurată. </p>
+<div class="important"><table border="0" summary="Important">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Important]" src="images/important.png"></td>
+<th align="left">Important</th>
+</tr>
+<tr><td align="left" valign="top">
+<p>Evident, orice întrebări care au fost procesate înainte ca fișierul de preconfigurare să fie încărcat nu pot fi preconfigurate (aceasta va include întrebări care sunt afișate doar la prioritate medie (medium) sau scăzută (low), cum ar fi prima rulare de detectare a componentelor și dispozitivelor calculatorului). O modalitate mai puțin convenabilă de a evita adresarea acestor întrebări este să le preconfigurați prin intermediul parametrilor de pornire, așa cum este descris în <a class="xref" href="apbs02.html#preseed-bootparms" title="B.2.2. Utilizarea parametrilor de pornire pentru a preconfigura întrebări">Secțiune B.2.2, „Utilizarea parametrilor de pornire pentru a preconfigura întrebări”</a>. </p>
+<p>Pentru a evita cu ușurință întrebările care ar apărea în mod normal înainte de intrarea în acțiune a preconfigurării, puteți porni programul de instalare în modul <span class="quote">„<span class="quote">auto</span>”</span>. Acest lucru întârzie întrebările care ar fi puse în mod normal prea devreme pentru preconfigurare (adică selecția limbii, țării și a tastaturii) până după ce apare rețeaua, permițând astfel să fie prestabilite. De asemenea, rulează instalarea cu prioritate critică, ceea ce evită multe întrebări neimportante. Consultați <a class="xref" href="apbs02.html#preseed-auto" title="B.2.3. Modul auto">Secțiune B.2.3, „Modul auto”</a> pentru detalii. </p>
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="preseed-limitations"></a>B.1.2. Limitări</h3></div></div></div>
+<p>Deși majoritatea întrebărilor folosite de <code class="classname">debian-installer</code> pot fi prestabilite folosind această metodă, există câteva excepții notabile. Trebuie să (re)partiționați un întreg disc sau să utilizați spațiul liber disponibil pe un disc; nu este posibilă utilizarea partițiilor existente. </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="apb.html"><img src="images/prev.png" alt="Înapoi"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="apb.html"><img src="images/up.png" alt="Sus"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="apbs02.html"><img src="images/next.png" alt="Înainte"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">Anexa B. Automatizarea instalării folosind preconfigurarea </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Acasă"></a></td>
+<td width="40%" align="right" valign="top"> B.2. Utilizarea preconfigurării</td>
+</tr>
+</table>
+</div>
+</body>
+</html>

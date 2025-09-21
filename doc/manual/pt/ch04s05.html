@@ -1,0 +1,183 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>4.5. Preparar Ficheiros para Arrancar Através da Rede por TFTP</title>
+<link rel="stylesheet" type="text/css" href="install.css">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
+<link rel="home" href="index.html" title="Guia de Instalação de Debian GNU/Linux">
+<link rel="up" href="ch04.html" title="Capítulo 4. Obter o Meio de Instalação do Sistema">
+<link rel="prev" href="ch04s04.html" title="4.4. Preparar Ficheiros para Arrancar a Partir de Disco Rígido.">
+<link rel="next" href="ch04s06.html" title="4.6. Instalação Automática">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header">
+<tr><th colspan="3" align="center">4.5. Preparar Ficheiros para Arrancar Através da Rede por TFTP</th></tr>
+<tr>
+<td width="20%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<th width="60%" align="center">Capítulo 4. Obter o Meio de Instalação do Sistema</th>
+<td width="20%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="sect1">
+<div class="titlepage"><div><div><h2 class="title">
+<a name="install-tftp"></a>4.5. Preparar Ficheiros para Arrancar Através da Rede por TFTP</h2></div></div></div>
+<p>Se a sua máquina estiver ligada a uma rede local poderá conseguir arrancar pela rede a partir de outra máquina, utilizando TFTP. Se tencionar iniciar a instalação do sistema a partir de outra máquina, os ficheiros de arranque terão de ser colocados numa localização específica dessa máquina, e a máquina terá de ser configurada para suportar o arranque da sua máquina especifica. </p>
+<p>Terá de configurar um servidor de TFTP, e para muitas máquinas, um servidor de DHCP<span class="phrase">, ou um servidor de BOOTP</span>. </p>
+<p> <span class="phrase">BOOTP é um protocolo IP que informa um computador do seu endereço IP e em que local da rede obtém uma imagem de arranque.</span> O DHCP (Dynamic Host Configuration Protocol) é mais flexível, compatível com extensões anteriores do BOOTP. Alguns sistemas apenas podem ser configurados via DHCP. </p>
+<p>O Trivial File Transfer Protocol (TFTP) é utilizado para servir a imagem de arranque ao cliente. Teoricamente pode ser utilizado, qualquer servidor, em qualquer plataforma, que implemente estes protocolos. Nos exemplos desta seção, iremos disponibilizar comandos para SunOS 4.x, SunOS 5.x (a.k.a. Solaris), e GNU/Linux. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Para um servidor Debian GNU/Linux nós recomendamos o <code class="classname">tftpd-hpa</code>. É escrito pelo mesmo autor do gestor de arranque <code class="classname">syslinux</code> e por isso pouco provável que cause problemas. Uma boa alternativa é o <code class="classname">atftpd</code>. </p></td></tr>
+</table></div>
+<p>
+
+</p>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="dhcpd"></a>4.5.1. Configurar um servidor DHCP</h3></div></div></div>
+<p>O ISC <span class="command"><strong>dhcpd</strong></span> é um software livre servidor de DHCP. Para Debian GNU/Linux é recomendado o pacote <code class="classname">isc-dhcp-server</code>. Aqui está um exemplo de ficheiro de configuração (veja <code class="filename">/etc/dhcp/dhcpd.conf</code>): </p>
+<div class="informalexample"><pre class="screen">option domain-name "example.com";
+option domain-name-servers ns1.example.com;
+option subnet-mask 255.255.255.0;
+default-lease-time 600;
+max-lease-time 7200;
+server-name "servername";
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option routers 192.168.1.1;
+}
+
+host clientname {
+  filename "/tftpboot.img";
+  server-name "servername";
+  next-server servername;
+  hardware ethernet 01:23:45:67:89:AB;
+  fixed-address 192.168.1.90;
+}
+</pre></div>
+<p>
+
+</p>
+<p>Neste exemplo, existe um servidor <em class="replaceable"><code>servername</code></em> que executa todo o trabalho de servidor DHCP, de servidor TFTP e de gateway de rede. Irá muito provavelmente necessitar de alterar as opções de domain-name, tal como o nome do servidor e o endereço de hardware do cliente. A opção <em class="replaceable"><code>filename</code></em> deverá ser o nome do ficheiro obtido por TFTP. </p>
+<p>Após ter editado o ficheiro de configuração <span class="command"><strong>dhcpd</strong></span>, reinicie-o com <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+<div class="sect3">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id2157"></a>4.5.1.1. Ativar o Arranque PXE na configuração de DHCP</h4></div></div></div>
+<p>Aqui está outro exemplo para um <code class="filename">dhcp.conf</code> utilizando o método Pre-boot Execution Environment (PXE) de TFTP. </p>
+<div class="informalexample"><pre class="screen">
+option domain-name "example.com";
+
+default-lease-time 600;
+max-lease-time 7200;
+
+allow booting;
+allow bootp;
+
+# O próximo parágrafo necessita ser alterado para se adequar com o seu caso
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.200 192.168.1.253;
+  option broadcast-address 192.168.1.255;
+# O endereço de gateway que pode ser diferente
+# (acesso à internet por exemplo)
+  option routers 192.168.1.1;
+# indica o dns que quer utilizar
+  option domain-name-servers 192.168.1.3;
+}
+
+group {
+ next-server 192.168.1.3;
+ host tftpclient {
+# endereço de hardware do cliente tftp
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "pxelinux.0";
+ }
+}
+</pre></div>
+<p> Note que para um arranque PXE, o ficheiro do cliente com o nome de <code class="filename">pxelinux.0</code>, é o gestor de arranque, não uma imagem de kernel (veja abaixo a <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Mover Imagens TFTP Para o Lugar">Secção 4.5.4, “Mover Imagens TFTP Para o Lugar”</a>). </p>
+<p>Se a sua máquina utilizar UEFI para arrancar terá de especificar um gestor de arranque apropriado para máquinas UEFI, por exemplo </p>
+<div class="informalexample"><pre class="screen">group {
+  next-server 192.168.1.3;
+  host tftpclient {
+# tftp client hardware address
+  hardware ethernet  00:10:DC:27:6C:15;
+  filename "debian-installer/amd64/bootnetx64.efi";
+ }
+}
+</pre></div>
+<p>
+</p>
+<p>
+
+</p>
+</div>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-bootp"></a>4.5.2. Configurar o servidor BOOTP</h3></div></div></div>
+<p>Estão disponíveis dois servidores de BOOTP para GNU/Linux. O primeiro é o CMU <span class="command"><strong>bootpd</strong></span>. O outro é na verdade um servidor de DHCP: o ISC <span class="command"><strong>dhcpd</strong></span>. Em Debian GNU/Linux estes estão contidos respetivamente nos pacotes <code class="classname">bootp</code> e <code class="classname">isc-dhcp-server</code>. </p>
+<p>Para utilizar o CMU <span class="command"><strong>bootpd</strong></span>, primeiro tem de retirar (ou adicionar) o comentário da linha relevante em <code class="filename">/etc/inetd.conf</code>. Em Debian GNU/Linux, pode executar <strong class="userinput"><code>update-inetd --enable bootps</code></strong>, para o fazer. No caso do seu servidor de BOOTP não correr em Debian, a linha em questão deve parecer-se com: </p>
+<div class="informalexample"><pre class="screen">
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -i -t 120
+</pre></div>
+<p>Agora, terá de criar um ficheiro <code class="filename">/etc/bootptab</code>. Este tem o mesmo tipo de formato familiar e críptico dos ficheiros de <code class="filename">printcap</code>, <code class="filename">termcap</code>, e <code class="filename">disktab</code> do bom velho BSD. Para mais informações veja a página do manual de <code class="filename">bootptab</code>. Para o CMU <span class="command"><strong>bootpd</strong></span>, irá necessitar saber o endereço de hardware MAC) do cliente. Aqui está um exemplo de<code class="filename">/etc/bootptab</code> </p>
+<div class="informalexample"><pre class="screen">
+client:\
+  hd=/tftpboot:\
+  bf=tftpboot.img:\
+  ip=192.168.1.90:\
+  sm=255.255.255.0:\
+  sa=192.168.1.1:\
+  ha=0123456789AB:
+</pre></div>
+<p>Tem de alterar pelo menos a opção <span class="quote">“<span class="quote">ha</span>”</span>, que especifica o endereço de hardware do cliente. A opção <span class="quote">“<span class="quote">bf</span>”</span> especifica o ficheiro que o cliente deve obter via TFTP; para mais detalhes veja a <a class="xref" href="ch04s05.html#tftp-images" title="4.5.4. Mover Imagens TFTP Para o Lugar">Secção 4.5.4, “Mover Imagens TFTP Para o Lugar”</a>. </p>
+<p>Por contraste, configurar BOOTP com ISC <span class="command"><strong>dhcpd</strong></span> é bastante fácil, pois trata os clientes de BOOTP como casos moderadamente especiais de clientes de DHCP. Algumas arquiteturas necessitam duma configuração complexa para arrancarem os clientes por BOOTP. Se for um desses casos, leia a <a class="xref" href="ch04s05.html#dhcpd" title="4.5.1. Configurar um servidor DHCP">Secção 4.5.1, “Configurar um servidor DHCP”</a>. Caso contrário poderá ser capaz de o conseguir simplesmente acrescentando a diretiva <strong class="userinput"><code>allow bootp</code></strong> ao bloco de configuração para a subnet que contém o cliente em <code class="filename">/etc/dhcp/dhcpd.conf</code>, e reiniciar o <span class="command"><strong>dhcpd</strong></span> com <strong class="userinput"><code>/etc/init.d/isc-dhcp-server restart</code></strong>. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftpd"></a>4.5.3. Disponibilizar o Servidor TFTP</h3></div></div></div>
+<p>Para ter o servidor de TFTP pronto, primeiro deve assegurar-se que o <span class="command"><strong>tftpd</strong></span> está ativo. </p>
+<p>No caso do <code class="classname">tftpd-hpa</code> o serviço pode ser corrido de duas formas. Pode ser iniciado a pedido pelo daemon <code class="classname">inet</code> do sistema, ou pode ser configurado para correr como um daemon independente. O método a utilizar é escolhido quando o pacote é instalado e pode ser alterado reconfigurando o pacote. </p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Nota]" src="images/note.png"></td>
+<th align="left">Nota</th>
+</tr>
+<tr><td align="left" valign="top"><p>Historicamente, os servidores TFTP utilizavam o diretório <code class="filename">/tftpboot</code> para servir imagens. No entanto, os pacotes Debian GNU/Linux podem utilizar outros diretórios em conformidade com o <a class="ulink" href="http://refspecs.linuxfoundation.org/fhs.shtml" target="_top">Filesystem Hierarchy Standard</a>. Por exemplo, <code class="classname">tftpd-hpa</code> utiliza, por predefinição, <code class="filename">/srv/tftp</code>. Poderá ter de ajustar de acordo os exemplos de configuração nesta seção. </p></td></tr>
+</table></div>
+<p>Todas as alternativas do <span class="command"><strong>in.tftpd</strong></span> disponíveis em Debian devem registar, por predefinição, os pedidos TFTP no registo do sistema. Algumas suportam um argumento <strong class="userinput"><code>-v</code></strong> para aumentar o detalhe. É recomendado verificar essas mensagens de registo no caso de ocorrerem problemas de arranque já que são um bom ponto de partida para diagnosticar a causa dos erros. </p>
+</div>
+<div class="sect2">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="tftp-images"></a>4.5.4. Mover Imagens TFTP Para o Lugar</h3></div></div></div>
+<p>Em seguida, coloque a imagem de arranque do TFTP de que necessita, conforme se encontra na <a class="xref" href="ch04s02.html#where-files" title="4.2.1. Onde Encontrar Ficheiros de Instalação">Secção 4.2.1, “Onde Encontrar Ficheiros de Instalação”</a>, no diretório de imagem de arranque <span class="command"><strong>tftpd</strong></span>. Terá de fazer um link a partir desse ficheiro para o ficheiro que o <span class="command"><strong>tftpd</strong></span> irá utilizar para iniciar um cliente em particular. Infelizmente, o nome do ficheiro é determinado pelo cliente TFTP, e não existem standards sólidos. </p>
+<p>Para arranque PXE, tudo o que deve precisar configurar está no tarball <code class="filename">netboot/netboot.tar.gz</code>. Simplesmente extraia este tarball para o diretório da imagens de arranque <span class="command"><strong>tftpd</strong></span>. Certifique-se que o servidor de dhcp está configurado para passar <code class="filename">/pxelinux.0</code> ao <span class="command"><strong>tftpd</strong></span> como o nome do ficheiro para arrancar. Para máquinas UEFI, tem de passar um nome de imagem de arranque EFI (tal como <code class="filename">/debian-installer/amd64/bootnetx64.efi</code>). </p>
+</div>
+</div>
+<div class="navfooter">
+<hr>
+<table width="100%" summary="Navigation footer">
+<tr>
+<td width="40%" align="left">
+<a accesskey="p" href="ch04s04.html"><img src="images/prev.png" alt="Anterior"></a> </td>
+<td width="20%" align="center"><a accesskey="u" href="ch04.html"><img src="images/up.png" alt="Subir"></a></td>
+<td width="40%" align="right"> <a accesskey="n" href="ch04s06.html"><img src="images/next.png" alt="Próximo"></a>
+</td>
+</tr>
+<tr>
+<td width="40%" align="left" valign="top">4.4. Preparar Ficheiros para Arrancar a Partir de Disco Rígido. </td>
+<td width="20%" align="center"><a accesskey="h" href="index.html"><img src="images/home.png" alt="Início"></a></td>
+<td width="40%" align="right" valign="top"> 4.6. Instalação Automática</td>
+</tr>
+</table>
+</div>
+</body>
+</html>
