@@ -40,7 +40,7 @@ Presentation
         Text {
             anchors.horizontalCenter: background1.horizontalCenter
             anchors.top: background1.bottom
-            text: qsTr("Welcome to Debian GNU/Linux.<br/>"+
+            text: qsTr("Welcome to HoodOS GNU/Linux.<br/>"+
                   "The rest of the installation is automated and should complete in a few minutes.")
             wrapMode: Text.WordWrap
             width: 600
