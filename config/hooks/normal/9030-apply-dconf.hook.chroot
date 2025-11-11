@@ -1,8 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 set -e
-
-echo "[HoodOS] Applying GNOME defaults..."
-
-export HOME=/etc/skel
-dbus-launch dconf load /org/gnome/ < /etc/skel/.config/dconf/user.d/hoodos-gnome.conf || true
-glib-compile-schemas /usr/share/glib-2.0/schemas/
+# Ensure db files exist then update
+if [ -d /etc/dconf/db/local.d ]; then
+  dconf update
+fi
