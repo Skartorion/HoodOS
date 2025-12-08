@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euo pipefail
+# runs inside chroot after packages installed
+
+WRAPPER_SRC=/usr/bin/apt-wrapper
+APT=/usr/bin/apt
+APTGET=/usr/bin/apt-get
+APT_REAL=/usr/bin/apt.real
+APTGET_REAL=/usr/bin/apt-get.real
+
+if [ ! -x "$WRAPPER_SRC" ]; then
+  echo "ERROR: wrapper not found at $WRAPPER_SRC" >&2
+  exit 1
+fi
+
+# If /usr/bin/apt exists and not already diverted, divert it to /usr/bin/apt.real
+if [ -e "$APT" ] && ! dpkg-divert --list | grep -q "^$APT "; then
+  dpkg-divert --divert "$APT_REAL" --rename "$APT"
+fi
+
+# Copy our wrapper to /usr/bin/apt
+cp -a "$WRAPPER_SRC" "$APT"
+chmod 755 "$APT"
+
+# Do same for apt-get (divert then copy), or fallback to symlink
+if [ -e "$APTGET" ] && ! dpkg-divert --list | grep -q "^$APTGET "; then
+  dpkg-divert --divert "$APTGET_REAL" --rename "$APTGET" || true
+fi
+
+if [ -e "$APTGET" ] || [ -e "$APTGET_REAL" ]; then
+  cp -a "$WRAPPER_SRC" "$APTGET"
+  chmod 755 "$APTGET"
+else
+  ln -sf /usr/bin/apt /usr/bin/apt-get
+fi
+
+echo "apt wrapper installed and dpkg-divert created."
+

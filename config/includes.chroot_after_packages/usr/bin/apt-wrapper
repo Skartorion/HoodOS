@@ -1,0 +1,316 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# -------------------------
+# Configuration
+# -------------------------
+STORAGE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/apt-wrapper"
+LAST_PKG_FILE="$STORAGE_DIR/last_packages"
+
+# Hosts we accept as "Debian repositories"
+TRUSTED_HOSTS_REGEX="(^|[[:space:]/])(deb.debian.org|security.debian.org|archive.debian.org|ftp.debian.org|cdn[-]?download.debian.org)(/|:|$)"
+
+DEBIAN_IMAGE="debian:stable"
+
+# -------------------------
+# Utility helpers
+# -------------------------
+log() { printf '%s\n' "$*" >&2; }
+err() { printf 'ERROR: %s\n' "$*" >&2; }
+
+mkdir -p "$STORAGE_DIR"
+
+# Determine how this wrapper was invoked (apt or apt-get)
+INVOKED_NAME="$(basename "$0")"
+
+# Try to locate the real underlying apt/apt-get binary.
+# Prefer /usr/bin/<name>.real which should exist if dpkg-divert was used.
+find_real_bin() {
+  local base="$1"    # apt or apt-get
+  local candidates=(
+    "/usr/bin/${base}.real"
+    "/usr/bin/${base}.orig"
+    "/usr/bin/${base}.dpkg-old"
+    "/usr/bin/${base}.bin"
+  )
+  for c in "${candidates[@]}"; do
+    if [ -x "$c" ]; then
+      printf '%s' "$c"
+      return 0
+    fi
+  done
+  # last resort: try to find a binary with that name elsewhere but avoid current file
+  # (This is a fallback and may be unsafe if wrapper isn't diverted properly)
+  if command -v "$base" >/dev/null 2>&1; then
+    cmdpath="$(command -v "$base")"
+    if [ "$cmdpath" != "$0" ]; then
+      printf '%s' "$cmdpath"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+REAL_APT="$(find_real_bin apt || true)"
+REAL_APTGET="$(find_real_bin apt-get || true)"
+
+# If neither is found, bail out. The system must provide the real apt implementation.
+if [ -z "${REAL_APT:-}" ] && [ -z "${REAL_APTGET:-}" ]; then
+  err "Could not find real apt/apt-get binary. Make sure you used dpkg-divert to move the original apt to /usr/bin/apt.real."
+  exit 2
+fi
+
+# Choose which real binary to use when we need apt-get-like behavior for --print-uris
+APTGET_CMD="${REAL_APTGET:-${REAL_APT:-apt-get}}"
+HOST_APT_CMD="${REAL_APT:-${REAL_APTGET:-apt}}"
+
+# -------------------------
+# Argument parsing (find subcommand)
+# -------------------------
+# We need to find the first non-option token to determine subcommand
+ARGS=("$@")
+SUBCOMMAND=""
+SUBCMD_INDEX=-1
+for i in "${!ARGS[@]}"; do
+  token="${ARGS[$i]}"
+  if [[ "$token" != -* ]]; then
+    SUBCOMMAND="$token"
+    SUBCMD_INDEX="$i"
+    break
+  fi
+done
+
+# If no subcommand (e.g. "apt -v"), pass through to the real apt
+if [ -z "$SUBCOMMAND" ]; then
+  exec "$HOST_APT_CMD" "$@"
+fi
+
+# Only intercept "install" (handle also "install" when used with apt-get)
+if [[ "$SUBCOMMAND" != "install" ]]; then
+  exec "$HOST_APT_CMD" "$@"
+fi
+
+# Extract options and package names after the 'install' token
+# Build arrays: INSTALL_OPTS (options passed to apt), PACKAGES (package names)
+INSTALL_OPTS=()
+PACKAGES=()
+# tokens before subcommand (global options) should be preserved
+for ((i=0;i<SUBCMD_INDEX;i++)); do INSTALL_OPTS+=("${ARGS[$i]}"); done
+# token at SUBCMD_INDEX is 'install' -> skip it
+for ((i=SUBCMD_INDEX+1;i<${#ARGS[@]};i++)); do
+  t="${ARGS[$i]}"
+  if [[ "$t" == -* ]]; then
+    INSTALL_OPTS+=("$t")
+  else
+    PACKAGES+=("$t")
+  fi
+done
+
+if [ ${#PACKAGES[@]} -eq 0 ]; then
+  err "No packages specified for install."
+  exit 1
+fi
+
+# Save requested package names
+printf '%s\n' "${PACKAGES[@]}" >> "$LAST_PKG_FILE"
+log "Stored package name(s) in: $LAST_PKG_FILE"
+
+# -------------------------
+# Helper: determine fetch URIs for a package (uses real apt-get)
+# -------------------------
+get_fetch_uris_for_pkg() {
+  local pkg="$1"
+  # Refresh package lists first (best-effort, do not fail the wrapper if update fails)
+  if [ "$(id -u)" -eq 0 ]; then
+    "$APTGET_CMD" -qq update >/dev/null 2>&1 || true
+  else
+    # if not root, try to run apt-get update; if it fails we continue — --print-uris may still work
+    sudo "$APTGET_CMD" -qq update >/dev/null 2>&1 || true
+  fi
+
+  # Use apt-get --print-uris to get URIs for the candidate packages
+  # Note: we use the real apt-get command to avoid recursion
+  local out
+  set +e
+  out="$("$APTGET_CMD" --print-uris -y install "$pkg" 2>/dev/null || true)"
+  set -e
+
+  # Extract quoted http(s) URIs
+  printf '%s' "$out" | sed -n "s/^'\(http[^']*\)'.*$/\1/p"
+}
+
+# -------------------------
+# Helper: check whether URIs are from trusted Debian hosts
+# -------------------------
+is_debian_pkg() {
+  local pkg="$1"
+  local uris
+  uris="$(get_fetch_uris_for_pkg "$pkg")"
+
+  # If no URIs produced:
+  #  - package may already be installed, or no download required; treat as Debian-hosted safe.
+  if [ -z "$uris" ]; then
+    # But we should still check candidate existence
+    if "$APTGET_CMD" -qq -s install "$pkg" >/dev/null 2>&1; then
+      # simulation succeeded; treat as Debian (no external fetch)
+      return 0
+    else
+      # If candidate not found, treat as non-debian/unavailable (caller will handle)
+      return 2
+    fi
+  fi
+
+  # For each URI, extract hostname and verify it matches trusted hosts
+  while read -r url; do
+    # skip empty lines
+    [ -z "$url" ] && continue
+    host="$(printf '%s' "$url" | awk -F/ '{print $3}' || true)"
+    if [ -z "$host" ]; then
+      return 1
+    fi
+    if printf '%s' "$host" | grep -E -q "$TRUSTED_HOSTS_REGEX"; then
+      continue
+    else
+      # untrusted host found -> not Debian
+      return 1
+    fi
+  done <<< "$uris"
+
+  # all URIs trusted
+  return 0
+}
+
+# -------------------------
+# Classify packages: host vs container
+# -------------------------
+HOST_PKGS=()
+CONTAINER_PKGS=()
+NOT_FOUND_PKGS=()
+
+for pkg in "${PACKAGES[@]}"; do
+  log "Resolving fetch URIs for package: $pkg"
+  is_debian_pkg "$pkg"
+  rc=$?
+  if [ "$rc" -eq 0 ]; then
+    HOST_PKGS+=("$pkg")
+    log "-> $pkg: Debian-hosted (will install on host)"
+  elif [ "$rc" -eq 1 ]; then
+    CONTAINER_PKGS+=("$pkg")
+    log "-> $pkg: Non-Debian source detected (will install in container)"
+  else
+    NOT_FOUND_PKGS+=("$pkg")
+    log "-> $pkg: Package candidate not found (will attempt host install and report errors)"
+  fi
+done
+
+# If there are packages not found, we will let the host apt attempt them (so user sees the usual errors).
+# Now perform host installs (if any)
+run_host_install() {
+  local pkgs=("$@")
+  if [ ${#pkgs[@]} -eq 0 ]; then
+    return 0
+  fi
+  log "Installing on host: ${pkgs[*]}"
+  # Build command: use the real apt binary to avoid recursion
+  # If wrapper was symlinked as apt-get instead of apt, choose apt-get.real if available
+  local host_cmd="$HOST_APT_CMD"
+  # If invoked as apt-get, prefer apt-get.real
+  if [[ "$INVOKED_NAME" == "apt-get" && -n "${REAL_APTGET:-}" ]]; then
+    host_cmd="$REAL_APTGET"
+  fi
+
+  # Compose invocation: preserve global options and install options
+  set +e
+  if [ "$(id -u)" -eq 0 ]; then
+    "$host_cmd" "${INSTALL_OPTS[@]}" install -y "${pkgs[@]}"
+    rc=$?
+  else
+    # run with sudo if not root
+    sudo "$host_cmd" "${INSTALL_OPTS[@]}" install -y "${pkgs[@]}"
+    rc=$?
+  fi
+  set -e
+  if [ $rc -ne 0 ]; then
+    err "Host install failed for: ${pkgs[*]} (exit code $rc)"
+  fi
+  return $rc
+}
+
+# -------------------------
+# Container install helpers
+# -------------------------
+create_container_and_install() {
+  local pkgs=("$@")
+  if [ ${#pkgs[@]} -eq 0 ]; then
+    return 0
+  fi
+  log "Installing in container: ${pkgs[*]}"
+
+  # Prefer docker
+  if command -v docker >/dev/null 2>&1; then
+    # check docker usability
+    if ! docker info >/dev/null 2>&1; then
+      DOCKER_CMD="sudo docker"
+    else
+      DOCKER_CMD="docker"
+    fi
+    local cname="apt-wrapper-ctr-$(date +%s)"
+    log "Using Docker. Pulling image $DEBIAN_IMAGE (if needed) and starting container $cname"
+    $DOCKER_CMD pull "$DEBIAN_IMAGE" >/dev/null || true
+    $DOCKER_CMD run -d --rm --name "$cname" --hostname "$cname" "$DEBIAN_IMAGE" sleep infinity >/dev/null
+    # Install packages inside container using apt-get (container has no wrapper)
+    $DOCKER_CMD exec -i "$cname" bash -lc "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install ${pkgs[*]}"
+    rc=$?
+    log "Container install exit code: $rc"
+    log "Stopping and removing container $cname"
+    $DOCKER_CMD rm -f "$cname" >/dev/null 2>&1 || true
+    return $rc
+  fi
+
+  # Fallback: debootstrap chroot (requires sudo)
+  if command -v debootstrap >/dev/null 2>&1; then
+    CHROOT_DIR="/tmp/apt-wrapper-chroot-$(date +%s)"
+    log "Using debootstrap chroot at $CHROOT_DIR"
+    sudo debootstrap --variant=minbase stable "$CHROOT_DIR" http://deb.debian.org/debian >/dev/null
+    # Mount /proc /sys /dev for apt to work nicely
+    sudo mount --bind /proc "$CHROOT_DIR/proc" || true
+    sudo mount --bind /sys "$CHROOT_DIR/sys" || true
+    sudo mount --bind /dev "$CHROOT_DIR/dev" || true
+    sudo chroot "$CHROOT_DIR" bash -lc "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install ${pkgs[*]}"
+    rc=$?
+    # cleanup mounts
+    sudo umount "$CHROOT_DIR/proc" || true
+    sudo umount "$CHROOT_DIR/sys" || true
+    sudo umount "$CHROOT_DIR/dev" || true
+    sudo rm -rf "$CHROOT_DIR" || true
+    return $rc
+  fi
+
+  err "No container tooling available (docker or debootstrap). Cannot install packages in container."
+  return 10
+}
+
+# -------------------------
+# Execute installs
+# -------------------------
+EXIT_CODE=0
+
+# Host installs: include NOT_FOUND_PKGS as well so user sees failure messages
+if [ ${#HOST_PKGS[@]} -gt 0 ] || [ ${#NOT_FOUND_PKGS[@]} -gt 0 ]; then
+  HOST_INSTALL_LIST=("${HOST_PKGS[@]}" "${NOT_FOUND_PKGS[@]}")
+  run_host_install "${HOST_INSTALL_LIST[@]}" || EXIT_CODE=$?
+fi
+
+# Container installs
+if [ ${#CONTAINER_PKGS[@]} -gt 0 ]; then
+  create_container_and_install "${CONTAINER_PKGS[@]}" || EXIT_CODE=$?
+fi
+
+if [ $EXIT_CODE -ne 0 ]; then
+  err "One or more installs failed (exit code $EXIT_CODE)."
+fi
+
+exit $EXIT_CODE
+
