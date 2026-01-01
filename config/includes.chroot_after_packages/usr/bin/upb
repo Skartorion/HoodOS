@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# ===== Constants =====
+STATE_FILE="$HOME/.upb.state"
+LOG_TAG="upb"
+
+# ===== Logging =====
+log() {
+    logger -t "$LOG_TAG" -- "$*"
+}
+
+die() {
+    log "fatal: $*"
+    exit 1
+}
+
+# ===== State check =====
+is_active() {
+    [[ -f "$STATE_FILE" ]]
+}
+
+# ===== Command check =====
+require_cmd() {
+    command -v "$1" >/dev/null 2>&1 || die "missing command: $1"
+}
+
+# ===== Actions =====
+
+lock_session() {
+    require_cmd loginctl
+    loginctl lock-session || true
+}
+
+net_off() {
+    require_cmd nmcli
+    nmcli networking off || true
+}
+
+net_on() {
+    require_cmd nmcli
+    nmcli networking on || true
+}
+
+kill_remote_access() {
+    log "killing remote access sessions"
+
+    # Kill active remote sessions
+    pkill -f "sshd: " || true
+    pkill -f sshd || true
+    pkill -f xrdp || true
+    pkill -f Xtightvnc || true
+    pkill -f Xvnc || true
+    pkill -f nxserver || true
+}
+
+stop_remote_services() {
+    log "stopping remote access services (via sudoers)"
+    for svc in ssh.service sshd.service xrdp.service xrdp-sesman.service vncserver.service nxserver.service; do
+        sudo systemctl stop "$svc" || log "warning: failed to stop $svc"
+    done
+}
+
+panic_on() {
+    if is_active; then
+        log "panic already active"
+        return 0
+    fi
+
+    log "activating panic mode"
+    install -m 0644 /dev/null "$STATE_FILE"
+
+    # Order matters: lock -> kill sessions -> stop services -> drop network
+    lock_session
+    kill_remote_access
+    stop_remote_services
+    net_off
+}
+
+panic_off() {
+    if ! is_active; then
+        log "panic not active"
+        return 0
+    fi
+
+    log "deactivating panic mode"
+    rm -f "$STATE_FILE"
+
+    net_on
+    log "remote access services must be restarted manually if needed"
+}
+
+panic_status() {
+    if is_active; then
+        echo "on"
+    else
+        echo "off"
+    fi
+}
+
+# ===== Main =====
+main() {
+    [[ $# -eq 1 ]] || die "usage: upb {on|off|status}"
+
+    case "$1" in
+        on)     panic_on ;;
+        off)    panic_off ;;
+        status) panic_status ;;
+        *)      die "unknown command: $1" ;;
+    esac
+}
+
+main "$@"
