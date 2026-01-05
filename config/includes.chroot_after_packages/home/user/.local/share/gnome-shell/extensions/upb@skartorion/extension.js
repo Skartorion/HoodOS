@@ -39,9 +39,9 @@ class ExampleToggle extends QuickToggle {
     _onCheckedChanged() {
         try {
             if (this.checked) {
-                GLib.spawn_command_line_async('logger -t UPB-Toggle "UPB ON"');
+                GLib.spawn_command_line_async('upb on');
             } else {
-                GLib.spawn_command_line_async('logger -t UPB-Toggle "UPB OFF"');
+                GLib.spawn_command_line_async('upb off');
             }
         } catch (e) {
             log('ExampleToggle: Failed to log UPB state: ' + e);
