@@ -1,65 +1,82 @@
-import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
+/* extension.js
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 import GObject from 'gi://GObject';
-import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
+import GLib from 'gi://GLib';
+
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-const UpbToggle = GObject.registerClass(
-class UpbToggle extends QuickSettings.QuickToggle {
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {QuickToggle, SystemIndicator} from 'resource:///org/gnome/shell/ui/quickSettings.js';
+
+const ExampleToggle = GObject.registerClass(
+class ExampleToggle extends QuickToggle {
     _init() {
         super._init({
-            title: 'Panic',
-            iconName: 'dialog-warning-symbolic',
+            title: _('Smile'),
+            iconName: 'face-smile-symbolic',
             toggleMode: true,
         });
 
-        this._syncState();
-
-        // Connect the lowercase 'toggled' signal
-        this.connect('toggled', () => {
-            if (this.checked)
-                this._runUpb('on');
-            else
-                this._runUpb('off');
-        });
+        // React to on/off changes by watching the 'checked' property.
+        this.connect('notify::checked', this._onCheckedChanged.bind(this));
     }
 
-    _runUpb(args) {
+    _onCheckedChanged() {
         try {
-            Gio.Subprocess.new(
-                ['upb', args],
-                Gio.SubprocessFlags.NONE
-            );
+            if (this.checked) {
+                GLib.spawn_command_line_async('logger -t UPB-Toggle "UPB ON"');
+            } else {
+                GLib.spawn_command_line_async('logger -t UPB-Toggle "UPB OFF"');
+            }
         } catch (e) {
-            logError(e, 'Failed to run upb');
-        }
-    }
-
-    _syncState() {
-        try {
-            let proc = Gio.Subprocess.new(
-                ['upb', 'status'],
-                Gio.SubprocessFlags.STDOUT_PIPE
-            );
-
-            let stdout = proc.communicate_utf8(null, null)[1];
-            this.checked = stdout.trim() === 'on';
-        } catch (e) {
-            logError(e, 'Failed to read upb status');
+            log('ExampleToggle: Failed to log UPB state: ' + e);
         }
     }
 });
 
-export default class Extension {
+const ExampleIndicator = GObject.registerClass(
+class ExampleIndicator extends SystemIndicator {
+    _init() {
+        super._init();
+
+        this._indicator = this._addIndicator();
+        this._indicator.iconName = 'face-smile-symbolic';
+
+        const toggle = new ExampleToggle();
+        toggle.bind_property('checked',
+            this._indicator, 'visible',
+            GObject.BindingFlags.SYNC_CREATE);
+        this.quickSettingsItems.push(toggle);
+    }
+});
+
+export default class QuickSettingsExampleExtension extends Extension {
     enable() {
-        this._toggle = new UpbToggle();
-        this._indicator = new QuickSettings.SystemIndicator();
-        this._indicator.quickSettingsItems.push(this._toggle);
+        this._indicator = new ExampleIndicator();
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
     }
 
     disable() {
+        if (!this._indicator)
+            return;
+
+        this._indicator.quickSettingsItems.forEach(item => item.destroy());
         this._indicator.destroy();
-        this._toggle.destroy();
+        this._indicator = null;
     }
 }
