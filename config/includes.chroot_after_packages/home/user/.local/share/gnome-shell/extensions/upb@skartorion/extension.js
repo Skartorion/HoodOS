@@ -6,8 +6,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 const UpbToggle = GObject.registerClass(
 class UpbToggle extends QuickSettings.QuickToggle {
-    constructor() {
-        super({
+    _init() {
+        super._init({
             title: 'Panic',
             iconName: 'dialog-warning-symbolic',
             toggleMode: true,
@@ -15,8 +15,12 @@ class UpbToggle extends QuickSettings.QuickToggle {
 
         this._syncState();
 
+        // Connect the lowercase 'toggled' signal
         this.connect('toggled', () => {
-            this._onToggled();
+            if (this.checked)
+                this._runUpb('on');
+            else
+                this._runUpb('off');
         });
     }
 
@@ -43,13 +47,6 @@ class UpbToggle extends QuickSettings.QuickToggle {
         } catch (e) {
             logError(e, 'Failed to read upb status');
         }
-    }
-
-    _onToggled() {
-        if (this.checked)
-            this._runUpb('on');
-        else
-            this._runUpb('off');
     }
 });
 
