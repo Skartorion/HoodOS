@@ -42,21 +42,10 @@ net_on() {
     nmcli networking on || true
 }
 
-kill_remote_access() {
-    log "killing remote access sessions"
-
-    # Kill active remote sessions
-    pkill -f "sshd: " || true
-    pkill -f sshd || true
-    pkill -f xrdp || true
-    pkill -f Xtightvnc || true
-    pkill -f Xvnc || true
-    pkill -f nxserver || true
-}
 
 stop_remote_services() {
     log "stopping remote access services (via sudoers)"
-    for svc in ssh.service sshd.service xrdp.service xrdp-sesman.service vncserver.service nxserver.service; do
+    for svc in ssh.service sshd.service xrdp.service xrdp-sesman.service vncserver.service nxserver.service ; do
         sudo systemctl stop "$svc" || log "warning: failed to stop $svc"
     done
 }
@@ -70,9 +59,7 @@ panic_on() {
     log "activating panic mode"
     install -m 0644 /dev/null "$STATE_FILE"
 
-    # Order matters: lock -> kill sessions -> stop services -> drop network
     lock_session
-    kill_remote_access
     stop_remote_services
     net_off
 }

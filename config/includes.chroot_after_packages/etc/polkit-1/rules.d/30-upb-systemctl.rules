@@ -1,0 +1,26 @@
+polkit.addRule(function(action, subject) {
+    if (
+        subject.isInGroup("panic") &&
+        subject.local &&
+        subject.active &&
+        action.id == "org.freedesktop.systemd1.manage-units"
+    ) {
+        let unit = action.lookup("unit");
+        let verb = action.lookup("verb");
+
+        let allowedUnits = [
+            "ssh.service",
+            "sshd.service",
+            "xrdp.service",
+            "xrdp-sesman.service",
+            "vncserver.service",
+            "nxserver.service",
+            "kill-remote-access.service"
+        ];
+
+        if (verb === "stop" && allowedUnits.includes(unit)) {
+            return polkit.Result.YES;
+        }
+    }
+});
+
