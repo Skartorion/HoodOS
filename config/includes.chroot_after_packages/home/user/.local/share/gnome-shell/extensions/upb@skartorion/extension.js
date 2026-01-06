@@ -27,8 +27,8 @@ const ExampleToggle = GObject.registerClass(
 class ExampleToggle extends QuickToggle {
     _init() {
         super._init({
-            title: _('Smile'),
-            iconName: 'face-smile-symbolic',
+            title: _('UPB'),
+            iconName: 'system-lock-screen-symbolic',
             toggleMode: true,
         });
 
@@ -55,7 +55,7 @@ class ExampleIndicator extends SystemIndicator {
         super._init();
 
         this._indicator = this._addIndicator();
-        this._indicator.iconName = 'face-smile-symbolic';
+        this._indicator.iconName = 'printer-printing-symbolic';
 
         const toggle = new ExampleToggle();
         toggle.bind_property('checked',
