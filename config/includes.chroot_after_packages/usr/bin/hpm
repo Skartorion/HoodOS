@@ -35,6 +35,10 @@ warn() {
     echo -e "${YELLOW}[WARN]${NC} $*" | tee -a "$LOG_FILE"
 }
 
+init_hpm() {
+    mkdir -p "$CONFIG_DIR" "$CONTAINERS_DIR"
+    touch "$DB_FILE" "$LOG_FILE"
+}
 
 # Check if package is from Debian repository
 is_debian_package() {
@@ -67,9 +71,9 @@ get_container_image() {
     local repo_type="$1"
     
     case "$repo_type" in
-        kali)      echo "kalilinux/kali-rolling" ;;
-        blackarch) echo "blackarch/blackarch" ;;
-        parrot)    echo "parrotsec/security" ;;
+        kali)      echo "docker.io/kalilinux/kali-rolling" ;;
+        blackarch) echo "docker.io/blackarch/blackarch" ;;
+        parrot)    echo "docker.io/parrotsec/security" ;;
         *)         echo ""  # Empty for Debian (host install)
     esac
 }
