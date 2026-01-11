@@ -2,6 +2,24 @@
 
 Fine-tuned debian derirative Linux distribution focused on stability, security and user-friendly UI.
 
+# Aquiring the image
+
+## Building from source
+
+1. Install all the tools needed
+- `sudo apt install live-build debootstrap dpkg-dev`
+
+2. Clone this repository
+- `git clone https://github.com/Skartorion/HoodOS && cd HoodOS`
+Or, for older machines
+- `git clone --single-branch --branch hoodos-syslinux https://github.com/Skartorion/HoodOS && cd HoodOS`
+
+3. Build
+
+> [!IMPORTANT]
+> this stage will take around ten minutes, although build time varies heavily depending on hardware.
+- `sudo lb build`
+
 # Installation
 
 ## Post-download
