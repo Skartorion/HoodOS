@@ -11,6 +11,7 @@ Fine-tuned debian derirative Linux distribution focused on stability, security a
 
 2. Clone this repository
 - `git clone https://github.com/Skartorion/HoodOS && cd HoodOS`
+
 Or, for older machines
 - `git clone --single-branch --branch hoodos-syslinux https://github.com/Skartorion/HoodOS && cd HoodOS`
 
