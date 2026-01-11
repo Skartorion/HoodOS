@@ -1,4 +1,34 @@
-# HoodOS live-iso branch
+# Hood GNU/Linux
+
+Fine-tuned debian derirative Linux distribution focused on stability, security and user-friendly UI.
+
+# Installation
+
+## Post-download
+
+Before booting the ISO, please verify the checksum to ensure the file is not corrupted using this line:
+`
+sha256sum -b <path to your iso file>
+`
+Compare the output with this string
+`
+tbd
+`
+## Making a bootable USB drive
+
+> [!NOTE]
+> You may use any software to burn the ISO image available to you.
+
+### Via Rufus (recommended)
+
+You may burn ISO image onto the usb drive via Free and Open Source application Rufus.
+
+1. Get rufus [here](https://rufus.ie/en/).
+
+2. Proceed to select downloaded ISO file as a boot selection inside the app.
+
+3. Voila
+
 
 preferable qemu options:
 `
