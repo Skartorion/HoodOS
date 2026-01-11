@@ -30,6 +30,7 @@ Before booting the ISO, please verify the checksum to ensure the file is not cor
 `
 sha256sum -b <path to your iso file>
 `
+
 Compare the output with this string:
 
 `
