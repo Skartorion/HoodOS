@@ -1,0 +1,373 @@
+#!/bin/bash
+
+# hpm - Hood Package Manager
+# Wraps apt to automatically containerize non-Debian packages
+# Usage: hpm install/remove <package>
+
+set -euo pipefail
+
+# Configuration
+CONFIG_DIR="${HOME}/.hpm"
+DB_FILE="${CONFIG_DIR}/packages.db"
+CONTAINERS_DIR="${CONFIG_DIR}/containers"
+LOG_FILE="${CONFIG_DIR}/hpm.log"
+SYMLINK_DIR="/usr/local/bin"
+APTOPTS="${APTOPTS:--y}"  # Default apt options
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# Logging
+log() {
+    echo -e "${BLUE}[hpm]${NC} $*" | tee -a "$LOG_FILE"
+}
+
+error() {
+    echo -e "${RED}[ERROR]${NC} $*" | tee -a "$LOG_FILE" >&2
+    exit 1
+}
+
+warn() {
+    echo -e "${YELLOW}[WARN]${NC} $*" | tee -a "$LOG_FILE"
+}
+
+
+# Check if package is from Debian repository
+is_debian_package() {
+    local package="$1"
+    
+    # If it's Debian repo → host install
+    if apt-cache show "$package" 2>/dev/null | grep -q -i "Origin: Debian"; then
+        return 0  # Debian package (host)
+    fi
+    
+    return 1  # Kali/BlackArch/Parrot → container
+}
+
+# Get repository type from package
+get_repo_type() {
+    local package="$1"
+    
+    apt-cache show "$package" 2>/dev/null | \
+        grep -i 'origin\|archive' | \
+        head -1 | \
+        sed -e 's/.*[Kk]ali.*/kali/' \
+            -e 's/.*[Bb]lackarch.*/blackarch/' \
+            -e 's/.*[Pp]arrot.*/parrot/' \
+            -e 's/Origin: Debian/debian/' \
+            -e 's/.*[Dd]ebian.*/debian/'
+}
+
+# Get container image for repo type
+get_container_image() {
+    local repo_type="$1"
+    
+    case "$repo_type" in
+        kali)      echo "kalilinux/kali-rolling" ;;
+        blackarch) echo "blackarch/blackarch" ;;
+        parrot)    echo "parrotsec/security" ;;
+        *)         echo ""  # Empty for Debian (host install)
+    esac
+}
+# Ensure container exists and is running
+ensure_container() {
+    local repo_type="$1"
+    local container_name
+    local image
+    
+    container_name=$(get_container_name "$repo_type")
+    image=$(get_container_image "$repo_type")
+    
+    # Check if container exists
+    if podman container exists "$container_name" 2>/dev/null; then
+        if [ "$(podman inspect -f '{{.State.Status}}' "$container_name")" != "running" ]; then
+            log "Starting container: $container_name"
+            podman start "$container_name" >/dev/null
+        fi
+    else
+        log "Creating container: $container_name from $image"
+        
+        # Create container with systemd support
+        podman run -d \
+            --name "$container_name" \
+            --hostname "hpm-$repo_type" \
+            --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
+            --volume /run/systemd:/run/systemd:ro \
+            --tmpfs /tmp \
+            --tmpfs /run \
+            --cap-add=NET_ADMIN \
+            --cap-add=SYS_ADMIN \
+            --security-opt seccomp=unconfined \
+            --security-opt label=disable \
+            --network host \
+            "$image" \
+            /sbin/init >/dev/null
+            
+        # Wait for container to be ready
+        sleep 2
+        
+        # Update container packages
+        podman exec "$container_name" apt-get update >/dev/null
+    fi
+    
+    echo "$container_name"
+}
+
+# Install package in container
+install_in_container() {
+    local container_name="$1"
+    local package="$2"
+    
+    log "Installing $package in $container_name"
+    
+    # Update container repos first
+    podman exec "$container_name" apt-get update >/dev/null
+    
+    # Install package with dependencies
+    if podman exec "$container_name" apt-get install $APTOPTS "$package"; then
+        # Record installation
+        echo "$(date): $container_name:$package" >> "$DB_FILE"
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Find binaries in container
+find_container_binaries() {
+    local container_name="$1"
+    local package="$2"
+    
+    # Get list of files installed by the package
+    podman exec "$container_name" dpkg -L "$package" 2>/dev/null | \
+        grep -E '^/usr/bin/|^/usr/sbin/|^/usr/games/|^/bin/|^/sbin/' | \
+        grep -v '/$' || true
+}
+
+# Create symlink wrapper
+create_symlink_wrapper() {
+    local container_name="$1"
+    local binary_path="$2"
+    local binary_name
+    local wrapper_path
+    
+    binary_name=$(basename "$binary_path")
+    wrapper_path="${SYMLINK_DIR}/${binary_name}"
+    
+    # Check if already exists
+    if [ -L "$wrapper_path" ] || [ -f "$wrapper_path" ]; then
+        warn "Binary $binary_name already exists in $SYMLINK_DIR, skipping..."
+        return
+    fi
+    
+    # Create wrapper script
+    cat > "/tmp/hpm-wrapper-${binary_name}" << EOF
+#!/bin/bash
+# hpm wrapper for $binary_name
+# Container: $container_name
+
+exec podman exec "$container_name" "$binary_path" "\$@"
+EOF
+    
+    sudo mv "/tmp/hpm-wrapper-${binary_name}" "$wrapper_path"
+    sudo chmod +x "$wrapper_path"
+    
+    log "Created symlink wrapper: $binary_name → $container_name"
+}
+
+# Remove package from container
+remove_from_container() {
+    local container_name="$1"
+    local package="$2"
+    
+    log "Removing $package from $container_name"
+    
+    # Remove package
+    podman exec "$container_name" apt-get remove $APTOPTS "$package"
+    
+    # Clean up database entry
+    grep -v "$container_name:$package" "$DB_FILE" > "${DB_FILE}.tmp"
+    mv "${DB_FILE}.tmp" "$DB_FILE"
+    
+    # Clean up symlinks
+    remove_symlinks "$container_name" "$package"
+}
+
+# Remove symlinks for package
+remove_symlinks() {
+    local container_name="$1"
+    local package="$2"
+    
+    # Find binaries for this package
+    local binaries
+    binaries=$(find_container_binaries "$container_name" "$package" || true)
+    
+    for binary in $binaries; do
+        local binary_name
+        binary_name=$(basename "$binary")
+        local wrapper_path="${SYMLINK_DIR}/${binary_name}"
+        
+        if [ -f "$wrapper_path" ]; then
+            # Check if wrapper is ours
+            if head -1 "$wrapper_path" | grep -q "hpm wrapper"; then
+                sudo rm -f "$wrapper_path"
+                log "Removed symlink: $binary_name"
+            fi
+        fi
+    done
+}
+
+# Main install function
+hpm_install() {
+    local packages=("$@")
+    
+    for package in "${packages[@]}"; do
+        log "Processing: $package"
+        
+        if is_debian_package "$package"; then
+            log "Installing Debian package on host: $package"
+            sudo apt.real install $APTOPTS "$package"
+        else
+            local repo_type
+            repo_type=$(get_repo_type "$package")
+            [ -z "$repo_type" ] && repo_type="unknown"
+            
+            local container_name
+            container_name=$(ensure_container "$repo_type")
+            
+            if install_in_container "$container_name" "$package"; then
+                # Create symlinks for binaries
+                local binaries
+                binaries=$(find_container_binaries "$container_name" "$package")
+                
+                for binary in $binaries; do
+                    create_symlink_wrapper "$container_name" "$binary"
+                done
+            else
+                error "Failed to install $package in container"
+            fi
+        fi
+    done
+}
+
+# Main remove function
+hpm_remove() {
+    local packages=("$@")
+    
+    for package in "${packages[@]}"; do
+        # Check if package is in our database (containerized)
+        if grep -q ":$package$" "$DB_FILE"; then
+            local container_entry
+            container_entry=$(grep ":$package$" "$DB_FILE" | head -1)
+            local container_name
+            container_name=$(echo "$container_entry" | cut -d: -f2)
+            
+            remove_from_container "$container_name" "$package"
+        else
+            # Assume it's a host package
+            log "Removing host package: $package"
+            sudo apt.real remove $APTOPTS "$package"
+        fi
+    done
+}
+
+# List containerized packages
+list_containerized() {
+    echo -e "${BLUE}Containerized packages:${NC}"
+    if [ -s "$DB_FILE" ]; then
+        column -t -s: "$DB_FILE"
+    else
+        echo "No containerized packages found"
+    fi
+}
+
+# Show container status
+container_status() {
+    echo -e "${BLUE}Container Status:${NC}"
+    podman ps -a --filter "name=hpm-*" --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
+}
+
+# Cleanup orphaned symlinks
+cleanup_symlinks() {
+    echo -e "${BLUE}Checking for orphaned symlinks...${NC}"
+    
+    for wrapper in "${SYMLINK_DIR}"/*; do
+        if [ -f "$wrapper" ] && head -1 "$wrapper" 2>/dev/null | grep -q "hpm wrapper"; then
+            local container_name
+            container_name=$(grep "Container:" "$wrapper" | awk '{print $2}')
+            
+            if ! podman container exists "$container_name" 2>/dev/null; then
+                echo "Removing orphaned wrapper: $(basename "$wrapper")"
+                sudo rm -f "$wrapper"
+            fi
+        fi
+    done
+}
+
+# Help function
+show_help() {
+    cat << EOF
+hpm - Hood Package Manager
+
+Usage:
+  hpm install <package>...    Install packages (auto-containerize non-Debian)
+  hpm remove <package>...     Remove packages
+  hpm list-containerized      Show containerized packages
+  hpm container-status        Show container status
+  hpm cleanup                 Remove orphaned symlinks
+  hpm help                    Show this help
+
+Environment:
+  APTOPTS="-y"               Set default apt options
+
+Examples:
+  sudo hpm install amass-common    # Will containerize (Kali)
+  sudo hpm install nginx           # Will install on host (Debian)
+  sudo hpm remove amass-common     # Remove from container
+EOF
+}
+
+# Main
+main() {
+    init_hpm
+    
+    local command="$1"
+    shift 2>/dev/null || true
+    
+    case "$command" in
+        install)
+            [ $# -eq 0 ] && error "No packages specified"
+            hpm_install "$@"
+            ;;
+        remove|uninstall)
+            [ $# -eq 0 ] && error "No packages specified"
+            hpm_remove "$@"
+            ;;
+        list-containerized)
+            list_containerized
+            ;;
+        container-status)
+            container_status
+            ;;
+        cleanup)
+            cleanup_symlinks
+            ;;
+        help|--help|-h)
+            show_help
+            ;;
+        *)
+            # Pass through to real apt for other commands
+            sudo apt.real "$command" "$@"
+            ;;
+    esac
+}
+
+# Run main if script is executed directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    [ $# -eq 0 ] && show_help && exit 0
+    main "$@"
+fi
