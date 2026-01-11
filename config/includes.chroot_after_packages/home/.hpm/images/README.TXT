@@ -1,0 +1,1 @@
+there are supposed to be .tar archives of podman images, but they're huge (around 1 gb) so there's nothing I can do but ignore these. you can pull it themselves if you're building the iso yourself, yk? just pull em and export them as a .tar and put there.
