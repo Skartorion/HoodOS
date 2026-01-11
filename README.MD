@@ -26,13 +26,16 @@ Fine-tuned debian derirative Linux distribution focused on stability, security a
 ## Post-download
 
 Before booting the ISO, please verify the checksum to ensure the file is not corrupted using this line:
--`
+
+`
 sha256sum -b <path to your iso file>
--`
+`
 Compare the output with this string:
--`
+
+`
 C216696b0bf681d25c926b2ab500abfbe39df879167705c189a610e795b66f8a5
 `
+
 ## Making a bootable USB drive
 
 > [!NOTE]
