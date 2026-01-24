@@ -27,7 +27,7 @@ const ExampleToggle = GObject.registerClass(
 class ExampleToggle extends QuickToggle {
     _init() {
         super._init({
-            title: _('UPB'),
+            title: _('Panic Button'),
             iconName: 'system-lock-screen-symbolic',
             toggleMode: true,
         });
