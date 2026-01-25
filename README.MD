@@ -1,59 +1,64 @@
-text
-# HoodOS GNU/Linux
+Here’s a GitHub‑style, fully cleaned‑up README.md using the syntax and patterns from the GitHub docs you linked.​
+HoodOS GNU/Linux
 
-HoodOS is a fine‑tuned Debian‑based distribution focused on **stability**, **security**, and a user‑friendly GNOME desktop with carefully curated defaults.
+HoodOS is a fine‑tuned Debian‑based distribution focused on stability, security, and a user‑friendly GNOME desktop with carefully curated defaults.​
+Highlights
 
-Key features:
+    Opinionated GNOME setup with custom theming and extensions.​
 
-- Opinionated GNOME setup with custom theming and extensions
-- Encrypted‑by‑default installs (LUKS, ext4)
-- Calamares graphical installer with simple “erase disk” flow
-- “Userland Panic Button” to quickly kill remote access and lock the session
-- Optional container‑aware package management via `hpm` and Podman
+    Encrypted‑by‑default installs (LUKS + ext4).​
 
----
+    Calamares graphical installer with a simple “erase disk and install” flow.​
 
-## Project status
+    “Userland Panic Button” to quickly kill remote access and lock the session.​
 
-HoodOS is experimental and under active development. Expect breaking changes between minor versions and limited hardware coverage. Issues and merge requests are welcome.
+    Optional container‑aware package management via hpm and Podman.​
 
-Current release:
+    [!NOTE]
+    HoodOS is experimental and under active development. Expect rough edges and breaking changes between minor versions.
 
-- Name: `Hood GNU/Linux Ripple`
-- Version: `0.3`
-- Base: Debian (testing/stable stack)
-- Desktop: GNOME
+Project status
 
----
+Current release:​
 
-## Getting the image
+    Name: Hood GNU/Linux Ripple
 
-### Option 1: Build from source
+    Version: 0.3
 
-Requirements (on a Debian‑based host):
+    Base: Debian (testing/stable mix via live‑build config)
 
-```bash
+    Desktop: GNOME
+
+Issues and pull requests are welcome.
+Getting the image
+Build from source
+
+Requirements on a Debian‑based host:​
+
+bash
 sudo apt install live-build debootstrap dpkg-dev
 
 Clone the repository:
 
 bash
-git clone https://github.com/Skartorion/HoodOS && cd HoodOS
+git clone https://github.com/Skartorion/HoodOS
+cd HoodOS
 # For older machines using legacy boot:
-# git clone --single-branch --branch hoodos-syslinux https://github.com/Skartorion/HoodOS && cd HoodOS
+# git clone --single-branch --branch hoodos-syslinux https://github.com/Skartorion/HoodOS
+# cd HoodOS
 
 Build the ISO:
 
 bash
 sudo lb build
 
-    Note
-    Build time is usually around 10 minutes, but depends heavily on your CPU, disk, and network.
+    [!IMPORTANT]
+    The build stage usually takes around ten minutes, but this varies heavily with CPU, disk, and network speed.​
 
-The resulting ISO will be written to the repository root (see *.iso in the build directory).
-Option 2: Run in QEMU
+The resulting ISO appears in the repository root (*.iso).​
+Run in QEMU
 
-Example QEMU command (UEFI, 2 GiB RAM):
+Example QEMU invocation (UEFI, 2 GiB RAM):​
 
 bash
 qemu-system-x86_64 -enable-kvm -m 2G \
@@ -61,112 +66,155 @@ qemu-system-x86_64 -enable-kvm -m 2G \
   -drive if=pflash,format=raw,file=/usr/share/edk2-ovmf/x64/OVMF_VARS.4m.fd \
   -cdrom <path-to-hoodos.iso>
 
-Paths to OVMF firmware may differ across distributions.
+Paths to OVMF firmware may differ by distribution.
 Verifying the ISO
 
-Before booting, verify the checksum:
+Before booting, verify the checksum:​
 
 bash
 sha256sum -b <path-to-your-iso>
 
-Compare against:
+Expected SHA‑256:
 
 text
 C216696b0bf681d25c926b2ab500abfbe39df879167705c189a610e795b66f8a5
 
-Only proceed if the checksums match.
+    [!CAUTION]
+    Do not use the ISO if your checksum does not match.
+
 Creating a bootable USB
 
-You can use any ISO‑to‑USB tool you trust. On Windows, Rufus is recommended.
+You can use any ISO‑to‑USB tool. On Windows, Rufus is recommended.​
 
-    Download Rufus from: https://rufus.ie/en/
+    Download Rufus from https://rufus.ie/en/.
 
-    Select your USB drive and choose the HoodOS ISO as the boot selection.
+    Select your USB drive.
 
-    Start the write process and wait for it to complete.
+    Choose the HoodOS ISO as the boot selection.
 
-On Linux, tools like dd, gnome-disks, or Ventoy also work.
+    Start the write process and wait until it completes.
+
+On Linux, tools like dd, GNOME Disks, or Ventoy also work.
 Installation overview
 
-HoodOS uses Calamares as the graphical installer.
+HoodOS uses Calamares as its graphical installer.​
+What the installer does
 
-Highlights:
+    Erases the selected disk and installs HoodOS with full‑disk LUKS encryption and ext4.​
 
-    Default mode: erase disk and install HoodOS with full‑disk LUKS encryption and ext4.
+    Uses a simple guided flow: welcome → locale → keyboard → partition → users → summary → install → finished.​
 
-    No manual partitioning in the shipped Calamares profile.
+    Installs GRUB‑EFI as the bootloader and regenerates grub.cfg with HoodOS branding and encrypted root.​
 
-    GRUB‑EFI bootloader, themed and configured from within the live system.
+Configured requirements (from Calamares):​
 
-    Post‑install reboot is offered automatically at the end of the installer.
+    Storage: at least 20 GiB.
 
-System requirements (as configured in Calamares):
+    RAM: at least 6 GiB recommended.
 
-    Storage: ≥ 20 GiB
-
-    RAM: ≥ 6 GiB recommended
-
+At the end of installation you are offered an immediate reboot.​
 Desktop experience
 
-Out of the box, HoodOS ships:
+Out of the box, HoodOS provides:​
 
-    GNOME with customized theme and icons
+    GNOME desktop with a dark‑leaning Everforest‑style shell theme and Papirus‑derived icon theme.
 
-    Dark‑leaning color scheme, tuned fonts, and file manager defaults
+    Dconf defaults for backgrounds, file manager, and file chooser (hidden files shown, list view default, tuned search options).
 
-    Preconfigured GNOME extensions, including a “Userland Panic Button” in Quick Settings
+    Custom Fastfetch configuration with a HoodOS logo and tailored system info groups.
 
-The panic button:
+Userland Panic Button
 
-    Belongs to a GNOME Shell extension (upb@skartorion)
+The “Userland Panic Button” is a GNOME Shell extension (upb@skartorion) backed by PolicyKit rules and systemd units.​
 
-    Uses PolicyKit rules and systemd to:
+When you toggle it:
 
-        Stop selected remote‑access services (SSH, RDP, VNC, etc.)
+    Remote access services like SSH, RDP, VNC, and Nx are stopped via a dedicated kill_remote_access service.​
 
-        Disable networking at the NetworkManager level
+    NetworkManager’s global networking state can be disabled for users in the panic group.​
 
-        Lock active sessions
+    Local sessions can be locked using org.freedesktop.login1.lock-sessions.​
 
-This is meant as a “one‑shot kill switch” for remote access on shared or hostile networks.
+The live user is added to a panic group so this control is available out of the box.​
+
+    [!WARNING]
+    The panic button is designed as a “kill switch” for remote access. It will intentionally disrupt active sessions and network connectivity.
+
 hpm: container‑aware package installs
 
-HoodOS includes hpm, a wrapper around apt designed for safer installs of “aggressive” or non‑Debian packages:
+HoodOS ships hpm, an advanced wrapper around apt.​
+Design
 
-    Normal Debian packages are installed on the host via apt.
+    Normal Debian‑origin packages are installed on the host via apt.​
 
-    Packages detected from Kali/Parrot/BlackArch repos can be installed inside Podman containers.
+    Packages from specific third‑party repos (e.g., Kali/Parrot/BlackArch) can be installed into Podman containers instead of directly on the host.​
 
-    For containerized packages, hpm generates small shim binaries under /usr/local/bin that transparently podman exec into the right container.
+    For containerized packages, hpm creates small wrapper scripts in /usr/local/bin that transparently podman exec into the right container and run the binary there.​
 
-Container images:
+Container images and tarballs
 
-    Live image can optionally ship .tar exports of Podman images under ~/.hpm/images.
+HoodOS can preload Podman images from tarballs:​
 
-    If those tarballs are not present, you can pull and save images yourself, then place the .tar files in that directory.
+    Expected location: ~/.hpm/images/*.tar.
 
-This feature is experimental and intended for advanced users who know what they’re installing.
-Building notes (for contributors)
+    On first boot, a live‑config hook sets CONTAINERS_STORAGE_ROOT="$HOME/.hpm/containers" and loads any missing images via podman load -i.​​
 
-The live image is built with live‑build:
+    Because multi‑GiB images are not shipped in the repo, builders can pull appropriate images, podman save them, and drop the tarballs into ~/.hpm/images before building the ISO.​​
 
-    Configuration lives under config/ and auto/.
+    [!TIP]
+    Use hpm for “aggressive” tooling you’d rather sandbox, and stick to plain apt for normal system packages.
 
-    auto/config wires a Debian‑based iso‑hybrid image with GRUB‑EFI, firmware, and checksums.
+Plymouth & GRUB theming
 
-    GNOME defaults, themes, Calamares configuration, and extra tools are injected via:
+HoodOS customizes both boot splash and GRUB.
+​
 
-        config/includes.chroot*
+    Plymouth themes (e.g., homeworld, Manjaro‑derived variants) live under /usr/share/plymouth/themes/.
 
-        config/package-lists/
+    The active theme is selected in plymouthd.defaults and baked into the initramfs during the build or via plymouth-set-default-theme -R.
+    ​
 
-        config/hooks/ and lib/live/config scripts
+    GRUB theming is handled by shipping a theme under /boot/grub/themes/… and setting GRUB_THEME in /etc/default/grub, which Calamares’ grubcfg module respects when generating grub.cfg.
+    ​
 
-If you are familiar with Debian Live, you can treat this repository as a specialized live‑build config plus theming and installer glue.
+If you build your own theme, follow the upstream GRUB and Plymouth docs for directory layout and configuration keys.
+Build internals (for contributors)
+
+HoodOS uses live‑build plus Calamares.​
+
+Key pieces:
+
+    auto/config defines Debian release, image type, bootloader, firmware inclusion, and checksum generation.​
+
+    config/includes.chroot* injects:
+
+        GNOME defaults, themes, and extensions.
+
+        Calamares settings and branding.
+
+        Plymouth themes and defaults.
+
+        Systemd units, policy rules, panic button scripts, and hpm hooks.​
+
+    config/package-lists/ controls main package sets (desktop, tools, containers, etc.).​
+
+    lib/live/config/ scripts perform first‑boot initialization (e.g., apt/hpm wiring, container image loading, shell selection).​
+
+    [!NOTE]
+    If you already know Debian Live, you can treat this repository as a specialized configuration overlay plus theming and installer glue.
+
 Contributing & support
 
 This project is early‑stage; expect rough edges.
 
-    Bug reports, ideas, and patches:
+    Issues & feature requests: https://github.com/Skartorion/HoodOS/issues​
 
-        GitHub Issues: https://github.com/Skartorion/HoodOS/issues
+    For installer problems, please attach logs from /var/log/calamares/ if possible.​
+
+Ideas that are especially welcome:
+
+    Improvements to Calamares flows and error handling.
+
+    Better patterns for containerized tooling via hpm.
+
+    Theme and UX refinements that keep the system clean and maintainable.
