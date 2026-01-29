@@ -1,0 +1,37 @@
+vendor_image = Image("special://logo");
+splash_image = Image("watermark.png");
+
+screen_w = Window.GetWidth();
+screen_h = Window.GetHeight();
+
+vendor_w = vendor_image.GetWidth();
+vendor_h = vendor_image.GetHeight();
+
+vendor_x = screen_w / 2 - vendor_w / 2;
+vendor_y = screen_h / 2 - vendor_h / 2;
+
+vendor_sprite = Sprite(vendor_image);
+vendor_sprite.SetX(vendor_x);
+vendor_sprite.SetY(vendor_y);
+vendor_sprite.SetZ(10);
+
+# Place splash image at bottom-center
+splash_w = splash_image.GetWidth();
+splash_h = splash_image.GetHeight();
+
+splash_x = screen_w / 2 - splash_w / 2;
+splash_y = screen_h - splash_h - 60;  # 60 px from bottom
+
+splash_sprite = Sprite(splash_image);
+splash_sprite.SetX(splash_x);
+splash_sprite.SetY(splash_y);
+splash_sprite.SetZ(10);
+
+# Keep both visible
+fun refresh_callback() {
+    vendor_sprite.SetOpacity(1);
+    splash_sprite.SetOpacity(1);
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
