@@ -1,0 +1,207 @@
+import Gvc from 'gi://Gvc';
+import GObject from 'gi://GObject';
+// import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { settings, serial } from './extension.js';
+import { SliderTarget } from './widgets/types.js';
+import { isSteamGame } from './utils/os.js';
+import { settingsKeys } from './constants.js';
+export default class GDeejVolumeControl extends GObject.Object {
+    _control = new Gvc.MixerControl({
+        name: 'GDeej Volume Control'
+    });
+    _streams = new Map();
+    _sliders = [];
+    _settingsHandlerId;
+    constructor() {
+        super();
+        this._initSliders();
+        this._initGvc();
+        serial.addListener(this._onData.bind(this));
+        // @ts-expect-error connectObject
+        this._settingsHandlerId = settings.connectObject(`changed::${settingsKeys.SLIDERS}`, () => this._initSliders());
+    }
+    destroy() {
+        this._control.close();
+        this._streams.clear();
+        for (const slider of this._sliders) {
+            slider.streams.clear();
+        }
+        this._control = null;
+        settings.disconnect(this._settingsHandlerId);
+    }
+    _onData(values) {
+        for (let i = 0; i < values.length; i++) {
+            const value = Number(values[i]);
+            const slider = this._sliders[i];
+            if (Number.isNaN(value) || !slider || slider.value === value) {
+                continue;
+            }
+            const new_level = getSliderLevel(slider, value);
+            if (Math.abs(new_level - slider.level) > settings.get_double(settingsKeys.NOISE_REDUCTION)) {
+                slider.value = value;
+                slider.level = new_level;
+                this.setVolume(slider, slider.level);
+            }
+        }
+    }
+    setVolume(slider, volume) {
+        volume = Math.max(0, Math.min(100, volume));
+        const paVolume = Math.floor((volume / 100) * this._control.get_vol_max_norm());
+        for (const stream of slider.streams) {
+            stream.set_volume(paVolume);
+            stream.push_volume();
+        }
+    }
+    _initGvc() {
+        this._control.connect('stream-added', (_, id) => {
+            const stream = this._control.lookup_stream_id(id);
+            if (!stream)
+                return;
+            if (stream.is_event_stream)
+                return;
+            this._addStream(stream.get_name(), stream);
+        });
+        this._control.connect('stream-removed', (_, id) => {
+            const stream = this._control.lookup_stream_id(id);
+            if (!stream)
+                return;
+            this._removeStream(stream.get_name());
+        });
+        this._control.connect('default-sink-changed', () => {
+            this._setSliderStream(SliderTarget.SYSTEM, this._control.get_default_sink());
+        });
+        this._control.connect('default-source-changed', () => {
+            this._setSliderStream(SliderTarget.MIC, this._control.get_default_source());
+        });
+        this._control.open();
+    }
+    _setSliderStream(target, stream) {
+        const slider = this._sliders.find((slider) => slider.target === target);
+        if (!slider)
+            return;
+        slider.streams.clear();
+        slider.streams.add(stream);
+    }
+    _addStream(name, stream) {
+        if (!name)
+            return;
+        let streams = this._streams.get(name);
+        if (!streams) {
+            streams = new Set();
+            this._streams.set(name, streams);
+        }
+        streams.add(stream);
+        for (const slider of this._sliders) {
+            if (slider.target === SliderTarget.CUSTOM_APP &&
+                slider.customApp &&
+                name.toLowerCase().includes(slider.customApp.toLowerCase())) {
+                slider.streams.add(stream);
+            }
+            try {
+                if (slider.target === SliderTarget.REGEX &&
+                    slider.customApp &&
+                    (new RegExp(slider.customApp).test(name))) {
+                    slider.streams.add(stream);
+                }
+            }
+            catch (e) {
+                console.warn("Syntax error in RegExp targets");
+            }
+        }
+        const steamSlider = this._sliders.find((slider) => slider.target === SliderTarget.STEAM);
+        if (steamSlider) {
+            isSteamGame(name)
+                .then((isSteamGame) => {
+                if (isSteamGame)
+                    steamSlider.streams.add(stream);
+            })
+                .catch(console.warn);
+        }
+    }
+    _removeStream(name) {
+        if (!name)
+            return;
+        const streams = this._streams.get(name);
+        if (!streams)
+            return;
+        for (const stream of streams) {
+            for (const slider of this._sliders) {
+                slider.streams.delete(stream);
+            }
+        }
+    }
+    _initSliders() {
+        const sliders = settings
+            .get_value('sliders')
+            .recursiveUnpack();
+        const oldSliders = this._sliders;
+        this._sliders = sliders.map((slider) => {
+            const oldSlider = oldSliders.find((oldSlider) => oldSlider.target === slider.target &&
+                ((oldSlider.target !== SliderTarget.CUSTOM_APP && oldSlider.target !== SliderTarget.REGEX) ||
+                    oldSlider.customApp === slider.customApp));
+            const streams = oldSlider
+                ? new Set(oldSlider.streams)
+                : this._getStreamsByTarget(slider.target, slider.customApp);
+            return {
+                ...slider,
+                level: oldSlider?.level ?? 0,
+                value: oldSlider?.value ?? 0,
+                streams
+            };
+        });
+        for (const slider of oldSliders) {
+            slider.streams.clear();
+        }
+    }
+    _getStreamsByTarget(target, appName) {
+        switch (target) {
+            case SliderTarget.SYSTEM:
+                return new Set([this._control.get_default_sink()]);
+            case SliderTarget.MIC:
+                return new Set([this._control.get_default_source()]);
+            case SliderTarget.CUSTOM_APP:
+                return this._getStreamsByAppName(appName);
+            case SliderTarget.REGEX:
+                return this._getStreamsByRegex(appName);
+            default:
+                return new Set();
+        }
+    }
+    _getStreamsByAppName(appName) {
+        const result = new Set();
+        for (const [name, streams] of this._streams.entries()) {
+            if (!name.toLowerCase().includes(appName))
+                continue;
+            for (const stream of streams) {
+                result.add(stream);
+            }
+        }
+        return result;
+    }
+    _getStreamsByRegex(regex) {
+        const result = new Set();
+        try {
+            let built_regex = new RegExp(regex);
+            for (const [name, streams] of this._streams.entries()) {
+                if (!(built_regex.test(name)))
+                    continue;
+                for (const stream of streams) {
+                    result.add(stream);
+                }
+            }
+        }
+        catch (e) {
+            console.warn("Syntax error in RegExp targets");
+        }
+        return result;
+    }
+}
+GObject.registerClass(GDeejVolumeControl);
+function getSliderLevel(slider, value) {
+    if (slider.inverted) {
+        value = Math.abs(value - slider.max);
+    }
+    value = Math.max(value - slider.min, 0);
+    value = Math.min(value, slider.max);
+    return Math.round((value / Math.abs(slider.max - slider.min)) * 100);
+}

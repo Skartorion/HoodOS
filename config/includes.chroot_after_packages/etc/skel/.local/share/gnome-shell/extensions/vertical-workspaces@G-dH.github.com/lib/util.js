@@ -1,0 +1,848 @@
+/**
+ * V-Shell (Vertical Workspaces)
+ * util.js
+ *
+ * @author     GdH <G-dH@github.com>
+ * @copyright  2022 - 2025
+ * @license    GPL-3.0
+ *
+ */
+
+'use strict';
+
+import Clutter from 'gi://Clutter';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import St from 'gi://St';
+
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
+import { InjectionManager } from  'resource:///org/gnome/shell/extensions/extension.js';
+
+let Me;
+let _;
+let _installedExtensions;
+
+export function init(me) {
+    Me = me;
+    _ = Me.gettext;
+}
+
+export function cleanGlobals() {
+    _removeMoveWinPreviewTimeout();
+    _removeWinSpreadTimeout();
+
+    Me = null;
+    _ = null;
+    _installedExtensions = null;
+}
+
+export class Overrides extends InjectionManager {
+    constructor() {
+        super();
+        this._overrides = {};
+    }
+
+    addOverride(name, prototype, overrideList) {
+        const backup = this.overrideProto(prototype, overrideList, name);
+        // don't update originals when override's just refreshing, keep initial content
+        let originals = this._overrides[name]?.originals;
+        if (!originals)
+            originals = backup;
+        this._overrides[name] = {
+            originals,
+            prototype,
+        };
+    }
+
+    removeOverride(name) {
+        const override = this._overrides[name];
+        if (!override)
+            return false;
+
+        if (name.startsWith('property_')) {
+            const propertyName = name.slice('property_'.length);
+            Object.defineProperty(override.prototype, propertyName, override);
+        } else {
+            this.overrideProto(override.prototype, override.originals, name);
+        }
+
+        delete this._overrides[name];
+        return true;
+    }
+
+    removeAll() {
+        for (let name in this._overrides) {
+            this.removeOverride(name);
+            delete this._overrides[name];
+        }
+    }
+
+    overrideProto(proto, overrides, name) {
+        const backup = {};
+        const originals = this._overrides[name]?.originals;
+        for (let symbol in overrides) {
+            if (symbol.startsWith('after_')) {
+                const actualSymbol = symbol.slice('after_'.length);
+                let fn;
+                if (originals && originals[actualSymbol])
+                    fn = originals[actualSymbol];
+                else
+                    fn = proto[actualSymbol];
+                const afterFn = overrides[symbol];
+                proto[actualSymbol] = function (...args) {
+                    args = Array.prototype.slice.call(args);
+                    const res = fn.apply(this, args);
+                    afterFn.apply(this, args);
+                    return res;
+                };
+                backup[actualSymbol] = fn;
+            } else if (symbol.startsWith('property_')) {
+                const propertyName = symbol.slice('property_'.length);
+                const fnName = Object.getOwnPropertyNames(overrides[symbol])[0];
+                if (originals && originals[symbol])
+                    backup[symbol] = originals[symbol];
+                else
+                    backup[symbol] = { [fnName]: Object.getOwnPropertyDescriptor(proto, propertyName)[fnName] };
+
+                Object.defineProperty(proto, propertyName, overrides[symbol]);
+            } else if (overrides[symbol] !== null) {
+                backup[symbol] = proto[symbol];
+                this._installMethod(proto, symbol, overrides[symbol]);
+            }
+        }
+        return backup;
+    }
+}
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function openPreferences(metadata) {
+    if (!metadata)
+        metadata = Me.metadata;
+
+    const name = metadata.name;
+    const wmClass = metadata.wmClass ?? 'org.gnome.Shell.Extensions';
+    const moveToWorkspace = metadata.moveToWorkspace ?? true;
+
+    const windows = global.display.get_tab_list(Meta.TabList.NORMAL_ALL, null);
+    let metaWin, isMe = null;
+
+    for (let win of windows) {
+        if (name && win.get_title() === name && win.get_wm_class() === wmClass) {
+            // This is our existing extension Settings window
+            metaWin = win;
+            isMe = true;
+            break;
+        }  else if (!name && win.wm_class?.includes(wmClass)) {
+            // This is a window that the caller wants to activate
+            metaWin = win;
+            isMe = true;
+        } else if (win.wm_class?.includes(wmClass)) {
+            // This is a Settings window of another extension
+            metaWin = win;
+            isMe = false;
+        }
+    }
+
+    if (metaWin && !isMe) {
+        // Other Settings window blocks opening of our own Settings, so close it
+        metaWin.delete(global.get_current_time());
+    } else if (metaWin && isMe) {
+        // If our window already exists, move it to the current workspace if needed
+        if (moveToWorkspace)
+            metaWin.change_workspace(global.workspace_manager.get_active_workspace());
+        metaWin.activate(global.get_current_time());
+    }
+
+    if (!metaWin || (metaWin && !isMe)) {
+        // Add a delay so the other window has time to close
+        GLib.idle_add(GLib.PRIORITY_LOW, () => {
+            try {
+                Main.extensionManager.openExtensionPrefs(metadata.uuid, '', {});
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    }
+}
+
+export function activateSearchProvider(prefix = '') {
+    if (Me.opt.SEARCH_APP_GRID_MODE && Main.overview.dash.showAppsButton.checked)
+        return;
+
+    const searchEntry = Main.overview.searchEntry;
+    const searchEntryText = searchEntry.get_text();
+    if (!searchEntryText || (searchEntryText && !searchEntry.get_text().startsWith(prefix))) {
+        prefix = `${prefix} `;
+        const position = prefix.length;
+        searchEntry.set_text(prefix);
+        searchEntry.get_first_child().set_cursor_position(position);
+        searchEntry.get_first_child().set_selection(position, position);
+        searchEntry.grab_key_focus();
+    } else {
+        searchEntry.set_text('');
+    }
+}
+
+export  function dashNotDefault() {
+    return Main.overview.dash !== Main.overview._overview._controls.layoutManager._dash;
+}
+
+export function dashIsDashToDock() {
+    return Main.overview.dash._isHorizontal !== undefined;
+}
+
+// Reorder Workspaces - callback for Dash and workspacesDisplay
+export function reorderWorkspace(direction = 0) {
+    let activeWs = global.workspace_manager.get_active_workspace();
+    let activeWsIdx = activeWs.index();
+    let targetIdx = activeWsIdx + direction;
+    if (targetIdx > -1 && targetIdx < global.workspace_manager.get_n_workspaces())
+        global.workspace_manager.reorder_workspace(activeWs, targetIdx);
+    // update scale and visibility of all workspace previews
+    const workspacesViews = Main.overview._overview.controls._workspacesDisplay._workspacesViews;
+    workspacesViews.forEach(v => {
+        if (v._workspacesView) { // test whether it's a secondary monitor
+            if (v._workspacesView._updateWorkspacesState) // which supports workspaces
+                v._workspacesView._updateWorkspacesState(); // update workspace previews of the secondary monitor
+        } else { // update workspace previews of the primary monitor
+            v._updateWorkspacesState();
+        }
+    });
+}
+
+export function moveWindowsToMonitor(metaWindow, allAppWindows = false, direction = null) {
+    const windowMonitor = metaWindow.get_monitor();
+    const currentMonitor = global.display.get_current_monitor();
+    const windowWorkspace = metaWindow.get_workspace();
+    let windows;
+    if (allAppWindows) {
+        const tracker = Shell.WindowTracker.get_default();
+        const app = tracker.get_window_app(metaWindow);
+        windows = app.get_windows();
+        windows = windows.filter(win =>
+            win.get_workspace() === windowWorkspace &&
+            win.get_monitor() === windowMonitor
+        );
+    } else {
+        windows = [metaWindow];
+    }
+    if (!windows)
+        return;
+
+    let targetMonitor = null;
+    if (direction !== null) {
+        targetMonitor = global.display.get_monitor_neighbor_index(windowMonitor, direction);
+        if (targetMonitor < 0)
+            return;
+    }
+
+    if (targetMonitor === null) {
+        // Priority is moving the windows to the monitor with the mouse pointer
+        // but if it's the same as the current window monitor, move them to the next monitor
+        targetMonitor = windowMonitor !== currentMonitor
+            ? currentMonitor
+            : (windowMonitor + 1) % global.display.get_n_monitors();
+    }
+
+    windows.forEach(win => {
+        if (win.get_monitor() !== targetMonitor) {
+            // some windows ignore this action if executed immediately after they are created
+            GLib.idle_add(GLib.PRIORITY_LOW, () => {
+                win.move_to_monitor(targetMonitor);
+                // Some windows move slower than others so give it some time
+                _removeMoveWinPreviewTimeout();
+                Me.run.moveWindowPreviewTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 100, () => {
+                    selectWindowPreview(metaWindow.get_compositor_private(), targetMonitor);
+                    Me.run.moveWindowPreviewTimeout = 0;
+                    return GLib.SOURCE_REMOVE;
+                });
+                return GLib.SOURCE_REMOVE;
+            });
+        }
+    });
+}
+
+function _removeMoveWinPreviewTimeout() {
+    if (Me.run.moveWindowPreviewTimeout)
+        GLib.source_remove(Me.run.moveWindowPreviewTimeout);
+    Me.run.moveWindowPreviewTimeout = 0;
+}
+
+function _removeWinSpreadTimeout() {
+    if (Me.run.winSpreadTimeout)
+        GLib.source_remove(Me.run.winSpreadTimeout);
+    Me.run.winSpreadTimeout = 0;
+}
+
+// Handle common actions for WorkspacesView and WindowPreview
+export function handleOverviewTabKeyPress(event) {
+    if (isSuperPressed() && !(isCtrlPressed() || isAltPressed())) {
+        switchToNextWorkspace(event);
+        return Clutter.EVENT_STOP;
+    } else if (isCtrlPressed()) {
+        focusDash();
+        return Clutter.EVENT_STOP;
+    }
+    Me.run.activateSelectedWindow = true;
+    return Clutter.EVENT_PROPAGATE;
+}
+
+// In WINDOW_PICKER mode, enable keyboard navigation
+// by focusing on the active window's preview
+export function activateKeyboardForWorkspaceView(monitorIndex = Me.run.activeMonitor) {
+    // Me.run.activeMonitor is set to undefined when overview is closed
+
+    if (!Main.overview._shown || !Me.opt.WORKSPACE_MODE)
+        return;
+
+    const initialSelection = monitorIndex === undefined;
+    const activeWorkspace = global.workspace_manager.get_active_workspace();
+    const activeWorkspaceIndex = activeWorkspace.index();
+    const selectFirst =
+            !Me.opt.OVERVIEW_SELECT_WINDOW ||
+            Me.opt.OVERVIEW_SELECT_FIRST_WINDOW;
+
+    // Get MetaWindows for the current workspace in MRU order.
+    // get_tab_list(Meta.WindowType.NORMAL, workspace) returns an incorrect order for modal windows,
+    // because the list is sorted by the timestamp of the modal window's parent.
+    // The complete list, however, is sorted correctly - by the modal window's own timestamp.
+    let wsWindows = global.display.get_tab_list(Meta.WindowType.NORMAL, null);
+    wsWindows = wsWindows.filter(win => win.get_workspace() === activeWorkspace);
+
+    // If monitorIndex is undefined, set it to the monitor of the last used window
+    monitorIndex = monitorIndex ?? wsWindows[0]?.get_monitor();
+
+    // Keep only windows from the current monitor
+    wsWindows = wsWindows.filter(win => win.get_monitor() === monitorIndex);
+
+    // Define function that sets windowActor for the first window of the particular monitor
+    const setFirstWindowActorForMonitor = monitor => {
+        const windows = getMonitorWindowPreviews(monitor, activeWorkspaceIndex);
+        windowActor = windows[0]?._windowActor;
+    };
+
+    // Find actor of the window that should be selected
+    let windowActor;
+    if (wsWindows.length && !selectFirst) {
+        if (!initialSelection || Me.opt.OVERVIEW_SELECT_CURRENT_WINDOW || (Me.opt.OVERVIEW_SELECT_PREVIOUS_WINDOW && !wsWindows[1]))
+            windowActor = wsWindows[0].get_compositor_private();
+        else if (Me.opt.OVERVIEW_SELECT_PREVIOUS_WINDOW && wsWindows[1])
+            windowActor = wsWindows[1].get_compositor_private();
+    } else if (selectFirst) {
+        setFirstWindowActorForMonitor(monitorIndex);
+    }
+
+    if (selectWindowPreview(windowActor, monitorIndex)) {
+        // Store the current monitor to opt
+        // so we can prefer this monitor
+        // after the workspace is switched
+        Me.run.activeMonitor = monitorIndex;
+        return;
+    }
+
+    // If no window found on the current monitor, try to find window on another one
+    const nMonitors = global.display.get_n_monitors();
+    for (let monitor = 0; monitor < nMonitors; monitor++) {
+        setFirstWindowActorForMonitor(monitor);
+        if (selectWindowPreview(windowActor, monitor))
+            return;
+    }
+}
+
+// Get window previews for the monitor
+export function getMonitorWindowPreviews(monitor, workspaceIndex) {
+    const workspacesView = Main.overview._overview.controls._workspacesDisplay._workspacesViews[monitor];
+    if (!workspacesView)
+        return [];
+
+    let workspace;
+    if (workspacesView._workspaces) // secondary monitor workspaces
+        workspace = workspacesView._workspaces[workspaceIndex];
+    else if (workspacesView._workspacesView._workspace) // secondary monitor no workspaces
+        workspace = workspacesView._workspacesView._workspace;
+    else // primary monitor workspaces
+        workspace = workspacesView._workspacesView._workspaces[workspaceIndex];
+
+    let windowPreviews = [];
+
+    // Get the order as displayed on the screen
+    const windowSlots = workspace?._container.layoutManager._windowSlots ?? [];
+    // Each slot contains [x, y, width, height, windowPreview]
+    windowSlots.forEach(slot => windowPreviews.push(slot[4]));
+
+    return windowPreviews;
+};
+
+// Find and select window preview on the current workspace overview
+export function selectWindowPreview(windowActor, monitor) {
+    if (!windowActor)
+        return false;
+
+    const workspaceIndex = global.workspace_manager.get_active_workspace().index();
+    const windows = getMonitorWindowPreviews(monitor, workspaceIndex);
+    for (const win of windows) {
+        if (win._windowActor === windowActor) {
+            // win.showOverlay(true);
+            win.grab_key_focus();
+            if (win.removeOverlayTimeout)
+                win.removeOverlayTimeout();
+            return true;
+        }
+    }
+    return false;
+}
+
+// Switch or reorder workspace - WorkspacesView/WindowPreview arrow keys handler
+export function switchWorkspace(which) {
+    let ws;
+    if (which < 0)
+    // Negative workspace numbers are directions
+        ws = global.workspaceManager.get_active_workspace().get_neighbor(which);
+    else
+    // Otherwise it is a workspace index
+        ws = global.workspaceManager.get_workspace_by_index(which);
+
+    if (isShiftPressed()) {
+        let direction;
+        if (which === Meta.MotionDirection.UP || which === Meta.MotionDirection.LEFT)
+            direction = -1;
+        else if (which === Meta.MotionDirection.DOWN || which === Meta.MotionDirection.RIGHT)
+            direction = 1;
+        if (direction)
+            Me.Util.reorderWorkspace(direction);
+        return;
+    }
+
+    if (ws)
+        Main.wm.actionMoveWorkspace(ws);
+}
+
+export function switchToNextWorkspace(event) {
+    resetInitialPointerX();
+
+    let direction;
+    if  (isShiftPressed(event.get_state()))
+        direction = Me.opt.ORIENTATION ? Meta.MotionDirection.UP : Meta.MotionDirection.LEFT;
+    else
+        direction = Me.opt.ORIENTATION ? Meta.MotionDirection.DOWN : Meta.MotionDirection.RIGHT;
+    const wsWrapAround = Me.opt.WS_WRAPAROUND;
+    Me.opt.WS_WRAPAROUND = true;
+    const currentWorkspace = global.workspace_manager.get_active_workspace();
+    const nextWorkspace = currentWorkspace.get_neighbor(direction);
+    Main.wm.actionMoveWorkspace(nextWorkspace);
+    Me.opt.WS_WRAPAROUND = wsWrapAround;
+}
+
+export function resetInitialPointerX() {
+    if (Me.opt.OVERVIEW_SELECT_WINDOW || Me.opt.OVERVIEW_MODE)
+        Me.run.initialPointerX = global.get_pointer()[0];
+}
+
+export function moveWindowToMonitorAndWorkspace(metaWindow, monitorIndex, wsIndex, insertNewWs, append = false) {
+    resetInitialPointerX();
+    const currentWs = global.workspaceManager.get_active_workspace();
+    let workspace = global.workspaceManager.get_workspace_by_index(wsIndex);
+    if (insertNewWs) {
+        // If we insert a new workspace before the current, the target workspace needs to be updated
+        wsIndex += metaWindow.get_workspace().index() > wsIndex ? 1 : 0;
+        Main.wm.insertWorkspace(wsIndex);
+        // Keep the affected workspaces alive until the window transfer is finished
+        // because they could be automatically removed as empty
+        workspace = global.workspaceManager.get_workspace_by_index(wsIndex);
+        // Make the timeout longer and remove it manually when not needed
+        Main.wm.keepWorkspaceAlive(workspace, 1000);
+        Main.wm.keepWorkspaceAlive(currentWs, 1000);
+    }
+
+    // Wait for the new workspace allocation to prevent errors
+    GLib.idle_add(GLib.PRIORITY_LOW, () => {
+        if (!workspace)
+            return;
+
+        Main.moveWindowToMonitorAndWorkspace(
+            metaWindow,
+            monitorIndex,
+            wsIndex,
+            append // if true and the workspace doesn't exist, create it despite the fixed number of workspaces setting
+        );
+        GLib.idle_add(GLib.PRIORITY_LOW, () => {
+            Main.wm.actionMoveWorkspace(workspace);
+            GLib.idle_add(GLib.PRIORITY_LOW, () => {
+                // Release the keep-alive lock
+                _removeWorkspaceKeepAliveTimeout(currentWs);
+                _removeWorkspaceKeepAliveTimeout(workspace);
+                activateKeyboardForWorkspaceView();
+            });
+        });
+    });
+}
+
+function _removeWorkspaceKeepAliveTimeout(workspace) {
+    if (workspace._keepAliveId) {
+        GLib.source_remove(workspace._keepAliveId);
+        workspace._keepAliveId = 0;
+    }
+}
+
+export function exposeWindows() {
+    const controlsManager = Main.overview._overview.controls;
+    controlsManager._workspacesDisplay._workspacesViews.forEach(
+        view => {
+            view.exposeWindows();
+        }
+    );
+    if (Me.run.initialPointerX === global.get_pointer()[0] && Me.opt.OVERVIEW_SELECT_WINDOW) {
+        const slowDownFactor = St.Settings.get().slow_down_factor;
+        Me.run.winSpreadTimeout = GLib.timeout_add(GLib.PRIORITY_LOW, 250 * slowDownFactor,
+            () => {
+                Me.Util.activateKeyboardForWorkspaceView();
+                Me.run.winSpreadTimeout = 0;
+                return GLib.SOURCE_REMOVE;
+            });
+    }
+    controlsManager._updateSearchStyle?.bind(controlsManager)();
+}
+
+export function exposeWindowsWithOverviewTransition() {
+    Main.overview.searchEntry.set_text('');
+    const controlsManager = Main.overview._overview.controls;
+    // in OVERVIEW MODE 2 windows are not spread and workspace is not scaled
+    // we need to repeat transition to the overview state 1 (window picker), but with spreading windows animation
+    const stateAdjustment = controlsManager._stateAdjustment;
+    Me.opt.WORKSPACE_MODE = 1;
+    Me.run.enableOverviewTransitionAnimations = false;
+    // setting value to 0 would reset WORKSPACE_MODE
+    stateAdjustment.value = 0.01;
+    controlsManager._updateSearchStyle?.bind(controlsManager)();
+    stateAdjustment.ease(1, {
+        duration: 200,
+        mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        onStopped: () => {
+            controlsManager._enableOverviewTransitionAnimationsIfNeeded?.bind(controlsManager)();
+            activateKeyboardForWorkspaceView();
+        },
+    });
+}
+
+export function isShiftPressed(state = null) {
+    if (state === null)
+        [,, state] = global.get_pointer();
+    return (state & Clutter.ModifierType.SHIFT_MASK) !== 0;
+}
+
+export function isCtrlPressed(state = null) {
+    if (state === null)
+        [,, state] = global.get_pointer();
+    return (state & Clutter.ModifierType.CONTROL_MASK) !== 0;
+}
+
+export function isAltPressed(state = null) {
+    if (state === null)
+        [,, state] = global.get_pointer();
+    return (state & Clutter.ModifierType.MOD1_MASK) !== 0;
+}
+
+export function isSuperPressed(state = null) {
+    if (state === null)
+        [,, state] = global.get_pointer();
+    return (state & Clutter.ModifierType.MOD4_MASK) !== 0;
+}
+
+export function focusDash() {
+    Main.ctrlAltTabManager._items.forEach(i => {
+        if (i.sortGroup === 1 && i.name === 'Dash')
+            Main.ctrlAltTabManager.focusGroup(i);
+    });
+}
+
+export function fuzzyMatch(terms, text) {
+    let pos = -1;
+    const matches = [];
+    // convert all accented chars to their basic form and to lower case
+    const _text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const _term =  terms.join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    // if term matches the substring exactly, gains the highest weight
+    if (_text.includes(_term))
+        return 0;
+
+    for (let i = 0; i < _term.length; i++) {
+        let c = _term[i];
+        let p;
+        if (pos > 0)
+            p = _term[i - 1];
+        while (true) {
+            pos += 1;
+            if (pos >= _text.length)
+                return -1;
+
+            if (_text[pos] === c) {
+                matches.push(pos);
+                break;
+            } else if (_text[pos] === p) {
+                matches.pop();
+                matches.push(pos);
+            }
+        }
+    }
+
+    // add all position to get a weight of the result
+    // results closer to the beginning of the text and term characters closer to each other will gain more weight.
+    return matches.reduce((r, p) => r + p) - matches.length * matches[0] + matches[0];
+}
+
+export function strictMatch(terms, text) {
+    // remove diacritics and accents from letters
+    let s = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    // allows to use multiple exact patterns separated by a space in arbitrary order
+    for (let w of terms) {  // escape regex control chars
+        if (!s.match(w.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+            return -1;
+    }
+    return 0;
+}
+
+export function isMoreRelevant(stringA, stringB, terms) {
+    const regex = / +/;
+    const strSplitA = stringA.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().split(regex);
+    const strSplitB = stringB.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().split(regex);
+
+    let aAny = false;
+    strSplitA.forEach(w => {
+        terms.forEach(pw => {
+            aAny = aAny || w.startsWith(pw);
+        });
+    });
+    let bAny = false;
+    strSplitB.forEach(w => {
+        terms.forEach(pw => {
+            bAny = bAny || w.startsWith(pw);
+        });
+    });
+
+    // if both strings contain a word that starts with the pattern
+    // prefer the one whose first word starts with the pattern
+    if (aAny && bAny)
+        return !strSplitA[0].startsWith(terms[0]) && strSplitB[0].startsWith(terms[0]);
+    else
+        return !aAny && bAny;
+}
+
+export function getEnabledExtensions(pattern = '') {
+    let result = [];
+    // extensionManager is unreliable at startup because it is uncertain whether all extensions have been loaded
+    // also gsettings key can contain already removed extensions (user deleted them without disabling them first)
+    // therefore we have to check what's really installed in the filesystem
+    if (!_installedExtensions) {
+        const extensionFiles = [...collectFromDatadirs('extensions', true)];
+        _installedExtensions = extensionFiles.map(({ info }) => {
+            let fileType = info.get_file_type();
+            if (fileType !== Gio.FileType.DIRECTORY)
+                return null;
+            const uuid = info.get_name();
+            return uuid;
+        });
+    }
+    // _enabledExtensions contains content of the enabled-extensions key from gsettings, not actual state
+    const enabled = Main.extensionManager._enabledExtensions;
+    result = _installedExtensions.filter(ext => enabled.includes(ext));
+    // _extensions contains already loaded extensions, so we can try to filter out broken or incompatible extensions
+    const active = Main.extensionManager._extensions;
+    result = result.filter(ext => {
+        const extension = active.get(ext);
+        if (extension)
+            return ![3, 4].includes(extension.state); // 3 - ERROR, 4 - OUT_OF_TIME (not supported by shell-version in metadata)
+        // extension can be enabled but not yet loaded, we just cannot see its state at this moment, so let it pass as enabled
+        return true;
+    });
+    // return only extensions matching the search pattern
+    return result.filter(uuid => uuid !== null && uuid.includes(pattern));
+}
+
+function* collectFromDatadirs(subdir, includeUserDir) {
+    let dataDirs = GLib.get_system_data_dirs();
+    if (includeUserDir)
+        dataDirs.unshift(GLib.get_user_data_dir());
+
+    for (let i = 0; i < dataDirs.length; i++) {
+        let path = GLib.build_filenamev([dataDirs[i], 'gnome-shell', subdir]);
+        let dir = Gio.File.new_for_path(path);
+
+        let fileEnum;
+        try {
+            fileEnum = dir.enumerate_children('standard::name,standard::type',
+                Gio.FileQueryInfoFlags.NONE, null);
+        } catch {
+            fileEnum = null;
+        }
+        if (fileEnum !== null) {
+            let info;
+            while ((info = fileEnum.next_file(null)))
+                yield { dir: fileEnum.get_child(info), info };
+        }
+    }
+}
+
+export function getScrollDirection(event) {
+    // scroll wheel provides two types of direction information:
+    // 1. Clutter.ScrollDirection.DOWN / Clutter.ScrollDirection.UP
+    // 2. Clutter.ScrollDirection.SMOOTH + event.get_scroll_delta()
+    // first SMOOTH event returns 0 delta,
+    //  so we need to always read event.direction
+    //  since mouse without smooth scrolling provides exactly one SMOOTH event on one wheel rotation click
+    // on the other hand, under X11, one wheel rotation click sometimes doesn't send direction event, only several SMOOTH events
+    // so we also need to convert the delta to direction
+    let direction = event.get_scroll_direction();
+
+    if (direction !== Clutter.ScrollDirection.SMOOTH)
+        return direction;
+
+    let [, delta] = event.get_scroll_delta();
+
+    if (!delta)
+        return null;
+
+    direction = delta > 0 ? Clutter.ScrollDirection.DOWN : Clutter.ScrollDirection.UP;
+
+    return direction;
+}
+
+export function getWindows(workspace) {
+    // We ignore skip-taskbar windows in switchers, but if they are attached
+    // to their parent, their position in the MRU list may be more appropriate
+    // than the parent; so start with the complete list ...
+    let windows = global.display.get_tab_list(Meta.TabList.NORMAL_ALL, workspace);
+    // ... map windows to their parent where appropriate ...
+    return windows.map(w => {
+        return w.is_attached_dialog() ? w.get_transient_for() : w;
+    // ... and filter out skip-taskbar windows and duplicates
+    }).filter((w, i, a) => !w.skip_taskbar && a.indexOf(w) === i);
+}
+
+export function monitorHasLowResolution(monitorIndex, resolutionLimit) {
+    resolutionLimit = resolutionLimit ?? 1200000;
+    monitorIndex = monitorIndex ?? global.display.get_primary_monitor();
+    const monitorGeometry = global.display.get_monitor_geometry(monitorIndex);
+    const { scaleFactor } = St.ThemeContext.get_for_stage(global.stage);
+    const monitorResolution = monitorGeometry.width * monitorGeometry.height;
+    return (monitorResolution / scaleFactor) < resolutionLimit;
+}
+
+// Untouched function from the original IconGrid module, unfortunately not exported
+const APPICON_ANIMATION_OUT_SCALE = 3;
+const APPICON_ANIMATION_OUT_TIME = 250;
+export function zoomOutActorAtPos(actor, x, y) {
+    const monitor = Main.layoutManager.findMonitorForActor(actor);
+    if (!monitor)
+        return;
+
+    const actorClone = new Clutter.Clone({
+        source: actor,
+        reactive: false,
+    });
+    let [width, height] = actor.get_transformed_size();
+
+    actorClone.set_size(width, height);
+    actorClone.set_position(x, y);
+    actorClone.opacity = 255;
+    actorClone.set_pivot_point(0.5, 0.5);
+
+    Main.uiGroup.add_child(actorClone);
+
+    // Avoid monitor edges to not zoom outside the current monitor
+    let scaledWidth = width * APPICON_ANIMATION_OUT_SCALE;
+    let scaledHeight = height * APPICON_ANIMATION_OUT_SCALE;
+    let scaledX = x - (scaledWidth - width) / 2;
+    let scaledY = y - (scaledHeight - height) / 2;
+    let containedX = Math.clamp(scaledX, monitor.x, monitor.x + monitor.width - scaledWidth);
+    let containedY = Math.clamp(scaledY, monitor.y, monitor.y + monitor.height - scaledHeight);
+
+    actorClone.ease({
+        scale_x: APPICON_ANIMATION_OUT_SCALE,
+        scale_y: APPICON_ANIMATION_OUT_SCALE,
+        translation_x: containedX - scaledX,
+        translation_y: containedY - scaledY,
+        opacity: 0,
+        duration: APPICON_ANIMATION_OUT_TIME,
+        mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        onComplete: () => actorClone.destroy(),
+    });
+}
+
+// Close all windows on the given workspace and monitor
+export function closeWorkspace(metaWorkspace, monitorIndex) {
+    let windows = global.display.get_tab_list(0, metaWorkspace);
+    // Remove windows from other monitors if monitorIndex is defined
+    if (monitorIndex !== undefined) {
+        windows = windows.filter(
+            w => w.get_monitor() === monitorIndex
+        );
+    }
+
+    for (let i = 0; i < windows.length; i++) {
+        // Skip windows set as Always on Visible Workspace
+        if (!windows[i].is_on_all_workspaces())
+            windows[i].delete(global.get_current_time() + i);
+    }
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////
+// Status dialog that appears during updating V-Shell configuration and blocks inputs
+
+export const RestartMessage = GObject.registerClass({
+    // Registered name should be unique
+    GTypeName: `RestartMessage${Math.floor(Math.random() * 100000)}`,
+}, class RestartMessage extends ModalDialog.ModalDialog {
+    _init() {
+        super._init({
+            shellReactive: false,
+            styleClass: 'restart-message headline update-message',
+            shouldFadeIn: false,
+            destroyOnClose: false,
+        });
+
+        const label = new St.Label({
+            text: _('Updating V-Shell'),
+            x_align: Clutter.ActorAlign.CENTER,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+
+        this.contentLayout.add_child(label);
+        this.buttonLayout.hide();
+        this.connect('destroy', () => this.removeMessage());
+    }
+
+    showMessage(timeout = 500) {
+        if (this._timeoutId || Me._resetInProgress || Main.layoutManager._startingUp)
+            return;
+        this._removeTimeout();
+        this.open();
+        this._timeoutId = GLib.timeout_add(
+            GLib.PRIORITY_LOW,
+            timeout,
+            () => {
+                this._timeoutId = 0;
+                this.removeMessage();
+                return GLib.SOURCE_REMOVE;
+            }
+        );
+    }
+
+    _removeTimeout() {
+        if (this._timeoutId) {
+            GLib.source_remove(this._timeoutId);
+            this._timeoutId = 0;
+        }
+    }
+
+    removeMessage() {
+        this._removeTimeout();
+        this.close();
+    }
+});
