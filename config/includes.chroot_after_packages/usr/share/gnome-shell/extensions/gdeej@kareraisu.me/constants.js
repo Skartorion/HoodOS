@@ -1,0 +1,27 @@
+export const settingsKeys = {
+    SERIAL_ENABLED: 'serial-enabled',
+    DEVICE_PATH: 'device-path',
+    DEVICE_AUTO_DETECT: 'device-auto-detect',
+    DEVICE_AUTO_RECONNECT: 'device-auto-reconnect',
+    DEVICE_BAUD_RATE: 'device-baud-rate',
+    NOISE_REDUCTION: 'noise-reduction',
+    SLIDERS: 'sliders'
+};
+export const stateKeys = {
+    SERIAL_CONNECTED: 'serial-connected',
+    SERIAL_ERROR: 'serial-error'
+};
+export const osPaths = {
+    SERIAL_DIRECTORY: '/dev/serial/by-id'
+};
+export var serialDeviceStatuses;
+(function (serialDeviceStatuses) {
+    serialDeviceStatuses["ACTIVE"] = "active";
+    serialDeviceStatuses["DISABLED"] = "disabled";
+    serialDeviceStatuses["UNKNOWN"] = "unknown";
+    serialDeviceStatuses["ERROR"] = "error";
+})(serialDeviceStatuses || (serialDeviceStatuses = {}));
+export const SLIDER_MIN_VALUE = 0;
+export const SLIDER_MAX_VALUE = 1024;
+export const DATA_INPUT_STREAM_BUFFER_SIZE = 4096;
+export const RESOURCE_PATH = '/org/gnome/Shell/Extensions/gdeej/';
