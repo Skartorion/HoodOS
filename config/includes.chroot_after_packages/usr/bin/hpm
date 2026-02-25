@@ -9,6 +9,8 @@ HPM_LOG="${HPM_ROOT}/hpm.log"
 
 mkdir -p "${HPM_ROOT}"
 
+pkg=""
+
 log() {
     printf '[hpm] %s\n' "$*" | tee -a "${HPM_LOG}" >&2
 }
@@ -18,16 +20,19 @@ error() {
     exit 1
 }
 
-apt_host_cmd() {
+get_apt_bin() {
     if command -v apt.real >/dev/null 2>&1; then
-        command apt.real "$@"
+        printf '%s\n' apt.real
     elif command -v apt >/dev/null 2>&1; then
-        command apt "$@"
+        printf '%s\n' apt
     else
         error "No apt binary found"
     fi
 }
-apt_host_cmd install "${pkg}"
+
+apt_host_cmd() {
+    command "$(get_apt_bin)" "$@"
+}
 
 require_root() {
     if [[ "$(id -u)" -ne 0 ]]; then
@@ -118,11 +123,30 @@ record_container_package() {
     echo "${epoch}:${cname}:${pkg}" >> "${HPM_DB}"
 }
 
+create_wrapper() {
+    local cname="$1" target="$2"
+    local bn
+    bn="$(basename "${target}")"
+    local wrapper="/usr/local/bin/${bn}"
+
+    if [[ -e "${wrapper}" ]]; then
+        log "Wrapper ${wrapper} already exists; skipping"
+        return
+    fi
+
+    cat >"${wrapper}" <<EOF
+#!/bin/bash
+exec podman exec "${cname}" "${target}" "\$@"
+EOF
+    chmod +x "${wrapper}"
+    log "Created wrapper ${wrapper} -> ${cname}:${target}"
+}
+
 ### Core install logic ##########################################################
 
 hpm_install_one() {
     local pkg="$1"
-    local aptcmd repo_type image cname
+    local repo_type image cname
 
     repo_type="$(get_repo_type "${pkg}")"
     image="$(get_container_image "${repo_type}")"
@@ -130,9 +154,8 @@ hpm_install_one() {
 
     # If not explicitly kali/parrot/blackarch, treat as host install
     if [[ -z "${image}" || -z "${cname}" ]]; then
-        aptcmd="$(apt_host_cmd)"
-        log "Installing ${pkg} on host (repo: ${repo_type}) via ${aptcmd}"
-        "${aptcmd}" install "${pkg}"
+        log "Installing ${pkg} on host (repo: ${repo_type})"
+        apt_host_cmd install "${pkg}"
         return
     fi
 
@@ -188,7 +211,7 @@ main() {
     require_root
 
     local aptcmd
-    aptcmd="$(apt_host_cmd)"
+    aptcmd="$(get_apt_bin)"
 
     # Separate global options from the subcommand and its args
     local opts=()
@@ -211,28 +234,31 @@ Usage:
 EOF
                 exec "${aptcmd}" "$@"
                 ;;
+
             -v|--version|-c|-o|-t|-y|--no-install-recommends)
                 opts+=("$1")
                 shift
-                # Some of these take an argument; handle that minimally
-		if [[ "$#" -eq 0 ]]; then
-              		 continue
-            fi
 
-            # Some of these take an argument; handle that minimally
-            if [[ "$1" =~ ^- ]] || [[ -z "${1}" ]]; then
-                continue
-            fi
-            case "${opts[-1]}" in
-                -c|-o|-t)
-                    opts+=("$1")
-                    shift
-                    ;;
-            esac
+                # Some of these take an argument; handle that minimally
+                if [[ "$#" -eq 0 ]]; then
+                    continue
+                fi
+
+                if [[ "${opts[-1]}" =~ ^(-c|-o|-t)$ ]]; then
+                    # These expect a value unless next token looks like another option
+                    if [[ "$#" -gt 0 && ! "$1" =~ ^- ]]; then
+                        opts+=("$1")
+                        shift
+                    fi
+                fi
+                ;;
+
             -*)
+                # Any other global apt-like option, just collect it
                 opts+=("$1")
                 shift
                 ;;
+
             *)
                 cmd="$1"
                 shift
@@ -265,4 +291,6 @@ EOF
     esac
 }
 
+
 main "$@"
+
