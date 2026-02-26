@@ -4,12 +4,9 @@
 set -euo pipefail
 
 HPM_ROOT="${HOME}/.hpm"
-HPM_DB="${HPM_ROOT}/packages.db"
 HPM_LOG="${HPM_ROOT}/hpm.log"
 
 mkdir -p "${HPM_ROOT}"
-
-pkg=""
 
 log() {
     printf '[hpm] %s\n' "$*" | tee -a "${HPM_LOG}" >&2
@@ -18,6 +15,12 @@ log() {
 error() {
     printf '[hpm:ERROR] %s\n' "$*" | tee -a "${HPM_LOG}" >&2
     exit 1
+}
+
+require_root() {
+    if [[ "$(id -u)" -ne 0 ]]; then
+        error "hpm must be run as root"
+    fi
 }
 
 get_apt_bin() {
@@ -34,18 +37,12 @@ apt_host_cmd() {
     command "$(get_apt_bin)" "$@"
 }
 
-require_root() {
-    if [[ "$(id -u)" -ne 0 ]]; then
-        error "hpm must be run as root"
-    fi
-}
-
-### Repo / container helpers ###################################################
+### Detect package repo type ###################################################
 
 get_repo_type() {
     local pkg="$1"
-    # Prefer policy; fallback to show
     local info
+    
     if ! info="$(apt-cache policy "$pkg" 2>/dev/null)"; then
         echo "unknown"
         return
@@ -73,110 +70,30 @@ get_container_name() {
     esac
 }
 
-get_container_name() {
-    case "$1" in
-        kali|parrot|blackarch) echo "hpm-$1" ;;
-        *)                     echo "" ;;
-    esac
-}
-
-ensure_container() {
-    local repo_type="$1"
-    local image="$2"
-    local cname
-    cname="$(get_container_name "${repo_type}")"
-    [[ -n "${cname}" ]] || error "No container name for repo type '${repo_type}'"
-
-    # Optional: keep storage consistent with live hook
-    export CONTAINERS_STORAGE_ROOT="${HOME}/.hpm/containers"
-    export CONTAINERS_STORAGE_DRIVER=vfs
-
-    if ! command -v podman >/dev/null 2>&1; then
-        error "podman not found; cannot containerize ${repo_type} packages"
-    fi
-
-    if ! podman container exists "${cname}"; then
-        log "Creating container ${cname} from ${image}"
-
-        podman pull "${image}"
-
-        # Less-privileged baseline; tweak if you really need more
-        podman run -d \
-            --name "${cname}" \
-            --hostname "${cname}" \
-            --network host \
-            -v /etc/apt/sources.list:/etc/apt/sources.list:ro \
-            -v /etc/apt/sources.list.d:/etc/apt/sources.list.d:ro \
-            "${image}" sleep infinity
-
-        podman exec "${cname}" apt-get update -y || {
-            podman rm -f "${cname}" || true
-            error "Failed to run apt-get update in ${cname}"
-        }
-    fi
-}
-
-record_container_package() {
-    local repo_type="$1" cname="$2" pkg="$3"
-    local epoch
-    epoch="$(date +%s)"
-    echo "${epoch}:${cname}:${pkg}" >> "${HPM_DB}"
-}
-
-create_wrapper() {
-    local cname="$1" target="$2"
-    local bn
-    bn="$(basename "${target}")"
-    local wrapper="/usr/local/bin/${bn}"
-
-    if [[ -e "${wrapper}" ]]; then
-        log "Wrapper ${wrapper} already exists; skipping"
-        return
-    fi
-
-    cat >"${wrapper}" <<EOF
-#!/bin/bash
-exec podman exec "${cname}" "${target}" "\$@"
-EOF
-    chmod +x "${wrapper}"
-    log "Created wrapper ${wrapper} -> ${cname}:${target}"
-}
-
 ### Core install logic ##########################################################
 
 hpm_install_one() {
     local pkg="$1"
-    local repo_type image cname
+    local repo_type cname
 
     repo_type="$(get_repo_type "${pkg}")"
-    image="$(get_container_image "${repo_type}")"
     cname="$(get_container_name "${repo_type}")"
 
-    # If not explicitly kali/parrot/blackarch, treat as host install
-    if [[ -z "${image}" || -z "${cname}" ]]; then
-        log "Installing ${pkg} on host (repo: ${repo_type})"
-        apt_host_cmd install "${pkg}"
+    # If package is in kali/parrot/blackarch repo, install in container
+    if [[ -n "${cname}" ]]; then
+        log "Installing ${pkg} in container ${cname} (repo: ${repo_type})"
+        
+        if ! command -v podman >/dev/null 2>&1; then
+            error "podman not found"
+        fi
+        
+        podman exec "${cname}" apt-get install -y "${pkg}"
         return
     fi
 
-    ensure_container "${repo_type}" "${image}"
-
-    log "Installing ${pkg} inside container ${cname} (image ${image})"
-    podman exec "${cname}" apt-get install -y "${pkg}"
-
-    # Find binaries and create wrappers
-    local files
-    if ! files="$(podman exec "${cname}" dpkg -L "${pkg}" 2>/dev/null)"; then
-        log "No dpkg info for ${pkg} in ${cname}; skipping wrappers"
-    else
-        while IFS= read -r f; do
-            if [[ -x "${f}" && "${f}" == /usr/bin/* ]]; then
-                create_wrapper "${cname}" "${f}"
-            fi
-        done <<< "${files}"
-    fi
-
-    record_container_package "${repo_type}" "${cname}" "${pkg}"
+    # Otherwise install on host (debian or unknown)
+    log "Installing ${pkg} on host (repo: ${repo_type})"
+    apt_host_cmd install "${pkg}"
 }
 
 hpm_install() {
@@ -186,23 +103,6 @@ hpm_install() {
     for pkg in "$@"; do
         hpm_install_one "${pkg}"
     done
-}
-
-### Remove / list / status ######################################################
-
-hpm_list_containerized() {
-    if [[ ! -f "${HPM_DB}" ]]; then
-        echo "No containerized packages recorded."
-        return
-    fi
-    column -t -s ':' "${HPM_DB}"
-}
-
-hpm_container_status() {
-    if ! command -v podman >/dev/null 2>&1; then
-        error "podman not found"
-    fi
-    podman ps -a --filter "name=hpm-" --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
 }
 
 ### CLI dispatch ###############################################################
@@ -221,76 +121,59 @@ main() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             -h|--help)
-                # hpm-specific help, then fall through to apt help
                 cat <<EOF
 hpm - HoodOS Package Manager
 
 Usage:
-  hpm install <pkg> [...]     Install, containerizing kali/parrot/blackarch packages
-  hpm list-containerized      List containerized packages
-  hpm container-status        Show hpm containers
-  hpm [apt options] <cmd> ... Act as apt for all other commands
+  hpm install <pkg> [...]     Install package (containerized for kali/parrot/blackarch)
+  hpm [apt options] <cmd> ... Pass through to apt
 
 EOF
                 exec "${aptcmd}" "$@"
-                ;;
+                ;; 
 
             -v|--version|-c|-o|-t|-y|--no-install-recommends)
                 opts+=("$1")
                 shift
 
-                # Some of these take an argument; handle that minimally
                 if [[ "$#" -eq 0 ]]; then
                     continue
                 fi
 
                 if [[ "${opts[-1]}" =~ ^(-c|-o|-t)$ ]]; then
-                    # These expect a value unless next token looks like another option
                     if [[ "$#" -gt 0 && ! "$1" =~ ^- ]]; then
                         opts+=("$1")
                         shift
                     fi
                 fi
-                ;;
+                ;; 
 
-            -*)
-                # Any other global apt-like option, just collect it
+            -*))
                 opts+=("$1")
                 shift
-                ;;
+                ;; 
 
             *)
                 cmd="$1"
                 shift
                 args=("$@")
                 break
-                ;;
+                ;; 
         esac
     done
 
     if [[ -z "${cmd}" ]]; then
-        # No subcommand – just pass through to apt
         exec "${aptcmd}" "${opts[@]}"
     fi
 
     case "${cmd}" in
         install)
-            # Our special path
             hpm_install "${args[@]}"
-            ;;
-        list-containerized)
-            hpm_list_containerized
-            ;;
-        container-status)
-            hpm_container_status
-            ;;
+            ;; 
         *)
-            # Pure passthrough for everything else
             exec "${aptcmd}" "${opts[@]}" "${cmd}" "${args[@]}"
-            ;;
+            ;; 
     esac
 }
 
-
 main "$@"
-
