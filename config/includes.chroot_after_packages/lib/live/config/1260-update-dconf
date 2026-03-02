@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+exec >/var/log/boot-hook-1020.log 2>&1
+
+echo "[1020] started: $(date) UID=$(id -u) GID=$(id -g)"
+echo "[1020] env: $(env | sort)"
+
+set -x
+
+# Show what dconf will touch
+ls -lR /etc/dconf || true
+ls -lR /etc/dconf/db || true
+ls -lR /etc/dconf/profile || true
+
+# Run with timeout so boot cannot hang forever
+if command -v timeout >/dev/null; then
+    timeout 10s dconf update
+    rc=$?
+    echo "[1020] dconf update exit code: $rc"
+else
+    dconf update
+    rc=$?
+fi
+
+set +x
+
+echo "[1020] finished: $(date) rc=$rc"
+exit 0
+
