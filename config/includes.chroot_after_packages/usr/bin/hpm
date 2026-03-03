@@ -81,6 +81,40 @@ get_container_image() {
     esac
 }
 
+get_install_cmd() {
+    local repo_type="$1"
+    local pkg="$2"
+
+    case "$repo_type" in
+        kali|parrot)
+            echo "${APT_BIN} install -y -V $pkg"
+            ;;
+        blackarch)
+            echo "pacman -S --noconfirm $pkg"
+            ;;
+        *)
+            echo "${APT_BIN} install -y -V $pkg"
+            ;;
+    esac
+}
+get_remove_cmd() {
+    local repo_type="$1"
+    local pkg="$2"
+
+    case "$repo_type" in
+        kali|parrot|debian)
+            echo "${APT_BIN} remove -y $pkg"
+            ;;
+        blackarch)
+            echo "pacman -R --noconfirm $pkg"
+            ;;
+        *)
+            echo "${APT_BIN} remove -y $pkg"
+            ;;
+    esac
+}
+
+
 ensure_container() {
     local repo_type="$1"
     local cname
@@ -138,6 +172,23 @@ EOF
     chmod +x "$shim"
     echo "[$HPM_NAME] created shim: $shim -> podman exec -it --user root $cname $pkg" >&2
 }
+remove_container_shim() {
+    local pkg="$1"
+
+    local user_home
+    if [[ -n "${SUDO_USER-}" ]]; then
+        user_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
+    else
+        user_home="$HOME"
+    fi
+
+    local shim="$user_home/.hpm/symlinks/${pkg}"
+    if [[ -e "$shim" ]]; then
+        rm -f "$shim"
+        echo "[$HPM_NAME] removed shim: $shim" >&2
+    fi
+}
+
 
 install_one() {
     local pkg="$1"
@@ -160,15 +211,58 @@ install_one() {
 
         ensure_container "$repo_type"
 
-        echo "[$HPM_NAME] Updating APT cache in container $cname (repo: $repo_type)" >&2
-        run_podman exec -it --user root "$cname" ${APT_BIN} update -y
+        if [[ "$repo_type" == "kali" || "$repo_type" == "parrot" ]]; then
+            echo "[$HPM_NAME] Updating APT cache in container $cname (repo: $repo_type)" >&2
+            run_podman exec -it --user root "$cname" ${APT_BIN} update -y
+        elif [[ "$repo_type" == "blackarch" ]]; then
+            echo "[$HPM_NAME] Updating pacman db in container $cname (repo: $repo_type)" >&2
+            run_podman exec -it --user root "$cname" pacman -Sy --noconfirm
+        fi
+
+        local install_cmd
+        install_cmd="$(get_install_cmd "$repo_type" "$pkg")"
 
         echo "[$HPM_NAME] Installing '$pkg' in container $cname (repo: $repo_type)" >&2
-        run_podman exec -it --user root "$cname" ${APT_BIN} install -y -V "$pkg"
+        run_podman exec -it --user root "$cname" bash -lc "$install_cmd"
 
         create_container_shim "$repo_type" "$pkg" || true
+
     fi
 }
+
+remove_one() {
+    local pkg="$1"
+
+    local repo_type
+    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
+        echo "[$HPM_NAME] Removing '$pkg' from host (repo: $repo_type)" >&2
+        ${APT_BIN} remove -y "$pkg"
+        remove_container_shim "$pkg"
+    else
+        local cname
+        cname="$(get_container_name "$repo_type")"
+
+        if [[ -z "$cname" ]]; then
+            echo "[$HPM_NAME] No container name for repo type '$repo_type', falling back to host remove" >&2
+            ${APT_BIN} remove -y "$pkg"
+            remove_container_shim "$pkg"
+            return
+        fi
+
+        ensure_container "$repo_type"
+
+        local remove_cmd
+        remove_cmd="$(get_remove_cmd "$repo_type" "$pkg")"
+
+        echo "[$HPM_NAME] Removing '$pkg' in container $cname (repo: $repo_type)" >&2
+        run_podman exec -it --user root "$cname" bash -lc "$remove_cmd"
+
+        remove_container_shim "$pkg"
+    fi
+}
+
 
 main() {
     if [[ "$#" -lt 1 ]]; then
@@ -201,10 +295,21 @@ main() {
                 install_one "$pkg"
             done
             ;;
+        remove|uninstall)
+            if [[ "$#" -lt 1 ]]; then
+                echo "Usage: hpm remove <pkg> [...]" >&2
+                exit 1
+            fi
+            local pkg
+            for pkg in "$@"; do
+                remove_one "$pkg"
+            done
+            ;;
         *)
             exec ${APT_BIN} "$cmd" "$@"
             ;;
     esac
+
 }
 
 main "$@"
