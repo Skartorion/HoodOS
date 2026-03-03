@@ -1,60 +1,26 @@
 #!/bin/bash
-# hpm - HoodOS Package Manager (apt wrapper with container support)
+# hpm-lite: simple apt wrapper that containerizes Kali/Parrot/BlackArch packages
 
 set -euo pipefail
 
-HPM_ROOT="${HOME}/.hpm"
-HPM_LOG="${HPM_ROOT}/hpm.log"
-
-mkdir -p "${HPM_ROOT}"
-
-log() {
-    printf '[hpm] %s\n' "$*" | tee -a "${HPM_LOG}" >&2
-}
-
-error() {
-    printf '[hpm:ERROR] %s\n' "$*" | tee -a "${HPM_LOG}" >&2
-    exit 1
-}
-
-require_root() {
-    if [[ "$(id -u)" -ne 0 ]]; then
-        error "hpm must be run as root"
-    fi
-}
-
-get_apt_bin() {
-    if command -v apt.real >/dev/null 2>&1; then
-        printf '%s\n' apt.real
-    elif command -v apt >/dev/null 2>&1; then
-        printf '%s\n' apt
-    else
-        error "No apt binary found"
-    fi
-}
-
-apt_host_cmd() {
-    command "$(get_apt_bin)" "$@"
-}
-
-### Detect package repo type ###################################################
+APT_BIN="${APT_BIN:-apt}"
 
 get_repo_type() {
     local pkg="$1"
     local info
-    
-    if ! info="$(apt-cache policy "$pkg" 2>/dev/null)"; then
+
+    if ! info="$(${APT_BIN}-cache policy "$pkg" 2>/dev/null)"; then
         echo "unknown"
         return
     fi
 
-    if grep -qi 'kali' <<<"${info}"; then
+    if grep -qi 'kali' <<<"$info"; then
         echo "kali"
-    elif grep -qi 'parrot' <<<"${info}"; then
+    elif grep -qi 'parrot' <<<"$info"; then
         echo "parrot"
-    elif grep -qi 'blackarch' <<<"${info}"; then
+    elif grep -qi 'blackarch' <<<"$info"; then
         echo "blackarch"
-    elif grep -qi 'debian' <<<"${info}"; then
+    elif grep -qi 'debian' <<<"$info"; then
         echo "debian"
     else
         echo "unknown"
@@ -63,116 +29,95 @@ get_repo_type() {
 
 get_container_name() {
     case "$1" in
-        kali)      echo "hoodos/kali" ;;
-        parrot)    echo "hoodos/parrot" ;;
-        blackarch) echo "hoodos/blackarch" ;;
+        kali)      echo "hpm-kali" ;;
+        parrot)    echo "hpm-parrot" ;;
+        blackarch) echo "hpm-blackarch" ;;
         *)         echo "" ;;
     esac
 }
 
-### Core install logic ##########################################################
+ensure_container() {
+    local repo_type="$1"
+    local cname
+    cname="$(get_container_name "$repo_type")"
 
-hpm_install_one() {
-    local pkg="$1"
-    local repo_type cname
-
-    repo_type="$(get_repo_type "${pkg}")"
-    cname="$(get_container_name "${repo_type}")"
-
-    # If package is in kali/parrot/blackarch repo, install in container
-    if [[ -n "${cname}" ]]; then
-        log "Installing ${pkg} in container ${cname} (repo: ${repo_type})"
-        
-        if ! command -v podman >/dev/null 2>&1; then
-            error "podman not found"
-        fi
-        
-        podman exec "${cname}" apt-get install -y "${pkg}"
-        return
+    if [[ -z "$cname" ]]; then
+        echo "[hpm-lite] No container name for repo type '$repo_type'" >&2
+        return 1
     fi
 
-    # Otherwise install on host (debian or unknown)
-    log "Installing ${pkg} on host (repo: ${repo_type})"
-    apt_host_cmd install "${pkg}"
+    if ! command -v podman >/dev/null 2>&1; then
+    	    echo "[hpm-lite] podman not found" >&2
+        return 1
+    fi
+
+   if ! podman container exists "$cname"; then
+        echo "[hpm-lite] container not found: $cname" >&2
+        return 1
+    fi
 }
 
-hpm_install() {
-    [[ "$#" -gt 0 ]] || error "Usage: hpm install <pkg> [...]"
-
-    local pkg
-    for pkg in "$@"; do
-        hpm_install_one "${pkg}"
-    done
+get_container_image() {
+    case "$1" in
+        kali)      echo "kalilinux/kali-rolling" ;;
+        parrot)    echo "parrotsec/core" ;;
+        blackarch) echo "blackarch/blackarch" ;;
+        *)         echo "" ;;
+    esac
 }
 
-### CLI dispatch ###############################################################
+install_one() {
+    local pkg="$1"
+
+    local repo_type
+    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
+        echo "[hpm-lite] Installing '$pkg' on host (repo: $repo_type)" >&2
+        exec ${APT_BIN} install -y -V "$pkg"
+    else
+        local image cname
+        image="$(get_container_image "$repo_type")"
+        cname="$(get_container_name "$repo_type")"
+
+        if [[ -z "$image" || -z "$cname" ]]; then
+            echo "[hpm-lite] No image/container for repo type '$repo_type', falling back to host" >&2
+            exec ${APT_BIN} install -y -V "$pkg"
+        fi
+
+        ensure_container "$repo_type" "$image"
+
+        echo "[hpm-lite] Installing '$pkg' in container $cname (repo: $repo_type)" >&2
+        # NOTE: apt doesn't support --noconfirm; using -y instead, add extra flags as needed
+        podman exec -d "$cname" sudo ${APT_BIN} install -y -V "$pkg"
+    fi
+}
 
 main() {
-    require_root
-
-    local aptcmd
-    aptcmd="$(get_apt_bin)"
-
-    # Separate global options from the subcommand and its args
-    local opts=()
-    local cmd=
-    local args=()
-
-    while [[ "$#" -gt 0 ]]; do
-        case "$1" in
-            -h|--help)
-                cat <<EOF
-hpm - HoodOS Package Manager
-
-Usage:
-  hpm install <pkg> [...]     Install package (containerized for kali/parrot/blackarch)
-  hpm [apt options] <cmd> ... Pass through to apt
-
-EOF
-                exec "${aptcmd}" "$@"
-                ;; 
-
-            -v|--version|-c|-o|-t|-y|--no-install-recommends)
-                opts+=("$1")
-                shift
-
-                if [[ "$#" -eq 0 ]]; then
-                    continue
-                fi
-
-                if [[ "${opts[-1]}" =~ ^(-c|-o|-t)$ ]]; then
-                    if [[ "$#" -gt 0 && ! "$1" =~ ^- ]]; then
-                        opts+=("$1")
-                        shift
-                    fi
-                fi
-                ;; 
-
-            -*))
-                opts+=("$1")
-                shift
-                ;; 
-
-            *)
-                cmd="$1"
-                shift
-                args=("$@")
-                break
-                ;; 
-        esac
-    done
-
-    if [[ -z "${cmd}" ]]; then
-        exec "${aptcmd}" "${opts[@]}"
+    if [[ "$#" -lt 1 ]]; then
+        echo "Usage: $0 install <pkg> [...] | <any apt command>" >&2
+        exit 1
     fi
 
-    case "${cmd}" in
+    local cmd="$1"
+    shift || true
+
+    case "$cmd" in
         install)
-            hpm_install "${args[@]}"
-            ;; 
+            if [[ "$#" -lt 1 ]]; then
+                echo "Usage: $0 install <pkg> [...]" >&2
+                exit 1
+            fi
+            # Simple case: treat all remaining args as package names
+            local pkg
+            for pkg in "$@"; do
+                install_one "$pkg"
+            done
+            ;;
         *)
-            exec "${aptcmd}" "${opts[@]}" "${cmd}" "${args[@]}"
-            ;; 
+            # For everything else, just behave like apt
+            exec ${APT_BIN} "$cmd" "$@"
+            ;;
     esac
 }
 
