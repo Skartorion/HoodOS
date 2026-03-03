@@ -1,33 +1,47 @@
 #!/bin/bash
-# hpm-lite: simple apt wrapper that containerizes Kali/Parrot/BlackArch packages
+# hpm: simple apt wrapper that containerizes Kali/Parrot/BlackArch packages
 
 set -euo pipefail
+
+HPM_NAME="hpm"
+HPM_VERSION="0.1.0"
 
 APT_BIN="${APT_BIN:-apt}"
 HPM_USER="${SUDO_USER:-$USER}"
 HPM_HOME="$(getent passwd "$HPM_USER" | cut -d: -f6)"
-container_init() {
-    echo "[$HPM_NAME] Importing images from $HPM_HOME/.hpm/images" >&2
-
-    run_podman import "$HPM_HOME/.hpm/images/kali.tar"      hpm/kali
-    run_podman import "$HPM_HOME/.hpm/images/parrot.tar"    hpm/parrot
-    run_podman import "$HPM_HOME/.hpm/images/blackarch.tar" hpm/blackarch
-
-    echo "[$HPM_NAME] Creating containers hpm-kali / hpm-parrot / hpm-blackarch" >&2
-
-    run_podman run -d --name hpm-kali      hpm/kali      sleep infinity
-    run_podman run -d --name hpm-parrot    hpm/parrot    sleep infinity
-    run_podman run -d --name hpm-blackarch hpm/blackarch sleep infinity
-}
 
 run_podman() {
     if [[ "$(id -u)" -eq 0 ]]; then
-        # We are root (sudo hpm) \E2\86\92 run podman as original user
+        # We are root (sudo hpm) → run podman as original user
         sudo -u "$HPM_USER" podman "$@"
     else
         # Normal user
         podman "$@"
     fi
+}
+
+print_help() {
+    cat <<EOF
+$HPM_NAME $HPM_VERSION - Hybrid (HoodOS) Package Manager for automatic package containerization
+
+Usage:
+  hpm init                    Import images and create hpm-* containers
+  hpm install <pkg> [...]     Install packages (host or into appropriate container)
+  hpm remove <pkg> [...]      Remove packages and associated shims
+  hpm <apt-subcommand> [...]  Pass through to apt (e.g. hpm update, hpm search)
+
+Options:
+  -h, --help                  Show this help and exit
+  -V, --version               Show version and exit
+
+Environment:
+  APT_BIN                     Override apt binary (default: apt)
+
+EOF
+}
+
+print_version() {
+    echo "$HPM_NAME $HPM_VERSION"
 }
 
 get_repo_type() {
@@ -51,77 +65,48 @@ get_repo_type() {
         echo "unknown"
     fi
 }
-ensure_container() {
-    local repo_type="$1"
-    local cname
-    cname="$(get_container_name "$repo_type")"
-
-    if [[ -z "$cname" ]]; then
-        echo "[hpm-lite] No container name for repo type '$repo_type'" >&2
-        return 1
-    fi
-
-    if ! command -v podman >/dev/null 2>&1; then
-        echo "[hpm-lite] podman not found" >&2
-        return 1
-    fi
-
-    if run_podman container exists "$cname" >/dev/null 2>&1; then
-        return 0
-    else
-        echo "[hpm-lite] container not found: $cname" >&2
-        return 1
-    fi
-}
 
 get_container_name() {
     case "$1" in
-        kali)      echo "hpm-kali";;
-        parrot)    echo "b391ea101dc7" ;;
-        blackarch) echo "d4f95179a2f1" ;;
+        kali)      echo "hpm-kali" ;;
+        parrot)    echo "hpm-parrot" ;;
+        blackarch) echo "hpm-blackarch" ;;
         *)         echo "" ;;
     esac
 }
 
 get_container_image() {
     case "$1" in
-        kali)      echo "kalilinux/kali-rolling" ;;
-        parrot)    echo "parrotsec/core" ;;
-        blackarch) echo "blackarch/blackarch" ;;
+        kali)      echo "hpm/kali" ;;
+        parrot)    echo "hpm/parrot" ;;
+        blackarch) echo "hpm/blackarch" ;;
         *)         echo "" ;;
     esac
 }
 
-install_one() {
-    local pkg="$1"
+ensure_container() {
+    local repo_type="$1"
+    local cname
+    cname="$(get_container_name "$repo_type")"
 
-    local repo_type
-    repo_type="$(get_repo_type "$pkg")"
+    if [[ -z "$cname" ]]; then
+        echo "[$HPM_NAME] No container name for repo type '$repo_type'" >&2
+        return 1
+    fi
 
-    if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
-        echo "[hpm-lite] Installing '$pkg' on host (repo: $repo_type)" >&2
-        exec ${APT_BIN} install -y -V "$pkg"
+    if ! command -v podman >/dev/null 2>&1; then
+        echo "[$HPM_NAME] podman not found" >&2
+        return 1
+    fi
+
+    if run_podman container exists "$cname" >/dev/null 2>&1; then
+        return 0
     else
-        local image cname
-        image="$(get_container_image "$repo_type")"
-        cname="$(get_container_name "$repo_type")"
-
-        if [[ -z "$image" || -z "$cname" ]]; then
-            echo "[hpm-lite] No image/container for repo type '$repo_type', falling back to host" >&2
-            exec ${APT_BIN} install -y -V "$pkg"
-        fi
-
-        ensure_container "$repo_type"
-
-        echo "[hpm-lite] Updating APT cache in container $cname (repo: $repo_type)" >&2
-        run_podman exec -it --user root "$cname" ${APT_BIN} update -y
-
-        echo "[hpm-lite] Installing '$pkg' in container $cname (repo: $repo_type)" >&2
-        run_podman exec -it --user root "$cname" ${APT_BIN} install -y -V "$pkg"
-
-        create_container_shim "$repo_type" "$pkg" || true
+        echo "[$HPM_NAME] container not found: $cname" >&2
+        return 1
     fi
 }
+
 create_container_shim() {
     local repo_type="$1"
     local pkg="$2"
@@ -130,6 +115,7 @@ create_container_shim() {
     cname="$(get_container_name "$repo_type")" || return 1
     [[ -n "$cname" ]] || return 1
 
+    # Write shim into real user's home, even under sudo
     local user_home
     if [[ -n "${SUDO_USER-}" ]]; then
         user_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
@@ -143,7 +129,7 @@ create_container_shim() {
     local shim="$shim_dir/${pkg}"
 
     if [[ -e "$shim" ]]; then
-        echo "[hpm-lite] shim already exists: $shim" >&2
+        echo "[$HPM_NAME] shim already exists: $shim" >&2
         return 0
     fi
 
@@ -153,38 +139,170 @@ exec podman exec -it --user root "$cname" "$pkg" "\$@"
 EOF
 
     chmod +x "$shim"
-    echo "[hpm-lite] created shim: $shim -> podman exec -it --user root $cname $pkg" >&2
+    echo "[$HPM_NAME] created shim: $shim -> podman exec -it --user root $cname $pkg" >&2
+}
+
+remove_container_shim() {
+    local pkg="$1"
+
+    local user_home
+    if [[ -n "${SUDO_USER-}" ]]; then
+        user_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
+    else
+        user_home="$HOME"
+    fi
+
+    local shim="$user_home/.hpm/symlinks/${pkg}"
+    if [[ -e "$shim" ]]; then
+        rm -f "$shim"
+        echo "[$HPM_NAME] removed shim: $shim" >&2
+    fi
+}
+
+get_remove_cmd() {
+    local repo_type="$1"
+    local pkg="$2"
+
+    case "$repo_type" in
+        kali|parrot|debian)
+            echo "${APT_BIN} remove -y $pkg"
+            ;;
+        blackarch)
+            echo "pacman -R --noconfirm $pkg"
+            ;;
+        *)
+            echo "${APT_BIN} remove -y $pkg"
+            ;;
+    esac
+}
+
+install_one() {
+    local pkg="$1"
+
+    local repo_type
+    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
+        echo "[$HPM_NAME] Installing '$pkg' on host (repo: $repo_type)" >&2
+        exec ${APT_BIN} install -y -V "$pkg"
+    else
+        local image cname
+        image="$(get_container_image "$repo_type")"
+        cname="$(get_container_name "$repo_type")"
+
+        if [[ -z "$image" || -z "$cname" ]]; then
+            echo "[$HPM_NAME] No image/container for repo type '$repo_type', falling back to host" >&2
+            exec ${APT_BIN} install -y -V "$pkg"
+        fi
+
+        ensure_container "$repo_type"
+
+        echo "[$HPM_NAME] Updating APT cache in container $cname (repo: $repo_type)" >&2
+        run_podman exec -it --user root "$cname" ${APT_BIN} update -y
+
+        echo "[$HPM_NAME] Installing '$pkg' in container $cname (repo: $repo_type)" >&2
+        run_podman exec -it --user root "$cname" ${APT_BIN} install -y -V "$pkg"
+
+        create_container_shim "$repo_type" "$pkg" || true
+    fi
+}
+
+remove_one() {
+    local pkg="$1"
+
+    local repo_type
+    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
+        echo "[$HPM_NAME] Removing '$pkg' from host (repo: $repo_type)" >&2
+        ${APT_BIN} remove -y "$pkg"
+        remove_container_shim "$pkg"
+    else
+        local cname
+        cname="$(get_container_name "$repo_type")"
+
+        if [[ -z "$cname" ]]; then
+            echo "[$HPM_NAME] No container name for repo type '$repo_type', falling back to host remove" >&2
+            ${APT_BIN} remove -y "$pkg"
+            remove_container_shim "$pkg"
+            return
+        fi
+
+        ensure_container "$repo_type"
+
+        local remove_cmd
+        remove_cmd="$(get_remove_cmd "$repo_type" "$pkg")"
+
+        echo "[$HPM_NAME] Removing '$pkg' in container $cname (repo: $repo_type)" >&2
+        run_podman exec -it --user root "$cname" bash -lc "$remove_cmd"
+
+        remove_container_shim "$pkg"
+    fi
+}
+
+container_init() {
+    echo "[$HPM_NAME] Importing images from $HPM_HOME/.hpm/images" >&2
+
+    run_podman import "$HPM_HOME/.hpm/images/kali.tar"      hpm/kali
+    run_podman import "$HPM_HOME/.hpm/images/parrot.tar"    hpm/parrot
+    run_podman import "$HPM_HOME/.hpm/images/blackarch.tar" hpm/blackarch
+
+    echo "[$HPM_NAME] Creating containers hpm-kali / hpm-parrot / hpm-blackarch" >&2
+
+    run_podman run -d --name hpm-kali      hpm/kali      sleep infinity
+    run_podman run -d --name hpm-parrot    hpm/parrot    sleep infinity
+    run_podman run -d --name hpm-blackarch hpm/blackarch sleep infinity
 }
 
 main() {
     if [[ "$#" -lt 1 ]]; then
-        echo "Usage: $0 install <pkg> [...] | <any apt command>" >&2
+        print_help >&2
         exit 1
     fi
+
+    case "$1" in
+        -h|--help)
+            print_help
+            exit 0
+            ;;
+        -V|--version)
+            print_version
+            exit 0
+            ;;
+    esac
 
     local cmd="$1"
     shift || true
 
     case "$cmd" in
-     	init)
+        init)
             container_init
             ;;
         install)
             if [[ "$#" -lt 1 ]]; then
-                echo "Usage: $0 install <pkg> [...]" >&2
+                echo "Usage: hpm install <pkg> [...]" >&2
                 exit 1
             fi
-            # Simple case: treat all remaining args as package names
             local pkg
             for pkg in "$@"; do
                 install_one "$pkg"
             done
             ;;
+        remove|uninstall)
+            if [[ "$#" -lt 1 ]]; then
+                echo "Usage: hpm remove <pkg> [...]" >&2
+                exit 1
+            fi
+            local pkg
+            for pkg in "$@"; do
+                remove_one "$pkg"
+            done
+            ;;
         *)
-            # For everything else, just behave like apt
             exec ${APT_BIN} "$cmd" "$@"
             ;;
     esac
 }
 
 main "$@"
+
