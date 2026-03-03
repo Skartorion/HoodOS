@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+
+HPM_USER="${SUDO_USER:-$USER}"
+HPM_HOME="$(getent passwd "$HPM_USER" | cut -d: -f6)"
+
+run_podman() {
+    if [[ "$(id -u)" -eq 0 ]]; then
+        sudo -u "$HPM_USER" podman "$@"
+    else
+        podman "$@"
+    fi
+}
+
+# Import images from tarballs into simple local names
+run_podman import "$HPM_HOME/.hpm/images/kali.tar"      hpm/kali
+run_podman import "$HPM_HOME/.hpm/images/parrot.tar"    hpm/parrot
+run_podman import "$HPM_HOME/.hpm/images/blackarch.tar" hpm/blackarch
+
+# Create long-lived containers
+run_podman run -d --name hpm-kali      hpm/kali      sleep infinity
+run_podman run -d --name hpm-parrot    hpm/parrot    sleep infinity
+run_podman run -d --name hpm-blackarch hpm/blackarch sleep infinity
+
