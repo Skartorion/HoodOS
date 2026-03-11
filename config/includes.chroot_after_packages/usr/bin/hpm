@@ -1,10 +1,10 @@
 #!/bin/bash
-# hpm: simple apt wrapper that containerizes Kali/Parrot/BlackArch packages
+# hoodos (hybrid) package manager
 
 set -euo pipefail
 
 HPM_NAME="hpm"
-HPM_VERSION="0.1.0"
+HPM_VERSION="0.1.1"
 
 APT_BIN="${APT_BIN:-apt}"
 HPM_USER="${SUDO_USER:-$USER}"
@@ -12,7 +12,6 @@ HPM_HOME="$(getent passwd "$HPM_USER" | cut -d: -f6)"
 
 run_podman() {
     if [[ "$(id -u)" -eq 0 ]]; then
-        # We are root (sudo hpm) → run podman as original user
         sudo -u "$HPM_USER" podman "$@"
     else
         # Normal user
@@ -303,6 +302,6 @@ main() {
             ;;
     esac
 }
-
+# meow
 main "$@"
 
