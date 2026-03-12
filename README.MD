@@ -1,3 +1,9 @@
+
+> [!WARN]
+> ReadMe under construction!
+
+
+
 # Hood GNU/Linux
 
 Fine-tuned debian derirative Linux distribution focused on stability, security and user-friendly UI.
