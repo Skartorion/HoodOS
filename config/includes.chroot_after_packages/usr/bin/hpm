@@ -4,7 +4,7 @@
 set -euo pipefail
 
 HPM_NAME="hpm"
-HPM_VERSION="0.1.1"
+HPM_VERSION="0.3.0"
 
 APT_BIN="${APT_BIN:-apt}"
 HPM_USER="${SUDO_USER:-$USER}"
@@ -14,7 +14,6 @@ run_podman() {
     if [[ "$(id -u)" -eq 0 ]]; then
         sudo -u "$HPM_USER" podman "$@"
     else
-        # Normal user
         podman "$@"
     fi
 }
@@ -24,23 +23,38 @@ print_help() {
 $HPM_NAME $HPM_VERSION - Hybrid (HoodOS) Package Manager for automatic package containerization
 
 Usage:
-  hpm init                    Import images and create hpm-* containers
-  hpm install <pkg> [...]     Install packages (host or into appropriate container)
-  hpm remove <pkg> [...]      Remove packages and associated shims
-  hpm <apt-subcommand> [...]  Pass through to apt (e.g. hpm update, hpm search)
+  hpm init		        Import images and create hpm-* containers
+  hpm shell   [container]       Enter container with interactive shell (Kali/Parrot/Blackarch)
+  hpm install [--repo R] <pkg>  Install packages (host or into appropriate container)
+  hpm remove  [--repo R] <pkg>  Remove packages and associated shims
+  hpm <apt-subcommand> [...]    Pass through to apt (e.g. hpm update, hpm search)
 
 Options:
-  -h, --help                  Show this help and exit
-  -V, --version               Show version and exit
+  -r, --repo R                  Force repo: kali, parrot, blackarch, debian
+  -h, --help                    Show this help and exit
+  -V, --version                 Show version and exit
 
 Environment:
-  APT_BIN                     Override apt binary (default: apt)
+  APT_BIN                       Override apt binary (default: apt)
 
 EOF
 }
 
 print_version() {
     echo "$HPM_NAME $HPM_VERSION"
+}
+
+normalize_repo() {
+    # map user input to canonical repo_type or empty if invalid
+    local r
+    r="$(tr '[:upper:]' '[:lower:]' <<<"$1")"
+    case "$r" in
+        kali|k)       echo "kali" ;;
+        parrot|p)     echo "parrot" ;;
+        blackarch|ba) echo "blackarch" ;;
+        debian|d)     echo "debian" ;;
+        *)            echo "" ;;
+    esac
 }
 
 get_repo_type() {
@@ -114,7 +128,6 @@ create_container_shim() {
     cname="$(get_container_name "$repo_type")" || return 1
     [[ -n "$cname" ]] || return 1
 
-    # Write shim into real user's home, even under sudo
     local user_home
     if [[ -n "${SUDO_USER-}" ]]; then
         user_home="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
@@ -175,11 +188,55 @@ get_remove_cmd() {
     esac
 }
 
+# BlackArch-specific install path using pacman
+ba_install_one() {
+    local pkg="$1"
+    local repo_type="blackarch"
+    local cname
+    cname="$(get_container_name "$repo_type")"
+
+    if [[ -z "$cname" ]]; then
+        echo "[$HPM_NAME] No container name for repo type '$repo_type'" >&2
+        return 1
+    fi
+
+    ensure_container "$repo_type"
+
+    echo "[$HPM_NAME] Updating pacman db in container $cname (repo: $repo_type)" >&2
+    run_podman exec -it --user root "$cname" pacman -Suy --noconfirm
+
+    echo "[$HPM_NAME] Checking if '$pkg' exists in BlackArch repos" >&2
+    if ! run_podman exec -it --user root "$cname" pacman -Si "$pkg" >/dev/null 2>&1; then
+        echo "[$HPM_NAME] Package '$pkg' not found in BlackArch repos" >&2
+        return 1
+    fi
+
+    echo "[$HPM_NAME] Installing '$pkg' in container $cname (repo: $repo_type)" >&2
+    run_podman exec -it --user root "$cname" pacman -S --noconfirm "$pkg"
+
+    create_container_shim "$repo_type" "$pkg" || true
+}
+
 install_one() {
     local pkg="$1"
+    local forced_repo="${2:-}"
 
     local repo_type
-    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ -n "$forced_repo" ]]; then
+        repo_type="$(normalize_repo "$forced_repo")"
+        if [[ -z "$repo_type" ]]; then
+            echo "[$HPM_NAME] Invalid repo: $forced_repo (use kali, parrot, blackarch, debian)" >&2
+            return 1
+        fi
+    else
+        repo_type="$(get_repo_type "$pkg")"
+    fi
+
+    if [[ "$repo_type" == "blackarch" ]]; then
+        ba_install_one "$pkg"
+        return
+    fi
 
     if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
         echo "[$HPM_NAME] Installing '$pkg' on host (repo: $repo_type)" >&2
@@ -208,9 +265,19 @@ install_one() {
 
 remove_one() {
     local pkg="$1"
+    local forced_repo="${2:-}"
 
     local repo_type
-    repo_type="$(get_repo_type "$pkg")"
+
+    if [[ -n "$forced_repo" ]]; then
+        repo_type="$(normalize_repo "$forced_repo")"
+        if [[ -z "$repo_type" ]]; then
+            echo "[$HPM_NAME] Invalid repo: $forced_repo (use kali, parrot, blackarch, debian)" >&2
+            return 1
+        fi
+    else
+        repo_type="$(get_repo_type "$pkg")"
+    fi
 
     if [[ "$repo_type" == "debian" || "$repo_type" == "unknown" ]]; then
         echo "[$HPM_NAME] Removing '$pkg' from host (repo: $repo_type)" >&2
@@ -253,6 +320,34 @@ container_init() {
     run_podman run -d --name hpm-blackarch hpm/blackarch sleep infinity
 }
 
+shell_into_container() {
+    local name="$1"
+
+    if [[ -z "$name" ]]; then
+        echo "[$HPM_NAME] Usage: hpm shell <kali|parrot|blackarch>" >&2
+        return 1
+    fi
+
+    local repo_type
+    repo_type="$(normalize_repo "$name")"
+    if [[ -z "$repo_type" || "$repo_type" == "debian" ]]; then
+        echo "[$HPM_NAME] Invalid shell target: $name" >&2
+        return 1
+    fi
+
+    local cname
+    cname="$(get_container_name "$repo_type")"
+    if [[ -z "$cname" ]]; then
+        echo "[$HPM_NAME] No container for repo '$repo_type'" >&2
+        return 1
+    fi
+
+    ensure_container "$repo_type"
+
+    echo "[$HPM_NAME] Entering shell in container $cname (repo: $repo_type)" >&2
+    run_podman exec -it --user root "$cname" /bin/bash
+}
+
 main() {
     if [[ "$#" -lt 1 ]]; then
         print_help >&2
@@ -277,24 +372,70 @@ main() {
         init)
             container_init
             ;;
+	shell)
+		if [[ "$#" -lt 1 ]]; then
+			echo "Usage: hpm shell <kali|parrot|blackarch>" >&2
+			exit 1
+		fi
+		shell_into_container "$1"
+		;;
         install)
             if [[ "$#" -lt 1 ]]; then
-                echo "Usage: hpm install <pkg> [...]" >&2
+                echo "Usage: hpm install [--repo R] <pkg> [...]" >&2
                 exit 1
             fi
+            local forced_repo=""
+            # parse optional --repo/-r before pkgs
+            while [[ "$#" -gt 0 ]]; do
+                case "$1" in
+                    -r|--repo)
+                        shift
+                        [[ "$#" -gt 0 ]] || { echo "[$HPM_NAME] --repo requires an argument" >&2; exit 1; }
+                        forced_repo="$1"
+                        shift
+                        break
+                        ;;
+                    --)
+                        shift
+                        break
+                        ;;
+                    *)
+                        break
+                        ;;
+                esac
+            done
             local pkg
             for pkg in "$@"; do
-                install_one "$pkg"
+                install_one "$pkg" "$forced_repo"
             done
             ;;
         remove|uninstall)
             if [[ "$#" -lt 1 ]]; then
-                echo "Usage: hpm remove <pkg> [...]" >&2
+                echo "Usage: hpm remove [--repo R] <pkg> [...]" >&2
                 exit 1
             fi
+            local forced_repo=""
+            while [[ "$#" -gt 0 ]]; do
+                case "$1" in
+                    -r|--repo)
+                        shift
+                        [[ "$#" -gt 0 ]] || { echo "[$HPM_NAME] --repo requires an argument" >&2; exit 1; }
+                        forced_repo="$1"
+                        shift
+                        break
+                        ;;
+                    --)
+                        shift
+                        break
+                        ;;
+                    *)
+                        break
+                        ;;
+                esac
+            done
             local pkg
             for pkg in "$@"; do
-                remove_one "$pkg"
+                remove_one "$pkg" "$forced_repo"
             done
             ;;
         *)
@@ -302,6 +443,6 @@ main() {
             ;;
     esac
 }
+
 # meow
 main "$@"
-
